@@ -142,6 +142,16 @@
   }
   .gallery .card .overlay p{font-size:10px;margin:0;opacity:.9;}
 
+  /* تلميح يظهر أسفل الجلري عندما لا توجد صور للمجلد بعد */
+  .gallery-hint{
+    text-align:center;
+    font-size:12.5px;
+    color:var(--text-dim);
+    line-height:1.9;
+    padding:0 12px 6px;
+  }
+  .gallery-hint b{color:var(--gold-light);font-weight:700;direction:ltr;display:inline-block;}
+
 
   /* header */
   header{text-align:center;margin-bottom:34px;}
@@ -502,6 +512,7 @@
       <div class="line"></div>
     </div>
     <div class="gallery" id="gallerySlideshow"></div>
+    <div class="gallery-hint" id="galleryHint" style="display:none;"></div>
   </div>
 
   <div class="section-title">
@@ -775,36 +786,62 @@ function renderInfoCard(){
 renderInfoCard();
 
 // ============================================
-// مجلد الصور: photos/
-// كل الصور الموجودة في المجلد — تُعرض عشوائيًا في الجلري
-// لإضافة صورة جديدة: ضع الملف داخل مجلد photos ثم أضف اسمه هنا
+// صور كل نوع تصوير — كل نوع له مجلد صور خاص به
+//   تصوير الأعراس            → photos/
+//   تصوير المنتجات والأطعمة  → prodacts_pic/
+//   تصوير الإيفنتات          → Event_pic/
+//   مونتاج / تعديل           → Editing_pic/
+//   حفلات التخرج              → party_pic/
+// لإضافة صور لنوع: انسخ ملفات الصور داخل مجلد النوع
+// ثم أضف أسماء الملفات في photos بنفس الاسم بالضبط (المسافات مسموحة)
+// ملاحظة: إذا كان المجلد فارغًا تُعرض بطاقات "قريبًا" ولا تُستخدم صور نوع آخر
 // ============================================
-const PHOTO_FOLDER = 'photos/';
-const PHOTO_POOL = [
-  '0.jpeg',
-  '8.jpeg',
-  'DSC02717.jpg',
-  'DSC02746.jpg',
-  'DSC02752.jpg',
-  'gallery1.jpg',
-  'gallery2.jpg',
-  'gallery3.jpg',
-  'gallery5.jpg',
-  'WhatsApp Image 2026-09-05 at 15.28.24.jpeg',
-];
+const CATEGORY_PHOTOS = {
+  weddings: {
+    folder: 'photos/',
+    photos: [
+      '0.jpeg',
+      '8.jpeg',
+      'DSC02717.jpg',
+      'DSC02746.jpg',
+      'DSC02752.jpg',
+      'gallery1.jpg',
+      'gallery2.jpg',
+      'gallery3.jpg',
+      'gallery5.jpg',
+      'WhatsApp Image 2026-09-05 at 15.28.24.jpeg',
+    ],
+  },
+  realestate: { folder: 'prodacts_pic/', photos: [] },
+  event:      { folder: 'Event_pic/',    photos: [] },
+  montage:    { folder: 'Editing_pic/',  photos: [] },
+  graduation: { folder: 'party_pic/',    photos: [] },
+};
 
 // عدد الصور التي تُعرض في الجلري
 const GALLERY_COUNT = 6;
 
-// خلط عشوائي (Fisher–Yates) واختيار عدد محدد من الصور
-function pickRandomPhotos(count){
-  const pool = PHOTO_POOL.slice();
+// المجلد الاحتياطي (يُستخدم فقط إذا لم يُعرّف للنوع مجلد)
+const FALLBACK_FOLDER = 'photos/';
+
+// مجلد صور نوع معين
+function galleryFolder(categoryKey){
+  const conf = CATEGORY_PHOTOS[categoryKey];
+  return (conf && conf.folder) ? conf.folder : FALLBACK_FOLDER;
+}
+
+// خلط عشوائي (Fisher–Yates) واختيار عدد محدد من صور النوع الحالي
+function pickRandomPhotos(categoryKey, count){
+  const conf = CATEGORY_PHOTOS[categoryKey];
+  const pool = (conf && conf.photos ? conf.photos : []).slice();
+  // لا توجد صور في مجلد هذا النوع بعد → بطاقات فارغة (قريبًا)
+  if(pool.length === 0) return new Array(count).fill(null);
   for(let i = pool.length - 1; i > 0; i--){
     const j = Math.floor(Math.random() * (i + 1));
     [pool[i], pool[j]] = [pool[j], pool[i]];
   }
-  const picked = pool.slice(0, Math.min(count, pool.length));
-  return picked.map(name => PHOTO_FOLDER + encodeURI(name));
+  const folder = galleryFolder(categoryKey);
+  return pool.slice(0, Math.min(count, pool.length)).map(name => folder + encodeURI(name));
 }
 
 const GALLERIES = {
@@ -818,18 +855,29 @@ const GALLERIES = {
 const gallerySection = document.getElementById('gallerySection');
 const gallerySlideshow = document.getElementById('gallerySlideshow');
 const galleryTitle = document.getElementById('galleryTitle');
+const galleryHint = document.getElementById('galleryHint');
 let galleryTimer = null;
 let currentGalleryImages = [];
 let currentSlide = 0;
 
+// محتوى بطاقة "قريبًا" (تُستخدم عند عدم وجود صورة)
+function placeholderInner(num){
+  return `
+          <span class="gp-icon">📷</span>
+          <div class="overlay">
+            <h3>${num}</h3>
+            <p>قريبًا</p>
+          </div>`;
+}
+
 function buildGallerySlides(images){
-  const n = images.length;
   let html = '';
   images.forEach((src, i)=>{
     const num = String(i + 1).padStart(2, '0');
+    const active = i === 0 ? 'active' : '';
     if(src){
       html += `
-        <div class="card ${i===0 ? 'active' : ''}" style="background-image:url('${src}')" data-i="${i}">
+        <div class="card ${active}" style="background-image:url('${src}')" data-i="${i}" data-num="${num}" data-src="${src}">
           <div class="overlay">
             <h3>${num}</h3>
             <p>شعيب استوديو</p>
@@ -837,17 +885,24 @@ function buildGallerySlides(images){
         </div>`;
     } else {
       html += `
-        <div class="card ${i===0 ? 'active' : ''}" data-i="${i}">
-          <span class="gp-icon">📷</span>
-          <div class="overlay">
-            <h3>${num}</h3>
-            <p>قريبًا</p>
-          </div>
+        <div class="card ${active}" data-i="${i}" data-num="${num}">
+          ${placeholderInner(num)}
         </div>`;
     }
   });
 
   gallerySlideshow.innerHTML = html;
+
+  // إذا كان ملف الصورة غير موجود بالمجلد، حوّل البطاقة إلى "قريبًا" بدل صورة مكسورة
+  gallerySlideshow.querySelectorAll('.card[data-src]').forEach(card=>{
+    const probe = new Image();
+    probe.onerror = ()=>{
+      card.removeAttribute('data-src');
+      card.style.backgroundImage = '';
+      card.innerHTML = placeholderInner(card.dataset.num || '');
+    };
+    probe.src = card.dataset.src;
+  });
 
   gallerySlideshow.querySelectorAll('.card').forEach(card=>{
     card.addEventListener('click', ()=>{
@@ -888,8 +943,12 @@ function renderGallery(){
   }
   const g = GALLERIES[activeCategory];
   galleryTitle.textContent = g.title;
-  // اختر صورًا عشوائية من مجلد photos/ في كل مرة
-  currentGalleryImages = pickRandomPhotos(GALLERY_COUNT);
+  // صور هذا النوع فقط، من مجلده الخاص، بترتيب عشوائي في كل مرة
+  currentGalleryImages = pickRandomPhotos(activeCategory, GALLERY_COUNT);
+  const hasPhotos = currentGalleryImages.some(Boolean);
+  galleryHint.style.display = hasPhotos ? 'none' : 'block';
+  galleryHint.innerHTML = hasPhotos ? '' :
+    `لا توجد صور بعد في مجلد <b>${galleryFolder(activeCategory)}</b> — أضف صور هذا النوع هناك لتظهر هنا`;
   gallerySection.style.display = 'block';
   buildGallerySlides(currentGalleryImages);
   goToSlide(0);

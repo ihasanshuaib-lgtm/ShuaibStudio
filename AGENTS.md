@@ -32,19 +32,34 @@ ShuaibStudio/
 ├── AGENTS.md          # This documentation file (keep updated)
 ├── index.html         # The entire site: markup, styles, and scripts
 ├── hero.jpg           # Hero/studio image asset
-└── photos/            # Gallery images (randomly shown in the gallery)
-    ├── 0.jpeg
-    ├── 8.jpeg
-    ├── DSC02717.jpg
-    ├── DSC02746.jpg
-    ├── DSC02752.jpg
-    ├── gallery1.jpg
-    ├── gallery2.jpg
-    ├── gallery3.jpg
-    ├── gallery5.jpg
-    └── WhatsApp Image 2026-09-05 at 15.28.24.jpeg
+├── photos/            # Gallery images for تصوير الأعراس (weddings)
+│   ├── 0.jpeg
+│   ├── 8.jpeg
+│   ├── DSC02717.jpg
+│   ├── DSC02746.jpg
+│   ├── DSC02752.jpg
+│   ├── gallery1.jpg
+│   ├── gallery2.jpg
+│   ├── gallery3.jpg
+│   ├── gallery5.jpg
+│   └── WhatsApp Image 2026-09-05 at 15.28.24.jpeg
+├── prodacts_pic/      # Gallery images for تصوير منتجات وأطعمة (realestate)  — empty for now
+├── Event_pic/         # Gallery images for تصوير إيفنت (event)              — empty for now
+├── Editing_pic/       # Gallery images for مونتاج / تعديل (montage)         — empty for now
+└── party_pic/         # Gallery images for حفل تخرج (graduation)            — empty for now
 ```
 
+**One photo folder per category** — each category's gallery only shows photos from its own folder:
+
+| Category key | Category (AR)        | Photo folder   |
+|--------------|----------------------|----------------|
+| `weddings`   | تصوير الأعراس        | `photos/`      |
+| `realestate` | تصوير منتجات وأطعمة  | `prodacts_pic/`|
+| `event`      | تصوير إيفنت          | `Event_pic/`   |
+| `montage`    | مونتاج / تعديل       | `Editing_pic/` |
+| `graduation` | حفل تخرج             | `party_pic/`   |
+
+> Each photo folder contains a `.gitkeep` so the empty folders are still tracked by git (and stay available on GitHub Pages).
 > `.DS_Store` files are macOS junk and are intentionally excluded from git commits.
 
 ---
@@ -58,7 +73,7 @@ The file is organized in this order:
    - Top bar (studio logo + light/dark theme toggle)
    - Header (title + subtitle)
    - **Section ١** — "نوع التصوير" (category pills, `#categoriesList`)
-   - **Gallery** — "من أعمالنا" (`#gallerySection`, `#gallerySlideshow`, `#galleryTitle`)
+   - **Gallery** — "من أعمالنا" (`#gallerySection`, `#gallerySlideshow`, `#galleryTitle`, `#galleryHint`)
    - **Section ٢** — "بيانات العميل" (client info form, `#infoCard`)
    - **Section ٣** — "اختر الباقة" (packages, `#packagesList`)
    - **Section ٤** — "خدمات إضافية" (extra services, `#servicesList`)
@@ -97,14 +112,28 @@ Each category has: `name`, `icon`, `info` (form field labels/placeholders), `pac
   - `note` shows a sub-line under the name (e.g. QR barcode explanation).
   - `perUnit: true` adds a quantity stepper and multiplies price by qty (used for printing photos).
 
-### Gallery
+### Gallery (one folder per category)
 
-- `PHOTO_FOLDER = 'photos/'` — the folder holding gallery images.
-- `PHOTO_POOL` — array of **filenames** present in `photos/`. **When you add a photo to the folder, add its filename here too.**
-- `GALLERY_COUNT = 6` — number of random images shown at a time.
-- `pickRandomPhotos(count)` — Fisher–Yates shuffle, returns `count` random `photos/<name>` URLs (names are `encodeURI`-encoded, important for filenames with spaces).
-- `GALLERIES` — maps each category key to a gallery `title` only (images are now random).
-- `renderGallery()` — picks random photos **each time a category is selected**, builds slides, starts a 2s auto-advancing slideshow. Clicking a card pauses-jumps to it and restarts the slideshow.
+- `CATEGORY_PHOTOS` — maps every category key to `{ folder, photos[] }`:
+
+  | Key          | `folder`        | `photos[]`                          |
+  |--------------|-----------------|-------------------------------------|
+  | `weddings`   | `photos/`       | 10 wedding photos                   |
+  | `realestate` | `prodacts_pic/` | `[]` (empty → placeholders)         |
+  | `event`      | `Event_pic/`    | `[]` (empty → placeholders)         |
+  | `montage`    | `Editing_pic/`  | `[]` (empty → placeholders)         |
+  | `graduation` | `party_pic/`    | `[]` (empty → placeholders)         |
+
+  **To add photos for a category:** copy the files into that category's folder, then add the exact filenames to its `photos` array. (Filenames with spaces are fine — they are `encodeURI`-encoded when built into URLs.)
+- `GALLERY_COUNT = 6` — number of images shown at a time.
+- `FALLBACK_FOLDER = 'photos/'` — used only if a category has no folder configured.
+- `galleryFolder(categoryKey)` — returns the folder configured for a category.
+- `pickRandomPhotos(categoryKey, count)` — Fisher–Yates shuffle of **that category's** `photos`, returns up to `count` `folder/name` URLs. If the category's `photos` is empty it returns `count` × `null` → cards render as "قريبًا" placeholders (**never** photos from another category).
+- `GALLERIES` — maps each category key to its gallery `title`.
+- `buildGallerySlides(images)` — builds the cards (`null` → placeholder). It also probes every image with `new Image()`: if a listed file does not exist in the folder, the card is converted to the "قريبًا" placeholder instead of showing a broken image.
+- `placeholderInner(num)` — shared markup for a "قريبًا" card body.
+- `renderGallery()` — sets the title, picks random photos **from the active category's own folder** each time the category changes, shows/hides `#galleryHint` (an Arabic hint naming the folder when it has no photos yet), builds the slides and starts the 2s auto-advancing slideshow. Clicking a card jumps to it and restarts the slideshow.
+
 
 ### State
 
@@ -177,7 +206,7 @@ const STUDIO_EMAIL = "studio@example.com";
 - Keep all UI text in **Arabic**; the layout is RTL.
 - Prefer `replace_in_file` for edits and use the latest saved file content as the search reference (the editor may auto-format).
 - **Filenames with spaces** (e.g. the WhatsApp image) must be `encodeURI`-encoded when used as URLs — already handled in `pickRandomPhotos`.
-- The gallery no longer hardcodes images per category; it always samples randomly from `PHOTO_POOL`.
+- The gallery never hardcodes images inline: it reads each category's own folder via `CATEGORY_PHOTOS` and samples randomly from it (`.gallery-hint` CSS class styles the `#galleryHint` folder hint).
 - Do not commit `.DS_Store`.
 - There is no backend; all logic runs in the browser.
 
@@ -202,12 +231,13 @@ const STUDIO_EMAIL = "studio@example.com";
 - Convention: make a focused commit per change with a clear message, then optionally push.
 - **Exclude `.DS_Store`** when staging (use `git reset -- .DS_Store photos/.DS_Store` if it gets staged).
 
-Recent history (most recent first):
+Recent history (most recent first) — run `git log --oneline` for the current hashes:
 
-| Commit    | Message |
-|-----------|---------|
-| `da47a48` | Select weddings category by default on page load |
-| `df6a3de` | Show random photos from photos/ folder in gallery |
+| Commit     | Message |
+|------------|---------|
+| *(latest)* | Separate gallery photos per category folder |
+| `1141ba2`  | Add AGENTS.md project documentation |
+| `da47a48`  | Select weddings category by default on page load |
 
 ---
 
@@ -215,5 +245,6 @@ Recent history (most recent first):
 
 - **2026-09-24** — Created AGENTS.md documenting the full project.
 - **2026-09-24** — Gallery now shows random photos from `photos/`; images moved into `photos/`; weddings selected by default on load.
+- **2026-09-24** — **Separate photo folder per category**: added `CATEGORY_PHOTOS` (`weddings → photos/`, `realestate → prodacts_pic/`, `event → Event_pic/`, `montage → Editing_pic/`, `graduation → party_pic/`); `pickRandomPhotos(categoryKey, count)` now uses only the active category's folder; empty folders render "قريبًا" placeholders plus a `#galleryHint` line naming the folder; missing files fall back to placeholders via an `Image()` probe; `.gitkeep` added to the photo folders.
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
