@@ -215,53 +215,40 @@
   body:not(.light-mode) .field input[type="time"]{color-scheme:dark;}
   @media(max-width:560px){.info-card{grid-template-columns:1fr;}}
 
-  /* categories */
+  /* categories: horizontally scrollable pill strip — always visible, easy to switch */
   .categories{
-    display:grid;
-    grid-template-columns:repeat(5, 1fr);
+    display:flex;
     gap:8px;
-    transition:gap .3s;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding-bottom:4px;
+    scrollbar-width:thin;
+    -webkit-overflow-scrolling:touch;
   }
-  @media(max-width:640px){.categories{grid-template-columns:repeat(3, 1fr);}}
+  .categories::-webkit-scrollbar{height:5px;}
   .category{
+    flex:0 0 auto;
     background:var(--card);
     border:1px solid var(--line);
-    border-radius:12px;
-    padding:10px 6px;
-    text-align:center;
-    cursor:pointer;
-    transition:border-color .2s, background .2s, transform .15s, padding .3s, opacity .3s, max-height .3s;
-  }
-  .category:hover{background:var(--card-hover);transform:translateY(-2px);}
-  .category.selected{
-    border-color:var(--gold);
-    background:linear-gradient(135deg, rgba(201,164,99,.10), var(--card-hover));
-    box-shadow:0 0 0 1px var(--gold) inset, 0 8px 24px -10px rgba(201,164,99,.3);
-  }
-  .category .cat-icon{font-size:18px;margin-bottom:4px;}
-  .category .cat-name{font-size:11px;font-weight:700;color:var(--text);}
-  .category .cat-empty-tag{display:block;font-size:9px;color:var(--text-dim);margin-top:2px;}
-
-  /* compact state: once a type is chosen, shrink unselected cards away */
-  .categories.collapsed{
-    display:flex;
-    justify-content:flex-start;
-    gap:8px;
-  }
-  .categories.collapsed .category{
-    flex:0 0 auto;
-    padding:6px 14px;
+    border-radius:30px;
+    padding:10px 16px;
     display:flex;
     align-items:center;
-    gap:6px;
+    gap:7px;
+    text-align:center;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:border-color .2s, background .2s, transform .15s;
   }
-  .categories.collapsed .category .cat-icon{font-size:14px;margin-bottom:0;}
-  .categories.collapsed .category .cat-name{font-size:11px;}
-  .categories.collapsed .category:not(.selected){
-    opacity:.45;
-    transform:scale(.92);
+  .category:hover{background:var(--card-hover);transform:translateY(-1px);}
+  .category.selected{
+    border-color:var(--gold);
+    background:linear-gradient(135deg, rgba(201,164,99,.16), var(--card-hover));
+    box-shadow:0 0 0 1px var(--gold) inset, 0 6px 18px -8px rgba(201,164,99,.35);
   }
-  .categories.collapsed .category .cat-empty-tag{display:none;}
+  .category .cat-icon{font-size:16px;margin-bottom:0;}
+  .category .cat-name{font-size:12px;font-weight:700;color:var(--text);}
+  .category .cat-empty-tag{font-size:9px;color:var(--text-dim);margin-right:2px;}
 
   /* packages */
   .packages{display:flex;flex-direction:column;gap:14px;}
@@ -282,6 +269,18 @@
     border-color:var(--gold);
     background:linear-gradient(135deg, rgba(201,164,99,.10), var(--card-hover));
     box-shadow:0 0 0 1px var(--gold) inset, 0 8px 24px -10px rgba(201,164,99,.3);
+  }
+
+  /* tier color coding removed per feedback — packages use default styling now */
+
+  /* most-requested package gets a stronger, distinct highlight */
+  .package.popular{
+    border-color:var(--gold);
+    background:linear-gradient(135deg, rgba(201,164,99,.16), var(--card));
+    box-shadow:0 0 0 1.5px var(--gold) inset, 0 10px 30px -8px rgba(201,164,99,.45);
+  }
+  .package.popular.selected{
+    box-shadow:0 0 0 2px var(--gold) inset, 0 12px 34px -8px rgba(201,164,99,.55);
   }
   .package input[type=radio]{display:none;}
   .radio-dot{
@@ -308,33 +307,11 @@
   .pkg-price small{font-size:13px;color:var(--text-dim);font-family:'Tajawal',sans-serif;}
   .pkg-desc{color:var(--text-dim);font-size:13.5px;margin-top:6px;line-height:1.7;}
 
-  .pkg-details{
-    list-style:none;
-    margin:0;
-    padding:0;
-    max-height:0;
-    overflow:hidden;
-    opacity:0;
-    transition:max-height .35s ease, opacity .3s ease, margin-top .35s ease;
-  }
-  .package.selected .pkg-details{
-    max-height:300px;
-    opacity:1;
-    margin-top:12px;
-  }
-  .pkg-details li{
-    position:relative;
-    padding:6px 0 6px 22px;
-    font-size:13.5px;
-    color:var(--text);
-    border-top:1px solid var(--line);
-  }
-  .pkg-details li:first-child{border-top:none;}
-  .pkg-details li::before{
-    content:"✓";
-    position:absolute;left:0;top:6px;
-    color:var(--gold);
-    font-weight:700;
+  .pkg-details-line{
+    margin:8px 0 0;
+    font-size:13px;
+    color:var(--text-dim);
+    line-height:1.6;
   }
 
   /* services */
@@ -598,11 +575,11 @@ const CATEGORIES = {
       ]
     },
     packages: [
-      {id:'p1', name:'باقة الذكريات', icon:'📸', price:60, desc:'تصوير فوتوغرافي مع بطاقة دعوة'},
-      {id:'p2', name:'باقة الذكريات بلس', icon:'📸', price:85, desc:'تصوير فوتو + فيديو + مقابلات'},
-      {id:'p3', name:'باقة الفخامة', icon:'⭐', price:99, desc:'فوتو + فيديو + مقابلات + بطاقة دعوة', badge:'الأكثر طلباً'},
-      {id:'p4', name:'باقة الفخامة بلس', icon:'💌', price:120, desc:'فوتو + فيديو + مقابلات + برومو + بطاقة دعوة'},
-      {id:'p5', name:'باقة فيلم العمر', icon:'🎬', price:150, desc:'جميع المميزات + تصوير شخصي + فيديو سينمائي + برومو لتفاصيل كشخة المعرس + طباعة صور'},
+      {id:'p1', name:'باقة الذكريات', icon:'📸', price:60, desc:'تصوير فوتوغرافي مع بطاقة دعوة', tier:1},
+      {id:'p2', name:'باقة الذكريات بلس', icon:'📸', price:85, desc:'تصوير فوتو + فيديو + مقابلات', tier:1},
+      {id:'p3', name:'باقة الفخامة', icon:'⭐', price:99, desc:'فوتو + فيديو + مقابلات + بطاقة دعوة', badge:'الأكثر طلباً', tier:2},
+      {id:'p4', name:'باقة الفخامة بلس', icon:'💌', price:120, desc:'فوتو + فيديو + مقابلات + برومو + بطاقة دعوة', tier:2},
+      {id:'p5', name:'باقة فيلم العمر', icon:'🎬', price:150, desc:'جميع المميزات + تصوير شخصي + فيديو سينمائي + برومو لتفاصيل كشخة المعرس + طباعة صور', tier:3},
     ],
     services: [
       {id:'s1', name:'تصوير بطاقة الدعوة في منزل المعرس', price:10},
@@ -615,38 +592,35 @@ const CATEGORIES = {
       {id:'s8', name:'تعديل الصور الاحترافي', price:10},
       {id:'s9', name:'تصوير أبو المعرس - كاميرا إضافية', price:20},
       {id:'s10', name:'تصوير 360 للحفل', price:10},
+      {id:'s11', name:'تسريع التسليم (خلال 24 ساعة)', price:20},
     ]
   },
 
   realestate: {
-    name: 'تصوير عقاري',
-    icon: '🏠',
+    name: 'تصوير منتجات وأطعمة',
+    icon: '🍽️',
     info: {
-      nameLabel: 'اسم العميل / المكتب العقاري',
-      namePlaceholder: 'اسم العميل',
+      nameLabel: 'اسم العميل / المتجر',
+      namePlaceholder: 'اسم العميل أو المتجر',
       dateLabel: 'تاريخ التصوير',
       datePlaceholder: 'مثال: 10 يناير 2027',
       timeLabel: 'وقت التصوير',
       timePlaceholder: 'مثال: 10:00 صباحًا',
       extraFields: [
-        {id:'propertyAddress', label:'عنوان العقار', placeholder:'المنطقة / الموقع بالتفصيل'},
-        {id:'propertyType', label:'نوع العقار', placeholder:'مثال: فيلا، شقة، مكتب تجاري'}
+        {id:'productType', label:'نوع المنتج / الأطعمة', placeholder:'مثال: مطعم، عطور، ملابس، حلويات'},
+        {id:'shootLocation', label:'مكان التصوير', placeholder:'الاستوديو أو موقع العميل'}
       ]
     },
     packages: [
-      {id:'r1', name:'باقة التصوير الأساسي', icon:'🏠', price:25, desc:'تصوير فوتوغرافي للعقار (حتى 15 صورة)'},
-      {id:'r2', name:'باقة التصوير الموسّع', icon:'🏠', price:40, desc:'تصوير فوتوغرافي شامل لكل الغرف والمرافق'},
-      {id:'r3', name:'باقة الفيديو التسويقي', icon:'🎥', price:55, desc:'فيديو تسويقي قصير للعقار مع مونتاج'},
-      {id:'r4', name:'باقة التسويق الشامل', icon:'⭐', price:90, desc:'تصوير فوتو + فيديو + تصوير جوي بالدرون + جولة 360', badge:'الأكثر طلباً'},
+      {id:'r0', name:'باقة أقل من 20 صورة', icon:'📷', price:35, desc:'تصوير حتى 20 صورة احترافية + تعديل وتلوين + مدة الجلسة ساعتين'},
+      {id:'r1', name:'باقة 25 صورة', icon:'📷', price:50, desc:'تصوير 25 صورة احترافية + تعديل وتلوين'},
+      {id:'r2', name:'باقة 50 صورة', icon:'⭐', price:80, desc:'تصوير 50 صورة احترافية + تعديل وتلوين', badge:'الأكثر طلباً'},
+      {id:'r3', name:'باقة 120 صورة', icon:'📷', price:140, desc:'تصوير 120 صورة احترافية + تعديل وتلوين'},
     ],
     services: [
-      {id:'rs1', name:'تعديل الصور الاحترافي (تلوين وتحسين إضاءة)', price:10},
-      {id:'rs2', name:'تصوير جوي بالدرون', price:25},
-      {id:'rs3', name:'جولة 360 للعقار', price:20},
-      {id:'rs4', name:'فيديو ريلز قصير للسوشيال ميديا', price:15},
-      {id:'rs5', name:'تصميم مخطط العقار (Floor Plan)', price:15},
-      {id:'rs6', name:'تصوير ليلي (Twilight Shoot)', price:20},
-      {id:'rs7', name:'طباعة بروشور تسويقي', price:0.3, perUnit:true},
+      {id:'rs1', name:'تصوير فيديو ترويجي إضافي', price:25},
+      {id:'rs4', name:'خلفيات إضافية متعددة', price:8},
+      {id:'rs5', name:'تسريع التسليم (خلال 24 ساعة)', price:20},
     ]
   },
 
@@ -678,6 +652,7 @@ const CATEGORIES = {
       {id:'es4', name:'طباعة الصور الفورية', price:0.5, perUnit:true},
       {id:'es5', name:'مونتاج فيديو تلخيصي', price:20},
       {id:'es6', name:'تصوير 360 للحفل', price:10},
+      {id:'es7', name:'تسريع التسليم (خلال 24 ساعة)', price:20},
     ]
   },
 
@@ -725,15 +700,16 @@ const CATEGORIES = {
       ]
     },
     packages: [
-      {id:'g1', name:'باقة التخرج الأساسية', icon:'🎓', price:35, desc:'تصوير فوتوغرافي للحفل'},
-      {id:'g2', name:'باقة التخرج بلس', icon:'🎓', price:55, desc:'تصوير فوتو + فيديو قصير للحفل'},
-      {id:'g3', name:'باقة التخرج الفخمة', icon:'⭐', price:80, desc:'فوتو + فيديو + جلسة تصوير شخصية بعد الحفل', badge:'الأكثر طلباً'},
+      {id:'g1', name:'البكج الأول', icon:'✨', price:90, desc:'تصوير فيديو لأبرز لحظات الحفل + تصوير فوتوغرافي لتكريم الأطفال + مونتاج فيديو قصير للإنستقرام + تسليم الصور'},
+      {id:'g2', name:'البكج الثاني', icon:'🎥', price:150, desc:'تصوير فيديو لأبرز لحظات الحفل + تصوير فوتوغرافي لتكريم الأطفال + مونتاج فيديو قصير للإنستقرام + تغطية فيديو لجميع فقرات الحفل + مونتاج كامل للحفل + مقابلات قصيرة مع الحضور'},
+      {id:'g3', name:'البكج الثالث', icon:'🎬', price:190, desc:'تصوير فيديو لأبرز لحظات الحفل + تصوير فوتوغرافي لتكريم الأطفال + مونتاج فيديو قصير للإنستقرام + تغطية فيديو لجميع فقرات الحفل + مونتاج فيديو كامل للحفل (ساعتين) + مونتاج احترافي لفقرات الحفل كاملة (كل فقرة منفصلة) + مونتاج فيديو مميز للحفل (إنستقرام) + مقابلات قصيرة مع الحضور'},
     ],
     services: [
       {id:'gs1', name:'جلسة تصوير شخصية إضافية (خارج الحفل)', price:20},
       {id:'gs2', name:'طباعة الصور', price:0.5, perUnit:true},
       {id:'gs3', name:'فيديو تهنئة من العائلة', price:10},
       {id:'gs4', name:'مونتاج فيديو تلخيصي للحفل', price:15},
+      {id:'gs5', name:'تسريع التسليم (خلال 24 ساعة)', price:20},
     ]
   },
 };
@@ -804,7 +780,7 @@ renderInfoCard();
 // ============================================
 const GALLERIES = {
   weddings:   { title: 'من أعمالنا في تصوير الأعراس',  images: ['gallery1.jpg','gallery2.jpg','gallery3.jpg','gallery4.jpg','gallery5.jpg'] },
-  realestate: { title: 'من أعمالنا في التصوير العقاري', images: [null,null,null,null,null,null] },
+  realestate: { title: 'من أعمالنا في تصوير المنتجات والأطعمة', images: [null,null,null,null,null,null] },
   event:      { title: 'من أعمالنا في تصوير الإيفنتات', images: [null,null,null,null,null,null] },
   montage:    { title: 'نماذج من أعمال المونتاج',        images: [null,null,null,null,null,null] },
   graduation: { title: 'من أعمالنا في حفلات التخرج',     images: [null,null,null,null,null,null] },
@@ -918,7 +894,6 @@ Object.keys(CATEGORIES).forEach(key=>{
     activeCategory = key;
     document.querySelectorAll('.category').forEach(el=>el.classList.remove('selected'));
     div.classList.add('selected');
-    categoriesList.classList.add('collapsed');
     selectedPackage = null;
     Object.keys(selectedServices).forEach(k=>delete selectedServices[k]);
     renderInfoCard();
@@ -948,10 +923,10 @@ function renderPackagesAndServices(){
 
   cat.packages.forEach(p=>{
     const div = document.createElement('div');
-    div.className = 'package';
+    div.className = 'package' + (p.tier ? ` tier-${p.tier}` : '') + (p.badge ? ' popular' : '');
     div.id = 'pkg-'+p.id;
     const items = p.desc.split('+').map(s=>s.trim()).filter(Boolean);
-    const itemsHtml = items.map(it=>`<li>${it}</li>`).join('');
+    const itemsHtml = items.join(' + ');
     div.innerHTML = `
       <input type="radio" name="package" value="${p.id}">
       <div class="radio-dot"></div>
@@ -960,7 +935,7 @@ function renderPackagesAndServices(){
           <div class="pkg-name">${p.icon} ${p.name} ${p.badge ? `<span class="badge">${p.badge}</span>`:''}</div>
           <div class="pkg-price">${p.price} <small>BD</small></div>
         </div>
-        <ul class="pkg-details">${itemsHtml}</ul>
+        <div class="pkg-details-line">${itemsHtml}</div>
       </div>
     `;
     div.addEventListener('click', ()=>{
