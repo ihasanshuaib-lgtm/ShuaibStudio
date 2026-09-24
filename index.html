@@ -775,15 +775,44 @@ function renderInfoCard(){
 renderInfoCard();
 
 // ============================================
-// جلري كل نوع تصوير — أضف اسم ملف الصورة بدل null
-// مثال: 'gallery2.jpg' بعد رفعها بجانب booking.html
+// مجلد الصور: photos/
+// كل الصور الموجودة في المجلد — تُعرض عشوائيًا في الجلري
+// لإضافة صورة جديدة: ضع الملف داخل مجلد photos ثم أضف اسمه هنا
 // ============================================
+const PHOTO_FOLDER = 'photos/';
+const PHOTO_POOL = [
+  '0.jpeg',
+  '8.jpeg',
+  'DSC02717.jpg',
+  'DSC02746.jpg',
+  'DSC02752.jpg',
+  'gallery1.jpg',
+  'gallery2.jpg',
+  'gallery3.jpg',
+  'gallery5.jpg',
+  'WhatsApp Image 2026-09-05 at 15.28.24.jpeg',
+];
+
+// عدد الصور التي تُعرض في الجلري
+const GALLERY_COUNT = 6;
+
+// خلط عشوائي (Fisher–Yates) واختيار عدد محدد من الصور
+function pickRandomPhotos(count){
+  const pool = PHOTO_POOL.slice();
+  for(let i = pool.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  const picked = pool.slice(0, Math.min(count, pool.length));
+  return picked.map(name => PHOTO_FOLDER + encodeURI(name));
+}
+
 const GALLERIES = {
-  weddings:   { title: 'من أعمالنا في تصوير الأعراس',  images: ['gallery1.jpg','gallery2.jpg','gallery3.jpg','gallery4.jpg','gallery5.jpg'] },
-  realestate: { title: 'من أعمالنا في تصوير المنتجات والأطعمة', images: [null,null,null,null,null,null] },
-  event:      { title: 'من أعمالنا في تصوير الإيفنتات', images: [null,null,null,null,null,null] },
-  montage:    { title: 'نماذج من أعمال المونتاج',        images: [null,null,null,null,null,null] },
-  graduation: { title: 'من أعمالنا في حفلات التخرج',     images: [null,null,null,null,null,null] },
+  weddings:   { title: 'من أعمالنا في تصوير الأعراس' },
+  realestate: { title: 'من أعمالنا في تصوير المنتجات والأطعمة' },
+  event:      { title: 'من أعمالنا في تصوير الإيفنتات' },
+  montage:    { title: 'نماذج من أعمال المونتاج' },
+  graduation: { title: 'من أعمالنا في حفلات التخرج' },
 };
 
 const gallerySection = document.getElementById('gallerySection');
@@ -859,7 +888,8 @@ function renderGallery(){
   }
   const g = GALLERIES[activeCategory];
   galleryTitle.textContent = g.title;
-  currentGalleryImages = g.images;
+  // اختر صورًا عشوائية من مجلد photos/ في كل مرة
+  currentGalleryImages = pickRandomPhotos(GALLERY_COUNT);
   gallerySection.style.display = 'block';
   buildGallerySlides(currentGalleryImages);
   goToSlide(0);
