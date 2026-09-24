@@ -920,19 +920,23 @@ Object.keys(CATEGORIES).forEach(key=>{
     <div class="cat-name">${cat.name}</div>
     ${isEmpty ? `<span class="cat-empty-tag">قريبًا</span>` : ''}
   `;
-  div.addEventListener('click', ()=>{
-    activeCategory = key;
-    document.querySelectorAll('.category').forEach(el=>el.classList.remove('selected'));
-    div.classList.add('selected');
-    selectedPackage = null;
-    Object.keys(selectedServices).forEach(k=>delete selectedServices[k]);
-    renderInfoCard();
-    renderGallery();
-    renderPackagesAndServices();
-    update();
-  });
+  div.addEventListener('click', ()=> selectCategory(key));
   categoriesList.appendChild(div);
 });
+
+// اختيار نوع التصوير (يُستخدم عند الفتح وعند النقر)
+function selectCategory(key){
+  activeCategory = key;
+  document.querySelectorAll('.category').forEach(el=>el.classList.remove('selected'));
+  const card = document.getElementById('cat-'+key);
+  if(card) card.classList.add('selected');
+  selectedPackage = null;
+  Object.keys(selectedServices).forEach(k=>delete selectedServices[k]);
+  renderInfoCard();
+  renderGallery();
+  renderPackagesAndServices();
+  update();
+}
 
 function renderPackagesAndServices(){
   packagesList.innerHTML = '';
@@ -1210,7 +1214,8 @@ sendEmail.addEventListener('click', ()=>{
   window.location.href = `mailto:${STUDIO_EMAIL}?subject=${subject}&body=${body}`;
 });
 
-update();
+// اختيار "تصوير الأعراس" تلقائيًا عند فتح الصفحة
+selectCategory('weddings');
 </script>
 
 </body>
