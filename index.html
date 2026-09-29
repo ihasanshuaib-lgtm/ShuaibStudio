@@ -111,6 +111,17 @@
   @media(max-width:640px){
     .gallery .card{width:110px;height:160px;margin:0 -16px;}
   }
+  /* صورة البطاقة: نسخة مصغّرة خفيفة من thumbs/ مع تحميل مؤجّل وفك ترميز غير معيق */
+  .gallery .card img.ph{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:9px;
+    background:var(--bg-soft);
+    pointer-events:none;
+  }
   .gallery .card:nth-child(1){transform:rotate(-10deg) translateY(14px);}
   .gallery .card:nth-child(2){transform:rotate(-5deg) translateY(-6px);}
   .gallery .card:nth-child(3){transform:rotate(3deg) translateY(10px);}
@@ -870,6 +881,67 @@ const GALLERY_COUNT = 6;
 // المجلد الاحتياطي (يُستخدم فقط إذا لم يُعرّف للنوع مجلد)
 const FALLBACK_FOLDER = 'photos/';
 
+// ============================================
+// الصور المصغّرة (thumbs/) — للظهور السريع
+// صور الكاميرا الأصلية 5–18 ميجابايت للصورة، وهي أكبر بكثير من حجم
+// بطاقة الجلري (150×210 بكسل)، لذلك لا تُستخدم الأصلية هنا إطلاقًا.
+// لكل صورة نسخة صغيرة (~50–130 كيلوبايت) في thumbs/<المجلد>/<الاسم>.jpg
+// وتُولَّد بالأمر:  bash scripts/make-thumbs.sh
+// إذا لم توجد المصغّرة يرجع الكود تلقائيًا إلى الصورة الأصلية.
+// THUMB_VERSION: ارفعه عند إعادة توليد الصور ليتجاهل المتصفح النسخ القديمة.
+// ============================================
+const THUMB_DIR = 'thumbs/';
+const THUMB_VERSION = '1';
+
+// رابط الصورة المصغّرة المقابلة لصورة أصلية
+// photos/DSC02717.jpg → thumbs/photos/DSC02717.jpg.jpg?v=1
+function thumbUrl(src){
+  const cut = src.lastIndexOf('/');
+  const folder = cut === -1 ? '' : src.slice(0, cut + 1);
+  const name = cut === -1 ? src : src.slice(cut + 1);
+  return `${THUMB_DIR}${folder}${name}.jpg?v=${THUMB_VERSION}`;
+}
+
+// روابط بدأ تحميلها مسبقًا حتى يكون التنقّل بين الأنواع فوريًا
+const preloadedThumbs = new Set();
+
+// هل تسمح حالة الشبكة بالتحميل المسبق؟ (نحترم بيانات المستخدم)
+function canPrefetch(){
+  const c = navigator.connection;
+  if(!c) return true;
+  if(c.saveData) return false;
+  return !/^(slow-2g|2g)$/.test(c.effectiveType || '');
+}
+
+// تحميل صور نوع معيّن في كاش المتصفح قبل أن يحتاجها المستخدم
+function preloadThumbs(categoryKey, limit){
+  if(!canPrefetch()) return;
+  const conf = CATEGORY_PHOTOS[categoryKey];
+  if(!conf || !conf.photos || !conf.photos.length) return;
+  const folder = galleryFolder(categoryKey);
+  conf.photos.slice(0, limit || GALLERY_COUNT).forEach(name=>{
+    const url = thumbUrl(folder + encodeURI(name));
+    if(preloadedThumbs.has(url)) return;
+    preloadedThumbs.add(url);
+    const im = new Image();
+    im.decoding = 'async';
+    im.src = url;
+  });
+}
+
+// تسخين بقية الأنواع في وقت الفراغ (خطوة كل ثانية) حتى يصبح تبديل النوع فوريًا
+function warmOtherCategories(){
+  const keys = Object.keys(CATEGORY_PHOTOS).filter(k => k !== activeCategory);
+  let i = 0;
+  const step = ()=>{
+    if(i >= keys.length) return;
+    preloadThumbs(keys[i], GALLERY_COUNT);
+    i++;
+    setTimeout(step, 1000);
+  };
+  setTimeout(step, 800);
+}
+
 // مجلد صور نوع معين
 function galleryFolder(categoryKey){
   const conf = CATEGORY_PHOTOS[categoryKey];
@@ -922,8 +994,12 @@ function buildGallerySlides(images){
     const num = String(i + 1).padStart(2, '0');
     const active = i === 0 ? 'active' : '';
     if(src){
+      const thumb = thumbUrl(src);
+      // أول بطاقتين تُحمَّلان فورًا، والباقي عند الحاجة — مع فك ترميز غير معيق
+      const priority = i < 2 ? 'eager' : 'lazy';
       html += `
-        <div class="card ${active}" style="background-image:url('${src}')" data-i="${i}" data-num="${num}" data-src="${src}">
+        <div class="card ${active}" data-i="${i}" data-num="${num}">
+          <img class="ph" src="${thumb}" alt="من أعمال شعيب استوديو" loading="${priority}" decoding="async" data-full="${src}">
           <div class="overlay">
             <h3>${num}</h3>
             <p>شعيب استوديو</p>
@@ -939,15 +1015,8 @@ function buildGallerySlides(images){
 
   gallerySlideshow.innerHTML = html;
 
-  // إذا كان ملف الصورة غير موجود بالمجلد، حوّل البطاقة إلى "قريبًا" بدل صورة مكسورة
-  gallerySlideshow.querySelectorAll('.card[data-src]').forEach(card=>{
-    const probe = new Image();
-    probe.onerror = ()=>{
-      card.removeAttribute('data-src');
-      card.style.backgroundImage = '';
-      card.innerHTML = placeholderInner(card.dataset.num || '');
-    };
-    probe.src = card.dataset.src;
+  gallerySlideshow.querySelectorAll('img.ph').forEach(img=>{
+    img.addEventListener('error', ()=> handleGalleryImageError(img));
   });
 
   gallerySlideshow.querySelectorAll('.card').forEach(card=>{
@@ -956,6 +1025,20 @@ function buildGallerySlides(images){
       restartGallerySlideshow();
     });
   });
+}
+
+// صورة مفقودة: نجرّب الصورة الأصلية أولًا (إن لم تُولَّد المصغّرة بعد)،
+// وإذا فشلت أيضًا تُستبدل البطاقة بـ"قريبًا" بدل صورة مكسورة
+function handleGalleryImageError(img){
+  const card = img.parentElement;
+  if(img.dataset.triedFull !== '1' && img.dataset.full){
+    img.dataset.triedFull = '1';
+    img.removeAttribute('loading');
+    img.src = img.dataset.full;
+    return;
+  }
+  if(card) card.innerHTML = placeholderInner(card.dataset.num || '');
+  else img.remove();
 }
 
 function goToSlide(i){
@@ -1026,6 +1109,9 @@ Object.keys(CATEGORIES).forEach(key=>{
     ${isEmpty ? `<span class="cat-empty-tag">قريبًا</span>` : ''}
   `;
   div.addEventListener('click', ()=> selectCategory(key));
+  // تحميل صور النوع مسبقًا لمجرد مرور المؤشر أو اللمس → يظهر الجلري فورًا عند الاختيار
+  div.addEventListener('mouseenter', ()=> preloadThumbs(key, GALLERY_COUNT));
+  div.addEventListener('touchstart', ()=> preloadThumbs(key, GALLERY_COUNT), {passive:true});
   categoriesList.appendChild(div);
 });
 
@@ -1321,6 +1407,16 @@ sendEmail.addEventListener('click', ()=>{
 
 // اختيار "تصوير الأعراس" تلقائيًا عند فتح الصفحة
 selectCategory('weddings');
+
+// بعد ظهور الصفحة: سخّن صور بقية الأنواع في الخلفية (فتصبح الفتحات التالية فورية)
+window.addEventListener('load', warmOtherCategories);
+
+// كاش المتصفح (Service Worker) لسرعة الزيارات المتكررة — يعمل على http/https فقط
+if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
 </script>
 
 </body>

@@ -31,7 +31,16 @@
 ShuaibStudio/
 ├── AGENTS.md          # This documentation file (keep updated)
 ├── index.html         # The entire site: markup, styles, and scripts
+├── sw.js              # Service worker: browser cache for photos + page (faster repeat visits)
 ├── hero.jpg           # Hero/studio image asset
+├── scripts/
+│   └── make-thumbs.sh # Generates the small thumbs/ copies of every photo (run after adding photos)
+├── thumbs/            # Optimized copies of every photo (~70 KB each) — loaded by the gallery
+│   ├── photos/        # mirrors photos/
+│   ├── prodacts_pic/  # mirrors prodacts_pic/
+│   ├── Event_pic/     # mirrors Event_pic/
+│   ├── Editing_pic/   # mirrors Editing_pic/
+│   └── party_pic/     # mirrors party_pic/
 ├── photos/            # Gallery images for تصوير الأعراس (weddings)
 │   ├── 8.jpeg
 │   ├── DSC02717.jpg
@@ -49,6 +58,8 @@ ShuaibStudio/
 └── party_pic/         # Gallery images for حفل تخرج (graduation)            — empty for now
 ```
 
+**The rule that keeps the site fast:** the originals in `photos/`, `prodacts_pic/`, … are the *full-size camera files* (5–18 MB each) and are **never** loaded by the page. `thumbUrl()` maps every original to its small twin in `thumbs/` (same relative path + the original name + `.jpg`, e.g. `prodacts_pic/7.png` → `thumbs/prodacts_pic/7.png.jpg`). Originals are only a fallback if a thumbnail is missing.
+
 **One photo folder per category** — each category's gallery only shows photos from its own folder:
 
 | Category key | Category (AR)        | Photo folder   |
@@ -59,7 +70,7 @@ ShuaibStudio/
 | `montage`    | مونتاج / تعديل       | `Editing_pic/` |
 | `graduation` | حفل تخرج             | `party_pic/`   |
 
-> Each photo folder contains a `.gitkeep` so the empty folders are still tracked by git (and stay available on GitHub Pages).
+> Each photo folder contains a `.gitkeep` so the empty folders are still tracked by git (and stay available on GitHub Pages). The matching folders under `thumbs/` have one too.
 > `.DS_Store` files are macOS junk and are intentionally excluded from git commits.
 
 ---
@@ -78,7 +89,8 @@ The file is organized in this order:
    - **Section ٣** — "اختر الباقة" (packages, `#packagesList`)
    - **Section ٤** — "خدمات إضافية" (extra services, `#servicesList`)
    - **Section ٥** — "ملخص الحجز" (booking summary card)
-3. `<script>` — all application logic (see below).
+3. `<script>` — all application logic (see below). At the very end it runs `selectCategory('weddings')`, then on `window load` it calls `warmOtherCategories()` and registers `sw.js`.
+4. Page CSS also defines `.gallery .card img.ph` (the thumbnail image inside each gallery card).
 
 ### Theming (CSS variables)
 
@@ -124,13 +136,18 @@ Each category has: `name`, `icon`, `info` (form field labels/placeholders), `pac
   | `montage`    | `Editing_pic/`  | `[]` (empty → placeholders)         |
   | `graduation` | `party_pic/`    | `[]` (empty → placeholders)         |
 
-  **To add photos for a category:** copy the files into that category's folder, then add the exact filenames to its `photos` array. (Filenames with spaces are fine — they are `encodeURI`-encoded when built into URLs.)
+  **To add photos for a category:** copy the files into that category's folder, **run `bash scripts/make-thumbs.sh`** (so the small `thumbs/` copies exist), then add the exact filenames to its `photos` array. (Filenames with spaces are fine — they are `encodeURI`-encoded when built into URLs.)
 - `GALLERY_COUNT = 6` — number of images shown at a time.
 - `FALLBACK_FOLDER = 'photos/'` — used only if a category has no folder configured.
 - `galleryFolder(categoryKey)` — returns the folder configured for a category.
 - `pickRandomPhotos(categoryKey, count)` — Fisher–Yates shuffle of **that category's** `photos`, returns up to `count` `folder/name` URLs. If the category's `photos` is empty it returns `count` × `null` → cards render as "قريبًا" placeholders (**never** photos from another category).
 - `GALLERIES` — maps each category key to its gallery `title`.
-- `buildGallerySlides(images)` — builds the cards (`null` → placeholder). It also probes every image with `new Image()`: if a listed file does not exist in the folder, the card is converted to the "قريبًا" placeholder instead of showing a broken image.
+- `buildGallerySlides(images)` — builds the cards (`null` → placeholder). **Speed:** each card holds a real `<img class="ph">` whose `src` is the small `thumbs/` copy (first two cards `loading="eager"`, the rest `loading="lazy"`), all with `decoding="async"`; the full-size URL is kept in `data-full` only as a fallback.
+- `handleGalleryImageError(img)` — the graceful-degradation chain: if the thumbnail 404s it retries **once** with the full-size original (`data-full`), and only if that fails too the card becomes a "قريبًا" placeholder. (Replaces the old `new Image()` probe, which downloaded every photo twice.)
+- `THUMB_DIR = 'thumbs/'`, `THUMB_VERSION = '1'`, `thumbUrl(src)` — thumbnail path + cache-busting version (`…/8.jpeg.jpg?v=1`). **Bump `THUMB_VERSION` whenever photos/thumbs change** so browsers don't reuse stale cached copies.
+- `preloadThumbs(categoryKey, limit)` — warms the browser cache with a category's thumbnails (skips already-requested URLs via `preloadedThumbs`). Called on `mouseenter`/`touchstart` of every category pill and by `warmOtherCategories()`.
+- `canPrefetch()` — respects the user's network: no prefetching when `navigator.connection.saveData` is true or the connection is `2g`/`slow-2g`.
+- `warmOtherCategories()` — runs on `window load`; prefetches the other categories' thumbnails one category per second so switching a category is instant.
 - `placeholderInner(num)` — shared markup for a "قريبًا" card body.
 - `renderGallery()` — sets the title, picks random photos **from the active category's own folder** each time the category changes, shows/hides `#galleryHint` (an Arabic hint naming the folder when it has no photos yet), builds the slides and starts the 2s auto-advancing slideshow. Clicking a card jumps to it and restarts the slideshow.
 
@@ -207,8 +224,27 @@ const STUDIO_EMAIL = "studio@example.com";
 - Prefer `replace_in_file` for edits and use the latest saved file content as the search reference (the editor may auto-format).
 - **Filenames with spaces** (e.g. the WhatsApp image) must be `encodeURI`-encoded when used as URLs — already handled in `pickRandomPhotos`.
 - The gallery never hardcodes images inline: it reads each category's own folder via `CATEGORY_PHOTOS` and samples randomly from it (`.gallery-hint` CSS class styles the `#galleryHint` folder hint).
+- **Never put a full-size photo in the page**: the gallery always goes through `thumbUrl()` (i.e. `thumbs/`); originals are only the last-resort fallback inside `handleGalleryImageError()`.
 - Do not commit `.DS_Store`.
 - There is no backend; all logic runs in the browser.
+
+### Speed & caching rules (how the gallery stays fast)
+
+The originals are 5–18 MB each; six of them meant ~40–60 MB per page load. Four mechanisms keep image loading fast:
+
+1. **Small thumbnails** — every photo has a ~70 KB JPEG twin in `thumbs/` (longest side 720 px, quality 72), generated by `scripts/make-thumbs.sh`. A gallery load now transfers **~400 KB instead of ~33 MB (≈85× less)**. Total `thumbs/` size: ~3.4 MB for all 49 photos, so prefetching whole categories is safe.
+2. **Native lazy loading + async decode** — cards are real `<img>` elements (`loading="eager"` for the first two, `lazy` for the rest, `decoding="async"`), styled by `.gallery .card img.ph` (`position:absolute; inset:0; object-fit:cover; border-radius:9px`).
+3. **Prefetch / warm cache** — hovering or touching a category pill preloads that category; after `load`, `warmOtherCategories()` prefetches the rest one category per second (skipped on `saveData`/2G connections). Switching categories then renders instantly from the browser cache.
+4. **Service worker (`sw.js`)** — images are *cache-first* (with a background refresh), `index.html` is *network-first* with a cache fallback, so repeat visits are near-instant and the page still opens offline. It is registered from `index.html` only on `http(s)`; on `file://` it is skipped silently.
+
+Keeping it fast when you change photos:
+
+```bash
+bash scripts/make-thumbs.sh          # generates only new/changed thumbnails
+FORCE=1 bash scripts/make-thumbs.sh  # regenerates everything
+```
+
+Then **raise `THUMB_VERSION` in `index.html`** (e.g. `'1'` → `'2'`) and commit `thumbs/` — GitHub Pages has no build step, so the thumbnails must be in the repo.
 
 ---
 
@@ -221,6 +257,10 @@ const STUDIO_EMAIL = "studio@example.com";
   python3 -m http.server 8000
   # then visit http://localhost:8000
   ```
+- **After adding or changing photos**, regenerate the small copies the gallery uses:
+  ```bash
+  bash scripts/make-thumbs.sh
+  ```
 
 ---
 
@@ -230,12 +270,14 @@ const STUDIO_EMAIL = "studio@example.com";
 - Branch: `main`
 - Convention: make a focused commit per change with a clear message, then optionally push.
 - **Exclude `.DS_Store`** when staging (use `git reset -- .DS_Store photos/.DS_Store` if it gets staged).
+- **`thumbs/` must be committed** together with any photo change (GitHub Pages serves the repo as-is, there is no build step).
 
 Recent history (most recent first) — run `git log --oneline` for the current hashes:
 
 | Commit     | Message |
 |------------|---------|
-| *(latest)* | Show event and product photos in gallery |
+| *(latest)* | Speed up gallery with thumbnails, prefetch and service worker caching |
+| `c8eaab9`  | Show event and product photos in gallery |
 | `06ff74b`  | Add event and product gallery photos |
 | `309a72a`  | Separate gallery photos per category folder |
 | `1141ba2`  | Add AGENTS.md project documentation |
@@ -250,5 +292,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 - **2026-09-24** — **Separate photo folder per category**: added `CATEGORY_PHOTOS` (`weddings → photos/`, `realestate → prodacts_pic/`, `event → Event_pic/`, `montage → Editing_pic/`, `graduation → party_pic/`); `pickRandomPhotos(categoryKey, count)` now uses only the active category's folder; empty folders render "قريبًا" placeholders plus a `#galleryHint` line naming the folder; missing files fall back to placeholders via an `Image()` probe; `.gitkeep` added to the photo folders.
 - **2026-09-29** — Added 39 new photos: 13 in `Event_pic/` (event) and 26 in `prodacts_pic/` (realestate), plus `photos/hero.jpg`; `photos/0.jpeg` removed (commit `06ff74b`).
 - **2026-09-29** — **Event & product galleries wired up**: filled `CATEGORY_PHOTOS.realestate` (26 filenames) and `CATEGORY_PHOTOS.event` (13 filenames) with the exact on-disk names, so those galleries now render real photos instead of "قريبًا" placeholders; dropped the dead `'0.jpeg'` entry from `weddings` (the file no longer exists, so that card could only ever be an empty placeholder); `photos/hero.jpg` deliberately left unlisted because it is a byte-identical copy of the root `hero.jpg` asset (verified by MD5).
+- **2026-09-29** — **Gallery is ~85× lighter and appears immediately**: added `scripts/make-thumbs.sh` + the generated `thumbs/` tree (49 JPEGs, 720 px, quality 72, ~70 KB each — the whole folders dropped from 180 MB to 3.4 MB); the gallery now renders real `<img class="ph">` cards from `thumbUrl()` with `loading="lazy"`/`decoding="async"` instead of full-size `background-image` URLs, so a gallery load goes from ~33 MB to ~400 KB; the old `new Image()` existence probe (which downloaded each photo twice) was replaced by `handleGalleryImageError()`, which falls back to the original and then to "قريبًا"; added `preloadThumbs()`/`warmOtherCategories()` prefetching (pill hover + idle warm-up, skipped on save-data/2G) and `sw.js`, a service worker that caches images cache-first and the page network-first (registered on `http(s)` only).
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
