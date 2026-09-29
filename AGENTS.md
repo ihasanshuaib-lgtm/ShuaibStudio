@@ -286,7 +286,8 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 | Commit     | Message |
 |------------|---------|
-| *(latest)* | Speed up gallery with thumbnails, prefetch and service worker caching |
+| `68e7207`  | Cache thumbnails for a year on the host (vercel.json) *(latest)* |
+| `53953ba`  | Speed up gallery with thumbnails, prefetch and service worker caching |
 | `c8eaab9`  | Show event and product photos in gallery |
 | `06ff74b`  | Add event and product gallery photos |
 | `309a72a`  | Separate gallery photos per category folder |
