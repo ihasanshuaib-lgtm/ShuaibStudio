@@ -33,7 +33,6 @@ ShuaibStudio/
 ├── index.html         # The entire site: markup, styles, and scripts
 ├── hero.jpg           # Hero/studio image asset
 ├── photos/            # Gallery images for تصوير الأعراس (weddings)
-│   ├── 0.jpeg
 │   ├── 8.jpeg
 │   ├── DSC02717.jpg
 │   ├── DSC02746.jpg
@@ -42,9 +41,10 @@ ShuaibStudio/
 │   ├── gallery2.jpg
 │   ├── gallery3.jpg
 │   ├── gallery5.jpg
+│   ├── hero.jpg
 │   └── WhatsApp Image 2026-09-05 at 15.28.24.jpeg
-├── prodacts_pic/      # Gallery images for تصوير منتجات وأطعمة (realestate)  — empty for now
-├── Event_pic/         # Gallery images for تصوير إيفنت (event)              — empty for now
+├── prodacts_pic/      # Gallery images for تصوير منتجات وأطعمة (realestate)  — 26 photos
+├── Event_pic/         # Gallery images for تصوير إيفنت (event)              — 13 photos
 ├── Editing_pic/       # Gallery images for مونتاج / تعديل (montage)         — empty for now
 └── party_pic/         # Gallery images for حفل تخرج (graduation)            — empty for now
 ```
@@ -118,9 +118,9 @@ Each category has: `name`, `icon`, `info` (form field labels/placeholders), `pac
 
   | Key          | `folder`        | `photos[]`                          |
   |--------------|-----------------|-------------------------------------|
-  | `weddings`   | `photos/`       | 10 wedding photos                   |
-  | `realestate` | `prodacts_pic/` | `[]` (empty → placeholders)         |
-  | `event`      | `Event_pic/`    | `[]` (empty → placeholders)         |
+  | `weddings`   | `photos/`       | 9 wedding photos                    |
+  | `realestate` | `prodacts_pic/` | 26 product & food photos            |
+  | `event`      | `Event_pic/`    | 13 event photos                     |
   | `montage`    | `Editing_pic/`  | `[]` (empty → placeholders)         |
   | `graduation` | `party_pic/`    | `[]` (empty → placeholders)         |
 
@@ -235,7 +235,9 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 | Commit     | Message |
 |------------|---------|
-| *(latest)* | Separate gallery photos per category folder |
+| *(latest)* | Show event and product photos in gallery |
+| `06ff74b`  | Add event and product gallery photos |
+| `309a72a`  | Separate gallery photos per category folder |
 | `1141ba2`  | Add AGENTS.md project documentation |
 | `da47a48`  | Select weddings category by default on page load |
 
@@ -246,5 +248,7 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 - **2026-09-24** — Created AGENTS.md documenting the full project.
 - **2026-09-24** — Gallery now shows random photos from `photos/`; images moved into `photos/`; weddings selected by default on load.
 - **2026-09-24** — **Separate photo folder per category**: added `CATEGORY_PHOTOS` (`weddings → photos/`, `realestate → prodacts_pic/`, `event → Event_pic/`, `montage → Editing_pic/`, `graduation → party_pic/`); `pickRandomPhotos(categoryKey, count)` now uses only the active category's folder; empty folders render "قريبًا" placeholders plus a `#galleryHint` line naming the folder; missing files fall back to placeholders via an `Image()` probe; `.gitkeep` added to the photo folders.
+- **2026-09-29** — Added 39 new photos: 13 in `Event_pic/` (event) and 26 in `prodacts_pic/` (realestate), plus `photos/hero.jpg`; `photos/0.jpeg` removed (commit `06ff74b`).
+- **2026-09-29** — **Event & product galleries wired up**: filled `CATEGORY_PHOTOS.realestate` (26 filenames) and `CATEGORY_PHOTOS.event` (13 filenames) with the exact on-disk names, so those galleries now render real photos instead of "قريبًا" placeholders; dropped the dead `'0.jpeg'` entry from `weddings` (the file no longer exists, so that card could only ever be an empty placeholder); `photos/hero.jpg` deliberately left unlisted because it is a byte-identical copy of the root `hero.jpg` asset (verified by MD5).
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
