@@ -289,7 +289,10 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 | Commit     | Message |
 |------------|---------|
-| `2a574f5`  | Show montage photos and sync gallery lists with renamed files *(latest — deployed)* |
+| `2f415c4`  | Rename event packages and update live streaming price *(latest — deployed)* |
+| `f4bc093`  | show pictures (empty commit) |
+| `af37cdc`  | Update AGENTS.md: gallery lists, thumbnails and commit history |
+| `2a574f5`  | Show montage photos and sync gallery lists with renamed files |
 | `dc83230`  | chagne names (realestate package names) |
 | `c82c54e`  | restroe new prodacts |
 | `85c9b4a`  | restore |
@@ -318,5 +321,7 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 - **2026-09-29** — **Host caching for thumbnails**: discovered the live site is hosted on **Vercel** (`https://shuaib-studio.vercel.app`, auto-deploy from `main`; GitHub Pages is not enabled) and that Vercel sends `Cache-Control: public, max-age=0, must-revalidate` for every file, forcing a revalidation round-trip per image. Added `vercel.json` overriding `/thumbs/*` to `public, max-age=31536000, immutable` (safe because the URLs carry `?v=THUMB_VERSION`). Documented deployment in section 10.
 
 - **2026-10-03** — **صور المونتاج/التعديل والمنتجات تظهر الآن — إصلاح قوائم الصور بعد إعادة التسمية**: commit `a677689` added 6 photos to `Editing_pic/` but `CATEGORY_PHOTOS.montage.photos` stayed `[]`, so the مونتاج / تعديل gallery rendered nothing but "قريبًا" cards; separately, commit `b4fe89f` had renamed the wedding photos (`DSC0271x.jpg` → `DSC0271x-2.jpg`), all 13 event photos (`DSC…jpg` → `DSC…-2.jpg`) and deleted `photos/WhatsApp Image 2026-09-05 at 15.28.24.jpeg`, while `index.html` still listed the **old** names — those cards kept showing only because the stale `thumbs/<folder>/<old name>.jpg` copies were still being served (their `data-full` originals 404'd), so the newly added/renamed photos never appeared on the site. Fixed by rewriting `CATEGORY_PHOTOS.weddings` (9 exact on-disk names, including the new `Artboard 1٠.jpg`; `photos/hero.jpg` still excluded as a byte-identical duplicate of the root `hero.jpg`), `CATEGORY_PHOTOS.event` (13 `-2` names) and `CATEGORY_PHOTOS.montage` (6 names: `1–5.jpg`, `6.png`); deleted the 17 orphan thumbnails of the vanished names; ran `bash scripts/make-thumbs.sh` (23 new thumbnails; `thumbs/` is now 55 files ≈ 3.8 MB); bumped `THUMB_VERSION` `'1'` → `'2'`. Verified: all 54 listed names exist in both the photo folder **and** `thumbs/`, all 54 gallery thumbnail URLs return HTTP 200 against a local server, and `node --check` on the inline script passes. (`realestate` / المنتجات was already in sync — 26/26 — and its thumbnails serve 200 on the live site.)
+
+- **2026-10-03** — **باقات الإيفنت بأسماء عامة + رفع سعر البث المباشر**: أُعيدت تسمية باقات `event` إلى «الباقة الأولى / الثانية / الثالثة / الرابعة» (بأسعار 50 / 80 / 110 / 150 كما هي، وبقاء شارة «الأكثر طلباً» على الثالثة) — نفس نمط الأسماء العامة المتبع في `realestate` (commit `dc83230`); ورُفع سعر الخدمة `es3` «بث مباشر للحفل (Live Streaming)» من 30 إلى **40 د.ب**. تغييرات بيانات فقط داخل `CATEGORY_PHOTOS`/`CATEGORIES` — لا مساس بالصور ولا بـ `THUMB_VERSION` (بقي `'2'`). تم التحقق: `node --check` على السكربت المضمّن يمر بنجاح، وقوائم صور الفئات الخمس ما زالت مطابقة للقرص تمامًا (54/54 داخل المجلدات و`thumbs/`).
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
