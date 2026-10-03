@@ -285,11 +285,12 @@ Then **raise `THUMB_VERSION` in `index.html`** (currently `'4'`, e.g. → `'5'`)
 - **`thumbs/` must be committed** together with any photo change (the host serves the repo files as-is, there is no build step).
 - Pushing `main` deploys the live site (Vercel → https://shuaib-studio.vercel.app, see section 10).
 
-Recent history (most recent first) — run `git log --oneline` for the current hashes:
+Recent history (most recent first) — run `git log --oneline` for the current hashes. This list deliberately has **no `HEAD` marker** (it used to label a row as HEAD and went stale with every commit); the newest commits are simply at the top.
 
 | Commit     | Message |
 |------------|---------|
-| *(HEAD)*   | Show graduation photos: wire party_pic gallery and add thumbnails (`af3e18c`) *(deployed)* |
+| `7acdd8b`  | Update AGENTS.md: sync commit history table with HEAD |
+| `af3e18c`  | Show graduation photos: wire party_pic gallery and add thumbnails *(deployed)* |
 | `bf676b4`  | add pic 2 (5 photos into `party_pic/` — `CATEGORY_PHOTOS.graduation` not updated at that point) |
 | `7739eb7`  | add (`.DS_Store` only — against the convention) |
 | `2a73424`  | Update AGENTS.md: event gallery fix, thumbs counts and commit history |
@@ -336,6 +337,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-10-03** — **صور حفل التخرج تظهر الآن**: commit `bf676b4` («add pic 2») أضاف 5 صور إلى `party_pic/` (`١.jpg` … `٥.jpg` بأرقام عربية) ونُشرت على الموقع، لكن `CATEGORY_PHOTOS.graduation.photos` بقيت `[]` و`thumbs/party_pic/` بقيت فارغة — فظهر قسم «حفل تخرج» ببطاقات «قريبًا» مع التنبيه «لا توجد صور بعد في مجلد party_pic/». الإصلاح (commit `af3e18c`): القائمة الآن الأسماء الخمسة بالضبط (الأرقام العربية تُرمَّز عبر `encodeURI` تمامًا كحال المسافات)، وُلّدت 5 مصغّرات (`thumbs/` = 59 ملفًا ≈ 4.2 ميجابايت، منها 452 كيلوبايت لـ `party_pic`)، ورُفع `THUMB_VERSION` `'3'` → `'4'`. تم التحقق: 58/58 اسمًا موجود داخل مجلده **و** `thumbs/`، و58/58 رابط مصغّر يرجّع HTTP 200 على خادم محلي، و`node --check` على السكربت المضمّن يمر.
 
-- **2026-10-03** — **تحديث جدول الـ commits في هذا الملف**: صُحِّح صف `*(HEAD)*` ليطابق الـ commit الفعلي `af3e18c` («Show graduation photos: wire party_pic gallery and add thumbnails») بعد أن كان مُسمّى برسالة commit تحديث الوثيقة نفسه، وأُضيف الـ hash إلى سطر إصلاح صور حفل التخرج. تغيير في `AGENTS.md` فقط — لا مساس بـ `index.html` ولا بالصور ولا بـ `THUMB_VERSION` (بقي `'4'`).
+- **2026-10-03** — **إصلاح جدول الـ commits في هذا الملف (وسم HEAD المتقادم)**: كان الجدول يوسم صفًا بـ`*(HEAD)*` فيتقادم تلقائيًا مع كل commit يعدّل الجدول نفسه (وكان يشير إلى رسالة commit خاطئة). أُزيل وسم `*(HEAD)*` نهائيًا وصار الجدول قائمة hashes فقط (الأحدث في الأعلى) فلا يتقادم بعد الآن؛ وأُضيف hash إصلاح صور حفل التخرج `af3e18c`. تغيير في `AGENTS.md` فقط — لا مساس بـ `index.html` ولا بالصور ولا بـ `THUMB_VERSION` (بقي `'4'`).
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
