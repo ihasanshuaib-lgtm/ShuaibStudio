@@ -289,7 +289,7 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 | Commit     | Message |
 |------------|---------|
-| `2f415c4`  | Rename event packages and update live streaming price *(latest — deployed)* |
+| *(HEAD)*   | Rename event packages and update live streaming price *(latest — deployed)* |
 | `f4bc093`  | show pictures (empty commit) |
 | `af37cdc`  | Update AGENTS.md: gallery lists, thumbnails and commit history |
 | `2a574f5`  | Show montage photos and sync gallery lists with renamed files |
