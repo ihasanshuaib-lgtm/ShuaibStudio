@@ -289,13 +289,21 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 | Commit     | Message |
 |------------|---------|
-| `68e7207`  | Cache thumbnails for a year on the host (vercel.json) *(latest)* |
-| `53953ba`  | Speed up gallery with thumbnails, prefetch and service worker caching |
-| `c8eaab9`  | Show event and product photos in gallery |
-| `06ff74b`  | Add event and product gallery photos |
-| `309a72a`  | Separate gallery photos per category folder |
-| `1141ba2`  | Add AGENTS.md project documentation |
-| `da47a48`  | Select weddings category by default on page load |
+| `2a574f5`  | Show montage photos and sync gallery lists with renamed files *(latest — deployed)* |
+| `dc83230`  | chagne names (realestate package names) |
+| `c82c54e`  | restroe new prodacts |
+| `85c9b4a`  | restore |
+| `a677689`  | add pic in edits (6 photos into `Editing_pic/`, not yet wired up at that point) |
+| `d59899e`  | add price in montiage |
+| `c1fcedf`  | add servies |
+| `3d77a49`  | chagne names |
+| `ecc2bde`  | new price in prodacts |
+| `db54455`  | update price |
+| `2d22609`  | change price |
+| `ca5755b`  | add pic 2 |
+| `711f918`  | add |
+| `b4fe89f`  | add pic (renamed the wedding/event originals to `…-2.jpg`, deleted the WhatsApp image) |
+| `68e7207`  | Cache thumbnails for a year on the host (vercel.json) |
 
 ---
 
