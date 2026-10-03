@@ -289,7 +289,7 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 | Commit     | Message |
 |------------|---------|
-| *(HEAD)*   | Update AGENTS.md: graduation photos wired up |
+| *(HEAD)*   | Show graduation photos: wire party_pic gallery and add thumbnails (`af3e18c`) *(deployed)* |
 | `bf676b4`  | add pic 2 (5 photos into `party_pic/` — `CATEGORY_PHOTOS.graduation` not updated at that point) |
 | `7739eb7`  | add (`.DS_Store` only — against the convention) |
 | `2a73424`  | Update AGENTS.md: event gallery fix, thumbs counts and commit history |
@@ -334,6 +334,8 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-10-03** — **صور الإيفنت الجديدة تظهر الآن — نفس فخّ إعادة التسمية يتكرّر** (commit `d17ef21`): commit `29c7935` («add pic») أضاف 4 صور إلى `Event_pic/` (`8H7A1539.jpg`, `8H7A1551.jpg`, `8H7A1571.jpg`, `8H7A1652.jpg`) وحذف 5 صور (`DSC00324-2.jpg`, `DSC00347-2.jpg`, `DSC01674-2.jpg`, `DSC01735-2.jpg`, `PIC04477-2.jpg`)، لكن `CATEGORY_PHOTOS.event.photos` بقي على الأسماء القديمة (13 اسمًا، منها 5 غير موجودة) ولم تُشغَّل `scripts/make-thumbs.sh` — فبقيت المصغّرات اليتيمة للصور المحذوفة تُعرض (فتظهر صور قديمة مكرّرة)، ولم تظهر الصور الأربع الجديدة إطلاقًا لأنها غير مُدرجة في القائمة. الإصلاح (commit `d17ef21`): القائمة الآن 12 اسمًا مطابقًا للقرص تمامًا، حُذفت المصغّرات اليتيمة الخمس، وُلّدت 4 مصغّرات جديدة (`thumbs/` = 54 ملفًا ≈ 3.8 ميجابايت)، ورُفع `THUMB_VERSION` `'2'` → `'3'`. تم التحقق: 53/53 اسمًا موجود داخل مجلد الصور **و** `thumbs/`، و53/53 رابط مصغّر يرجّع HTTP 200 على خادم محلي، و`node --check` على السكربت المضمّن يمر.
 
-- **2026-10-03** — **صور حفل التخرج تظهر الآن**: commit `bf676b4` («add pic 2») أضاف 5 صور إلى `party_pic/` (`١.jpg` … `٥.jpg` بأرقام عربية) ونُشرت على الموقع، لكن `CATEGORY_PHOTOS.graduation.photos` بقيت `[]` و`thumbs/party_pic/` بقيت فارغة — فظهر قسم «حفل تخرج» ببطاقات «قريبًا» مع التنبيه «لا توجد صور بعد في مجلد party_pic/». الإصلاح: القائمة الآن الأسماء الخمسة بالضبط (الأرقام العربية تُرمَّز عبر `encodeURI` تمامًا كحال المسافات)، وُلّدت 5 مصغّرات (`thumbs/` = 59 ملفًا ≈ 4.2 ميجابايت، منها 452 كيلوبايت لـ `party_pic`)، ورُفع `THUMB_VERSION` `'3'` → `'4'`. تم التحقق: 58/58 اسمًا موجود داخل مجلده **و** `thumbs/`، و58/58 رابط مصغّر يرجّع HTTP 200 على خادم محلي، و`node --check` على السكربت المضمّن يمر.
+- **2026-10-03** — **صور حفل التخرج تظهر الآن**: commit `bf676b4` («add pic 2») أضاف 5 صور إلى `party_pic/` (`١.jpg` … `٥.jpg` بأرقام عربية) ونُشرت على الموقع، لكن `CATEGORY_PHOTOS.graduation.photos` بقيت `[]` و`thumbs/party_pic/` بقيت فارغة — فظهر قسم «حفل تخرج» ببطاقات «قريبًا» مع التنبيه «لا توجد صور بعد في مجلد party_pic/». الإصلاح (commit `af3e18c`): القائمة الآن الأسماء الخمسة بالضبط (الأرقام العربية تُرمَّز عبر `encodeURI` تمامًا كحال المسافات)، وُلّدت 5 مصغّرات (`thumbs/` = 59 ملفًا ≈ 4.2 ميجابايت، منها 452 كيلوبايت لـ `party_pic`)، ورُفع `THUMB_VERSION` `'3'` → `'4'`. تم التحقق: 58/58 اسمًا موجود داخل مجلده **و** `thumbs/`، و58/58 رابط مصغّر يرجّع HTTP 200 على خادم محلي، و`node --check` على السكربت المضمّن يمر.
+
+- **2026-10-03** — **تحديث جدول الـ commits في هذا الملف**: صُحِّح صف `*(HEAD)*` ليطابق الـ commit الفعلي `af3e18c` («Show graduation photos: wire party_pic gallery and add thumbnails») بعد أن كان مُسمّى برسالة commit تحديث الوثيقة نفسه، وأُضيف الـ hash إلى سطر إصلاح صور حفل التخرج. تغيير في `AGENTS.md` فقط — لا مساس بـ `index.html` ولا بالصور ولا بـ `THUMB_VERSION` (بقي `'4'`).
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
