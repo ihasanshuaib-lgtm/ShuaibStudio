@@ -354,14 +354,16 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 - The protected page is `photographers-pay-v6.html` (حساب رواتب المصورين, copied from `~/Downloads`). Its plaintext lives only in `private/payroll.src.html` (**git-ignored, never deploy it**).
 - **There is no backend**, so protection is client-side encryption: `scripts/build-login.mjs` encrypts the page with AES-256-GCM; the key comes from PBKDF2-SHA256 (310 000 iterations) over `username.trim().toLowerCase() + "\0" + password`. The result is `window.PAYROLL_ENC` in `payroll.enc.js`. `login.html` derives the key from what the user types and decrypts; a wrong username or password fails the GCM check, so the page never appears. On success `document.write` replaces the login page with the payroll page, plus a floating "خروج" button. The derived key is kept in `sessionStorage` (`shuaib-admin-key`) so a refresh in the same tab stays logged in; closing the tab or pressing "خروج" logs out. The username is case-insensitive; the password is case-sensitive.
 - Web Crypto needs a secure context: works on `https://shuaib-studio.vercel.app` and `http://localhost`, not on a plain `file://`.
-- **Credentials are deliberately NOT written in this file or anywhere in the repo** (this file is pushed to GitHub); only the ciphertext is stored. The initial username is `admin` and the password was given to the owner in chat when the feature was created. Change them by re-running:
+- **Credentials are deliberately NOT written in this file or anywhere in the repo** (this file is pushed to GitHub); only the ciphertext is stored. The username is now `hasan` (changed 2026-10-19; the password is known to the owner only). Change them by re-running:
   ```bash
   node scripts/build-login.mjs <username> <password>        # reads private/payroll.src.html
   node scripts/build-login.mjs <user> <pass> path/to/new.html  # to replace the protected page
   ```
-  then commit `payroll.enc.js` and push. Use a password of 8+ characters (the script enforces it).
+  then commit `payroll.enc.js` and push. Use a password of 8+ characters (the script only warns if it is shorter).
 - Limits: the encrypted file is public, so an attacker could try offline guesses — a long random password is what makes this safe. Anyone with the password can read the page; this is not per-user access control.
 - The payroll page stores data in the browser's `localStorage` on the site origin (`shuaib-photog-v2`), per device. Its optional cloud save (`claude.use('db')`) only works inside Claude and silently falls back to local storage elsewhere.
 - Editing the payroll page = edit `private/payroll.src.html`, then re-run the build script and commit `payroll.enc.js`.
+
+- **2026-10-19** — تغيير بيانات الدخول إلى يوزر جديد وباسورد جديد بإعادة تشغيل `scripts/build-login.mjs` (أُعيد توليد `payroll.enc.js`)؛ الباسورد 6 أحرف فيُظهر السكربت تحذيرًا بدل الرفض. لم تُكتب البيانات في الريبو.
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.

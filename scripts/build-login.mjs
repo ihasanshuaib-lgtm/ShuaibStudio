@@ -24,8 +24,7 @@ if (!user || !pass) {
   process.exit(1);
 }
 if (pass.length < 8) {
-  console.error('Password must be at least 8 characters.');
-  process.exit(1);
+  console.warn('WARNING: password is shorter than 8 characters — payroll.enc.js is public, so a short password can be guessed offline.');
 }
 
 const ITER = 310000;
