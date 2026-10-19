@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>تسجيل الدخول | شعيب استوديو</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#faf6ee; --bg-soft:#f1e9d8; --card:#ffffff;
+    --gold:#b8893f; --gold-light:#8a6526; --gold-dim:#cdab6f;
+    --text:#2b2418; --text-dim:#7a6f5c; --line:#e4d8bd; --red:#b3342b;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0e0c0a; --bg-soft:#171310; --card:#1b1714;
+      --gold:#c9a463; --gold-light:#e3c98a; --gold-dim:#8a703f;
+      --text:#efe6d8; --text-dim:#a89b87; --line:#332b22; --red:#ff8a7a;
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(ellipse 900px 500px at 50% -10%, rgba(201,164,99,.14), transparent 60%), var(--bg);
+    color:var(--text);
+    font-family:'Tajawal',sans-serif;
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;
+  }
+  .box{
+    width:100%;max-width:380px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:32px 26px 26px;
+    box-shadow:0 18px 40px -16px rgba(0,0,0,.35);
+    text-align:center;
+  }
+  .logo{
+    font-family:'Aref Ruqaa',serif;font-weight:700;font-size:34px;
+    color:var(--gold-light);letter-spacing:1px;
+    text-shadow:0 0 24px rgba(201,164,99,.25);
+  }
+  .sub{color:var(--text-dim);font-size:14px;margin:4px 0 22px;}
+  label{display:block;text-align:right;font-size:13px;color:var(--text-dim);margin:0 2px 6px;}
+  input{
+    width:100%;padding:12px 14px;margin-bottom:14px;
+    background:var(--bg-soft);color:var(--text);
+    border:1px solid var(--line);border-radius:10px;
+    font:inherit;font-size:16px;outline:none;
+    transition:border-color .2s;
+  }
+  input:focus{border-color:var(--gold);}
+  button{
+    width:100%;padding:13px;margin-top:4px;
+    background:var(--gold);color:#fff;
+    border:0;border-radius:10px;
+    font:inherit;font-weight:700;font-size:16px;cursor:pointer;
+    transition:opacity .2s;
+  }
+  button:hover{opacity:.9;}
+  button:disabled{opacity:.55;cursor:wait;}
+  .msg{min-height:22px;margin-top:12px;font-size:14px;color:var(--red);}
+  .back{display:inline-block;margin-top:10px;color:var(--text-dim);font-size:13px;text-decoration:none;}
+  .back:hover{color:var(--gold);}
+</style>
+</head>
+<body>
+<form class="box" id="loginForm" autocomplete="on">
+  <div class="logo">شعيب استوديو</div>
+  <div class="sub">تسجيل الدخول للوحة الإدارة</div>
+
+  <label for="user">اسم المستخدم</label>
+  <input id="user" name="username" type="text" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" required autofocus>
+
+  <label for="pass">كلمة المرور</label>
+  <input id="pass" name="password" type="password" autocomplete="current-password" required>
+
+  <button type="submit" id="go">دخول</button>
+  <div class="msg" id="msg" role="alert"></div>
+  <a class="back" href="index.html">← العودة إلى صفحة الحجز</a>
+</form>
+
+<script src="payroll.enc.js"></script>
+<script>
+  // يجب أن يطابق scripts/build-login.mjs (PBKDF2-SHA256 + AES-256-GCM)
+  const SESSION_KEY = 'shuaib-admin-key';
+  const form = document.getElementById('loginForm');
+  const msg = document.getElementById('msg');
+  const goBtn = document.getElementById('go');
+
+  const fromB64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const toB64 = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
+
+  async function deriveKey(user, pass, p){
+    const material = await crypto.subtle.importKey(
+      'raw',
+      new TextEncoder().encode(user.trim().toLowerCase() + '\u0000' + pass),
+      'PBKDF2', false, ['deriveKey']
+    );
+    return crypto.subtle.deriveKey(
+      {name:'PBKDF2', salt:fromB64(p.salt), iterations:p.iter, hash:'SHA-256'},
+      material, {name:'AES-GCM', length:256}, true, ['decrypt']
+    );
+  }
+
+  async function decryptWith(key, p){
+    const buf = await crypto.subtle.decrypt({name:'AES-GCM', iv:fromB64(p.iv)}, key, fromB64(p.data));
+    return new TextDecoder().decode(buf);
+  }
+
+  // يستبدل صفحة الدخول بالصفحة المفكوكة + زر خروج صغير
+  function showPage(html){
+    const logout =
+      '<button id="__logout" style="position:fixed;bottom:12px;left:12px;z-index:99999;padding:7px 14px;' +
+      'border:1px solid #cbcdd2;border-radius:20px;background:#f2f2f3;color:#1d1e21;font:500 13px sans-serif;' +
+      'cursor:pointer;opacity:.85">خروج</button>' +
+      '<script>document.getElementById("__logout").onclick=function(){' +
+      'sessionStorage.removeItem("' + SESSION_KEY + '");location.reload();};<\/script>';
+    const i = html.lastIndexOf('</body>');
+    html = i === -1 ? html + logout : html.slice(0, i) + logout + html.slice(i);
+    document.open();
+    document.write(html);
+    document.close();
+  }
+
+  async function tryRestore(){
+    const p = window.PAYROLL_ENC;
+    const saved = sessionStorage.getItem(SESSION_KEY);
+    if(!p || !saved || !crypto.subtle) return;
+    try{
+      const key = await crypto.subtle.importKey('raw', fromB64(saved), 'AES-GCM', false, ['decrypt']);
+      showPage(await decryptWith(key, p));
+    }catch(e){
+      sessionStorage.removeItem(SESSION_KEY);
+    }
+  }
+
+  form.addEventListener('submit', async e=>{
+    e.preventDefault();
+    msg.textContent = '';
+    const p = window.PAYROLL_ENC;
+    if(!p){ msg.textContent = 'تعذّر تحميل بيانات الدخول.'; return; }
+    if(!window.crypto || !crypto.subtle){ msg.textContent = 'افتح الموقع عبر رابط آمن (https).'; return; }
+    goBtn.disabled = true; goBtn.textContent = 'جارٍ التحقق…';
+    try{
+      const key = await deriveKey(form.username.value, form.password.value, p);
+      const html = await decryptWith(key, p);
+      sessionStorage.setItem(SESSION_KEY, toB64(await crypto.subtle.exportKey('raw', key)));
+      showPage(html);
+    }catch(err){
+      msg.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة.';
+      form.password.value = '';
+      goBtn.disabled = false; goBtn.textContent = 'دخول';
+    }
+  });
+
+  tryRestore();
+</script>
+</body>
+</html>

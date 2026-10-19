@@ -1,0 +1,425 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>حساب رواتب المصورين</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#e3e4e7;--card:#f2f2f3;--ink:#1d1e21;--mut:#686a71;--line:#cbcdd2;--acc:#8a6a1c;--accbg:#dcdde1;--pos:#2b7a56;--neg:#b3342b;--in:#e9eaec;--hero:#2c2e33;--gold:#c9a24a;--ptx:#1d1e21;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1a1b1e;--card:#25262a;--ink:#ececee;--mut:#9a9ca3;--line:#393b41;--acc:#d9b968;--accbg:#303136;--pos:#5fcf9d;--neg:#ff8a7a;--in:#2d2e33;--hero:#33353b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1a1b1e;--card:#25262a;--ink:#ececee;--mut:#9a9ca3;--line:#393b41;--acc:#d9b968;--accbg:#303136;--pos:#5fcf9d;--neg:#ff8a7a;--in:#2d2e33;--hero:#33353b;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans Arabic",system-ui,"Segoe UI",Tahoma,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:16px 14px 40px}
+h1{font-size:22px;margin:0;flex:1}h2{font-size:16px;margin:0 0 10px}
+.top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+select,input{font:inherit;color:var(--ink);background:var(--in);border:1px solid var(--line);border-radius:8px;padding:6px 10px;min-width:0}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+input[type=number]{width:76px;text-align:center;direction:ltr;padding:6px 4px}
+input[type=date]{width:142px;padding:6px 4px}
+input.txt{width:100%;min-width:110px}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:6px 12px}
+button.pri{background:var(--gold);border-color:var(--gold);color:var(--ptx);font-weight:700}
+button.x{padding:2px 9px;color:var(--neg);font-size:18px;line-height:1.2}
+button.lnk{border:0;background:none;color:var(--acc);padding:0;text-decoration:underline}
+#st{font-size:13px;color:var(--mut)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px}
+.tab{white-space:nowrap;padding:6px 14px;border-radius:20px}
+.tab.has{font-weight:700}.tab.on{background:var(--gold);border-color:var(--gold);color:var(--ptx)}
+.hero{background:var(--hero);color:#fff;border-radius:16px;padding:20px;margin-bottom:14px}
+.hero p{margin:0 0 4px;opacity:.85}
+.hero .big{font-size:44px;font-weight:700;line-height:1.1}
+.hero .big small{font-size:16px;font-weight:400;opacity:.8;margin-inline-start:6px}
+.bar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:rgba(255,255,255,.2);margin:16px 0 6px}
+.bar i{display:block;height:100%}.b1{background:var(--gold)}.b2{background:#fff}
+.legend{display:flex;justify-content:space-between;font-size:13px;opacity:.9}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:16px}
+.stats div{background:rgba(255,255,255,.12);border-radius:10px;padding:8px 12px}
+.stats span{display:block;font-size:12.5px;opacity:.85}.stats b{font-size:18px;display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+.qa,.set{display:flex;flex-wrap:wrap;gap:12px}
+label{display:flex;flex-direction:column;font-size:13px;color:var(--mut);gap:3px}
+label.ck{flex-direction:row;align-items:center;gap:6px;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:20px;padding:2px 2px 2px 2px}
+.chip button{border:0;border-radius:18px;background:none}
+.chip.on{border-color:var(--acc);background:var(--accbg)}.chip.on button{font-weight:700;color:var(--acc)}
+.scroll{overflow-x:auto;max-width:100%}
+table{border-collapse:collapse;width:100%}
+th,td{padding:6px 8px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-weight:500;color:var(--mut);font-size:13px}
+td:first-child,th:first-child{text-align:start}
+td.n{direction:ltr}
+tfoot td{font-weight:700;border-bottom:0;background:var(--accbg)}
+.b{font-weight:700;color:var(--pos)}.neg{color:var(--neg)!important}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.row h2{margin:0}
+.mr{display:flex;align-items:center;gap:10px;margin-bottom:6px}.mr .txt{max-width:220px}
+.hint{font-size:13px;color:var(--mut);margin:6px 0}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+summary{cursor:pointer;font-weight:700}
+textarea{width:100%;height:90px;direction:ltr;font:12px monospace;background:var(--in);color:var(--ink);border:1px solid var(--line);border-radius:8px}
+.sess .sh{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+.sess .grow{flex:1 1 170px;width:auto}
+.pl{flex-direction:column}
+.lines{margin:10px 0 4px}
+.ln{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px;padding:6px;border-radius:10px;background:var(--in)}
+.ln select{flex:1 1 120px}
+.adds{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.adds button{border-radius:20px;border-color:var(--acc);color:var(--acc)}
+.adds b{margin-inline-start:4px}
+.sum{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--accbg)}
+.sum b{font-size:18px}
+.newbtn{width:100%;padding:12px;font-size:16px;margin-bottom:14px}
+.sh2{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:10px}
+.dt{background:var(--accbg);color:var(--acc);border-radius:8px;padding:2px 10px;font-weight:700;font-size:13px}
+.nm{flex:1 1 150px;font-size:17px}.pc{font-weight:700;font-size:17px;direction:ltr}
+.lt{margin:4px 0}.lt th,.lt td{padding:5px 8px}
+.acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.pd{border-top:1px solid var(--line);padding:10px 0}
+.ph{display:flex;justify-content:space-between;margin-bottom:4px}
+.ns{font-size:13px;color:var(--mut)}.ns b{color:var(--pos)}
+#rep{max-width:900px;margin:0 auto;padding:16px 14px 40px}
+#rep[hidden]{display:none}
+body.rep-on main{display:none}
+.bar2{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+.sheet{background:#fff;color:#111;border-radius:12px;padding:26px}
+.sheet h1{font-size:22px;margin:0 0 2px}.sheet h2{font-size:16px;color:#444;margin:0 0 12px}.sheet h3{font-size:15px;margin:18px 0 6px}
+.sheet table{width:100%;font-size:13.5px}.sheet th{background:#eef1f6;color:#333}
+.sheet th,.sheet td{border-bottom:1px solid #ddd;padding:5px 8px;text-align:center}
+.sheet td:first-child,.sheet th:first-child{text-align:start}
+.sheet tfoot td{background:#f4f6fa;font-weight:700;color:#111}
+.sheet .neg{color:#c2271c!important}
+.meta{display:flex;flex-wrap:wrap;gap:8px 22px;padding:10px 12px;background:#f4f6fa;border-radius:8px;margin-bottom:10px}
+.boxes{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:10px 0}
+.boxes div{border:1px solid #ddd;border-radius:8px;padding:8px 10px}.boxes span{display:block;font-size:12px;color:#555}
+.sheet section{break-inside:avoid}.calc{font-size:13.5px;margin:6px 0}
+@media print{body{background:#fff}.noprint{display:none!important}#rep{padding:0}.sheet{border-radius:0;padding:0}@page{margin:14mm}}
+input[type=time]{width:112px;padding:6px 4px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.seg button{border:0;border-radius:0;background:var(--card)}.seg button.on{background:var(--gold);color:var(--ptx);font-weight:700}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.wh{text-align:center;font-size:12px;color:var(--mut);padding:4px 0}
+.cd{display:flex;flex-direction:column;align-items:stretch;gap:2px;min-height:78px;padding:4px;text-align:start;border-radius:8px;background:var(--in);border:1px solid var(--line)}
+div.cd.off{background:none;border:0}
+.cd.today{border-color:var(--gold)}.cd.sel{background:var(--accbg);outline:2px solid var(--gold)}
+.dn{font-weight:700;font-size:13px}
+.ev{font-style:normal;font-size:11.5px;background:var(--gold);color:var(--ptx);border-radius:4px;padding:0 4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.cnt{display:none;font-size:11px;background:var(--gold);color:var(--ptx);border-radius:8px;padding:0 6px;align-self:flex-start}
+@media(max-width:560px){.ev{display:none}.cnt{display:inline-block}.cd{min-height:54px}}
+.upl{max-height:270px;overflow:auto}
+.upi{display:flex;align-items:center;gap:10px;width:100%;text-align:start;margin-bottom:6px;padding:8px 10px;border-radius:10px;background:var(--in)}
+.upi.next{border-color:var(--gold);background:var(--accbg)}
+.ud{display:flex;flex-direction:column;align-items:center;min-width:48px;font-size:12px;color:var(--mut)}.ud b{font-size:20px;color:var(--ink);line-height:1.1}
+.un2{flex:1}.cd2{font-weight:700;color:var(--acc);white-space:nowrap}
+.pill{background:var(--gold);color:var(--ptx);border-radius:12px;padding:0 9px;font-size:13px}
+em.nx{font-style:normal;font-size:11px;background:var(--gold);color:var(--ptx);border-radius:6px;padding:0 6px;margin-inline-start:6px}
+.pk{border:1px solid var(--line);border-radius:10px;padding:8px;margin-bottom:8px}.rg{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}.rg input{width:100%}
+.upw{display:flex;gap:6px;margin-bottom:6px}.upw .upi{width:auto;flex:1;margin-bottom:0}.upg{flex:0 0 auto}.cpi{color:var(--mut)}
+#toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--hero);color:#fff;padding:8px 16px;border-radius:20px;z-index:9;max-width:90vw}
+#toast[hidden]{display:none}#toast textarea{display:block;width:80vw;max-width:420px;height:130px;margin:8px 0;background:#fff;color:#111}
+</style>
+</head>
+<body>
+<main>
+<div class="top"><h1>حساب رواتب المصورين</h1><span id="st"></span><button id="lang"></button><button id="theme"></button><select id="ysel" aria-label="السنة"></select><button class="pri" id="repBtn">📄 التقرير</button></div>
+<nav class="tabs" id="tabs"></nav>
+<section class="card" id="up"></section>
+<div id="view"></div>
+<details>
+<summary>الفريق والأدوار والإعدادات</summary>
+<h2 style="margin-top:14px">الفريق</h2><div id="team"></div><button id="addT">+ مصور جديد</button>
+<p class="hint">غير النشط لا يظهر في الاختيار، وتبقى حساباته القديمة.</p>
+<h2 style="margin-top:14px">الأدوار وأسعارها</h2><div id="roles"></div><button id="addR">+ دور جديد</button>
+<p class="hint">السعر هو ما يُدفع للمصور عند إضافة الدور، ويمكن تعديله داخل كل جلسة. «المصور الافتراضي» يُختار تلقائيًا.</p>
+<h2 style="margin-top:14px">الباقات وأسعار الأدوار</h2><div id="pkgs"></div><button id="addK">+ باقة جديدة</button>
+<p class="hint">اترك الخانة فارغة لاستخدام السعر الافتراضي للدور.</p>
+<h2 style="margin-top:14px">النسب</h2>
+<div class="set">
+<label>خصم من كل مصور (%)<input type="number" step="any" min="0" id="s_fee" data-cfg="fee"></label>
+<label>خصم التعلّم لكل مصور (د.ب)<input type="number" step="any" min="0" id="s_learn" data-cfg="learn"></label>
+<label>نسبة الصندوق من الربح (%)<input type="number" step="any" min="0" id="s_reserve" data-cfg="reserve"></label>
+<label>خصم المعدات من المصور (د.ب)<input type="number" step="any" min="0" id="s_eq" data-cfg="eq"></label>
+<label>اسم الجهة في التقرير<input class="txt" id="s_studio" data-cfgs="studio"></label>
+</div>
+<p class="hint">الصندوق = نسبة من الربح + مجموع خصم المصورين. التعلّم يُخصم لكل مصور في كل شهر فيه جلسات. المعدات: عند تفعيلها على سطر مصور يُخصم المبلغ من أجره ويدخل في ربح الجلسة.</p>
+<h2 style="margin-top:14px">نسخة احتياطية</h2>
+<textarea id="bk" aria-label="نسخة احتياطية"></textarea>
+<div class="row"><span class="hint" id="bm">«تصدير» يعرض بياناتك كنص تحتفظ به، و«استعادة» تقرأ النص الملصق.</span><span><button id="exp">تصدير</button> <button id="imp">استعادة</button></span></div>
+</details>
+</main>
+<div id="rep" hidden></div>
+<div id="toast" hidden></div>
+<script>
+const KEY='shuaib-photog-v2',UIK='shuaib-ui-v1';
+const MONAR=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],MONEN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const WDAR=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],WDEN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+let UI={lang:'ar',theme:''};try{Object.assign(UI,JSON.parse(localStorage.getItem(UIK)||'{}'))}catch(e){}
+let MON=UI.lang=='en'?MONEN:MONAR,WD=UI.lang=='en'?WDEN:WDAR;
+const $=s=>document.querySelector(s),G=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const byD=(x,y)=>{const a=x.d+(x.t||''),b=y.d+(y.t||'');return a<b?-1:a>b?1:0};
+const rateOf=(k,r)=>{const p=S.pkgs.find(x=>x.id==k),v=p&&p.rates&&p.rates[r];return v!==undefined&&v!==''?+v:+((S.roles.find(x=>x.id==r)||{}).rate)||0};
+const pkgTag=s=>{const p=S.pkgs.find(x=>x.id==s.k);return p?`<em class="nx">${esc(p.n)}</em>`:''};
+const U=s=>`<span translate="no">${esc(s)}</span>`;
+const f2=x=>(+x||0).toFixed(2),pad=n=>String(n).padStart(2,'0'),uid=()=>Math.random().toString(36).slice(2,9);
+const now=new Date(),TD=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+const ROLES=[{id:'r1',n:'مصور فوتو',rate:7,p:''},{id:'r2',n:'مصور فيديو',rate:7,p:''},{id:'r3',n:'تعديل صور',rate:2,p:''},{id:'r4',n:'مونتاج',rate:4,p:''}];
+const PKGS=[{id:'k1',n:'المنتجات',price:'',rates:{r1:7,r2:7,r3:2,r4:4}},{id:'k2',n:'الأعراس',price:'',rates:{r1:15,r2:15,r3:5,r4:15}},{id:'k3',n:'الإيفنت',price:'',rates:{}}];
+function norm(o){
+  o=o||{};
+  const ss=(o.sessions||[]).map(s=>{if(s.lines)return s;const l=Object.entries(s.pay||{}).map(([p,a])=>({id:uid(),r:'',p,a}));const n={...s,lines:l};delete n.pay;return n});
+  return{team:o.team||[],roles:o.roles||ROLES.map(r=>({...r})),pkgs:o.pkgs||JSON.parse(JSON.stringify(PKGS)),cfg:Object.assign({fee:1,learn:2,reserve:5,eq:5,studio:''},o.cfg),sessions:ss,adv:o.adv||{}};
+}
+function seed(){
+  const team=['Hasan','bu mahdi','mahdi','bu fatima','Manssor','mohamed'].map((n,i)=>({id:'p'+(i+1),n,on:1}));
+  const R=[['واحة الأطفال',1,20,{p3:18}],['جمعية سترة',2,45,{p1:5,p4:10,p5:10}],['روضة',13,20,{p3:18}],['روضة',22,20,{p3:18}],['جمعية سترة',6,70,{p3:20,p4:10}],['أوتاد - منتجات',7,120,{p1:15,p5:25,p6:20}],['أوتاد - منتجات',14,120,{p3:33,p4:21}],['أوتاد - منتجات',21,120,{p1:33,p4:21}],['أوتاد - منتجات',28,120,{p1:33,p5:27}],['عرس جاسم محمد',15,85,{p1:15,p4:15,p5:20}],['حفل تكريم',9,130,{p2:40,p3:55}],['أوتاد safea',6,45,{p1:10,p4:20}]];
+  return norm({team,sessions:R.map(([n,d,p,pay])=>({id:uid(),d:'2026-10-'+pad(d),n,p,pay}))});
+}
+let S;try{const r=localStorage.getItem(KEY);S=r?norm(JSON.parse(r)):seed()}catch(e){S=seed()}
+let V={y:now.getFullYear(),m:now.getMonth()+1},ref=null,tm;
+const ymK=()=>V.y+'-'+pad(V.m);
+const ST={cloud:'✓ محفوظ في حسابك',local:'محفوظ على هذا الجهاز فقط',wait:'جارٍ الحفظ…',err:'تعذّر الحفظ في الحساب'};
+const setStat=k=>{G('st').textContent=ST[k]};
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  if(ref){setStat('wait');clearTimeout(tm);tm=setTimeout(()=>ref.set(JSON.parse(JSON.stringify(S))).then(()=>setStat('cloud')).catch(()=>setStat('err')),600)}
+}
+function agg(ym){
+  const L=S.sessions.filter(s=>s.d&&s.d.slice(0,7)==ym),C=S.cfg,A=S.adv[ym]||{},P={};let price=0,pay=0,un=0,eqt=0;
+  L.forEach(s=>{price+=+s.p||0;s.lines.forEach(l=>{const g=+l.a||0,e=l.e?C.eq:0;pay+=g-e;eqt+=e;
+    if(l.p){const q=P[l.p]||(P[l.p]={tot:0,eq:0,det:[]});q.tot+=g;q.eq+=e;q.det.push({s:s.id,d:s.d,n:s.n,r:l.r,a:g,e})}else un+=g-e})});
+  const rows=L.length?S.team.filter(t=>t.on||P[t.id]).map(t=>{const q=P[t.id]||{tot:0,eq:0,det:[]},b=q.tot-q.eq,fe=b*C.fee/100,a=+A[t.id]||0;
+    return{id:t.id,n:t.n,tot:q.tot,eq:q.eq,fee:fe,adv:a,lrn:C.learn,net:b-fe-a-C.learn,cnt:new Set(q.det.map(x=>x.s)).size,det:q.det.sort(byD)}}):[];
+  const sum=k=>rows.reduce((q,r)=>q+r[k],0),profit=price-pay,fee=sum('fee');
+  return{L,rows,price,pay,un,eqt,profit,fee,adv:sum('adv'),net:sum('net'),learn:C.learn*rows.length,res:profit*C.reserve/100+fee};
+}
+const heroH=t=>`<section class="hero"><p>${t}</p><div class="big"><span id="c_profit">0.00</span><small>د.ب</small></div><div class="bar"><i class="b1" id="bp"></i><i class="b2" id="bq"></i></div><div class="legend"><span id="lp"></span><span id="lq"></span></div><div class="stats"><div><span>إجمالي المشاريع</span><b id="c_price"></b></div><div><span>قيمة المصورين</span><b id="c_pay"></b></div><div><span>صافي المصورين</span><b id="c_net"></b></div><div><span>رسوم المعدات</span><b id="c_eq"></b></div><div><span>الصندوق</span><b id="c_res"></b></div><div><span>التعلّم</span><b id="c_learn"></b></div></div></section>`;
+function fillHero(o){
+  const T=(id,v)=>G(id).textContent=f2(v);
+  T('c_price',o.price);T('c_pay',o.pay);T('c_profit',o.profit);T('c_net',o.net);T('c_res',o.res);T('c_learn',o.learn);T('c_eq',o.eqt);
+  const p=o.price>0?Math.max(0,Math.min(100,o.pay/o.price*100)):0,q=o.price>0?100-p:0;
+  G('bp').style.width=p+'%';G('bq').style.width=q+'%';G('lp').textContent='المصورون '+p.toFixed(0)+'%';G('lq').textContent='الربح '+q.toFixed(0)+'%';
+}
+const roleOpts=r=>'<option value="">مصور</option>'+S.roles.map(x=>`<option value="${x.id}"${x.id==r?' selected':''}>${esc(x.n)}</option>`).join('');
+const persOpts=(p,none)=>`<option value="">${none}</option>`+S.team.filter(t=>t.on||t.id==p).map(t=>`<option value="${t.id}" data-nm="${t.id}"${t.id==p?' selected':''}>${esc(t.n)}</option>`).join('');
+const fmtD=d=>d?`${+d.slice(8)} ${MON[+d.slice(5,7)-1]} ${d.slice(0,4)}`:'—';
+const pName=id=>(S.team.find(x=>x.id==id)||{}).n||'—',rName=id=>(S.roles.find(x=>x.id==id)||{}).n||'مصور';
+const lnet=l=>(+l.a||0)-(l.e?S.cfg.eq:0),spay=s=>s.lines.reduce((q,l)=>q+lnet(l),0);
+const cardView=s=>{const pay=spay(s),pr=(+s.p||0)-pay;
+  return `<section class="card"><div class="sh2"><span class="pc">${f2(s.p)} <small>د.ب</small></span><span class="dt">${fmtD(s.d)}${s.t?' · '+s.t:''}</span><b class="nm">${s.n?U(s.n):'جلسة بدون اسم'}</b>${pkgTag(s)}</div>${s.lines.length?`<div class="scroll"><table class="lt"><thead><tr><th>الدور</th><th>المصور</th><th>المبلغ</th><th>معدات</th><th>الصافي</th></tr></thead><tbody>${s.lines.map(l=>`<tr><td>${esc(rName(l.r))}</td><td>${esc(l.p?pName(l.p):'—')}</td><td>${f2(l.a)}</td><td class="neg">${l.e?'−'+f2(S.cfg.eq):''}</td><td>${f2(lnet(l))}</td></tr>`).join('')}</tbody></table></div>`:'<p class="hint">لا يوجد مصورون — اضغط تعديل لإضافتهم.</p>'}<div class="sum"><span>السعر <b>${f2(s.p)}</b></span><span>− المصورون <b>${f2(pay)}</b></span><span>= الربح <b class="${pr<0?'neg':'b'}">${f2(pr)}</b></span></div><div class="acts"><button data-ed="${s.id}">✎ تعديل</button><button data-dup="${s.id}">⧉ تكرار</button><button class="x" data-ds="${s.id}">حذف</button></div></section>`};
+const cardEdit=s=>`<section class="card" style="border-color:var(--acc)"><div class="sh"><label>سعر الجلسة<input type="number" step="any" min="0" data-i="${s.id}" data-f="p" value="${s.p}"></label><label>الباقة<select data-pk="${s.id}"><option value="">بدون باقة</option>${S.pkgs.map(k=>`<option value="${k.id}"${k.id==s.k?' selected':''}>${esc(k.n)}</option>`).join('')}</select></label><label>التاريخ<input type="date" data-i="${s.id}" data-f="d" value="${s.d}"></label><label>الوقت<input type="time" data-i="${s.id}" data-f="t" value="${s.t||''}"></label><label class="grow">اسم الجلسة<input class="txt" data-i="${s.id}" data-f="n" value="${esc(s.n)}"></label><button class="pri" data-ed="${s.id}">✓ تم</button><button class="x" data-ds="${s.id}">حذف</button></div>
+<div class="lines">${s.lines.map(l=>`<div class="ln"><select data-i="${s.id}" data-l="${l.id}" data-lf="r">${roleOpts(l.r)}</select><select data-i="${s.id}" data-l="${l.id}" data-lf="p">${persOpts(l.p,'اختر المصور')}</select><input type="number" step="any" min="0" data-i="${s.id}" data-l="${l.id}" data-lf="a" value="${l.a}" aria-label="المبلغ"><label class="ck"><input type="checkbox" data-i="${s.id}" data-l="${l.id}" data-lf="e"${l.e?' checked':''}> معدات</label><span class="ns">الصافي <b id="ln${l.id}"></b></span><button class="x" data-dl="${s.id}" data-l="${l.id}">×</button></div>`).join('')}</div>
+<div class="adds">${S.roles.map(r=>`<button data-al="${s.id}" data-role="${r.id}">+ ${esc(r.n)}<b>${f2(rateOf(s.k,r.id))}</b></button>`).join('')}</div>
+<div class="sum"><span>سعر الجلسة <b id="sp${s.id}"></b></span><span>− المصورون <b id="tp${s.id}"></b></span><span>منها معدات <b id="eq${s.id}"></b></span><span>= الربح <b id="pr${s.id}"></b></span></div></section>`;
+const detH=rows=>rows.map(r=>`<div class="pd"><div class="ph"><b>${esc(r.n)}</b><span>عدد الجلسات: <b>${r.cnt}</b></span></div>${r.det.length?`<div class="scroll"><table class="lt"><tbody>${r.det.map(x=>`<tr><td>${fmtD(x.d)}</td><td>${x.n?U(x.n):'—'}</td><td>${esc(rName(x.r))}</td><td>${f2(x.a)}${x.e?` <small class="neg">−${f2(x.e)} معدات</small>`:''}</td></tr>`).join('')}</tbody></table></div>`:''}</div>`).join('');
+let VIEW='list',SEL='';
+const toggleH=()=>`<div class="seg"><button data-view="list" class="${VIEW=='list'?'on':''}">☰ القائمة</button><button data-view="cal" class="${VIEW=='cal'?'on':''}">🗓 التقويم</button></div>`;
+const cards=L=>L.map(s=>EDIT.has(s.id)?cardEdit(s):cardView(s)).join('');
+const listH=L=>`<button class="pri newbtn" id="newS">+ جلسة جديدة</button>`+(cards(L)||'<p class="hint">لا توجد جلسات في هذا الشهر. اضغط «جلسة جديدة» وابدأ.</p>');
+const calH=L=>{const ym=ymK(),lead=new Date(V.y,V.m-1,1).getDay(),nd=new Date(V.y,V.m,0).getDate(),by={};
+  L.forEach(s=>(by[s.d]||(by[s.d]=[])).push(s));
+  let c=WD.map(w=>`<div class="wh">${w}</div>`).join('')+'<div class="cd off"></div>'.repeat(lead);
+  for(let d=1;d<=nd;d++){const k=ym+'-'+pad(d),A=by[k]||[];c+=`<button class="cd${k==TD?' today':''}${k==SEL?' sel':''}" data-day="${k}"><span class="dn">${d}</span>${A.slice(0,2).map(s=>`<i class="ev">${s.t?s.t+' ':''}${U(s.n||'—')}</i>`).join('')}${A.length>2?`<i class="ev">+${A.length-2}</i>`:''}${A.length?`<b class="cnt">${A.length}</b>`:''}</button>`}
+  const day=SEL&&SEL.slice(0,7)==ym?L.filter(s=>s.d==SEL):null;
+  return `<section class="card"><div class="cal">${c}</div></section>`+(day?`<h2>${fmtD(SEL)}</h2><button class="pri newbtn" data-newday="${SEL}">+ جلسة في هذا اليوم</button>${cards(day)}`:'<p class="hint">اضغط على يوم في التقويم لعرض جلساته أو إضافة جلسة فيه.</p>')};
+function renderUp(){
+  const up=G('up'),tm=V.m?ymK():'';
+  if(!V.m||tm<TD.slice(0,7)){up.hidden=true;return}
+  up.hidden=false;const cur=tm==TD.slice(0,7),L=S.sessions.filter(s=>s.d&&s.d.slice(0,7)==tm&&s.d>=TD).sort(byD);
+  const dl=d=>Math.round((Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8))-Date.UTC(+TD.slice(0,4),+TD.slice(5,7)-1,+TD.slice(8)))/864e5);
+  const lab=n=>n==0?'اليوم':n==1?'غدًا':`بعد ${n} أيام`,wd=d=>WD[new Date(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8)).getDay()];
+  G('up').innerHTML=`<h2>📅 ${cur?'التصوير القادم هذا الشهر':'التصوير القادم في '+MON[V.m-1]+' '+V.y}${L.length?` <span class="pill">${L.length}</span>`:''}</h2>`+(L.length?`<p class="hint">اضغط على الجلسة لنسخ بياناتها.</p><div class="upl">${L.map((s,i)=>`<div class="upw"><button class="upi${i?'':' next'}" data-cp="${s.id}"><span class="ud"><b>${+s.d.slice(8)}</b>${wd(s.d)}</span><span class="un2">${U(s.n||'—')}${s.t?` <small>${s.t}</small>`:''}${i?'':'<em class="nx">الأقرب</em>'}</span><span class="cd2">${lab(dl(s.d))}</span><b class="cpi">⧉</b></button><button class="upg" data-go="${s.d}" title="فتح في التقويم" aria-label="فتح في التقويم">🗓</button></div>`).join('')}</div>`:'<p class="hint">لا توجد جلسات قادمة هذا الشهر.</p>');
+}
+function viewMonth(){
+  const ym=ymK(),a=agg(ym),A=S.adv[ym]||{},L=a.L.slice().sort(byD);
+  $('#view').innerHTML=heroH(MON[V.m-1]+' '+V.y+' — الربح')+
+  toggleH()+(VIEW=='cal'?calH(L):listH(L))+
+  (a.rows.length?`<section class="card"><h2>مستحقات المصورين</h2><div class="scroll"><table><thead><tr><th>المصور</th><th>الجلسات</th><th>الإجمالي</th><th>معدات</th><th>الخصم</th><th>سلفة</th><th>التعلّم</th><th>الصافي</th></tr></thead><tbody>${a.rows.map(r=>`<tr><td data-nm="${r.id}">${esc(r.n)}</td><td id="pc${r.id}"></td><td id="pt${r.id}"></td><td id="pe${r.id}" class="neg"></td><td id="pf${r.id}"></td><td><input type="number" step="any" data-adv="${r.id}" value="${A[r.id]||''}" placeholder="0"></td><td id="pl${r.id}"></td><td id="pn${r.id}" class="b"></td></tr>`).join('')}</tbody><tfoot><tr><td>المجموع</td><td></td><td id="tp"></td><td id="te"></td><td id="tf"></td><td id="ta"></td><td id="tl"></td><td id="tn"></td></tr></tfoot></table></div><p class="hint">الصافي = (الإجمالي − المعدات) − الخصم − السلفة − التعلّم.</p><p class="hint" id="unh"></p><h2 style="margin-top:14px">جلسات كل مصور</h2><div id="pd"></div></section>`:'');
+  calc();
+}
+function calc(){
+  if(!V.m)return;
+  const a=agg(ymK()),T=(id,v)=>{const e=G(id);if(e)e.textContent=f2(v)},neg=(id,x)=>{const e=G(id);if(e)e.classList.toggle('neg',x<0)};
+  fillHero(a);
+  a.L.forEach(s=>{const x=spay(s),pr=(+s.p||0)-x;T('sp'+s.id,s.p);T('tp'+s.id,x);T('eq'+s.id,s.lines.reduce((q,l)=>q+(l.e?S.cfg.eq:0),0));T('pr'+s.id,pr);neg('pr'+s.id,pr);s.lines.forEach(l=>T('ln'+l.id,lnet(l)))});
+  a.rows.forEach(r=>{T('pt'+r.id,r.tot);T('pe'+r.id,r.eq);T('pf'+r.id,r.fee);T('pl'+r.id,r.lrn);T('pn'+r.id,r.net);neg('pn'+r.id,r.net);const c=G('pc'+r.id);if(c)c.textContent=r.cnt});
+  const sm=k=>a.rows.reduce((q,r)=>q+r[k],0);
+  T('tp',sm('tot'));T('te',sm('eq'));T('tf',a.fee);T('ta',a.adv);T('tl',a.learn);T('tn',a.net);
+  const u=G('unh');if(u)u.textContent=a.un>0?'مبالغ لم تُسند لمصور: '+f2(a.un)+' (تُخصم من الربح لكنها لا تظهر هنا).':'';
+  const d=G('pd');if(d)d.innerHTML=detH(a.rows);
+}
+function viewYear(){
+  const tot={price:0,pay:0,profit:0,net:0,res:0,learn:0,fee:0,eqt:0},mm=[],pm={};
+  for(let m=1;m<=12;m++){const a=agg(V.y+'-'+pad(m));if(!a.L.length)continue;mm.push([m,a]);for(const k in tot)tot[k]+=a[k];a.rows.forEach(r=>{const q=pm[r.id]||(pm[r.id]={n:r.n,tot:0,net:0,cnt:0});q.tot+=r.tot;q.net+=r.net;q.cnt+=r.cnt})}
+  const tr=c=>`<tr>${c.map(x=>`<td>${x}</td>`).join('')}</tr>`;
+  $('#view').innerHTML=heroH('ربح سنة '+V.y)+
+  `<section class="card"><h2>الأشهر</h2><div class="scroll"><table><thead><tr><th>الشهر</th><th>الجلسات</th><th>المشاريع</th><th>المصورون</th><th>الربح</th><th>الصندوق</th><th>صافي المصورين</th></tr></thead><tbody>${mm.map(([m,a])=>tr([`<button class="lnk" data-m="${m}">${MON[m-1]}</button>`,a.L.length,f2(a.price),f2(a.pay),f2(a.profit),f2(a.res),f2(a.net)])).join('')||'<tr><td colspan="7">لا توجد بيانات لهذه السنة.</td></tr>'}</tbody><tfoot>${tr(['المجموع','',f2(tot.price),f2(tot.pay),f2(tot.profit),f2(tot.res),f2(tot.net)])}</tfoot></table></div></section>`+
+  `<section class="card"><h2>المصورون خلال السنة</h2><div class="scroll"><table><thead><tr><th>المصور</th><th>عدد الجلسات</th><th>مجموع الجلسات</th><th>الصافي بعد الخصومات</th></tr></thead><tbody>${Object.values(pm).map(p=>tr([esc(p.n),p.cnt,f2(p.tot),f2(p.net)])).join('')||'<tr><td colspan="4">—</td></tr>'}</tbody></table></div></section>`;
+  fillHero(tot);
+}
+let REP=null;
+function repData(){
+  const ms=V.m?[V.m]:[1,2,3,4,5,6,7,8,9,10,11,12],ps=ms.map(m=>agg(V.y+'-'+pad(m))).filter(a=>a.L.length);
+  const T={price:0,pay:0,eqt:0,profit:0},L=[],P={};
+  ps.forEach(a=>{for(const k in T)T[k]+=a[k];L.push(...a.L);a.rows.forEach(r=>{const q=P[r.id]||(P[r.id]={...r,det:[],cnt:0,tot:0,eq:0,fee:0,adv:0,lrn:0,net:0});['cnt','tot','eq','fee','adv','lrn','net'].forEach(k=>q[k]+=r[k]);q.det.push(...r.det)})});
+  return{T,L:L.sort(byD),P:Object.values(P)};
+}
+const pSec=r=>`<section><h3>${esc(r.n)} — عدد الجلسات: ${r.cnt}</h3><table><thead><tr><th>التاريخ</th><th>الجلسة</th><th>الدور</th><th>المبلغ</th><th>معدات</th><th>الصافي</th></tr></thead><tbody>${r.det.sort(byD).map(x=>`<tr><td>${fmtD(x.d)}</td><td>${x.n?U(x.n):'—'}</td><td>${esc(rName(x.r))}</td><td>${f2(x.a)}</td><td class="neg">${x.e?'−'+f2(x.e):''}</td><td>${f2(x.a-x.e)}</td></tr>`).join('')}</tbody><tfoot><tr><td colspan="3">المجموع</td><td>${f2(r.tot)}</td><td class="neg">${r.eq?'−'+f2(r.eq):''}</td><td>${f2(r.tot-r.eq)}</td></tr></tfoot></table><p class="calc">خصم ${S.cfg.fee}%: ${f2(r.fee)} | سلفة: ${f2(r.adv)} | تعلّم: ${f2(r.lrn)} | <b>الصافي المستحق: ${f2(r.net)}</b></p></section>`;
+function repH(){
+  const{T,L,P}=repData(),one=REP.p,Ps=one?P.filter(r=>r.id==one):P,sl=one?L.filter(s=>s.lines.some(l=>l.p==one)):L,ds=sl.map(s=>s.d).sort();
+  const per=V.m?MON[V.m-1]+' '+V.y:'سنة '+V.y;
+  let h=`<div class="noprint bar2"><label>التقرير لـ<select id="rp"><option value="">كل المصورين (تقرير كامل)</option>${S.team.map(t=>`<option value="${t.id}"${t.id==one?' selected':''}>${esc(t.n)}</option>`).join('')}</select></label><span><button class="pri" id="rprint">🖨 طباعة</button> <button id="rback">رجوع</button></span></div>`;
+  h+=`<article class="sheet"><h1>${S.cfg.studio?U(S.cfg.studio):'التقرير'}</h1><h2>${one?'كشف مستحقات: '+esc(pName(one)):'تقرير الجلسات والمستحقات'} — ${per}</h2><div class="meta"><span>عدد الجلسات: <b>${sl.length}</b></span><span>من: <b>${fmtD(ds[0])}</b></span><span>إلى: <b>${fmtD(ds[ds.length-1])}</b></span><span>تاريخ الطباعة: <b>${fmtD(TD)}</b></span></div>`;
+  if(!one){
+    h+=`<div class="boxes"><div><span>إجمالي المشاريع</span><b>${f2(T.price)}</b></div><div><span>المصورون (بعد المعدات)</span><b>${f2(T.pay)}</b></div><div><span>رسوم المعدات</span><b>${f2(T.eqt)}</b></div><div><span>الربح</span><b>${f2(T.profit)}</b></div></div>`;
+    h+=`<section><h3>الجلسات</h3><table><thead><tr><th>#</th><th>التاريخ</th><th>الجلسة</th><th>السعر</th><th>المصورون</th><th>الربح</th></tr></thead><tbody>${L.map((s,i)=>{const p=spay(s);return`<tr><td>${i+1}</td><td>${fmtD(s.d)}</td><td>${s.n?U(s.n):'—'}</td><td>${f2(s.p)}</td><td>${f2(p)}</td><td>${f2((+s.p||0)-p)}</td></tr>`}).join('')||'<tr><td colspan="6">لا توجد جلسات.</td></tr>'}</tbody></table></section>`;
+    const sm=k=>P.reduce((q,r)=>q+r[k],0);
+    h+=`<section><h3>ملخص المصورين</h3><table><thead><tr><th>المصور</th><th>الجلسات</th><th>الإجمالي</th><th>معدات</th><th>الخصم</th><th>سلفة</th><th>التعلّم</th><th>الصافي</th></tr></thead><tbody>${P.map(r=>`<tr><td>${esc(r.n)}</td><td>${r.cnt}</td><td>${f2(r.tot)}</td><td>${f2(r.eq)}</td><td>${f2(r.fee)}</td><td>${f2(r.adv)}</td><td>${f2(r.lrn)}</td><td><b>${f2(r.net)}</b></td></tr>`).join('')}</tbody><tfoot><tr><td>المجموع</td><td></td><td>${f2(sm('tot'))}</td><td>${f2(sm('eq'))}</td><td>${f2(sm('fee'))}</td><td>${f2(sm('adv'))}</td><td>${f2(sm('lrn'))}</td><td>${f2(sm('net'))}</td></tr></tfoot></table></section>`;
+  }
+  return h+Ps.map(pSec).join('')+'</article>';
+}
+function showRep(){REP=REP||{p:''};G('rep').innerHTML=repH();G('rep').hidden=false;document.body.classList.add('rep-on');scrollTo(0,0)}
+function hideRep(){REP=null;G('rep').hidden=true;document.body.classList.remove('rep-on')}
+function renderTop(){
+  const ys=new Set([V.y,...Array.from({length:8},(_,i)=>now.getFullYear()-1+i),...S.sessions.filter(s=>s.d).map(s=>+s.d.slice(0,4))]),cnt={};
+  S.sessions.forEach(s=>{if(s.d)cnt[s.d.slice(0,7)]=1});
+  G('ysel').innerHTML=[...ys].sort().map(y=>`<option${y==V.y?' selected':''}>${y}</option>`).join('');
+  G('tabs').innerHTML=MON.map((n,i)=>`<button class="tab${V.m==i+1?' on':''}${cnt[V.y+'-'+pad(i+1)]?' has':''}" data-m="${i+1}">${n}</button>`).join('')+`<button class="tab${V.m==0?' on':''}" data-m="0">ملخص السنة</button>`;
+}
+function renderSet(){
+  G('pkgs').innerHTML=S.pkgs.map(k=>`<div class="pk"><div class="mr"><input class="txt" data-kn="${k.id}" value="${esc(k.n)}"><label>سعر الجلسة (اختياري)<input type="number" step="any" min="0" data-kp="${k.id}" value="${k.price??''}"></label><button class="x" data-dk="${k.id}">×</button></div><div class="rg">${S.roles.map(r=>`<label>${esc(r.n)}<input type="number" step="any" min="0" data-kr="${k.id}" data-role="${r.id}" value="${k.rates&&k.rates[r.id]!==undefined?k.rates[r.id]:''}" placeholder="${f2(r.rate)}"></label>`).join('')}</div></div>`).join('');
+  ['fee','learn','reserve','eq'].forEach(k=>G('s_'+k).value=S.cfg[k]);G('s_studio').value=S.cfg.studio||'';
+  G('team').innerHTML=S.team.map(t=>`<div class="mr"><input class="txt" data-tn="${t.id}" value="${esc(t.n)}"><label class="ck"><input type="checkbox" data-ton="${t.id}"${t.on?' checked':''}> نشط</label></div>`).join('');
+  G('roles').innerHTML=S.roles.map(r=>`<div class="mr"><input class="txt" data-rn="${r.id}" value="${esc(r.n)}"><input type="number" step="any" min="0" data-rr="${r.id}" value="${r.rate}" aria-label="السعر"><select data-rp="${r.id}">${persOpts(r.p,'بدون افتراضي')}</select><button class="x" data-dr="${r.id}">×</button></div>`).join('');
+}
+function renderAll(){renderTop();renderUp();V.m?viewMonth():viewYear();renderSet()}
+const WDFULL={ar:['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],en:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']};
+function sessTxt(s){
+  const en=UI.lang=='en',[y,m,d]=s.d.split('-').map(Number),w=WDFULL[en?'en':'ar'][new Date(y,m-1,d).getDay()];
+  const ps=[...new Set(s.lines.filter(l=>l.p).map(l=>l.p))].map(pName);
+  const L=en?['Day','Date','Time','Shoot name','Photographers','Number of photographers']:['اليوم','التاريخ','الوقت','اسم جلسة التصوير','المصورين','عدد المصورين'];
+  return[L[0]+': '+w,L[1]+': '+d+'/'+m+'/'+y,L[2]+': '+(s.t||''),L[3]+': '+(s.n||''),L[4]+': '+ps.join(en?', ':'، '),L[5]+': '+ps.length].join('\n');
+}
+function toast(m){const e=G('toast');e.textContent=m;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>{e.hidden=true},2000)}
+function manualCopy(t){const e=G('toast');clearTimeout(toast.t);e.innerHTML='<div>انسخ النص يدويًا:</div><textarea readonly></textarea><button id="tclose">إغلاق</button>';const a=e.querySelector('textarea');a.value=t;e.hidden=false;a.select()}
+function copyTxt(t){
+  const fb=()=>{const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0;top:0';document.body.appendChild(a);a.select();let r=false;try{r=document.execCommand('copy')}catch(e){}a.remove();r?toast('تم النسخ ✓'):manualCopy(t)};
+  try{navigator.clipboard.writeText(t).then(()=>toast('تم النسخ ✓'),fb)}catch(e){fb()}
+}
+const sure=b=>{if(b.dataset.sure)return 1;b.dataset.sure=1;const o=b.textContent;b.textContent='تأكيد؟';setTimeout(()=>{delete b.dataset.sure;b.textContent=o},2500)};
+const ses=id=>S.sessions.find(x=>x.id==id),ln=(s,id)=>s.lines.find(x=>x.id==id),EDIT=new Set();
+document.addEventListener('input',e=>{
+  const t=e.target,d=t.dataset,v=t.value;
+  if(d.cfg){S.cfg[d.cfg]=+v||0;save();V.m?calc():viewYear()}
+  else if(d.cfgs){S.cfg[d.cfgs]=v;save()}
+  else if(d.tn){S.team.find(x=>x.id==d.tn).n=v;document.querySelectorAll('[data-nm="'+d.tn+'"]').forEach(x=>x.textContent=v||'—');save()}
+  else if(d.rn){S.roles.find(x=>x.id==d.rn).n=v;save()}
+  else if(d.rr){S.roles.find(x=>x.id==d.rr).rate=+v||0;save()}
+  else if(d.adv){const k=ymK();(S.adv[k]||(S.adv[k]={}))[d.adv]=+v||0;save();calc()}
+  else if(d.kp){S.pkgs.find(x=>x.id==d.kp).price=v===''?'':+v;save()}
+  else if(d.kr){const k=S.pkgs.find(x=>x.id==d.kr);k.rates=k.rates||{};v===''?delete k.rates[d.role]:k.rates[d.role]=+v;save()}
+  else if(d.kn){S.pkgs.find(x=>x.id==d.kn).n=v;save()}
+  else if(d.l&&d.lf=='a'){ln(ses(d.i),d.l).a=v===''?'':+v;save();calc()}
+  else if(d.i&&!d.l&&d.f!='d'){ses(d.i)[d.f]=d.f=='p'?(v===''?'':+v):v;save();calc()}
+});
+document.addEventListener('change',e=>{
+  const t=e.target,d=t.dataset,v=t.value;
+  if(t.id=='ysel'){V.y=+v;renderAll()}
+  else if(t.id=='rp'){REP.p=v;G('rep').innerHTML=repH()}
+  else if(d.lf=='e'){ln(ses(d.i),d.l).e=t.checked?1:0;save();calc()}
+  else if(d.l&&d.lf=='r'){const l=ln(ses(d.i),d.l),r=S.roles.find(x=>x.id==v);l.r=v;if(r){l.a=rateOf(ses(d.i).k,v);if(r.p)l.p=r.p}save();renderAll()}
+  else if(d.l&&d.lf=='p'){ln(ses(d.i),d.l).p=v;save();renderAll()}
+  else if(d.pk){const s=ses(d.pk),o=s.k,pk=S.pkgs.find(x=>x.id==v);s.lines.forEach(l=>{if((+l.a||0)==rateOf(o,l.r))l.a=rateOf(v,l.r)});s.k=v;if(pk&&pk.price!==''&&pk.price!=null&&s.p==='')s.p=+pk.price;save();renderAll()}
+  else if(d.kn){renderAll()}
+  else if(d.i&&d.f=='d'){ses(d.i).d=v;save();renderAll()}
+  else if(d.ton){S.team.find(x=>x.id==d.ton).on=t.checked?1:0;save();renderAll()}
+  else if(d.rn){renderAll()}
+  else if(d.rp){S.roles.find(x=>x.id==d.rp).p=v;save()}
+});
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.m!==undefined){V.m=+d.m;renderAll()}
+  else if(b.id=='repBtn')showRep();
+  else if(b.id=='lang')setLang(UI.lang=='ar'?'en':'ar');
+  else if(b.id=='theme'){const dk=(UI.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'))=='dark';UI.theme=dk?'light':'dark';saveUI();applyUI()}
+  else if(d.cp){copyTxt(sessTxt(ses(d.cp)))}
+  else if(b.id=='tclose'){G('toast').hidden=true}
+  else if(d.view){VIEW=d.view;renderAll()}
+  else if(d.day){SEL=d.day;renderAll()}
+  else if(d.go){V.y=+d.go.slice(0,4);V.m=+d.go.slice(5,7);VIEW='cal';SEL=d.go;renderAll();scrollTo(0,0)}
+  else if(d.newday){const s={id:uid(),d:d.newday,n:'',p:'',lines:[]};S.sessions.push(s);EDIT.add(s.id);save();renderAll();const i=document.querySelector('[data-i="'+s.id+'"][data-f="n"]');if(i){i.focus();i.scrollIntoView({block:'center'})}}
+  else if(b.id=='rback')hideRep();
+  else if(b.id=='rprint'){try{window.print()}catch(x){}}
+  else if(d.ed){EDIT.has(d.ed)?EDIT.delete(d.ed):EDIT.add(d.ed);renderAll()}
+  else if(b.id=='newS'){const ym=ymK(),s={id:uid(),d:TD.slice(0,7)==ym?TD:ym+'-01',n:'',p:'',lines:[]};S.sessions.push(s);EDIT.add(s.id);save();renderAll();const i=document.querySelector('[data-i="'+s.id+'"][data-f="n"]');if(i){i.focus();i.scrollIntoView({block:'center'})}}
+  else if(d.al){const s=ses(d.al),r=S.roles.find(x=>x.id==d.role);s.lines.push({id:uid(),r:r.id,p:r.p||'',a:rateOf(s.k,r.id)});save();renderAll()}
+  else if(d.dl){const s=ses(d.dl);s.lines=s.lines.filter(x=>x.id!=d.l);save();renderAll()}
+  else if(d.dup){const s=ses(d.dup),n={...s,id:uid(),lines:s.lines.map(l=>({...l,id:uid()}))};S.sessions.push(n);EDIT.add(n.id);save();renderAll()}
+  else if(d.ds){if(!sure(b))return;S.sessions=S.sessions.filter(x=>x.id!=d.ds);save();renderAll()}
+  else if(d.dr){if(!sure(b))return;S.roles=S.roles.filter(x=>x.id!=d.dr);save();renderAll()}
+  else if(d.dk){if(!sure(b))return;S.pkgs=S.pkgs.filter(x=>x.id!=d.dk);save();renderAll()}
+  else if(b.id=='addK'){S.pkgs.push({id:uid(),n:'باقة جديدة',price:'',rates:{}});save();renderAll()}
+  else if(b.id=='addT'){S.team.push({id:uid(),n:'مصور '+(S.team.length+1),on:1});save();renderAll()}
+  else if(b.id=='addR'){S.roles.push({id:uid(),n:'دور جديد',rate:0,p:''});save();renderAll()}
+  else if(b.id=='exp'){G('bk').value=JSON.stringify(S);G('bk').select()}
+  else if(b.id=='imp'){try{S=norm(JSON.parse(G('bk').value));save();renderAll();G('bm').textContent='تمت الاستعادة.'}catch(x){G('bm').textContent='النص غير صالح.'}}
+});
+const saveUI=()=>{try{localStorage.setItem(UIK,JSON.stringify(UI))}catch(e){}};
+const DICT=[["الصندوق = نسبة من الربح + مجموع خصم المصورين. التعلّم يُخصم لكل مصور في كل شهر فيه جلسات. المعدات: عند تفعيلها على سطر مصور يُخصم المبلغ من أجره ويدخل في ربح الجلسة.","Fund = a percentage of profit + total photographer deductions. Learning is deducted per photographer in every month with sessions. Equipment: when enabled on a photographer line, the amount is deducted from their pay and added to the session profit."],["السعر هو ما يُدفع للمصور عند إضافة الدور، ويمكن تعديله داخل كل جلسة. «المصور الافتراضي» يُختار تلقائيًا.","The price is what the photographer is paid when the role is added; it can be edited inside each session. The \"default photographer\" is selected automatically."],["«تصدير» يعرض بياناتك كنص تحتفظ به، و«استعادة» تقرأ النص الملصق.","\"Export\" shows your data as text to keep; \"Restore\" reads the pasted text."],["الصافي = (الإجمالي − المعدات) − الخصم − السلفة − التعلّم.","Net = (Gross − Equipment) − Deduction − Advance − Learning."],["غير النشط لا يظهر في الاختيار، وتبقى حساباته القديمة.","Inactive members are hidden from selection; their past records stay."],["لا توجد جلسات في هذا الشهر. اضغط «جلسة جديدة» وابدأ.","No sessions this month. Press \"New session\" to start."],["لا يوجد مصورون — اضغط تعديل لإضافتهم.","No photographers — press Edit to add them."],["اضغط على يوم في التقويم لعرض جلساته أو إضافة جلسة فيه.","Tap a day in the calendar to see its sessions or add one."],["تُخصم من الربح لكنها لا تظهر هنا","deducted from profit but not shown here"],["مبالغ لم تُسند لمصور:","Amounts not assigned to a photographer:"],["خصم المعدات من المصور (د.ب)","Equipment deduction per photographer (BD)"],["خصم التعلّم لكل مصور (د.ب)","Learning deduction per photographer (BD)"],["الفريق والأدوار والإعدادات","Team, roles & settings"],["نسبة الصندوق من الربح (%)","Fund share of profit (%)"],["لا توجد جلسات قادمة هذا الشهر","No upcoming sessions this month"],["التصوير القادم هذا الشهر","Next shoots this month"],["التصوير القادم في","Next shoots in"],["لا توجد بيانات لهذه السنة","No data for this year"],["تقرير الجلسات والمستحقات","Sessions & dues report"],["محفوظ على هذا الجهاز فقط","Saved on this device only"],["كل المصورين (تقرير كامل)","All photographers (full report)"],["المصورون (بعد المعدات)","Photographers (after equipment)"],["تعذّر الحفظ في الحساب","Could not save to your account"],["اسم الجهة في التقرير","Business name on report"],["الصافي بعد الخصومات","Net after deductions"],["حساب رواتب المصورين","Photographer Payroll"],["المصورون خلال السنة","Photographers this year"],["خصم من كل مصور (%)","Deduction per photographer (%)"],["جلسة في هذا اليوم","session on this day"],["الأدوار وأسعارها","Roles & rates"],["مستحقات المصورين","Photographer dues"],["الصافي المستحق:","Net due:"],["إجمالي المشاريع","Total projects"],["تاريخ الطباعة:","Print date:"],["محفوظ في حسابك","Saved to your account"],["مجموع الجلسات","Sessions total"],["لا توجد جلسات","No sessions"],["صافي المصورين","Photographers net"],["النص غير صالح","Invalid text"],["تمت الاستعادة","Restored"],["قيمة المصورين","Photographers cost"],["ملخص المصورين","Photographers summary"],["نسخة احتياطية","Backup"],["جلسة بدون اسم","Untitled session"],["جلسات كل مصور","Sessions per photographer"],["رسوم المعدات","Equipment fees"],["بدون افتراضي","No default"],["عدد الجلسات","Sessions"],["كشف مستحقات","Dues statement"],["اختر المصور","Select photographer"],["اسم الجلسة","Session name"],["ملخص السنة","Year summary"],["التقرير لـ","Report for"],["جارٍ الحفظ","Saving"],["جلسة جديدة","New session"],["سعر الجلسة","Session price"],["منها معدات","of which equipment"],["تعديل صور","Photo editing"],["مصور فيديو","Videographer"],["مصور فوتو","Photographer"],["مصور جديد","New photographer"],["دور جديد","New role"],["الإجمالي","Gross"],["المصورون","Photographers"],["المشاريع","Projects"],["الجلسات","Sessions"],["التعلّم","Learning"],["المجموع","Total"],["التاريخ","Date"],["استعادة","Restore"],["ربح سنة","Year profit"],["الصندوق","Fund"],["التقرير","Report"],["المبلغ","Amount"],["مونتاج","Montage"],["الفريق","Team"],["الجلسة","Session"],["المصور","Photographer"],["الصافي","Net"],["الأشهر","Months"],["تعلّم","Learning"],["تأكيد؟","Confirm?"],["معدات","Equipment"],["السعر","Price"],["الخصم","Deduction"],["الشهر","Month"],["تعديل","Edit"],["الربح","Profit"],["طباعة","Print"],["الدور","Role"],["النسب","Rates"],["السنة","Year"],["تكرار","Duplicate"],["تصدير","Export"],["سلفة","Advance"],["إلى:","To:"],["مصور","Photographer"],["رجوع","Back"],["د.ب","BD"],["سنة","Year"],["من:","From:"],["حذف","Delete"],["نشط","Active"],["خصم","Deduction"],["تم","Done"],["القائمة","List"],["تم النسخ","Copied"],["انسخ النص يدويًا:","Copy the text manually:"],["إغلاق","Close"],["فتح في التقويم","Open in calendar"],["اضغط على الجلسة لنسخ بياناتها.","Tap a session to copy its details."],["الباقات وأسعار الأدوار","Packages & role rates"],["اترك الخانة فارغة لاستخدام السعر الافتراضي للدور.","Leave a box empty to use the role's default price."],["سعر الجلسة (اختياري)","Session price (optional)"],["باقة جديدة","New package"],["بدون باقة","No package"],["الباقة","Package"],["المنتجات","Products"],["الأعراس","Weddings"],["الإيفنت","Events"],["التقويم","Calendar"],["اليوم","Today"],["غدًا","Tomorrow"],["الأقرب","Next"],["الوقت","Time"]].sort((a,b)=>b[0].length-a[0].length).map(([a,b])=>[new RegExp('(^|[^\\u0600-\\u06FF])'+a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?![\\u0600-\\u06FF])','g'),b]);
+const tx=s=>{s=s.replace(/بعد (\d+) أيام/g,'In $1 days');for(const[r,b]of DICT)s=s.replace(r,(m,p)=>p+b);return s};
+const OR=new WeakMap(),ARB=/[\u0600-\u06FF]/;
+function trNode(n){
+  if(UI.lang!='en')return;const p=n.parentElement;if(!p||p.closest('[translate="no"]'))return;
+  const o=OR.has(n)?OR.get(n):n.nodeValue;if(!ARB.test(o))return;
+  const v=tx(o);if(!OR.has(n))OR.set(n,o);if(n.nodeValue!==v)n.nodeValue=v;
+}
+function trAttrs(el){
+  if(el.closest('[translate="no"]'))return;
+  for(const a of['placeholder','title','aria-label']){if(!el.hasAttribute(a))continue;const o=(el.__o&&el.__o[a])||el.getAttribute(a);
+    if(ARB.test(o)){(el.__o||(el.__o={}))[a]=o;const v=tx(o);if(el.getAttribute(a)!==v)el.setAttribute(a,v)}}
+}
+function trTree(root){
+  if(UI.lang!='en')return;if(root.nodeType==3)return trNode(root);if(root.nodeType!=1)return;
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode())trNode(n);
+  root.querySelectorAll('[placeholder],[title],[aria-label]').forEach(trAttrs);trAttrs(root);
+}
+function restoreAr(){
+  const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode())if(OR.has(n)&&n.nodeValue!==OR.get(n))n.nodeValue=OR.get(n);
+  document.querySelectorAll('*').forEach(el=>{if(el.__o)for(const a in el.__o)el.setAttribute(a,el.__o[a])});
+}
+function applyUI(){
+  const r=document.documentElement;r.lang=UI.lang;r.dir=UI.lang=='ar'?'rtl':'ltr';
+  UI.theme?r.setAttribute('data-theme',UI.theme):r.removeAttribute('data-theme');
+  const dk=(UI.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'))=='dark';
+  G('lang').textContent=UI.lang=='ar'?'EN':'عربي';G('theme').textContent=dk?'☀️':'🌙';G('theme').setAttribute('aria-label',dk?'Light mode':'Dark mode');
+}
+function setLang(l){
+  UI.lang=l;saveUI();MON=l=='en'?MONEN:MONAR;WD=l=='en'?WDEN:WDAR;applyUI();
+  if(l=='ar'){restoreAr();document.title='حساب رواتب المصورين'}
+  renderAll();if(REP&&!G('rep').hidden)G('rep').innerHTML=repH();
+  if(l=='en'){document.title=tx('حساب رواتب المصورين');trTree(document.body)}
+}
+applyUI();
+renderAll();setStat('local');
+new MutationObserver(ms=>{if(UI.lang!='en')return;for(const m of ms){if(m.type=='characterData')trNode(m.target);else m.addedNodes.forEach(trTree)}}).observe(document.body,{childList:true,subtree:true,characterData:true});
+if(UI.lang=='en'){document.title=tx('حساب رواتب المصورين');trTree(document.body)}
+(async()=>{
+  try{
+    const [db,u]=await Promise.all([claude.use('db'),claude.use('user')]);
+    if(!db||!u)return;
+    const id=await u.id();ref=db.collection('data/users/'+id).doc('ledger');
+    const s=await ref.get();
+    if(s.exists&&s.data()&&s.data().sessions){S=norm(s.data());try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}renderAll();save()}
+    else await ref.set(JSON.parse(JSON.stringify(S)));
+    setStat('cloud');
+  }catch(e){setStat('local')}
+})();
+</script>
+</body>
+</html>
+
+</body></html>

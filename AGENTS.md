@@ -31,10 +31,15 @@
 ShuaibStudio/
 ├── AGENTS.md          # This documentation file (keep updated)
 ├── index.html         # The entire site: markup, styles, and scripts
+├── login.html         # Login page (username + password) opened by clicking the "شعيب استوديو" logo
+├── payroll.enc.js     # AES-256-GCM encrypted payroll page (generated — safe to commit; see section 13)
+├── .gitignore         # Ignores .DS_Store and private/
+├── private/           # LOCAL ONLY (git-ignored): payroll.src.html = plaintext source of the protected page
 ├── sw.js              # Service worker: browser cache for photos + page (faster repeat visits)
 ├── vercel.json        # Hosting headers: long-lived caching for thumbs/ (deployed on Vercel)
 ├── hero.jpg           # Hero/studio image asset
 ├── scripts/
+│   ├── build-login.mjs # Encrypts private/payroll.src.html → payroll.enc.js with a username + password
 │   └── make-thumbs.sh # Generates the small thumbs/ copies of every photo (run after adding photos)
 ├── thumbs/            # Optimized copies of every photo (~70 KB each, 59 files ≈ 4.2 MB) — loaded by the gallery
 │   ├── photos/        # mirrors photos/
@@ -338,5 +343,25 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 - **2026-10-03** — **صور حفل التخرج تظهر الآن**: commit `bf676b4` («add pic 2») أضاف 5 صور إلى `party_pic/` (`١.jpg` … `٥.jpg` بأرقام عربية) ونُشرت على الموقع، لكن `CATEGORY_PHOTOS.graduation.photos` بقيت `[]` و`thumbs/party_pic/` بقيت فارغة — فظهر قسم «حفل تخرج» ببطاقات «قريبًا» مع التنبيه «لا توجد صور بعد في مجلد party_pic/». الإصلاح (commit `af3e18c`): القائمة الآن الأسماء الخمسة بالضبط (الأرقام العربية تُرمَّز عبر `encodeURI` تمامًا كحال المسافات)، وُلّدت 5 مصغّرات (`thumbs/` = 59 ملفًا ≈ 4.2 ميجابايت، منها 452 كيلوبايت لـ `party_pic`)، ورُفع `THUMB_VERSION` `'3'` → `'4'`. تم التحقق: 58/58 اسمًا موجود داخل مجلده **و** `thumbs/`، و58/58 رابط مصغّر يرجّع HTTP 200 على خادم محلي، و`node --check` على السكربت المضمّن يمر.
 
 - **2026-10-03** — **إصلاح جدول الـ commits في هذا الملف (وسم HEAD المتقادم)**: كان الجدول يوسم صفًا بـ`*(HEAD)*` فيتقادم تلقائيًا مع كل commit يعدّل الجدول نفسه (وكان يشير إلى رسالة commit خاطئة). أُزيل وسم `*(HEAD)*` نهائيًا وصار الجدول قائمة hashes فقط (الأحدث في الأعلى) فلا يتقادم بعد الآن؛ وأُضيف hash إصلاح صور حفل التخرج `af3e18c`. تغيير في `AGENTS.md` فقط — لا مساس بـ `index.html` ولا بالصور ولا بـ `THUMB_VERSION` (بقي `'4'`).
+
+- **2026-10-19** — **الضغط على «شعيب استوديو» يفتح صفحة دخول (يوزر + باسورد) تحمي صفحة حساب رواتب المصورين**: الشعار في `.top-bar` صار رابطًا `<a class="studio-logo" href="login.html">` (أُضيف `text-decoration:none`)؛ أُنشئت `login.html` و`scripts/build-login.mjs` و`payroll.enc.js` و`.gitignore`. التفاصيل في القسم 13. تم التحقق بسكربت node: الدخول الصحيح يطابق المصدر، والباسورد الخاطئ واليوزر الخاطئ يُرفضان، ولا نص ظاهر للصفحة داخل `payroll.enc.js`.
+
+---
+
+## 13. Login page & protected payroll page
+
+- Clicking the logo (`.studio-logo` in `index.html`) goes to `login.html` (RTL form, same gold theme, follows the OS dark/light setting, has a back link to `index.html`).
+- The protected page is `photographers-pay-v6.html` (حساب رواتب المصورين, copied from `~/Downloads`). Its plaintext lives only in `private/payroll.src.html` (**git-ignored, never deploy it**).
+- **There is no backend**, so protection is client-side encryption: `scripts/build-login.mjs` encrypts the page with AES-256-GCM; the key comes from PBKDF2-SHA256 (310 000 iterations) over `username.trim().toLowerCase() + "\0" + password`. The result is `window.PAYROLL_ENC` in `payroll.enc.js`. `login.html` derives the key from what the user types and decrypts; a wrong username or password fails the GCM check, so the page never appears. On success `document.write` replaces the login page with the payroll page, plus a floating "خروج" button. The derived key is kept in `sessionStorage` (`shuaib-admin-key`) so a refresh in the same tab stays logged in; closing the tab or pressing "خروج" logs out. The username is case-insensitive; the password is case-sensitive.
+- Web Crypto needs a secure context: works on `https://shuaib-studio.vercel.app` and `http://localhost`, not on a plain `file://`.
+- **Credentials are deliberately NOT written in this file or anywhere in the repo** (this file is pushed to GitHub); only the ciphertext is stored. The initial username is `admin` and the password was given to the owner in chat when the feature was created. Change them by re-running:
+  ```bash
+  node scripts/build-login.mjs <username> <password>        # reads private/payroll.src.html
+  node scripts/build-login.mjs <user> <pass> path/to/new.html  # to replace the protected page
+  ```
+  then commit `payroll.enc.js` and push. Use a password of 8+ characters (the script enforces it).
+- Limits: the encrypted file is public, so an attacker could try offline guesses — a long random password is what makes this safe. Anyone with the password can read the page; this is not per-user access control.
+- The payroll page stores data in the browser's `localStorage` on the site origin (`shuaib-photog-v2`), per device. Its optional cloud save (`claude.use('db')`) only works inside Claude and silently falls back to local storage elsewhere.
+- Editing the payroll page = edit `private/payroll.src.html`, then re-run the build script and commit `payroll.enc.js`.
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
