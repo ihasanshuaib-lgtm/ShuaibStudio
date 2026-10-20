@@ -80,7 +80,7 @@
   body.light-mode .theme-toggle .icon-sun{display:inline;}
   body.light-mode .theme-toggle .icon-moon{display:none;}
 
-  /* معرض ثلاثي الأبعاد (Helix / Barrel / Ring / Sphere) */
+  /* معرض ثلاثي الأبعاد (Barrel / Helix / Ring / Sphere) */
   .gallery-section{margin-bottom:10px;}
   .gallery{
     position:relative;
@@ -1051,7 +1051,7 @@ const GALLERY_SPEED = 0.32; // بطاقة في الثانية تقريبًا
 const reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 let currentGalleryImages = [];
-let gMode = 'helix', gAuto = !reduceMotion;
+let gMode = 'barrel', gAuto = !reduceMotion;
 let gCards = [], gN = 0;
 let gT = 0, gTarget = 0, gMx = 0, gMy = 0, gTmx = 0, gTmy = 0;
 let gDragging = false, gMoved = 0, gLastX = 0, gDownCard = null;
@@ -1546,6 +1546,13 @@ function buildMessage(){
     return null;
   }
 
+  // الحقول الإضافية الخاصة بالنوع (المكان / القصر / الجامعة / نوع المنتج ...)
+  const extraLines = [];
+  CATEGORIES[activeCategory].info.extraFields.forEach(f=>{
+    const v = document.getElementById('extra-' + f.id)?.value.trim();
+    if(v) extraLines.push(`${f.label}: ${v}`);
+  });
+
   let total = selectedPackage.price;
   let lines = [
     `*طلب حجز جديد - شعيب استوديو*`,
@@ -1553,6 +1560,7 @@ function buildMessage(){
     `الاسم: ${name}`,
     `تاريخ التصوير: ${date}`,
     `وقت التصوير: ${time}`,
+    ...extraLines,
     ``,
     `الباقة: ${selectedPackage.icon} ${selectedPackage.name} - ${selectedPackage.price} BD`
   ];
