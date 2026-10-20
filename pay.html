@@ -325,18 +325,18 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,12,10,0.96);backdrop-fi
 
 /* ===== Shuaib Studio: soft blue-gray neumorphic theme (matches booking page) ===== */
 :root{
-  --gold:#6e8798;--dark:#eef2f6;--off:#e4ebf1;--surface:#eef2f9;
-  --border:#d7e1e8;--text:#344653;--muted:#8193a0;--white:#344653;
+  --gold:#6e8798;--dark:#dde1e5;--off:#d4dbe0;--surface:#dde1e8;
+  --border:#c8d1d8;--text:#344653;--muted:#8193a0;--white:#344653;
   --danger:#c25c5c;--success:#43856d;
-  --sh-l:#ffffff;--sh-d:#cbd6df;
+  --sh-l:#ffffff;--sh-d:#bdc7cf;
   --raise:6px 6px 14px var(--sh-d),-6px -6px 14px var(--sh-l);
   --raise-sm:4px 4px 9px var(--sh-d),-4px -4px 9px var(--sh-l);
-  --inset:inset 3px 3px 7px #d3dee6,inset -3px -3px 7px #fff;
-  --grad:linear-gradient(145deg,#f7fafd,#e6edf4);
+  --inset:inset 3px 3px 7px #c4ced6,inset -3px -3px 7px #fff;
+  --grad:linear-gradient(145deg,#e6e8eb,#d6dce3);
 }
 html{scroll-behavior:smooth}
 body{
-  background:radial-gradient(ellipse at 50% 0%,#f8fbfd 0%,#edf3f7 48%,#e6eef3 100%) fixed !important;
+  background:radial-gradient(ellipse at 50% 0%,#e7e9eb 0%,#dce2e6 48%,#d6dde2 100%) fixed !important;
   color:var(--text);
 }
 ::selection{background:#b8ccd9;color:#263640}
@@ -348,7 +348,7 @@ nav{background:rgba(238,244,248,.92);border-bottom:none;box-shadow:0 8px 22px -1
 .logo{color:var(--text)}
 .nav-links button{border-radius:14px;color:var(--muted);font-weight:600}
 .nav-links button:hover{background:transparent;color:var(--text);box-shadow:var(--raise-sm)}
-.nav-links button.active{background:var(--bg-x,#e8eff5);color:var(--gold);box-shadow:var(--inset)}
+.nav-links button.active{background:var(--bg-x,#d8dee4);color:var(--gold);box-shadow:var(--inset)}
 .lang-btn{background:var(--grad);border:1px solid #fff;color:var(--gold);box-shadow:var(--raise-sm)}
 .lang-btn:hover{background:var(--grad);box-shadow:var(--inset)}
 
@@ -378,16 +378,16 @@ nav{background:rgba(238,244,248,.92);border-bottom:none;box-shadow:0 8px 22px -1
 /* FORMS */
 .form-group input,.form-group select,.form-group textarea,
 #client-picker,.inv-items input,.pr-sheet-x{
-  background:#edf3f8 !important;border:1px solid #d9e3ea !important;color:var(--text) !important;
+  background:#dce2e7 !important;border:1px solid #cad3da !important;color:var(--text) !important;
   border-radius:13px !important;box-shadow:var(--inset) !important;
 }
 .form-group input,.form-group select,.form-group textarea{padding:.7rem .9rem}
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus,.inv-items input:focus{border-color:var(--gold) !important;box-shadow:var(--inset),0 0 0 3px rgba(110,135,152,.15) !important}
-.form-group select option{background:#eef2f6;color:var(--text)}
+.form-group select option{background:#dde1e5;color:var(--text)}
 .form-group input::placeholder,.form-group textarea::placeholder{color:#a3b2bd}
 .inv-items td{color:var(--text)}
 .inv-items tr:not(:last-child) td{border-bottom:1px solid var(--border)}
-.inv-items input{background:#edf3f8}
+.inv-items input{background:#dce2e7}
 .remove-row{color:var(--danger)}
 
 /* BADGES */
@@ -400,16 +400,16 @@ nav{background:rgba(238,244,248,.92);border-bottom:none;box-shadow:0 8px 22px -1
 /* SERVICE CHIPS */
 .svc-chip{background:var(--grad);border:1px solid #fff;color:var(--muted);box-shadow:var(--raise-sm);font-weight:600}
 .svc-chip:hover{border-color:#fff;color:var(--text)}
-.svc-chip.selected{background:#e4edf4;border-color:var(--gold);color:var(--gold);box-shadow:var(--inset)}
+.svc-chip.selected{background:#d4dce3;border-color:var(--gold);color:var(--gold);box-shadow:var(--inset)}
 
 /* STAFF / CLIENTS */
 .staff-avatar,.client-avatar{background:var(--grad);border:1px solid #fff;color:var(--gold);box-shadow:var(--raise-sm)}
-.client-inv-count{background:#e4edf4;border:1px solid #d3e0e8;color:var(--gold);box-shadow:var(--inset)}
+.client-inv-count{background:#d4dce3;border:1px solid #c4d0d8;color:var(--gold);box-shadow:var(--inset)}
 .work-log-table td{border-bottom:1px solid var(--border);color:var(--text)}
 .work-log-table tr:hover td{background:rgba(110,135,152,.06)}
 
 /* BOOKING iframe bg */
-#booking-iframe{background:#eef2f6}
+#booking-iframe{background:#dde1e5}
 
 /* MODALS */
 .inv-preview,.slip-preview{background:rgba(52,70,83,.55);backdrop-filter:blur(8px)}
@@ -421,43 +421,43 @@ nav{background:rgba(238,244,248,.92);border-bottom:none;box-shadow:0 8px 22px -1
 
 /* PAYROLL */
 #page-payroll input,#page-payroll select,#page-payroll textarea{
-  background:#edf3f8;border:1px solid #d9e3ea;color:var(--text);border-radius:12px;box-shadow:var(--inset);
+  background:#dce2e7;border:1px solid #cad3da;color:var(--text);border-radius:12px;box-shadow:var(--inset);
 }
 #page-payroll input:focus,#page-payroll select:focus{border-color:var(--gold)}
 #page-payroll input[type=checkbox]{box-shadow:none}
 .pr-tab{background:var(--grad);border:1px solid #fff;color:var(--muted);box-shadow:var(--raise-sm)}
 .pr-tab:hover{border-color:#fff;color:var(--text)}
 .pr-tab.has{color:var(--text)}
-.pr-tab.on{background:#e4edf4;border-color:var(--gold);color:var(--gold);box-shadow:var(--inset)}
+.pr-tab.on{background:#d4dce3;border-color:var(--gold);color:var(--gold);box-shadow:var(--inset)}
 .pr-hero{background:var(--grad);border-radius:24px}
 .pr-big{color:var(--gold)}
-.pr-bar{background:#dbe5ec;box-shadow:var(--inset)}
-.pr-stats div{background:#edf3f8;border:1px solid #fff;box-shadow:var(--inset);border-radius:14px}
+.pr-bar{background:#ccd5db;box-shadow:var(--inset)}
+.pr-stats div{background:#dce2e7;border:1px solid #fff;box-shadow:var(--inset);border-radius:14px}
 .pr-stats b{color:var(--text)}
 .pr-t th,.pr-t td{border-bottom:1px solid var(--border)}
 .pr-t tfoot td{background:rgba(110,135,152,.1);color:var(--gold)}
-.pr-seg{border:none;background:#edf3f8;box-shadow:var(--inset);border-radius:14px;padding:3px}
+.pr-seg{border:none;background:#dce2e7;box-shadow:var(--inset);border-radius:14px;padding:3px}
 .pr-seg button{background:transparent;border-radius:11px;color:var(--muted)}
 .pr-seg button.on{background:linear-gradient(145deg,#7e9aaa,#607b8d);color:#fff;box-shadow:var(--raise-sm)}
-.pr-dt{background:#e4edf4;color:var(--gold);box-shadow:var(--inset)}
+.pr-dt{background:#d4dce3;color:var(--gold);box-shadow:var(--inset)}
 .pr-nx{background:var(--gold);color:#fff}
-.pr-sum{background:#e8eff5;box-shadow:var(--inset);border-radius:14px}
-.pr-ln{background:#e8eff5;box-shadow:var(--inset)}
+.pr-sum{background:#d8dee4;box-shadow:var(--inset);border-radius:14px}
+.pr-ln{background:#d8dee4;box-shadow:var(--inset)}
 .pr-adds button{background:var(--grad);border:1px solid #fff;color:var(--gold);box-shadow:var(--raise-sm)}
 .pr-adds button:hover{background:var(--grad);box-shadow:var(--inset)}
 .pr-x.txt{border:1px solid #fff;box-shadow:var(--raise-sm)}
 .pr-pd{border-top:1px solid var(--border)}
-.pr-cd{background:#edf3f8;border:1px solid #fff;box-shadow:var(--raise-sm);color:var(--text);border-radius:12px}
+.pr-cd{background:#dce2e7;border:1px solid #fff;box-shadow:var(--raise-sm);color:var(--text);border-radius:12px}
 .pr-cd.off{background:none;border:0;box-shadow:none}
 .pr-cd.today{border-color:var(--gold)}
-.pr-cd.sel{background:#e4edf4;outline:2px solid var(--gold);box-shadow:var(--inset)}
+.pr-cd.sel{background:#d4dce3;outline:2px solid var(--gold);box-shadow:var(--inset)}
 .pr-ev,.pr-cnt,.pr-pill{background:var(--gold);color:#fff}
 .pr-upi{background:var(--grad);border:1px solid #fff;box-shadow:var(--raise-sm);color:var(--text)}
-.pr-upi.next{border-color:var(--gold);background:#e4edf4;box-shadow:var(--inset)}
+.pr-upi.next{border-color:var(--gold);background:#d4dce3;box-shadow:var(--inset)}
 .pr-upg{background:var(--grad);border:1px solid #fff;box-shadow:var(--raise-sm);color:var(--text)}
-.pr-pk{border:none;background:#e8eff5;box-shadow:var(--inset);border-radius:16px}
+.pr-pk{border:none;background:#d8dee4;box-shadow:var(--inset);border-radius:16px}
 .pr-toast{background:var(--grad);border:1px solid var(--gold);box-shadow:var(--raise);color:var(--text)}
-.pr-rep-bar select{background:#edf3f8;border:1px solid #d9e3ea;color:var(--text);border-radius:12px;box-shadow:var(--inset)}
+.pr-rep-bar select{background:#dce2e7;border:1px solid #cad3da;color:var(--text);border-radius:12px;box-shadow:var(--inset)}
 .pr-sheet,.inv-doc,.slip-doc{box-shadow:0 20px 60px rgba(52,70,83,.3)}
 details.card summary{color:var(--text)}
 
