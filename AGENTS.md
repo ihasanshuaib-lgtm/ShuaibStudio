@@ -383,4 +383,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
   2. **شريط أنواع التصوير متحرك**: `#categoriesList` (class `marquee`) يحوي `.cat-track` بثلاث نسخ `.cat-copy` من الأزرار، تتحرك ببطء (45 ثانية للنسخة) نحو اليمين في حلقة لا تنتهي بـ CSS `@keyframes catScroll`؛ تتوقف عند المرور بالمؤشر أو اللمس، ومع `prefers-reduced-motion` تعود شريطًا عاديًا قابلًا للتمرير. الأزرار صارت تُعرَّف بـ`data-key` بدل `id="cat-<key>"` (لأنها مكررة 3 مرات)، و`selectCategory` يضع `selected` على كل النسخ.
   3. **شريط المبلغ الكلي الثابت** (`#totalBar`): يظهر أسفل الشاشة عند اختيار باقة أو خدمة (`hasSelection`) ويختفي حين يدخل قسم الملخص `#summaryCard` الشاشة (`IntersectionObserver`)؛ الضغط عليه ينقل إلى الملخص. يتحدث من `update()` ويعرض المبلغ بعد الخصم.
 
+- **2026-10-20** — إصلاح تأخّر ظهور أنواع التصوير: كانت الحركة تبدأ من إزاحة ثابتة `-33%` فلا تظهر الأزرار كاملة في البداية. الآن `layoutCategoryMarquee()` تقيس عرض نسخة واحدة وعرض المنطقة الظاهرة وتضبط `--cat-from`/`--cat-to` بحيث تبدأ النسخة الوسطى كاملة ومحاذية لليمين ثم تنزاح نسخة واحدة نحو اليمين (وتُعاد عند تغيير حجم النافذة وبعد تحميل الخطوط).
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.

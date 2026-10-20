@@ -273,11 +273,12 @@
   .categories::-webkit-scrollbar{height:5px;}
   /* شريط الأنواع يتحرك ببطء نحو اليمين بلا توقف (3 نسخ من الأزرار لحلقة سلسة) */
   .categories.marquee{overflow:hidden;padding-bottom:0;}
-  .cat-track{display:flex;width:max-content;direction:ltr;animation:catScroll 45s linear infinite;}
+  .cat-track{display:flex;width:max-content;direction:ltr;transform:translateX(var(--cat-from,0px));}
+  .cat-track.run{animation:catScroll 45s linear infinite;}
   .cat-copy{display:flex;gap:8px;padding-left:8px;direction:rtl;}
   .categories.marquee:hover .cat-track,
   .categories.marquee.paused .cat-track{animation-play-state:paused;}
-  @keyframes catScroll{from{transform:translateX(-33.3333%);}to{transform:translateX(0);}}
+  @keyframes catScroll{from{transform:translateX(var(--cat-from,0px));}to{transform:translateX(var(--cat-to,0px));}}
   @media(prefers-reduced-motion:reduce){
     .categories.marquee{overflow-x:auto;}
     .cat-track{animation:none;}
@@ -1372,6 +1373,20 @@ for(let copy = 0; copy < 3; copy++){
   catTrack.appendChild(wrap);
 }
 categoriesList.appendChild(catTrack);
+// نبدأ والأزرار كاملة وظاهرة (النسخة الوسطى محاذية لليمين)، ثم تنزاح نسخة كاملة نحو اليمين
+function layoutCategoryMarquee(){
+  const W = catTrack.firstElementChild.offsetWidth;   // عرض نسخة واحدة
+  const V = categoriesList.clientWidth;               // عرض المنطقة الظاهرة
+  if(!W || !V) return;
+  catTrack.style.setProperty('--cat-from', (V - 2 * W) + 'px');
+  catTrack.style.setProperty('--cat-to', (V - W) + 'px');
+  catTrack.classList.remove('run');
+  void catTrack.offsetWidth;                          // إعادة تشغيل الحركة من البداية
+  catTrack.classList.add('run');
+}
+layoutCategoryMarquee();
+window.addEventListener('resize', layoutCategoryMarquee);
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(layoutCategoryMarquee);
 // على اللمس: تتوقف الحركة أثناء اللمس لتسهيل الضغط
 categoriesList.addEventListener('touchstart', ()=> categoriesList.classList.add('paused'), {passive:true});
 categoriesList.addEventListener('touchend', ()=> setTimeout(()=>categoriesList.classList.remove('paused'), 1500), {passive:true});
