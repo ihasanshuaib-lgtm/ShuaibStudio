@@ -376,4 +376,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-10-20** — إضافة شعار الاستوديو `logo.png` (حرف S أبيض على خلفية شفافة، قُصّ من 1170×869 إلى 360×440) أعلى الصفحة فوق عنوان «حجز موعد التصوير» داخل `<header>` عبر `<div class="brand-logo">`. يُلوَّن بلون `--gold` بواسطة CSS `mask` لأنه أبيض ولن يظهر على الخلفية الفاتحة، فيعمل في الوضعين الفاتح والداكن.
 
+- **2026-10-20** — **خدمات «تصوير منتجات وأطعمة» عادت للظهور**: كتلة `services` الخاصة بـ`realestate` (3 خدمات: `rs1` فيديو ترويجي إضافي 25، `rs4` خلفيات إضافية 8، `rs5` تسريع التسليم 20) كانت قد اختفت من `CATEGORIES` خلال commits الاستعادة (`c82c54e`/`dc83230`) فلم يكن هناك قسم خدمات إضافية لهذا النوع. أُعيدت، وأُضيف `|| []` في `currentServices()` حتى لا يتعطل الكود لو نقصت `services` في أي نوع مستقبلًا.
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.

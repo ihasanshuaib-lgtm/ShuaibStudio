@@ -702,8 +702,12 @@ const CATEGORIES = {
     price: 90,
     desc: 'تصوير فوتو احترافي + فيديو ريلز احترافي + مدة التصوير 3 ساعات'
   }
-]
-
+],
+    services: [
+      {id:'rs1', name:'تصوير فيديو ترويجي إضافي', price:25},
+      {id:'rs4', name:'خلفيات إضافية متعددة', price:8},
+      {id:'rs5', name:'تسريع التسليم (خلال 24 ساعة)', price:20},
+    ]
   },
 
   event: {
@@ -1478,7 +1482,7 @@ function getDiscountRate(){
 discountInput.addEventListener('input', update);
 
 function currentServices(){
-  return activeCategory ? CATEGORIES[activeCategory].services : [];
+  return activeCategory ? (CATEGORIES[activeCategory].services || []) : [];
 }
 
 function calcRawTotal(){
