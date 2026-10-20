@@ -101,7 +101,7 @@ The file is organized in this order:
 
 ### Theming (CSS variables)
 
-Defined on `:root` (dark default) and overridden by `body.light-mode`. The `<body>` currently has `class="light-mode"` **by default**. Key variables: `--bg`, `--bg-soft`, `--card`, `--card-hover`, `--gold`, `--gold-light`, `--gold-dim`, `--text`, `--text-dim`, `--line`, `--green`. Theme toggle button is `#themeToggle`.
+Defined on `:root` (dark default) and overridden by `body.light-mode`. The `<body>` currently has `class="light-mode"` **by default**. Key variables: `--bg`, `--bg-soft`, `--card`, `--card-hover`, `--gold`, `--gold-light`, `--gold-dim`, `--text`, `--text-dim`, `--line`, `--green`. Theme toggle button is `#themeToggle` — since 2026-10-20 a sun/moon switch (76×40 px, sliding knob, twinkling sparks in dark mode) styled by `.theme-toggle` with `body.light-mode` selectors; `aria-checked` = dark mode, kept in sync by `syncThemeToggle()`.
 
 ---
 
@@ -384,5 +384,9 @@ Recent history (most recent first) — run `git log --oneline` for the current h
   3. **شريط المبلغ الكلي الثابت** (`#totalBar`): يظهر أسفل الشاشة عند اختيار باقة أو خدمة (`hasSelection`) ويختفي حين يدخل قسم الملخص `#summaryCard` الشاشة (`IntersectionObserver`)؛ الضغط عليه ينقل إلى الملخص. يتحدث من `update()` ويعرض المبلغ بعد الخصم.
 
 - **2026-10-20** — إصلاح تأخّر ظهور أنواع التصوير: كانت الحركة تبدأ من إزاحة ثابتة `-33%` فلا تظهر الأزرار كاملة في البداية. الآن `layoutCategoryMarquee()` تقيس عرض نسخة واحدة وعرض المنطقة الظاهرة وتضبط `--cat-from`/`--cat-to` بحيث تبدأ النسخة الوسطى كاملة ومحاذية لليمين ثم تنزاح نسخة واحدة نحو اليمين (وتُعاد عند تغيير حجم النافذة وبعد تحميل الخطوط).
+
+- **2026-10-20** — زر الوضع الليلي/النهاري صار مفتاحًا بقمر وشمس (مأخوذ من تصميم `theme-toggle.html`، مصغّر إلى 76×40 بكسل): كرة تنزلق بين القمر (ليلي) والشمس (نهاري) مع نجوم تلمع في الوضع الليلي. لم يُنقل شعاع ضوء القمر والغبار على كامل الصفحة. المنطق كما هو (`body.light-mode`).
+
+- **2026-10-20** — شريط أنواع التصوير صار **ثابتًا** (أُلغيت الحركة المتكررة ونسخ الأزرار الثلاث `.cat-track`/`.cat-copy` ودالة `layoutCategoryMarquee`): الأزرار الخمسة تظهر كلها دائمًا وتلتف إلى سطر ثانٍ عند ضيق الشاشة (`.categories{flex-wrap:wrap}`). الأزرار تُعرَّف بـ`data-key` وتُحدَّد في `selectCategory` بمقارنته. هذا يلغي بند «شريط الأنواع المتحرك» السابق.
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.

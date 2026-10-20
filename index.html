@@ -63,22 +63,59 @@
     letter-spacing:1px;
     text-shadow:0 0 24px rgba(201,164,99,.25);
   }
+  /* زر الوضع الليلي/النهاري: مفتاح بقمر وشمس (الوضع الليلي = بدون light-mode) */
   .theme-toggle{
-    width:42px;height:42px;border-radius:50%;
-    border:1px solid var(--line);
-    background:var(--card);
-    color:var(--text);
+    position:relative;
+    width:76px;height:40px;flex-shrink:0;padding:0;
+    direction:ltr;
+    border-radius:24px;
+    border:1px solid rgba(255,255,255,.14);
+    background:linear-gradient(135deg,#181c30,#2a3050);
+    box-shadow:inset 0 2px 6px rgba(0,0,0,.35);
     cursor:pointer;
-    display:flex;align-items:center;justify-content:center;
-    font-size:18px;
-    flex-shrink:0;
-    transition:border-color .2s, background .2s;
+    outline:none;
+    transition:background .6s, border-color .6s, box-shadow .6s;
   }
-  .theme-toggle:hover{border-color:var(--gold-dim);}
-  .theme-toggle .icon-sun{display:none;}
-  .theme-toggle .icon-moon{display:inline;}
-  body.light-mode .theme-toggle .icon-sun{display:inline;}
-  body.light-mode .theme-toggle .icon-moon{display:none;}
+  body.light-mode .theme-toggle{
+    border-color:rgba(42,51,80,.12);
+    background:linear-gradient(135deg,#cfe0ff,#f4f8ff);
+    box-shadow:inset 0 1.5px 5px rgba(60,80,140,.18);
+  }
+  .theme-toggle:focus-visible{box-shadow:0 0 0 3px rgba(201,164,99,.6);}
+  .theme-toggle .knob{
+    position:absolute;top:4px;left:4px;
+    width:32px;height:32px;border-radius:50%;
+    display:grid;place-items:center;
+    transform:translateX(36px);
+    transition:transform .7s cubic-bezier(.65,-0.2,.25,1.25);
+  }
+  body.light-mode .theme-toggle .knob{transform:translateX(0);}
+  .theme-toggle .knob::before{
+    content:"";position:absolute;inset:-3px;border-radius:50%;
+    background:radial-gradient(circle,rgba(190,205,255,.75),transparent 68%);
+    filter:blur(4px);transition:background .6s;
+  }
+  body.light-mode .theme-toggle .knob::before{background:radial-gradient(circle,rgba(255,190,60,.55),transparent 68%);}
+  .theme-toggle .knob svg{
+    position:absolute;width:30px;height:30px;overflow:visible;
+    transition:opacity .5s, transform .8s cubic-bezier(.3,1.3,.5,1);
+  }
+  .theme-toggle .moon{opacity:1;transform:none;filter:drop-shadow(0 0 5px rgba(200,215,255,.9));}
+  .theme-toggle .sun{opacity:0;transform:rotate(-90deg) scale(.4);filter:drop-shadow(0 0 5px rgba(255,190,60,.9));}
+  body.light-mode .theme-toggle .sun{opacity:1;transform:none;}
+  body.light-mode .theme-toggle .moon{opacity:0;transform:rotate(90deg) scale(.4);}
+  .theme-toggle .spark{
+    position:absolute;width:3px;height:3px;border-radius:50%;
+    background:#cfd9ff;box-shadow:0 0 5px #cfd9ff;
+    opacity:0;transition:opacity .6s;
+    animation:tgTwinkle 2.6s ease-in-out infinite;
+  }
+  body:not(.light-mode) .theme-toggle .spark{opacity:.9;}
+  .theme-toggle .spark:nth-child(1){top:5px;left:14px;animation-delay:.1s;}
+  .theme-toggle .spark:nth-child(2){top:30px;left:22px;animation-delay:.9s;width:2px;height:2px;}
+  .theme-toggle .spark:nth-child(3){top:12px;left:30px;animation-delay:1.6s;width:2px;height:2px;}
+  @keyframes tgTwinkle{0%,100%{transform:scale(.6);opacity:.3}50%{transform:scale(1.3);opacity:1}}
+  @media(prefers-reduced-motion:reduce){.theme-toggle .spark{animation:none;}.theme-toggle .knob{transition:none;}}
 
   /* معرض ثلاثي الأبعاد (Barrel / Helix / Ring / Sphere) */
   .gallery-section{margin-bottom:10px;}
@@ -271,19 +308,8 @@
     -webkit-overflow-scrolling:touch;
   }
   .categories::-webkit-scrollbar{height:5px;}
-  /* شريط الأنواع يتحرك ببطء نحو اليمين بلا توقف (3 نسخ من الأزرار لحلقة سلسة) */
-  .categories.marquee{overflow:hidden;padding-bottom:0;}
-  .cat-track{display:flex;width:max-content;direction:ltr;transform:translateX(var(--cat-from,0px));}
-  .cat-track.run{animation:catScroll 45s linear infinite;}
-  .cat-copy{display:flex;gap:8px;padding-left:8px;direction:rtl;}
-  .categories.marquee:hover .cat-track,
-  .categories.marquee.paused .cat-track{animation-play-state:paused;}
-  @keyframes catScroll{from{transform:translateX(var(--cat-from,0px));}to{transform:translateX(var(--cat-to,0px));}}
-  @media(prefers-reduced-motion:reduce){
-    .categories.marquee{overflow-x:auto;}
-    .cat-track{animation:none;}
-    .cat-copy[aria-hidden="true"]{display:none;}
-  }
+  /* شريط الأنواع ثابت: كل الأزرار ظاهرة دائمًا وتلتف إلى سطر جديد عند ضيق الشاشة */
+  .categories{flex-wrap:wrap;overflow:visible;}
   .category{
     flex:0 0 auto;
     background:var(--card);
@@ -553,9 +579,27 @@
 <div class="wrap">
   <div class="top-bar">
     <div class="studio-logo">شعيب استوديو</div>
-    <button class="theme-toggle" id="themeToggle" title="تبديل المظهر">
-      <span class="icon-moon">🌙</span>
-      <span class="icon-sun">☀️</span>
+    <button class="theme-toggle" id="themeToggle" role="switch" aria-checked="false" aria-label="الوضع الليلي" title="تبديل المظهر">
+      <span class="spark"></span><span class="spark"></span><span class="spark"></span>
+      <span class="knob">
+        <svg class="moon" viewBox="0 0 80 80" aria-hidden="true">
+          <defs>
+            <radialGradient id="tgMoonG" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#cdd7ff"/></radialGradient>
+            <mask id="tgCres"><rect width="80" height="80" fill="#fff"/><circle cx="50" cy="32" r="26" fill="#000"/></mask>
+          </defs>
+          <circle cx="36" cy="42" r="26" fill="url(#tgMoonG)" mask="url(#tgCres)"/>
+          <circle cx="56" cy="38" r="11" fill="url(#tgMoonG)"/>
+        </svg>
+        <svg class="sun" viewBox="0 0 80 80" aria-hidden="true">
+          <g stroke="#ffb627" stroke-width="4" stroke-linecap="round">
+            <line x1="40" y1="6" x2="40" y2="14"/><line x1="40" y1="66" x2="40" y2="74"/>
+            <line x1="6" y1="40" x2="14" y2="40"/><line x1="66" y1="40" x2="74" y2="40"/>
+            <line x1="16" y1="16" x2="22" y2="22"/><line x1="58" y1="58" x2="64" y2="64"/>
+            <line x1="64" y1="16" x2="58" y2="22"/><line x1="22" y1="58" x2="16" y2="64"/>
+          </g>
+          <circle cx="40" cy="40" r="17" fill="#ffc94a"/>
+        </svg>
+      </span>
     </button>
   </div>
 
@@ -1344,52 +1388,23 @@ function money(n){
 }
 
 // ---- render category cards ----
-// شريط متحرك: 3 نسخ متطابقة من الأزرار، والحركة تنزاح بمقدار نسخة واحدة فتتكرر بسلاسة
-categoriesList.classList.add('marquee');
-const catTrack = document.createElement('div');
-catTrack.className = 'cat-track';
-for(let copy = 0; copy < 3; copy++){
-  const wrap = document.createElement('div');
-  wrap.className = 'cat-copy';
-  if(copy > 0) wrap.setAttribute('aria-hidden', 'true');
-  Object.keys(CATEGORIES).forEach(key=>{
-    const cat = CATEGORIES[key];
-    const div = document.createElement('div');
-    div.className = 'category';
-    div.dataset.key = key;
-    if(copy > 0) div.tabIndex = -1;
-    const isEmpty = cat.packages.length === 0;
-    div.innerHTML = `
-      <div class="cat-icon">${cat.icon}</div>
-      <div class="cat-name">${cat.name}</div>
-      ${isEmpty ? `<span class="cat-empty-tag">قريبًا</span>` : ''}
-    `;
-    div.addEventListener('click', ()=> selectCategory(key));
-    // تحميل صور النوع مسبقًا لمجرد مرور المؤشر أو اللمس → يظهر الجلري فورًا عند الاختيار
-    div.addEventListener('mouseenter', ()=> preloadThumbs(key, GALLERY_COUNT));
-    div.addEventListener('touchstart', ()=> preloadThumbs(key, GALLERY_COUNT), {passive:true});
-    wrap.appendChild(div);
-  });
-  catTrack.appendChild(wrap);
-}
-categoriesList.appendChild(catTrack);
-// نبدأ والأزرار كاملة وظاهرة (النسخة الوسطى محاذية لليمين)، ثم تنزاح نسخة كاملة نحو اليمين
-function layoutCategoryMarquee(){
-  const W = catTrack.firstElementChild.offsetWidth;   // عرض نسخة واحدة
-  const V = categoriesList.clientWidth;               // عرض المنطقة الظاهرة
-  if(!W || !V) return;
-  catTrack.style.setProperty('--cat-from', (V - 2 * W) + 'px');
-  catTrack.style.setProperty('--cat-to', (V - W) + 'px');
-  catTrack.classList.remove('run');
-  void catTrack.offsetWidth;                          // إعادة تشغيل الحركة من البداية
-  catTrack.classList.add('run');
-}
-layoutCategoryMarquee();
-window.addEventListener('resize', layoutCategoryMarquee);
-if(document.fonts && document.fonts.ready) document.fonts.ready.then(layoutCategoryMarquee);
-// على اللمس: تتوقف الحركة أثناء اللمس لتسهيل الضغط
-categoriesList.addEventListener('touchstart', ()=> categoriesList.classList.add('paused'), {passive:true});
-categoriesList.addEventListener('touchend', ()=> setTimeout(()=>categoriesList.classList.remove('paused'), 1500), {passive:true});
+Object.keys(CATEGORIES).forEach(key=>{
+  const cat = CATEGORIES[key];
+  const div = document.createElement('div');
+  div.className = 'category';
+  div.dataset.key = key;
+  const isEmpty = cat.packages.length === 0;
+  div.innerHTML = `
+    <div class="cat-icon">${cat.icon}</div>
+    <div class="cat-name">${cat.name}</div>
+    ${isEmpty ? `<span class="cat-empty-tag">قريبًا</span>` : ''}
+  `;
+  div.addEventListener('click', ()=> selectCategory(key));
+  // تحميل صور النوع مسبقًا لمجرد مرور المؤشر أو اللمس → يظهر الجلري فورًا عند الاختيار
+  div.addEventListener('mouseenter', ()=> preloadThumbs(key, GALLERY_COUNT));
+  div.addEventListener('touchstart', ()=> preloadThumbs(key, GALLERY_COUNT), {passive:true});
+  categoriesList.appendChild(div);
+});
 
 // اختيار نوع التصوير (يُستخدم عند الفتح وعند النقر)
 function selectCategory(key){
@@ -1512,9 +1527,14 @@ const STUDIO_EMAIL = "studio@example.com";
 // ============================================
 
 const themeToggle = document.getElementById('themeToggle');
+function syncThemeToggle(){
+  themeToggle.setAttribute('aria-checked', String(!document.body.classList.contains('light-mode')));
+}
 themeToggle.addEventListener('click', ()=>{
   document.body.classList.toggle('light-mode');
+  syncThemeToggle();
 });
+syncThemeToggle();
 
 const DISCOUNT_CODES = {
   'm10': 0.10,
