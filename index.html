@@ -271,6 +271,18 @@
     -webkit-overflow-scrolling:touch;
   }
   .categories::-webkit-scrollbar{height:5px;}
+  /* شريط الأنواع يتحرك ببطء نحو اليمين بلا توقف (3 نسخ من الأزرار لحلقة سلسة) */
+  .categories.marquee{overflow:hidden;padding-bottom:0;}
+  .cat-track{display:flex;width:max-content;direction:ltr;animation:catScroll 45s linear infinite;}
+  .cat-copy{display:flex;gap:8px;padding-left:8px;direction:rtl;}
+  .categories.marquee:hover .cat-track,
+  .categories.marquee.paused .cat-track{animation-play-state:paused;}
+  @keyframes catScroll{from{transform:translateX(-33.3333%);}to{transform:translateX(0);}}
+  @media(prefers-reduced-motion:reduce){
+    .categories.marquee{overflow-x:auto;}
+    .cat-track{animation:none;}
+    .cat-copy[aria-hidden="true"]{display:none;}
+  }
   .category{
     flex:0 0 auto;
     background:var(--card);
@@ -400,6 +412,24 @@
   }
   .qty-box button:hover{background:var(--gold-dim);}
   .qty-box span{min-width:22px;text-align:center;font-size:13.5px;}
+
+  /* شريط المبلغ الكلي الثابت أسفل الشاشة (يظهر عند اختيار باقة/خدمة ويختفي عند الوصول للملخص) */
+  .total-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px));
+    background:var(--card);
+    border-top:1px solid var(--gold-dim);
+    box-shadow:0 -10px 28px -12px rgba(0,0,0,.45);
+    transform:translateY(110%);
+    transition:transform .3s ease;
+    cursor:pointer;
+  }
+  .total-bar.show{transform:translateY(0);}
+  .total-bar .tb-label{font-size:13px;color:var(--text-dim);}
+  .total-bar .tb-amount{font-family:'Aref Ruqaa',serif;font-size:26px;font-weight:700;color:var(--gold-light);}
+  .total-bar .tb-go{font-size:12px;font-weight:700;color:var(--gold-light);}
+  @media(prefers-reduced-motion:reduce){.total-bar{transition:none;}}
 
   /* summary card (now flows naturally at end of page) */
   .summary-card{
@@ -591,7 +621,7 @@
     <h2>ملخص الحجز</h2>
     <div class="line"></div>
   </div>
-  <div class="summary-card">
+  <div class="summary-card" id="summaryCard">
     <div class="summary-rows" id="summaryRows">
       <div class="empty-hint">اختر باقة لعرض التفاصيل</div>
     </div>
@@ -610,6 +640,11 @@
       <button class="confirm-btn email-btn" id="sendEmail" disabled>إرسال الحجز عبر البريد</button>
     </div>
   </div>
+</div>
+
+<div class="total-bar" id="totalBar" role="status" aria-live="polite">
+  <div><div class="tb-label">المبلغ الكلي</div><div class="tb-amount" id="tbAmount">0 BD</div></div>
+  <div class="tb-go">عرض الملخص ↓</div>
 </div>
 
 <script>
@@ -654,7 +689,7 @@ const CATEGORIES = {
       {id:'s9', name:'تصوير أبو المعرس - كاميرا إضافية', price:20},
       {id:'s10', name:'تصوير 360 للحفل', price:10},
       {id:'s11', name:'تسريع التسليم (خلال 24 ساعة)', price:20},
-        {id:'s11', name:'تصوير وتصميم بطاقة الدعوة', price:20},
+      {id:'s12', name:'تصوير وتصميم بطاقة الدعوة', price:20},
     ]
   },
 
@@ -793,7 +828,7 @@ const CATEGORIES = {
     services: [
       {id:'gs1', name:'جلسة تصوير شخصية إضافية (خارج الحفل)', price:20},
       {id:'gs2', name:'طباعة الصور', price:0.5, perUnit:true},
-      {id:'gs3', name:'فيديو تهنئة من العائلة', price:10},
+      {id:'gs3', name:'مصور جوال ', price:10},
       {id:'gs4', name:'مونتاج فيديو تلخيصي للحفل', price:15},
       {id:'gs5', name:'تسريع التسليم (خلال 24 ساعة)', price:20},
     ]
@@ -1308,30 +1343,43 @@ function money(n){
 }
 
 // ---- render category cards ----
-Object.keys(CATEGORIES).forEach(key=>{
-  const cat = CATEGORIES[key];
-  const div = document.createElement('div');
-  div.className = 'category';
-  div.id = 'cat-'+key;
-  const isEmpty = cat.packages.length === 0;
-  div.innerHTML = `
-    <div class="cat-icon">${cat.icon}</div>
-    <div class="cat-name">${cat.name}</div>
-    ${isEmpty ? `<span class="cat-empty-tag">قريبًا</span>` : ''}
-  `;
-  div.addEventListener('click', ()=> selectCategory(key));
-  // تحميل صور النوع مسبقًا لمجرد مرور المؤشر أو اللمس → يظهر الجلري فورًا عند الاختيار
-  div.addEventListener('mouseenter', ()=> preloadThumbs(key, GALLERY_COUNT));
-  div.addEventListener('touchstart', ()=> preloadThumbs(key, GALLERY_COUNT), {passive:true});
-  categoriesList.appendChild(div);
-});
+// شريط متحرك: 3 نسخ متطابقة من الأزرار، والحركة تنزاح بمقدار نسخة واحدة فتتكرر بسلاسة
+categoriesList.classList.add('marquee');
+const catTrack = document.createElement('div');
+catTrack.className = 'cat-track';
+for(let copy = 0; copy < 3; copy++){
+  const wrap = document.createElement('div');
+  wrap.className = 'cat-copy';
+  if(copy > 0) wrap.setAttribute('aria-hidden', 'true');
+  Object.keys(CATEGORIES).forEach(key=>{
+    const cat = CATEGORIES[key];
+    const div = document.createElement('div');
+    div.className = 'category';
+    div.dataset.key = key;
+    if(copy > 0) div.tabIndex = -1;
+    const isEmpty = cat.packages.length === 0;
+    div.innerHTML = `
+      <div class="cat-icon">${cat.icon}</div>
+      <div class="cat-name">${cat.name}</div>
+      ${isEmpty ? `<span class="cat-empty-tag">قريبًا</span>` : ''}
+    `;
+    div.addEventListener('click', ()=> selectCategory(key));
+    // تحميل صور النوع مسبقًا لمجرد مرور المؤشر أو اللمس → يظهر الجلري فورًا عند الاختيار
+    div.addEventListener('mouseenter', ()=> preloadThumbs(key, GALLERY_COUNT));
+    div.addEventListener('touchstart', ()=> preloadThumbs(key, GALLERY_COUNT), {passive:true});
+    wrap.appendChild(div);
+  });
+  catTrack.appendChild(wrap);
+}
+categoriesList.appendChild(catTrack);
+// على اللمس: تتوقف الحركة أثناء اللمس لتسهيل الضغط
+categoriesList.addEventListener('touchstart', ()=> categoriesList.classList.add('paused'), {passive:true});
+categoriesList.addEventListener('touchend', ()=> setTimeout(()=>categoriesList.classList.remove('paused'), 1500), {passive:true});
 
 // اختيار نوع التصوير (يُستخدم عند الفتح وعند النقر)
 function selectCategory(key){
   activeCategory = key;
-  document.querySelectorAll('.category').forEach(el=>el.classList.remove('selected'));
-  const card = document.getElementById('cat-'+key);
-  if(card) card.classList.add('selected');
+  document.querySelectorAll('.category').forEach(el=>el.classList.toggle('selected', el.dataset.key === key));
   selectedPackage = null;
   Object.keys(selectedServices).forEach(k=>delete selectedServices[k]);
   renderInfoCard();
@@ -1540,7 +1588,28 @@ function update(){
 
   sendWhatsapp.disabled = !selectedPackage;
   sendEmail.disabled = !selectedPackage;
+
+  tbAmount.textContent = money(finalTotal);
+  hasSelection = rawTotal > 0;
+  refreshTotalBar();
 }
+
+// شريط المبلغ الكلي: يظهر عند وجود اختيار ما دام قسم الملخص خارج الشاشة
+const totalBar = document.getElementById('totalBar');
+const tbAmount = document.getElementById('tbAmount');
+let hasSelection = false, summaryInView = false;
+function refreshTotalBar(){
+  totalBar.classList.toggle('show', hasSelection && !summaryInView);
+}
+if('IntersectionObserver' in window){
+  new IntersectionObserver(entries=>{
+    summaryInView = entries[0].isIntersecting;
+    refreshTotalBar();
+  }).observe(document.getElementById('summaryCard'));
+}
+totalBar.addEventListener('click', ()=>{
+  document.getElementById('summaryCard').scrollIntoView({behavior:'smooth', block:'center'});
+});
 
 function buildMessage(){
   const name = document.getElementById('custName').value.trim();

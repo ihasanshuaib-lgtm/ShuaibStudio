@@ -378,4 +378,9 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-10-20** — **خدمات «تصوير منتجات وأطعمة» عادت للظهور**: كتلة `services` الخاصة بـ`realestate` (3 خدمات: `rs1` فيديو ترويجي إضافي 25، `rs4` خلفيات إضافية 8، `rs5` تسريع التسليم 20) كانت قد اختفت من `CATEGORIES` خلال commits الاستعادة (`c82c54e`/`dc83230`) فلم يكن هناك قسم خدمات إضافية لهذا النوع. أُعيدت، وأُضيف `|| []` في `currentServices()` حتى لا يتعطل الكود لو نقصت `services` في أي نوع مستقبلًا.
 
+- **2026-10-20** — ثلاثة تعديلات في `index.html`:
+  1. **خطأ المبلغ الكلي**: خدمتا الأعراس «تسريع التسليم (خلال 24 ساعة)» و«تصوير وتصميم بطاقة الدعوة» كانتا بنفس المعرّف `s11`، و`selectedServices` يُفهرس بالمعرّف فاختيار إحداهما يفعّل الأخرى ويُحسب 40 بدل 20. أُعيدت تسمية الثانية إلى `s12`. **قاعدة: معرّفات الباقات والخدمات يجب أن تكون فريدة داخل النوع.**
+  2. **شريط أنواع التصوير متحرك**: `#categoriesList` (class `marquee`) يحوي `.cat-track` بثلاث نسخ `.cat-copy` من الأزرار، تتحرك ببطء (45 ثانية للنسخة) نحو اليمين في حلقة لا تنتهي بـ CSS `@keyframes catScroll`؛ تتوقف عند المرور بالمؤشر أو اللمس، ومع `prefers-reduced-motion` تعود شريطًا عاديًا قابلًا للتمرير. الأزرار صارت تُعرَّف بـ`data-key` بدل `id="cat-<key>"` (لأنها مكررة 3 مرات)، و`selectCategory` يضع `selected` على كل النسخ.
+  3. **شريط المبلغ الكلي الثابت** (`#totalBar`): يظهر أسفل الشاشة عند اختيار باقة أو خدمة (`hasSelection`) ويختفي حين يدخل قسم الملخص `#summaryCard` الشاشة (`IntersectionObserver`)؛ الضغط عليه ينقل إلى الملخص. يتحدث من `update()` ويعرض المبلغ بعد الخصم.
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
