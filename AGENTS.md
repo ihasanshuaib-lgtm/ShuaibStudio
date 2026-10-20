@@ -101,7 +101,7 @@ The file is organized in this order:
 
 ### Theming (CSS variables)
 
-Defined on `:root` (dark default) and overridden by `body.light-mode`. The `<body>` currently has `class="light-mode"` **by default**. Key variables: `--bg`, `--bg-soft`, `--card`, `--card-hover`, `--gold`, `--gold-light`, `--gold-dim`, `--text`, `--text-dim`, `--line`, `--green`. Theme toggle button is `#themeToggle` — since 2026-10-20 a day/night scene switch (design from `day-night-switch.html`, drawn at 220×88 and scaled by `.4` to 88×35 px: night sky with stars + mountains ↔ day sky with clouds, sliding moon/sun knob) styled by `.theme-toggle` with `body.light-mode` selectors; `aria-checked` = dark mode, kept in sync by `syncThemeToggle()`.
+Defined on `:root` (dark default) and overridden by `body.light-mode`. The `<body>` currently has `class="light-mode"` **by default**. Key variables: `--bg`, `--bg-soft`, `--card`, `--card-hover`, `--gold`, `--gold-light`, `--gold-dim`, `--text`, `--text-dim`, `--line`, `--green`. Theme toggle button is `#themeToggle` — since 2026-10-20 the "Moonlight" sun/moon switch (design from `theme-toggle.html`, 76×40 px, sliding knob, twinkling sparks) plus, in dark mode only, a soft moonlight beam and floating dust (`.moon-fx`, behind the content, `pointer-events:none`, beam positioned from the toggle by `placeMoonBeam()`) styled by `.theme-toggle` with `body.light-mode` selectors; `aria-checked` = dark mode, kept in sync by `syncThemeToggle()`.
 
 ---
 
@@ -390,5 +390,9 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 - **2026-10-20** — شريط أنواع التصوير صار **ثابتًا** (أُلغيت الحركة المتكررة ونسخ الأزرار الثلاث `.cat-track`/`.cat-copy` ودالة `layoutCategoryMarquee`): الأزرار الخمسة تظهر كلها دائمًا وتلتف إلى سطر ثانٍ عند ضيق الشاشة (`.categories{flex-wrap:wrap}`). الأزرار تُعرَّف بـ`data-key` وتُحدَّد في `selectCategory` بمقارنته. هذا يلغي بند «شريط الأنواع المتحرك» السابق.
 
 - **2026-10-20** — زر الوضع الليلي/النهاري استُبدل بتصميم `day-night-switch.html` (مشهد ليل بنجوم وجبال ↔ مشهد نهار بغيوم، وكرة قمر/شمس تنزلق)، مرسومًا بحجم 220×88 ومصغّرًا بـ`scale(.4)` إلى 88×35 بكسل داخل `.theme-toggle`. المنطق كما هو (`body.light-mode`).
+
+- **2026-10-20** — أزرار أنواع التصوير في **سطر واحد** (بدل الالتفاف): `.categories{flex-wrap:nowrap}` والأزرار تتمدد/تتقلص (`flex:1 1 auto`)، وعلى الجوال (≤640px) يصبح الأيقونة فوق الاسم بخط أصغر ليتسع الخمسة؛ وإن ضاقت الشاشة أكثر يُمرَّر الشريط أفقيًا. (يستبدل بند الالتفاف السابق.)
+
+- **2026-10-20** — زر الوضع الليلي رجع إلى تصميم «Moonlight» (`theme-toggle.html`) مع شعاع ضوء القمر والغبار العائم في الوضع الليلي (`.moon-fx` خلف المحتوى)، بدل تصميم `day-night-switch.html`. وأزرار أنواع التصوير في سطر واحد.
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
