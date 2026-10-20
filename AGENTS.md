@@ -19,7 +19,7 @@
 
 - **Pure static HTML/CSS/JS** — everything lives in one file: `index.html`.
 - No package manager, no bundler, no dependencies. Open directly in a browser.
-- Fonts loaded from Google Fonts: **Aref Ruqaa** (headings) and **Tajawal** (body).
+- Fonts loaded from Google Fonts: **Aref Ruqaa** (section headings), **IBM Plex Sans Arabic** (the top-bar "شعيب استوديو" `.studio-logo` and the page title `h1` «حجز موعد التصوير», since 2026-10-20) and **Tajawal** (body).
 - Must work by simply opening `index.html` (file://) or serving statically.
 - Gallery images are loaded from the local `photos/` folder at runtime (client-side).
 
@@ -396,5 +396,7 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 - **2026-10-20** — زر الوضع الليلي رجع إلى تصميم «Moonlight» (`theme-toggle.html`) مع شعاع ضوء القمر والغبار العائم في الوضع الليلي (`.moon-fx` خلف المحتوى)، بدل تصميم `day-night-switch.html`. وأزرار أنواع التصوير في سطر واحد.
 
 - **2026-10-20** — تغيير الشعار: `logo.png` صار الشعار الجديد (حرف S رمادي معدني مع نص «SHUAIB STUDIO»، خلفية شفافة، قُصّ إلى 581×700). لم يعد يُلوَّن بـCSS mask بل يُعرض كصورة عادية `<img class="brand-logo" width=130>` أعلى `<header>`، فيعمل أيضًا على `file://`.
+
+- **2026-10-20** — خط «شعيب استوديو» (`.studio-logo` في الشريط العلوي) وعنوان «حجز موعد التصوير» (`h1`) صار **IBM Plex Sans Arabic** بدل Aref Ruqaa، وأُضيف الخط إلى رابط Google Fonts (أوزان 500/600/700).
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
