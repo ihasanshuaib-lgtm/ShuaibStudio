@@ -80,36 +80,36 @@
   body.light-mode .theme-toggle .icon-sun{display:inline;}
   body.light-mode .theme-toggle .icon-moon{display:none;}
 
-  /* JS-driven scattered "collection" gallery */
+  /* معرض ثلاثي الأبعاد (Helix / Barrel / Ring / Sphere) */
   .gallery-section{margin-bottom:10px;}
   .gallery{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    flex-wrap:wrap;
-    width:100%;
-    min-height:300px;
-    padding:30px 10px;
-  }
-  .gallery .card{
-    width:150px;
-    height:210px;
-    margin:0 -22px;
-    background-size:cover;
-    background-position:center;
-    background-color:var(--bg-soft);
-    border:5px solid var(--card);
-    border-radius:14px;
-    box-shadow:0 12px 28px -8px rgba(0,0,0,.45);
-    cursor:pointer;
     position:relative;
-    transition:transform .45s ease, box-shadow .45s ease, z-index 0s;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    width:100%;
+    height:min(62vw,420px);
+    min-height:300px;
+    overflow:hidden;
+    perspective:1500px;
+    touch-action:pan-y;
+    cursor:grab;
+    user-select:none;-webkit-user-select:none;
+    border-radius:16px;
   }
-  @media(max-width:640px){
-    .gallery .card{width:110px;height:160px;margin:0 -16px;}
+  .gallery.grab{cursor:grabbing;}
+  .gallery .scene{position:absolute;inset:0;transform-style:preserve-3d;}
+  .gallery .card{
+    position:absolute;left:50%;top:50%;
+    width:var(--cw,150px);height:var(--ch,210px);
+    margin-left:calc(var(--cw,150px) / -2);margin-top:calc(var(--ch,210px) / -2);
+    background:var(--bg-soft);
+    border:4px solid var(--card);
+    border-radius:12px;
+    box-shadow:0 12px 28px -8px rgba(0,0,0,.45);
+    overflow:hidden;
+    will-change:transform,opacity;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .gallery .scene.morph, .gallery .scene.morph .card{
+    transition:transform .9s cubic-bezier(.16,.84,.3,1), opacity .9s ease;
   }
   /* صورة البطاقة: نسخة مصغّرة خفيفة من thumbs/ مع تحميل مؤجّل وفك ترميز غير معيق */
   .gallery .card img.ph{
@@ -118,23 +118,10 @@
     width:100%;
     height:100%;
     object-fit:cover;
-    border-radius:9px;
     background:var(--bg-soft);
     pointer-events:none;
+    -webkit-user-drag:none;
   }
-  .gallery .card:nth-child(1){transform:rotate(-10deg) translateY(14px);}
-  .gallery .card:nth-child(2){transform:rotate(-5deg) translateY(-6px);}
-  .gallery .card:nth-child(3){transform:rotate(3deg) translateY(10px);}
-  .gallery .card:nth-child(4){transform:rotate(-3deg) translateY(-10px);}
-  .gallery .card:nth-child(5){transform:rotate(7deg) translateY(8px);}
-  .gallery .card:nth-child(6){transform:rotate(-7deg) translateY(-4px);}
-
-  .gallery .card.active{
-    transform:translateY(-18px) rotate(0deg) scale(1.12) !important;
-    z-index:10;
-    box-shadow:0 20px 40px -10px rgba(0,0,0,.55);
-  }
-
   .gallery .card .gp-icon{font-size:22px;color:var(--text-dim);opacity:.6;}
   .gallery .card .overlay{
     position:absolute;
@@ -144,7 +131,6 @@
     background:linear-gradient(transparent, rgba(0,0,0,.75));
     opacity:0;
     transition:opacity .3s ease;
-    border-radius:0 0 9px 9px;
   }
   .gallery .card.active .overlay{opacity:1;}
   .gallery .card .overlay h3{
@@ -152,6 +138,35 @@
     font-size:15px;margin:0;color:var(--gold-light);
   }
   .gallery .card .overlay p{font-size:10px;margin:0;opacity:.9;}
+
+  .gallery-bar{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:10px;flex-wrap:wrap;direction:ltr;
+    padding:10px 4px 0;
+  }
+  .gallery-tabs{display:flex;gap:4px;flex-wrap:wrap;}
+  .gallery-tab{
+    font:600 12px 'Tajawal',sans-serif;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--text-dim);background:transparent;border:1px solid transparent;
+    padding:7px 11px;border-radius:8px;cursor:pointer;
+  }
+  .gallery-tab:hover{color:var(--text);}
+  .gallery-tab[aria-selected="true"]{color:var(--gold-light);border-color:var(--gold-dim);background:var(--card);}
+  .gallery-ctrl{display:flex;align-items:center;gap:8px;}
+  .gallery-count{font:500 12px 'Tajawal',sans-serif;color:var(--text-dim);letter-spacing:.1em;font-variant-numeric:tabular-nums;}
+  .gallery-btn{
+    min-width:36px;height:36px;padding:0 10px;display:grid;place-items:center;
+    background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:8px;
+    cursor:pointer;font:600 12px 'Tajawal',sans-serif;
+  }
+  .gallery-btn:hover{border-color:var(--gold-dim);}
+  @media(max-width:640px){
+    .gallery{min-height:280px;}
+    .gallery-bar{justify-content:center;}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .gallery .scene.morph, .gallery .scene.morph .card{transition:none;}
+  }
 
   /* تلميح يظهر أسفل الجلري عندما لا توجد صور للمجلد بعد */
   .gallery-hint{
@@ -522,7 +537,21 @@
       <h2 id="galleryTitle">من أعمالنا</h2>
       <div class="line"></div>
     </div>
-    <div class="gallery" id="gallerySlideshow"></div>
+    <div class="gallery" id="gallerySlideshow"><div class="scene" id="galleryScene"></div></div>
+    <div class="gallery-bar" id="galleryBar">
+      <div class="gallery-tabs" role="tablist" aria-label="شكل العرض">
+        <button class="gallery-tab" role="tab" data-mode="helix" type="button">Helix</button>
+        <button class="gallery-tab" role="tab" data-mode="barrel" type="button">Barrel</button>
+        <button class="gallery-tab" role="tab" data-mode="ring" type="button">Ring</button>
+        <button class="gallery-tab" role="tab" data-mode="sphere" type="button">Sphere</button>
+      </div>
+      <div class="gallery-ctrl">
+        <span class="gallery-count" id="galleryCount" dir="ltr">01 / 01</span>
+        <button class="gallery-btn" id="galleryPrev" type="button" aria-label="السابق">&#8249;</button>
+        <button class="gallery-btn" id="galleryNext" type="button" aria-label="التالي">&#8250;</button>
+        <button class="gallery-btn" id="galleryAuto" type="button" aria-pressed="true" aria-label="إيقاف الحركة">&#10074;&#10074;</button>
+      </div>
+    </div>
     <div class="gallery-hint" id="galleryHint" style="display:none;"></div>
   </div>
 
@@ -915,7 +944,7 @@ const CATEGORY_PHOTOS = {
 };
 
 // عدد الصور التي تُعرض في الجلري
-const GALLERY_COUNT = 6;
+const GALLERY_COUNT = 10;
 
 // المجلد الاحتياطي (يُستخدم فقط إذا لم يُعرّف للنوع مجلد)
 const FALLBACK_FOLDER = 'photos/';
@@ -1013,9 +1042,22 @@ const gallerySection = document.getElementById('gallerySection');
 const gallerySlideshow = document.getElementById('gallerySlideshow');
 const galleryTitle = document.getElementById('galleryTitle');
 const galleryHint = document.getElementById('galleryHint');
-let galleryTimer = null;
+const galleryScene = document.getElementById('galleryScene');
+const galleryBar = document.getElementById('galleryBar');
+const galleryCount = document.getElementById('galleryCount');
+const galleryAutoBtn = document.getElementById('galleryAuto');
+const galleryTabs = [...document.querySelectorAll('.gallery-tab')];
+const GALLERY_SPEED = 0.32; // بطاقة في الثانية تقريبًا
+const reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 let currentGalleryImages = [];
-let currentSlide = 0;
+let gMode = 'helix', gAuto = !reduceMotion;
+let gCards = [], gN = 0;
+let gT = 0, gTarget = 0, gMx = 0, gMy = 0, gTmx = 0, gTmy = 0;
+let gDragging = false, gMoved = 0, gLastX = 0, gDownCard = null;
+let gLastMove = 0, gLastFrame = 0, gLastIdx = -1;
+let gCw = 150, gCh = 210, gSw = 800, gSh = 400;
+let gMorphTimer = 0, gRaf = 0, gVisible = false;
 
 // محتوى بطاقة "قريبًا" (تُستخدم عند عدم وجود صورة)
 function placeholderInner(num){
@@ -1031,14 +1073,13 @@ function buildGallerySlides(images){
   let html = '';
   images.forEach((src, i)=>{
     const num = String(i + 1).padStart(2, '0');
-    const active = i === 0 ? 'active' : '';
     if(src){
       const thumb = thumbUrl(src);
       // أول بطاقتين تُحمَّلان فورًا، والباقي عند الحاجة — مع فك ترميز غير معيق
       const priority = i < 2 ? 'eager' : 'lazy';
       html += `
-        <div class="card ${active}" data-i="${i}" data-num="${num}">
-          <img class="ph" src="${thumb}" alt="من أعمال شعيب استوديو" loading="${priority}" decoding="async" data-full="${src}">
+        <div class="card" data-i="${i}" data-num="${num}">
+          <img class="ph" src="${thumb}" alt="من أعمال شعيب استوديو" loading="${priority}" decoding="async" draggable="false" data-full="${src}">
           <div class="overlay">
             <h3>${num}</h3>
             <p>شعيب استوديو</p>
@@ -1046,23 +1087,19 @@ function buildGallerySlides(images){
         </div>`;
     } else {
       html += `
-        <div class="card ${active}" data-i="${i}" data-num="${num}">
+        <div class="card" data-i="${i}" data-num="${num}">
           ${placeholderInner(num)}
         </div>`;
     }
   });
 
-  gallerySlideshow.innerHTML = html;
+  galleryScene.innerHTML = html;
+  gCards = [...galleryScene.querySelectorAll('.card')];
+  gN = gCards.length;
+  gLastIdx = -1;
 
-  gallerySlideshow.querySelectorAll('img.ph').forEach(img=>{
+  galleryScene.querySelectorAll('img.ph').forEach(img=>{
     img.addEventListener('error', ()=> handleGalleryImageError(img));
-  });
-
-  gallerySlideshow.querySelectorAll('.card').forEach(card=>{
-    card.addEventListener('click', ()=>{
-      goToSlide(parseInt(card.dataset.i, 10));
-      restartGallerySlideshow();
-    });
   });
 }
 
@@ -1080,28 +1117,146 @@ function handleGalleryImageError(img){
   else img.remove();
 }
 
-function goToSlide(i){
-  currentSlide = i;
-  const cards = gallerySlideshow.querySelectorAll('.card');
-  cards.forEach((el, idx)=>el.classList.toggle('active', idx === i));
+function galleryMeasure(){
+  gSw = gallerySlideshow.clientWidth || 800;
+  gSh = gallerySlideshow.clientHeight || 400;
+  gCh = Math.max(140, Math.min(gSh * 0.56, gSw * 0.62));
+  gCw = gCh * 0.75;
+  gallerySlideshow.style.setProperty('--cw', gCw + 'px');
+  gallerySlideshow.style.setProperty('--ch', gCh + 'px');
 }
 
-function startGallerySlideshow(){
-  clearInterval(galleryTimer);
-  galleryTimer = setInterval(()=>{
-    const n = currentGalleryImages.length;
-    goToSlide((currentSlide + 1) % n);
-  }, 2000);
+function gWrap(d){ const h = gN / 2; return ((d + h) % gN + gN) % gN - h; }
+function gSmooth(a, b, v){ const k = Math.min(1, Math.max(0, (v - a) / (b - a))); return k * k * (3 - 2 * k); }
+
+// وضع كل بطاقة في المجسّم حسب الشكل المختار
+function galleryApply(){
+  if(!gN) return;
+  const step = Math.PI * 2 / gN;
+  const rotY = gMx * 14, rotX = -gMy * 9;
+  let R;
+  if(gMode === 'barrel'){
+    R = gN < 3 ? gCw * 1.2 : Math.max(gCw * 1.2, (gCw * 1.08) / (2 * Math.tan(Math.PI / gN)));
+    galleryScene.style.transform = `translateZ(${-R}px) rotateX(${-8 + rotX}deg) rotateY(${rotY}deg)`;
+  } else if(gMode === 'helix'){
+    R = Math.max(gCw * 1.15, gCw * gN / 7);
+    galleryScene.style.transform = `translateZ(${-R}px) rotateX(${-4 + rotX}deg) rotateY(${rotY}deg)`;
+  } else if(gMode === 'sphere'){
+    R = Math.max(gCw * 1.45, gCw * gN / 5.5);
+    galleryScene.style.transform = `translateZ(${-R}px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+  } else {
+    R = Math.min(900, Math.max(380, gSw * 0.5));
+    galleryScene.style.transform = `translateY(${-gSh * 0.05}px) rotateX(${rotX * 0.5}deg) rotateY(${rotY * 0.5}deg)`;
+  }
+  const dy = Math.min(gCh * 0.3, (gSh * 0.8) / gN);
+  for(let i = 0; i < gN; i++){
+    const d = gWrap(i - gT), a = d * step, cs = Math.cos(a), sn = Math.sin(a);
+    let tr, op;
+    if(gMode === 'barrel'){
+      tr = `rotateY(${a}rad) translateZ(${R}px)`;
+      op = 0.18 + 0.82 * Math.pow((cs + 1) / 2, 0.8);
+    } else if(gMode === 'helix'){
+      tr = `translateY(${d * dy}px) rotateY(${a}rad) translateZ(${R}px)`;
+      op = (0.18 + 0.82 * Math.pow((cs + 1) / 2, 0.8)) * (1 - Math.pow(Math.abs(d) / (gN / 2), 4));
+    } else if(gMode === 'sphere'){
+      const lat = 0.62 * Math.sin(3 * a);
+      tr = `rotateY(${a}rad) rotateX(${lat}rad) translateZ(${R}px) scale(.85)`;
+      op = 0.15 + 0.85 * Math.pow((cs * Math.cos(lat) + 1) / 2, 1.2);
+    } else {
+      tr = `translate3d(${R * sn}px,${R * (1 - cs)}px,0) rotateZ(${a}rad)`;
+      op = 1 - gSmooth(1.2, 2.1, Math.abs(a));
+    }
+    const c = gCards[i];
+    c.style.transform = tr;
+    c.style.opacity = op.toFixed(3);
+    c.style.zIndex = Math.round((1 - Math.abs(d) / (gN / 2)) * 100);
+  }
+  const idx = ((Math.round(gT) % gN) + gN) % gN;
+  if(idx !== gLastIdx){
+    gLastIdx = idx;
+    gCards.forEach((el, k)=>el.classList.toggle('active', k === idx));
+    galleryCount.textContent = String(idx + 1).padStart(2, '0') + ' / ' + String(gN).padStart(2, '0');
+  }
 }
 
-function restartGallerySlideshow(){
-  startGallerySlideshow();
+function galleryFrame(now){
+  gRaf = 0;
+  if(!gVisible) return;                     // لا نرسم والقسم مخفي
+  const dt = Math.min(0.05, (now - (gLastFrame || now)) / 1000);
+  gLastFrame = now;
+  if(gAuto && !gDragging) gTarget += GALLERY_SPEED * dt;
+  gT += (gTarget - gT) * (1 - Math.exp(-dt * (gDragging ? 18 : 6)));
+  if(!reduceMotion && now - gLastMove > 2500 && !gDragging){
+    gTmx = Math.sin(now / 2600) * 0.45;
+    gTmy = Math.cos(now / 3100) * 0.3;
+  }
+  const k = 1 - Math.exp(-dt * 4);
+  gMx += (gTmx - gMx) * k;
+  gMy += (gTmy - gMy) * k;
+  galleryApply();
+  gRaf = requestAnimationFrame(galleryFrame);
 }
 
+function galleryStartLoop(){
+  gVisible = true;
+  if(!gRaf){ gLastFrame = 0; gRaf = requestAnimationFrame(galleryFrame); }
+}
 function stopGallerySlideshow(){
-  clearInterval(galleryTimer);
-  galleryTimer = null;
+  gVisible = false;
+  if(gRaf){ cancelAnimationFrame(gRaf); gRaf = 0; }
 }
+
+function gallerySetMode(m){
+  gMode = m;
+  galleryTabs.forEach(b=>b.setAttribute('aria-selected', b.dataset.mode === m ? 'true' : 'false'));
+  galleryScene.classList.add('morph');
+  clearTimeout(gMorphTimer);
+  gMorphTimer = setTimeout(()=>galleryScene.classList.remove('morph'), 950);
+}
+function gallerySetAuto(v){
+  gAuto = v;
+  galleryAutoBtn.setAttribute('aria-pressed', v ? 'true' : 'false');
+  galleryAutoBtn.innerHTML = v ? '&#10074;&#10074;' : '&#9654;';
+  galleryAutoBtn.setAttribute('aria-label', v ? 'إيقاف الحركة' : 'تشغيل الحركة');
+  if(!v) gTarget = Math.round(gTarget);
+}
+function galleryStep(dir){ gTarget = Math.round(gTarget) + dir; }
+function galleryPps(){ return Math.max(90, gallerySlideshow.clientWidth / (gMode === 'ring' ? 3 : 5)); }
+
+// ربط الأحداث مرة واحدة فقط
+galleryTabs.forEach(b=>b.addEventListener('click', ()=>gallerySetMode(b.dataset.mode)));
+document.getElementById('galleryPrev').addEventListener('click', ()=>galleryStep(-1));
+document.getElementById('galleryNext').addEventListener('click', ()=>galleryStep(1));
+galleryAutoBtn.addEventListener('click', ()=>gallerySetAuto(!gAuto));
+
+gallerySlideshow.addEventListener('pointerdown', e=>{
+  if(e.button > 0) return;
+  gDragging = true; gMoved = 0; gLastX = e.clientX; gLastMove = performance.now();
+  gDownCard = e.target.closest ? e.target.closest('.card') : null;
+  gallerySlideshow.classList.add('grab');
+});
+window.addEventListener('pointermove', e=>{
+  if(!gVisible) return;
+  const r = gallerySlideshow.getBoundingClientRect();
+  gTmx = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width - 0.5) * 2));
+  gTmy = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height - 0.5) * 2));
+  gLastMove = performance.now();
+  if(gDragging){
+    const dx = e.clientX - gLastX; gLastX = e.clientX; gMoved += Math.abs(dx);
+    gTarget -= dx / galleryPps();
+  }
+});
+function galleryRelease(){
+  if(!gDragging) return;
+  gDragging = false; gallerySlideshow.classList.remove('grab');
+  if(gMoved < 6 && gDownCard) gTarget += gWrap(+gDownCard.dataset.i - gTarget); // ضغطة على بطاقة = إبرازها
+  else if(!gAuto) gTarget = Math.round(gTarget);
+  gDownCard = null;
+}
+window.addEventListener('pointerup', galleryRelease);
+window.addEventListener('pointercancel', galleryRelease);
+window.addEventListener('resize', galleryMeasure);
+if(window.ResizeObserver) new ResizeObserver(galleryMeasure).observe(gallerySlideshow);
 
 function renderGallery(){
   if(!activeCategory){
@@ -1119,8 +1274,11 @@ function renderGallery(){
     `لا توجد صور بعد في مجلد <b>${galleryFolder(activeCategory)}</b> — أضف صور هذا النوع هناك لتظهر هنا`;
   gallerySection.style.display = 'block';
   buildGallerySlides(currentGalleryImages);
-  goToSlide(0);
-  startGallerySlideshow();
+  galleryMeasure();
+  gT = gTarget = 0;
+  gallerySetMode(gMode);
+  gallerySetAuto(gAuto);
+  galleryStartLoop();
 }
 
 renderGallery();

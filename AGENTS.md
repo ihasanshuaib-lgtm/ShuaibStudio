@@ -144,11 +144,12 @@ Each category has: `name`, `icon`, `info` (form field labels/placeholders), `pac
 
   **To add photos for a category:** copy the files into that category's folder, **run `bash scripts/make-thumbs.sh`** (so the small `thumbs/` copies exist), then add the exact filenames to its `photos` array. (Filenames with spaces are fine — they are `encodeURI`-encoded when built into URLs.)
   **Every listed name must exist on disk exactly as written** (same spelling, same `-2` suffix, same extension case) — a name that only exists as a stale `thumbs/` copy makes the gallery show an outdated picture. See the rename trap in section 9.
-- `GALLERY_COUNT = 6` — number of images shown at a time.
+- `GALLERY_COUNT = 10` — number of images shown at a time (the 3D gallery arranges them in space).
 - `FALLBACK_FOLDER = 'photos/'` — used only if a category has no folder configured.
 - `galleryFolder(categoryKey)` — returns the folder configured for a category.
 - `pickRandomPhotos(categoryKey, count)` — Fisher–Yates shuffle of **that category's** `photos`, returns up to `count` `folder/name` URLs. If the category's `photos` is empty it returns `count` × `null` → cards render as "قريبًا" placeholders (**never** photos from another category).
 - `GALLERIES` — maps each category key to its gallery `title`.
+- **3D gallery (since 2026-10-20):** `#gallerySlideshow` (class `.gallery`) is a 3D stage (`perspective`) holding `#galleryScene`; cards are positioned in `galleryApply()` in one of four layouts — Helix (default) / Barrel / Ring / Sphere — chosen with the `.gallery-tab` buttons in `#galleryBar`; prev/next/pause buttons, drag to rotate, click a card to bring it to the front, mouse parallax, auto-rotation (off with `prefers-reduced-motion`). One `requestAnimationFrame` loop (`galleryFrame`) runs only while the section is visible (`stopGallerySlideshow()` stops it). State vars are `gMode/gAuto/gT/gTarget/...`; `goToSlide/startGallerySlideshow/restartGallerySlideshow` no longer exist. Vertical page scroll still works on touch (`touch-action:pan-y`).
 - `buildGallerySlides(images)` — builds the cards (`null` → placeholder). **Speed:** each card holds a real `<img class="ph">` whose `src` is the small `thumbs/` copy (first two cards `loading="eager"`, the rest `loading="lazy"`), all with `decoding="async"`; the full-size URL is kept in `data-full` only as a fallback.
 - `handleGalleryImageError(img)` — the graceful-degradation chain: if the thumbnail 404s it retries **once** with the full-size original (`data-full`), and only if that fails too the card becomes a "قريبًا" placeholder. (Replaces the old `new Image()` probe, which downloaded every photo twice.)
 - `THUMB_DIR = 'thumbs/'`, `THUMB_VERSION = '4'`, `thumbUrl(src)` — thumbnail path + cache-busting version (`…/8.jpeg.jpg?v=4`). **Bump `THUMB_VERSION` whenever photos/thumbs change** so browsers don't reuse stale cached copies.
@@ -367,5 +368,7 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 - **2026-10-19** — تغيير بيانات الدخول إلى يوزر جديد وباسورد جديد بإعادة تشغيل `scripts/build-login.mjs` (أُعيد توليد `payroll.enc.js`)؛ الباسورد 6 أحرف فيُظهر السكربت تحذيرًا بدل الرفض. لم تُكتب البيانات في الريبو.
 
 - **2026-10-20** — إزالة رابط شعار «شعيب استوديو» إلى `login.html`: عاد الشعار `<div class="studio-logo">` عاديًا بدون رابط (وحُذف `text-decoration:none`). صفحة الدخول ما زالت موجودة وتُفتح برابطها المباشر فقط.
+
+- **2026-10-20** — **المعرض صار ثلاثي الأبعاد** (بدل البطاقات المتناثرة): أشكال Helix/Barrel/Ring/Sphere، سحب للتدوير، أزرار السابق/التالي/إيقاف، وعدد الصور في المعرض 10. بقيت المصغّرات `thumbs/` ومنطق الصور المفقودة كما هي. `node --check` يمر.
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
