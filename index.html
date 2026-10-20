@@ -720,6 +720,73 @@ body:not(.light-mode) .total-bar{background:rgba(39,55,65,.94);border-color:#405
 @media(prefers-reduced-motion:reduce){
   .js .rv,.js .brand-logo.rv,.js .top-bar.rv{opacity:1;transform:none;}
 }
+
+/* ===== بوب أب بعد إرسال الحجز ===== */
+.blessing{
+  position:fixed;inset:0;z-index:300;
+  display:grid;place-items:center;padding:20px;
+  background:rgba(32,43,52,.45);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  opacity:0;visibility:hidden;
+  transition:opacity .35s ease, visibility .35s;
+}
+.blessing.show{opacity:1;visibility:visible;}
+.blessing-card{
+  position:relative;width:min(92vw,400px);text-align:center;
+  padding:38px 26px 28px;border-radius:28px;
+  background:linear-gradient(145deg,var(--card),var(--bg-soft));
+  border:1px solid rgba(255,255,255,.7);
+  box-shadow:12px 12px 30px rgba(0,0,0,.22),-8px -8px 24px rgba(255,255,255,.35);
+  transform:translateY(30px) scale(.88);opacity:0;
+  transition:transform .6s cubic-bezier(.2,1.3,.4,1), opacity .4s ease;
+}
+body:not(.light-mode) .blessing-card{border-color:#40525e;box-shadow:12px 12px 30px rgba(0,0,0,.5),-6px -6px 20px rgba(60,85,100,.35);}
+.blessing.show .blessing-card{transform:none;opacity:1;}
+.blessing-icon{
+  width:84px;height:84px;margin:0 auto 20px;border-radius:50%;
+  display:grid;place-items:center;
+  background:linear-gradient(145deg,var(--card-hover),var(--card));
+  box-shadow:6px 6px 14px rgba(0,0,0,.14),-6px -6px 14px rgba(255,255,255,.5), 0 0 0 6px rgba(110,135,152,.10);
+}
+body:not(.light-mode) .blessing-icon{box-shadow:6px 6px 14px rgba(0,0,0,.4),-5px -5px 12px rgba(60,85,100,.35), 0 0 0 6px rgba(169,193,209,.10);}
+.blessing-icon svg{width:44px;height:44px;}
+.blessing-icon path{
+  stroke:var(--green);stroke-width:3.2;fill:none;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:40;stroke-dashoffset:40;
+}
+.blessing.show .blessing-icon path{animation:tick .7s .35s cubic-bezier(.5,.1,.2,1) forwards;}
+@keyframes tick{to{stroke-dashoffset:0;}}
+.blessing-title{
+  font-family:'IBM Plex Sans Arabic','Tajawal',sans-serif;
+  font-size:24px;font-weight:700;line-height:1.7;margin:0 0 8px;color:var(--text);
+}
+.blessing-sub{font-size:14.5px;color:var(--text-dim);line-height:1.8;margin:0 0 22px;}
+.blessing-btn{
+  min-width:140px;padding:12px 28px;border:0;border-radius:14px;cursor:pointer;
+  font:700 15px 'Tajawal',sans-serif;color:#fff;
+  background:linear-gradient(145deg,#7e9aaa,#607b8d);
+  box-shadow:4px 4px 10px rgba(0,0,0,.18),-3px -3px 8px rgba(255,255,255,.35);
+  transition:transform .15s, filter .15s;
+}
+.blessing-btn:hover{filter:brightness(1.08);}
+.blessing-btn:active{transform:scale(.96);}
+/* نجوم صغيرة تتطاير */
+.blessing-card .sp{
+  position:absolute;width:8px;height:8px;border-radius:50%;background:var(--gold);
+  opacity:0;pointer-events:none;
+}
+.blessing.show .sp{animation:spark 1.4s ease-out forwards;}
+.blessing.show .sp:nth-child(1){top:24px;right:30px;animation-delay:.3s}
+.blessing.show .sp:nth-child(2){top:40px;left:34px;animation-delay:.45s;width:6px;height:6px}
+.blessing.show .sp:nth-child(3){top:110px;right:16px;animation-delay:.55s;width:5px;height:5px}
+.blessing.show .sp:nth-child(4){top:96px;left:18px;animation-delay:.4s;width:7px;height:7px}
+.blessing.show .sp:nth-child(5){bottom:70px;left:40px;animation-delay:.6s;width:5px;height:5px}
+.blessing.show .sp:nth-child(6){bottom:80px;right:44px;animation-delay:.5s;width:6px;height:6px}
+@keyframes spark{
+  0%{opacity:0;transform:scale(0) translateY(0)}
+  30%{opacity:1;transform:scale(1.2) translateY(-6px)}
+  100%{opacity:0;transform:scale(.6) translateY(-26px)}
+}
 </style>
 </head>
 <body class="light-mode">
@@ -839,6 +906,18 @@ body:not(.light-mode) .total-bar{background:rgba(39,55,65,.94);border-color:#405
   </div>
 </div>
 
+<div class="blessing" id="blessing" role="dialog" aria-modal="true" aria-labelledby="blessingTitle">
+  <div class="blessing-card">
+    <i class="sp"></i><i class="sp"></i><i class="sp"></i><i class="sp"></i><i class="sp"></i><i class="sp"></i>
+    <div class="blessing-icon">
+      <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M11 25l9 9 17-19"/></svg>
+    </div>
+    <h3 class="blessing-title" id="blessingTitle">الله يطرح البركة إن شاء الله</h3>
+    <p class="blessing-sub">شكرًا لثقتك بشعيب استوديو، وسنتواصل معك قريبًا لتأكيد الحجز</p>
+    <button class="blessing-btn" id="blessingClose" type="button">حسنًا</button>
+  </div>
+</div>
+
 <div class="total-bar" id="totalBar" role="status" aria-live="polite">
   <div><div class="tb-label">المبلغ الكلي</div><div class="tb-amount" id="tbAmount">0 BD</div></div>
   <div class="tb-go">عرض الملخص ↓</div>
@@ -864,7 +943,7 @@ const CATEGORIES = {
       timeLabel: 'وقت التصوير',
       timePlaceholder: 'مثال: 7:00 مساءً',
       extraFields: [
-        {id:'venue', label:'اسم / الصالة', placeholder:'مثال: قصر الأفراح'}
+        {id:'venue', label:'اسم القصر / الصالة', placeholder:'مثال: قصر الأفراح'}
       ]
     },
     packages: [
@@ -1888,6 +1967,7 @@ sendWhatsapp.addEventListener('click', ()=>{
   if(!msg) return;
   const url = `https://wa.me/${STUDIO_WHATSAPP}?text=${encodeURIComponent(msg)}`;
   window.open(url, '_blank');
+  showBlessing();
 });
 
 sendEmail.addEventListener('click', ()=>{
@@ -1896,6 +1976,7 @@ sendEmail.addEventListener('click', ()=>{
   const subject = encodeURIComponent('طلب حجز جديد - شعيب استوديو');
   const body = encodeURIComponent(msg);
   window.location.href = `mailto:${STUDIO_EMAIL}?subject=${subject}&body=${body}`;
+  showBlessing();
 });
 
 // اختيار "تصوير الأعراس" تلقائيًا عند فتح الصفحة
@@ -1913,6 +1994,20 @@ if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
 </script>
 
 <script>
+// ===== بوب أب "الله يطرح البركة" بعد إرسال الحجز =====
+function showBlessing(){
+  var m = document.getElementById('blessing');
+  m.classList.add('show');
+  setTimeout(function(){ document.getElementById('blessingClose').focus(); }, 300);
+}
+(function(){
+  var m = document.getElementById('blessing');
+  function hide(){ m.classList.remove('show'); }
+  document.getElementById('blessingClose').addEventListener('click', hide);
+  m.addEventListener('click', function(e){ if(e.target === m) hide(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') hide(); });
+})();
+
 // ===== ظهور تدريجي (fade in) لكل عناصر الصفحة =====
 (function(){
   var sel = '.top-bar, .brand-logo, header h1, header .sub, .wrap > .section-title, .categories, .gallery-section, .info-card, .packages, .services, .summary-card';
