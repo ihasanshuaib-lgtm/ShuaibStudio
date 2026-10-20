@@ -399,4 +399,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-10-20** — خط «شعيب استوديو» (`.studio-logo` في الشريط العلوي) وعنوان «حجز موعد التصوير» (`h1`) صار **IBM Plex Sans Arabic** بدل Aref Ruqaa، وأُضيف الخط إلى رابط Google Fonts (أوزان 500/600/700).
 
+- **2026-10-20** — **تبويب «حجز» في `pay.html` لا يعمل**: كان الـ iframe (`#booking-iframe`) يشير إلى `booking.html` وهو ملف غير موجود. الآن يشير إلى `index.html` (صفحة الحجز). وأُضيف في آخر سكربت `index.html` إرسال ارتفاع الصفحة للأم (`postMessage {type:'booking-height'}`) عند التحميل وتغيير الحجم، وتستقبله `pay.html` لضبط ارتفاع الإطار، وذلك فقط حين تُعرض الصفحة داخل iframe.
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.

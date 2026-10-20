@@ -1981,6 +1981,15 @@ sendEmail.addEventListener('click', ()=>{
 
 // اختيار "تصوير الأعراس" تلقائيًا عند فتح الصفحة
 selectCategory('weddings');
+// عند عرض الصفحة داخل iframe (تبويب «حجز» في pay.html) نرسل ارتفاعها للصفحة الأم ليتطابق الإطار مع المحتوى
+if(window.parent !== window){
+  const sendHeight = ()=> window.parent.postMessage(
+    {type:'booking-height', height: document.documentElement.scrollHeight}, '*');
+  window.addEventListener('load', sendHeight);
+  window.addEventListener('resize', sendHeight);
+  if(window.ResizeObserver) new ResizeObserver(sendHeight).observe(document.body);
+}
+
 
 // بعد ظهور الصفحة: سخّن صور بقية الأنواع في الخلفية (فتصبح الفتحات التالية فورية)
 window.addEventListener('load', warmOtherCategories);
