@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="html-root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shuaib Studio — Photography & Videography</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#c9a463;--dark:#0e0c0a;--off:#171310;--surface:#1b1714;
+  --border:#332b22;--text:#efe6d8;--muted:#a89b87;--white:#fff;
+  --danger:#c25c5c;--success:#5f8c6b;
+}
+body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--text);min-height:100vh}
+[dir="rtl"] body,[dir="rtl"] input,[dir="rtl"] select,[dir="rtl"] textarea,[dir="rtl"] button{font-family:'Cairo', sans-serif}
+[dir="rtl"] .nav-links,[dir="rtl"] .hero-cta,[dir="rtl"] .action-btns,[dir="rtl"] .staff-actions{flex-direction:row-reverse}
+[dir="rtl"] .inv-items th,[dir="rtl"] .inv-items td,[dir="rtl"] .work-log-table th,[dir="rtl"] .work-log-table td{text-align:right}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(14,12,10,0.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:60px;gap:1rem;flex-wrap:wrap}
+.logo{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);white-space:nowrap}
+[dir="rtl"] .logo{font-family:'Cairo', sans-serif;font-size:1.35rem}
+.nav-links{display:flex;gap:0.2rem;flex-wrap:wrap}
+.nav-links button{background:none;border:none;color:var(--muted);font-size:0.82rem;padding:0.45rem 0.8rem;border-radius:6px;cursor:pointer;transition:all 0.2s}
+.nav-links button:hover,.nav-links button.active{color:var(--text);background:var(--surface)}
+.nav-links button.active{color:var(--gold)}
+.lang-btn{background:var(--surface);border:1px solid var(--border);color:var(--gold);font-size:0.78rem;padding:0.35rem 0.8rem;border-radius:20px;cursor:pointer;font-weight:600;white-space:nowrap;transition:all 0.2s}
+.lang-btn:hover{background:var(--border)}
+
+/* PAGES */
+.page{display:none;padding:2rem;max-width:1100px;margin:0 auto}
+.page.active{display:block}
+
+/* HOME */
+.hero{text-align:center;padding:5rem 2rem 4rem;border-bottom:1px solid var(--border);margin-bottom:3rem}
+.hero-tag{font-size:0.75rem;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,6vw,4rem);line-height:1.1;margin-bottom:1.5rem;color:var(--white)}
+[dir="rtl"] .hero h1{font-family:'Cairo', sans-serif;font-size:clamp(2rem,5.5vw,3.5rem)}
+.hero h1 em{color:var(--gold);font-style:normal}
+.hero p{font-size:1rem;color:var(--muted);max-width:520px;margin:0 auto 2rem;line-height:1.8}
+.hero-cta{display:inline-flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+.btn-gold{background:var(--gold);color:#000;border:none;padding:0.75rem 1.75rem;border-radius:6px;font-weight:700;font-size:0.9rem;cursor:pointer;transition:opacity 0.2s}
+.btn-gold:hover{opacity:0.85}
+.btn-outline{background:none;color:var(--text);border:1px solid var(--border);padding:0.75rem 1.75rem;border-radius:6px;font-weight:500;font-size:0.9rem;cursor:pointer;transition:all 0.2s}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:1.25rem;margin-bottom:3rem}
+.service-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;transition:border-color 0.2s}
+.service-card:hover{border-color:var(--gold)}
+.service-icon{font-size:2rem;margin-bottom:0.75rem}
+.service-card h3{font-size:1rem;font-weight:600;color:var(--white);margin-bottom:0.4rem}
+.service-card p{font-size:0.83rem;color:var(--muted);line-height:1.6}
+.service-price{margin-top:0.85rem;font-size:0.9rem;color:var(--gold);font-weight:500}
+.section-header{margin-bottom:1.75rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.section-header h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--white)}
+[dir="rtl"] .section-header h2{font-family:'Cairo', sans-serif}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:1rem;margin-bottom:2rem}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.2rem}
+.stat-label{font-size:0.73rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.5rem}
+[dir="rtl"] .stat-label{text-transform:none;letter-spacing:0}
+.stat-val{font-size:1.5rem;font-weight:300;color:var(--white)}
+.stat-val.gold{color:var(--gold)}
+
+/* FORMS */
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-bottom:1rem}
+.form-group{display:flex;flex-direction:column;gap:0.4rem}
+.form-group label{font-size:0.75rem;color:var(--muted);letter-spacing:0.04em;text-transform:uppercase}
+[dir="rtl"] .form-group label{text-transform:none;letter-spacing:0}
+.form-group input,.form-group select,.form-group textarea{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.65rem 0.85rem;color:var(--text);font-size:0.9rem;font-family:'Inter',sans-serif;transition:border-color 0.2s;outline:none}
+[dir="rtl"] .form-group input,[dir="rtl"] .form-group select,[dir="rtl"] .form-group textarea{font-family:'Cairo', sans-serif;text-align:right}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold)}
+.form-group select option{background:var(--surface)}
+.form-group textarea{resize:vertical;min-height:80px}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.75rem;margin-bottom:1.5rem}
+.card-title{font-size:0.95rem;font-weight:600;color:var(--white);margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)}
+
+/* INVOICE TABLE */
+.inv-items{width:100%;border-collapse:collapse;margin-bottom:1rem}
+.inv-items th{text-align:left;font-size:0.73rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;padding:0.5rem 0.5rem 0.75rem;border-bottom:1px solid var(--border)}
+[dir="rtl"] .inv-items th{text-align:right;text-transform:none;letter-spacing:0}
+.inv-items td{padding:0.6rem 0.5rem;font-size:0.88rem;vertical-align:middle}
+.inv-items tr:not(:last-child) td{border-bottom:1px solid rgba(255,255,255,0.04)}
+.inv-items input{width:100%;background:var(--dark);border:1px solid var(--border);border-radius:4px;padding:0.4rem 0.6rem;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif}
+.inv-items input:focus{outline:none;border-color:var(--gold)}
+.remove-row{background:none;border:none;color:var(--danger);cursor:pointer;font-size:1.1rem;padding:0.2rem 0.5rem}
+.inv-totals{text-align:right;font-size:0.9rem}
+.inv-totals div{margin-bottom:0.4rem;color:var(--muted)}
+.inv-totals .total-line{font-size:1.1rem;color:var(--gold);font-weight:600;margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid var(--border)}
+.badge{display:inline-block;font-size:0.72rem;padding:0.25rem 0.7rem;border-radius:20px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em}
+.badge-paid{background:rgba(95,140,107,0.15);color:#5f8c6b;border:1px solid rgba(95,140,107,0.3)}
+.badge-unpaid{background:rgba(194,92,92,0.15);color:var(--danger);border:1px solid rgba(194,92,92,0.3)}
+.badge-draft{background:rgba(201,164,99,0.12);color:var(--gold);border:1px solid rgba(201,164,99,0.25)}
+.invoices-list{display:flex;flex-direction:column;gap:0.75rem}
+.invoice-row{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;cursor:pointer;transition:border-color 0.2s}
+.invoice-row:hover{border-color:var(--gold)}
+.inv-meta{font-size:0.8rem;color:var(--muted)}
+.inv-amount{font-size:1rem;font-weight:600;color:var(--white)}
+.action-btns{display:flex;gap:0.5rem}
+.btn-sm{font-size:0.8rem;padding:0.38rem 0.85rem;border-radius:5px;border:1px solid var(--border);background:none;color:var(--text);cursor:pointer;transition:all 0.2s}
+.btn-sm:hover{border-color:var(--gold);color:var(--gold)}
+.btn-sm.danger{border-color:rgba(194,92,92,0.4);color:var(--danger)}
+
+/* INVOICE PREVIEW MODAL */
+.inv-preview{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:200;overflow-y:auto;padding:2rem}
+.inv-preview.show{display:block}
+/* ─── SHUAIB STUDIO invoice design ─── */
+.inv-doc{background:#fff;color:#111;max-width:800px;margin:0 auto;border-radius:4px;font-family:'Inter',sans-serif;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.inv-doc-head{padding:2rem 2.5rem 1.5rem;border-bottom:3px solid #2d5da1}
+.inv-doc-brand{font-family:'Inter',sans-serif;font-size:1.8rem;font-weight:900;color:#2d5da1;letter-spacing:0.08em;text-transform:uppercase;border-left:5px solid #2d5da1;padding-left:0.75rem;line-height:1}
+.inv-doc-date{color:#2d5da1;font-size:0.95rem;font-weight:500;margin-top:0.3rem;padding-left:1.2rem}
+.inv-doc-num{font-size:1.4rem;font-weight:700;color:#2d5da1;padding:1.25rem 2.5rem 0.75rem}
+.inv-bill-table{width:calc(100% - 5rem);margin:0 2.5rem 1.5rem;border:1px solid #b8cde8;border-radius:4px;overflow:hidden;border-collapse:collapse}
+.inv-bill-table th{background:#dce8f5;color:#2d5da1;font-size:0.8rem;font-weight:700;text-align:left;padding:0.6rem 1rem;letter-spacing:0.05em}
+.inv-bill-table td:first-child{color:#2d5da1;font-weight:600;font-size:0.82rem;padding:0.55rem 1rem;width:35%;border-right:1px solid #dce8f5}
+.inv-bill-table td:last-child{padding:0.55rem 1rem;font-size:0.88rem;color:#333}
+.inv-bill-table tr{border-bottom:1px solid #edf2fa}
+.inv-bill-table tr:last-child{border-bottom:none}
+.inv-lines-table{width:calc(100% - 5rem);margin:0 2.5rem 0;border:1px solid #b8cde8;border-radius:4px;overflow:hidden;border-collapse:collapse}
+.inv-lines-table th{background:#2d5da1;color:#fff;font-size:0.78rem;font-weight:600;text-align:left;padding:0.65rem 0.85rem;letter-spacing:0.04em}
+.inv-lines-table td{padding:0.65rem 0.85rem;font-size:0.87rem;color:#333;border-bottom:1px solid #edf2fa}
+.inv-lines-table tfoot td{background:#dce8f5;font-weight:700;color:#2d5da1;border-bottom:none}
+.inv-lines-table tfoot .total-label{text-align:right}
+.inv-notes-section{padding:1.5rem 2.5rem 2rem}
+.inv-notes-label{font-weight:700;color:#2d5da1;font-size:0.95rem;margin-bottom:0.6rem}
+.inv-notes-content{font-size:0.85rem;color:#444;line-height:1.8}
+.inv-print-bar{padding:1rem 2.5rem;background:#f5f8fc;border-top:1px solid #dce8f5;display:flex;gap:0.75rem;align-items:center}
+
+/* STAFF */
+.staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:1.2rem;margin-bottom:2rem}
+.staff-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;transition:border-color 0.2s}
+.staff-card:hover{border-color:var(--gold)}
+.staff-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#c9a46322,#c9a46344);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;color:var(--gold);margin-bottom:0.75rem;border:1px solid rgba(201,164,99,0.3)}
+.staff-name{font-weight:600;color:var(--white);margin-bottom:0.2rem}
+.staff-role{font-size:0.82rem;color:var(--muted);margin-bottom:0.75rem}
+.staff-rate{font-size:0.85rem;color:var(--gold)}
+.staff-actions{margin-top:0.75rem;display:flex;gap:0.5rem}
+
+/* SALARY SLIP */
+.slip-preview{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;overflow-y:auto;padding:2rem}
+.slip-preview.show{display:block}
+.slip-doc{background:#fff;color:#111;max-width:620px;margin:0 auto;border-radius:6px;overflow:hidden;font-family:'Inter',sans-serif;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.slip-header{background:#0e0c0a;padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center}
+.slip-logo{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--gold)}
+.slip-title{color:#888;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em}
+.slip-body{padding:1.75rem 2rem}
+.slip-total-row td{background:#0e0c0a;color:#fff!important;font-weight:600!important;padding:0.75rem!important}
+
+/* MODALS CLOSE */
+.modal-close{position:fixed;top:1.5rem;right:1.5rem;background:var(--surface);border:1px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:50%;font-size:1.2rem;cursor:pointer;z-index:201;display:flex;align-items:center;justify-content:center;transition:background 0.2s}
+.modal-close:hover{background:var(--border)}
+
+/* WORK LOG */
+.work-log-table{width:100%;border-collapse:collapse}
+.work-log-table th{text-align:left;font-size:0.73rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;padding:0.5rem 0.75rem;border-bottom:1px solid var(--border)}
+[dir="rtl"] .work-log-table th{text-align:right;text-transform:none}
+.work-log-table td{padding:0.6rem 0.75rem;font-size:0.87rem;border-bottom:1px solid rgba(255,255,255,0.04)}
+.work-log-table tr:hover td{background:rgba(255,255,255,0.02)}
+
+/* CLIENTS */
+.clients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.1rem;margin-bottom:2rem}
+.client-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;transition:border-color 0.2s;position:relative}
+.client-card:hover{border-color:var(--gold)}
+.client-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#c9a46322,#c9a46355);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.95rem;color:var(--gold);margin-bottom:0.75rem;border:1px solid rgba(201,164,99,0.3)}
+.client-name{font-weight:600;color:var(--white);margin-bottom:0.3rem;font-size:0.97rem}
+.client-meta{font-size:0.8rem;color:var(--muted);line-height:1.7}
+.client-inv-count{position:absolute;top:1rem;right:1rem;background:rgba(201,164,99,0.12);border:1px solid rgba(201,164,99,0.25);color:var(--gold);font-size:0.72rem;padding:0.2rem 0.6rem;border-radius:20px;font-weight:600}
+.client-actions{margin-top:0.85rem;display:flex;gap:0.5rem}
+
+/* BOOKING IFRAME */
+#page-booking{padding:0;max-width:100%}
+#booking-iframe{width:100%;border:none;display:block;min-height:2400px;background:#0e0c0a}
+
+/* SERVICE CHIPS */
+.svc-chip{display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;border-radius:30px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:0.83rem;cursor:pointer;transition:all 0.18s;user-select:none}
+.svc-chip:hover{border-color:var(--gold);color:var(--text)}
+.svc-chip.selected{background:rgba(201,164,99,0.15);border-color:var(--gold);color:var(--gold);font-weight:600}
+.svc-chip .chip-icon{font-size:1rem}
+
+/* PRINT */
+@media print{
+  .modal-close,.inv-print-bar,.action-btns{display:none!important}
+  .inv-preview,.slip-preview{position:static;background:white;padding:0}
+  body>*:not(.inv-preview):not(.slip-preview){display:none}
+}
+@media(max-width:640px){
+  nav{padding:0 1rem;height:auto;padding:0.5rem 1rem}
+  .page{padding:1rem}
+  .hero{padding:3rem 1rem 2rem}
+  .hero h1{font-size:2rem}
+  .inv-bill-table,.inv-lines-table{width:calc(100% - 2rem);margin-left:1rem;margin-right:1rem}
+  .inv-doc-head,.inv-doc-num,.inv-notes-section,.inv-print-bar{padding-left:1rem;padding-right:1rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" id="nav-logo">Shuaib Studio</div>
+  <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
+    <div class="nav-links">
+      <button class="active" onclick="showPage('home',event)" data-en="Home" data-ar="الرئيسية">Home</button>
+      <button onclick="showPage('booking',event)" data-en="Booking" data-ar="حجز">Booking</button>
+      <button onclick="showPage('invoices',event)" data-en="Invoices" data-ar="الفواتير">Invoices</button>
+      <button onclick="showPage('clients',event)" data-en="Clients" data-ar="العملاء">Clients</button>
+      <button onclick="showPage('staff',event)" data-en="Staff" data-ar="الموظفون">Staff</button>
+    </div>
+    <button class="lang-btn" onclick="toggleLang()" id="lang-btn">عربي</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-tag" id="h-tag">Photography &amp; Videography Studio</div>
+    <h1 id="h-title">We Capture <em>Moments</em><br>That Last Forever</h1>
+    <p id="h-sub">Professional photography and cinematic videography for weddings, events, brands, and beyond — based in Bahrain.</p>
+    <div class="hero-cta">
+      <button class="btn-gold" onclick="showPage('booking',event)" id="h-btn1">Book Now · احجز الآن</button>
+      <button class="btn-outline" onclick="showPage('invoices',event)" id="h-btn2">Create Invoice</button>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-label" id="s1-lbl">Total Invoiced</div><div class="stat-val gold" id="stat-total">BHD 0</div></div>
+    <div class="stat-box"><div class="stat-label" id="s2-lbl">Paid</div><div class="stat-val" id="stat-paid">0</div></div>
+    <div class="stat-box"><div class="stat-label" id="s3-lbl">Pending</div><div class="stat-val" id="stat-pending">0</div></div>
+    <div class="stat-box"><div class="stat-label" id="s4-lbl">Staff Members</div><div class="stat-val" id="stat-staff">0</div></div>
+  </div>
+  <div class="section-header"><h2 id="srv-title">Our Services</h2></div>
+  <div class="services-grid">
+    <div class="service-card"><div class="service-icon">📷</div><h3 data-en="Wedding Photography" data-ar="تصوير الأعراس">Wedding Photography</h3><p data-en="Full-day coverage, edited gallery, and prints." data-ar="تغطية يوم كامل، معرض محرر ومطبوعات.">Full-day coverage, edited gallery, and prints.</p><div class="service-price">From BHD 250</div></div>
+    <div class="service-card"><div class="service-icon">🎬</div><h3 data-en="Wedding Videography" data-ar="تصوير أفلام الأعراس">Wedding Videography</h3><p data-en="Cinematic highlight film and full ceremony." data-ar="فيلم سينمائي احترافي لكامل المناسبة.">Cinematic highlight film and full ceremony.</p><div class="service-price">From BHD 350</div></div>
+    <div class="service-card"><div class="service-icon">🏢</div><h3 data-en="Corporate Events" data-ar="المناسبات والفعاليات">Corporate Events</h3><p data-en="Conference, product launch and brand shoots." data-ar="مؤتمرات، إطلاق منتجات وتصوير العلامة التجارية.">Conference, product launch and brand shoots.</p><div class="service-price">From BHD 150</div></div>
+    <div class="service-card"><div class="service-icon">🎞️</div><h3 data-en="Brand Videos" data-ar="مقاطع العلامة التجارية">Brand Videos</h3><p data-en="Promotional and social media content." data-ar="محتوى ترويجي ومقاطع سوشيال ميديا.">Promotional and social media content.</p><div class="service-price">From BHD 200</div></div>
+    <div class="service-card"><div class="service-icon">👶</div><h3 data-en="Portrait Sessions" data-ar="جلسات البورتريه">Portrait Sessions</h3><p data-en="Family, newborn and individual portraits." data-ar="جلسات العائلة، المواليد والأفراد.">Family, newborn and individual portraits.</p><div class="service-price">From BHD 80</div></div>
+    <div class="service-card"><div class="service-icon">🏠</div><h3 data-en="Real Estate" data-ar="التصوير العقاري">Real Estate</h3><p data-en="Property photos and aerial drone footage." data-ar="تصوير العقارات ومقاطع الدرون.">Property photos and aerial drone footage.</p><div class="service-price">From BHD 120</div></div>
+  </div>
+</div>
+
+<!-- INVOICES -->
+<div class="page" id="page-invoices">
+  <div class="section-header">
+    <h2 id="inv-page-title">Invoices</h2>
+    <button class="btn-gold" onclick="showNewInvoiceForm()" id="inv-new-btn">+ New Invoice</button>
+  </div>
+  <div id="invoice-form" style="display:none">
+    <div class="card">
+      <div class="card-title" id="inv-details-title">Invoice Details</div>
+
+      <!-- اختيار العميل -->
+      <div style="margin-bottom:1.25rem">
+        <label id="lbl-pick-client" style="font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:0.5rem">اختر العميل / Select Client</label>
+        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">
+          <select id="client-picker" onchange="fillClientFromPicker()" style="flex:1;min-width:200px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.65rem 0.85rem;color:var(--text);font-size:0.9rem;outline:none;cursor:pointer">
+            <option value="">— اختر عميل محفوظ —</option>
+          </select>
+          <button class="btn-outline" onclick="clearClientFields()" id="btn-new-client" style="font-size:0.82rem;padding:0.6rem 1rem;white-space:nowrap">+ عميل جديد</button>
+          <button class="btn-gold" onclick="saveCurrentClientToList()" id="btn-save-client" style="font-size:0.82rem;padding:0.6rem 1rem;white-space:nowrap">💾 حفظ العميل</button>
+        </div>
+      </div>
+
+      <!-- حقول بيانات العميل -->
+      <div class="form-grid">
+        <div class="form-group"><label id="lbl-client">Client Name</label><input id="inv-client" oninput="markClientDirty()" /></div>
+        <div class="form-group"><label id="lbl-custid">Customer ID#</label><input id="inv-custid" oninput="markClientDirty()" /></div>
+        <div class="form-group"><label id="lbl-phone">Phone</label><input id="inv-phone" oninput="markClientDirty()" /></div>
+        <div class="form-group"><label id="lbl-iban">IBAN</label><input id="inv-iban" oninput="markClientDirty()" /></div>
+        <div class="form-group"><label id="lbl-addr">Address</label><input id="inv-addr" oninput="markClientDirty()" /></div>
+        <div class="form-group"><label id="lbl-email">Email</label><input id="inv-email" type="email" oninput="markClientDirty()" /></div>
+        <div class="form-group"><label id="lbl-invnum">Invoice #</label><input id="inv-number" /></div>
+        <div class="form-group"><label id="lbl-date">Date</label><input id="inv-date" type="date" /></div>
+        <div class="form-group"><label id="lbl-status">Status</label>
+          <select id="inv-status">
+            <option value="draft">Draft</option>
+            <option value="unpaid">Unpaid</option>
+            <option value="paid">Paid</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" id="lbl-items">الخدمات / Services</div>
+
+      <!-- اختيار الخدمات -->
+      <div id="service-selector" style="margin-bottom:1.5rem">
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em" id="lbl-pick-services">اختر الخدمات</div>
+        <div id="service-chips" style="display:flex;flex-wrap:wrap;gap:0.5rem"></div>
+      </div>
+
+      <!-- جدول البنود المختارة -->
+      <div style="overflow-x:auto">
+        <table class="inv-items" style="min-width:520px">
+          <thead><tr>
+            <th id="th-item">Item</th>
+            <th style="width:12%" id="th-type">Type</th>
+            <th style="width:8%" id="th-qty">Qty</th>
+            <th style="width:14%" id="th-unit">Unit Price</th>
+            <th style="width:12%" id="th-disc">Discount</th>
+            <th style="width:11%" id="th-linetotal">Line Total</th>
+            <th style="width:5%"></th>
+          </tr></thead>
+          <tbody id="line-items"></tbody>
+        </table>
+      </div>
+      <button class="btn-outline" onclick="addCustomItem()" id="add-item-btn" style="font-size:0.82rem;padding:0.45rem 1rem;margin-top:0.75rem">+ خدمة مخصصة</button>
+      <div class="inv-totals" style="margin-top:1.25rem">
+        <div><span id="lbl-subtotal">Subtotal</span>: <strong id="subtotal">BHD 0.000</strong></div>
+        <div><span id="lbl-disc-total">Discount</span>: <strong id="disc-total" style="color:var(--danger)">- BHD 0.000</strong></div>
+        <div class="total-line"><span id="lbl-total">Total</span>: <span id="grand-total">BHD 0.000</span></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:0.75rem;margin-bottom:2rem">
+      <button class="btn-gold" onclick="saveInvoice()" id="save-inv-btn">Save Invoice</button>
+      <button class="btn-outline" onclick="hideInvoiceForm()" id="cancel-inv-btn">Cancel</button>
+    </div>
+    <div class="form-group" style="margin-bottom:1.5rem">
+      <label id="lbl-notes">Notes (dates, sessions, etc.)</label>
+      <textarea id="inv-notes" rows="5" placeholder="1- 01/06/2026&#10;2- 02/06/2026"></textarea>
+    </div>
+  </div>
+  <div class="invoices-list" id="invoices-container">
+    <div style="text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem" id="inv-empty">No invoices yet.</div>
+  </div>
+</div>
+
+<!-- BOOKING -->
+<div class="page" id="page-booking">
+  <iframe id="booking-iframe" src="booking.html" title="Booking"></iframe>
+</div>
+
+<!-- CLIENTS -->
+<div class="page" id="page-clients">
+  <div class="section-header">
+    <h2 id="clients-page-title">Clients</h2>
+    <button class="btn-gold" onclick="showAddClientForm()" id="add-client-btn">+ Add Client</button>
+  </div>
+
+  <!-- فورم إضافة/تعديل عميل -->
+  <div id="client-form" style="display:none">
+    <div class="card">
+      <div class="card-title" id="client-form-title">Add Client</div>
+      <div class="form-grid">
+        <div class="form-group"><label id="clf-lbl-name">Client Name</label><input id="clf-name" /></div>
+        <div class="form-group"><label id="clf-lbl-custid">Customer ID#</label><input id="clf-custid" /></div>
+        <div class="form-group"><label id="clf-lbl-phone">Phone</label><input id="clf-phone" /></div>
+        <div class="form-group"><label id="clf-lbl-iban">IBAN</label><input id="clf-iban" /></div>
+        <div class="form-group"><label id="clf-lbl-addr">Address</label><input id="clf-addr" /></div>
+        <div class="form-group"><label id="clf-lbl-email">Email</label><input id="clf-email" type="email" /></div>
+      </div>
+      <div style="display:flex;gap:0.75rem;margin-top:0.75rem">
+        <button class="btn-gold" onclick="saveClient()" id="clf-save-btn">Save</button>
+        <button class="btn-outline" onclick="hideClientForm()" id="clf-cancel-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- قائمة العملاء -->
+  <div id="clients-container"></div>
+</div>
+
+<!-- STAFF -->
+<div class="page" id="page-staff">
+  <div class="section-header">
+    <h2 id="staff-page-title">Staff Management</h2>
+    <button class="btn-gold" onclick="showAddStaffForm()" id="add-staff-btn">+ Add Staff</button>
+  </div>
+  <div id="staff-form" style="display:none">
+    <div class="card">
+      <div class="card-title" id="add-staff-title">Add Staff Member</div>
+      <div class="form-grid">
+        <div class="form-group"><label id="lbl-sfname">Full Name</label><input id="sf-name" /></div>
+        <div class="form-group"><label id="lbl-sfrole">Role</label>
+          <select id="sf-role">
+            <option>Photographer</option><option>Videographer</option>
+            <option>Editor</option><option>Assistant</option>
+            <option>Drone Operator</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-group"><label id="lbl-sfrate">Daily Rate (BHD)</label><input id="sf-rate" type="number" /></div>
+        <div class="form-group"><label id="lbl-sfphone">Phone</label><input id="sf-phone" /></div>
+      </div>
+      <div style="display:flex;gap:0.75rem;margin-top:0.5rem">
+        <button class="btn-gold" onclick="saveStaff()" id="save-staff-btn">Save</button>
+        <button class="btn-outline" onclick="document.getElementById('staff-form').style.display='none'" id="cancel-staff-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div class="staff-grid" id="staff-container">
+    <div style="text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem;grid-column:1/-1" id="staff-empty">No staff added yet.</div>
+  </div>
+  <div class="card">
+    <div class="card-title" id="worklog-title">Daily Work Log</div>
+    <div class="form-grid" style="margin-bottom:1rem">
+      <div class="form-group"><label id="lbl-logstaff">Staff Member</label><select id="log-staff"><option value="">—</option></select></div>
+      <div class="form-group"><label id="lbl-logdate">Date</label><input id="log-date" type="date" /></div>
+      <div class="form-group"><label id="lbl-loghours">Hours</label><input id="log-hours" type="number" placeholder="8" min="0" max="24" step="0.5" /></div>
+      <div class="form-group"><label id="lbl-logjob">Job / Project</label><input id="log-job" /></div>
+    </div>
+    <button class="btn-gold" onclick="logWork()" id="log-work-btn" style="margin-bottom:1.25rem">Log Work Day</button>
+    <table class="work-log-table">
+      <thead><tr>
+        <th id="th-staff">Staff</th><th id="th-wdate">Date</th>
+        <th id="th-whours">Hours</th><th id="th-wjob">Job</th>
+        <th id="th-wpay">Pay (BHD)</th><th></th>
+      </tr></thead>
+      <tbody id="work-log-body">
+        <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)" id="wlog-empty">No work logged yet.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- INVOICE MODAL -->
+<div class="inv-preview" id="inv-modal">
+  <button class="modal-close" onclick="closeInvModal()">✕</button>
+  <div class="inv-doc" id="inv-doc-content"></div>
+</div>
+
+<!-- SLIP MODAL -->
+<div class="slip-preview" id="slip-modal">
+  <button class="modal-close" onclick="closeSlipModal()">✕</button>
+  <div class="slip-doc" id="slip-doc-content"></div>
+</div>
+
+<script>
+// ── DATA ────────────────────────────────────────────
+let invoices  = JSON.parse(localStorage.getItem('ss_invoices')||'[]');
+let staffList = JSON.parse(localStorage.getItem('ss_staff')||'[]');
+let workLog   = JSON.parse(localStorage.getItem('ss_worklog')||'[]');
+let clients   = JSON.parse(localStorage.getItem('ss_clients')||'[]');
+let lang = localStorage.getItem('ss_lang')||'en';
+
+function save(){
+  localStorage.setItem('ss_invoices', JSON.stringify(invoices));
+  localStorage.setItem('ss_staff',    JSON.stringify(staffList));
+  localStorage.setItem('ss_worklog',  JSON.stringify(workLog));
+  localStorage.setItem('ss_clients',  JSON.stringify(clients));
+  localStorage.setItem('ss_lang',     lang);
+}
+
+// ── LANGUAGE ────────────────────────────────────────
+const T = {
+  en:{
+    logo:'Shuaib Studio',
+    nav:['Home','Booking','Invoices','Clients','Staff'],
+    langBtn:'عربي',
+    heroTag:'Photography & Videography Studio',
+    heroTitle:'We Capture <em>Moments</em><br>That Last Forever',
+    heroSub:'Professional photography and cinematic videography for weddings, events, brands, and beyond — based in Bahrain.',
+    heroBtn1:'Book Now',heroBtn2:'Create Invoice',
+    s1:'Total Invoiced',s2:'Paid',s3:'Pending',s4:'Staff Members',
+    srvTitle:'Our Services',
+    invPageTitle:'Invoices',invNewBtn:'+ New Invoice',
+    invDetailsTitle:'Invoice Details',
+    lblClient:'Client Name',lblCustid:'Customer ID#',lblPhone:'Phone',lblIban:'IBAN',
+    lblAddr:'Address',lblEmail:'Email',lblInvnum:'Invoice #',lblDate:'Date',lblStatus:'Status',
+    lblItems:'Line Items',thQty:'Qty',thType:'Type',thItem:'Item #',thDesc:'Description',thUnit:'Unit Price',thDisc:'Discount',
+    addItemBtn:'+ Add Item',lblSubtotal:'Subtotal',lblDiscTotal:'Discount',lblTotal:'Total',
+    saveInvBtn:'Save Invoice',cancelInvBtn:'Cancel',
+    lblNotes:'Notes (dates, sessions, etc.)',
+    invEmpty:'No invoices yet. Create your first one.',
+    staffPageTitle:'Staff Management',addStaffBtn:'+ Add Staff',
+    addStaffTitle:'Add Staff Member',
+    lblSfname:'Full Name',lblSfrole:'Role',lblSfrate:'Daily Rate (BHD)',lblSfphone:'Phone',
+    saveStaffBtn:'Save',cancelStaffBtn:'Cancel',staffEmpty:'No staff added yet.',
+    worklogTitle:'Daily Work Log — Salary Tracking',
+    lblLogstaff:'Staff Member',lblLogdate:'Date',lblLoghours:'Hours',lblLogjob:'Job / Project',
+    logWorkBtn:'Log Work Day',
+    thStaff:'Staff',thWdate:'Date',thWhours:'Hours',thWjob:'Job',thWpay:'Pay (BHD)',
+    wlogEmpty:'No work logged yet.',
+    slipBtn:'Salary Slip',removeBtn:'Remove',
+    togglePaid:'Toggle Paid',deleteInv:'Delete',
+    slipLabel:'Salary Slip',slipTotal:'Total Salary',
+    slipPeriod:'Period',slipRate:'Daily Rate',slipDays:'Days Worked',slipDate:'Slip Date',
+    printSlip:'Print Slip',printInv:'Print Invoice',
+    statusOpts:['Draft','Unpaid','Paid'],
+    roles:['Photographer','Videographer','Editor','Assistant','Drone Operator','Other'],
+    billTo:'Bill to',customer:'Customer',customerId:'Customer ID#',address:'Address',phone:'Phone',iban:'IBAN',
+    note:'Note:',qty:'Qty',type:'Type',itemNo:'Item #',desc:'Description',unitPrice:'Unit price',discount:'Discount',lineTotal:'Line total',total:'Total',
+  },
+  ar:{
+    logo:'شعيب استوديو',
+    nav:['الرئيسية','حجز','الفواتير','العملاء','الموظفون'],
+    langBtn:'English',
+    heroTag:'استوديو تصوير واستوديو فيديوغرافي',
+    heroTitle:'نحن نلتقط <em>اللحظات</em><br>التي تدوم للأبد',
+    heroSub:'تصوير احترافي وتصوير سينمائي للأعراس والفعاليات والعلامات التجارية — في البحرين.',
+    heroBtn1:'احجز الآن',heroBtn2:'إنشاء فاتورة',
+    s1:'إجمالي الفواتير',s2:'مدفوع',s3:'معلق',s4:'الموظفون',
+    srvTitle:'خدماتنا',
+    invPageTitle:'الفواتير',invNewBtn:'+ فاتورة جديدة',
+    invDetailsTitle:'تفاصيل الفاتورة',
+    lblClient:'اسم العميل',lblCustid:'رقم هوية العميل',lblPhone:'الهاتف',lblIban:'IBAN',
+    lblAddr:'العنوان',lblEmail:'البريد الإلكتروني',lblInvnum:'رقم الفاتورة',lblDate:'التاريخ',lblStatus:'الحالة',
+    lblItems:'بنود الفاتورة',thQty:'الكمية',thType:'النوع',thItem:'رقم البند',thDesc:'الوصف',thUnit:'سعر الوحدة',thDisc:'الخصم',
+    addItemBtn:'+ إضافة بند',lblSubtotal:'المجموع الفرعي',lblDiscTotal:'الخصم',lblTotal:'الإجمالي',
+    saveInvBtn:'حفظ الفاتورة',cancelInvBtn:'إلغاء',
+    lblNotes:'ملاحظات (التواريخ، الجلسات، إلخ)',
+    invEmpty:'لا توجد فواتير بعد.',
+    staffPageTitle:'إدارة الموظفين',addStaffBtn:'+ إضافة موظف',
+    addStaffTitle:'إضافة موظف',
+    lblSfname:'الاسم الكامل',lblSfrole:'المنصب',lblSfrate:'الأجر اليومي (BD)',lblSfphone:'الهاتف',
+    saveStaffBtn:'حفظ',cancelStaffBtn:'إلغاء',staffEmpty:'لا يوجد موظفون بعد.',
+    worklogTitle:'سجل الأيام اليومي',
+    lblLogstaff:'الموظف',lblLogdate:'التاريخ',lblLoghours:'عدد الساعات',lblLogjob:'المهمة / المشروع',
+    logWorkBtn:'تسجيل يوم عمل',
+    thStaff:'الموظف',thWdate:'التاريخ',thWhours:'الساعات',thWjob:'المهمة',thWpay:'الأجر (BD)',
+    wlogEmpty:'لا يوجد سجل عمل بعد.',
+    slipBtn:'كشف راتب',removeBtn:'حذف',
+    togglePaid:'تغيير الحالة',deleteInv:'حذف',
+    slipLabel:'كشف الراتب',slipTotal:'إجمالي الراتب',
+    slipPeriod:'الفترة',slipRate:'الأجر اليومي',slipDays:'أيام العمل',slipDate:'تاريخ الكشف',
+    printSlip:'طباعة الكشف',printInv:'طباعة الفاتورة',
+    statusOpts:['مسودة','غير مدفوع','مدفوع'],
+    roles:['مصور','مصور فيديو','مونتير','مساعد','مشغل درون','أخرى'],
+    billTo:'فاتورة إلى',customer:'العميل',customerId:'رقم الهوية',address:'العنوان',phone:'الهاتف',iban:'IBAN',
+    note:'ملاحظة:',qty:'الكمية',type:'النوع',itemNo:'رقم البند',desc:'الوصف',unitPrice:'سعر الوحدة',discount:'الخصم',lineTotal:'المجموع',total:'الإجمالي',
+  }
+};
+
+function t(key){ return T[lang][key] || key; }
+
+function applyLang(){
+  const r = document.getElementById('html-root');
+  if(lang==='ar'){ r.setAttribute('lang','ar'); r.setAttribute('dir','rtl'); }
+  else { r.setAttribute('lang','en'); r.setAttribute('dir','ltr'); }
+
+  document.getElementById('nav-logo').textContent = t('logo');
+  document.getElementById('lang-btn').textContent = t('langBtn');
+
+  const navBtns = document.querySelectorAll('.nav-links button');
+  const navKeys = ['home','booking','invoices','staff'];
+  const navLabels = t('nav');
+  navBtns.forEach((b,i)=>{ b.textContent = navLabels[i]; });
+
+  document.getElementById('h-tag').textContent = t('heroTag');
+  document.getElementById('h-title').innerHTML = t('heroTitle');
+  document.getElementById('h-sub').textContent = t('heroSub');
+  document.getElementById('h-btn1').textContent = t('heroBtn1');
+  document.getElementById('h-btn2').textContent = t('heroBtn2');
+  document.getElementById('s1-lbl').textContent = t('s1');
+  document.getElementById('s2-lbl').textContent = t('s2');
+  document.getElementById('s3-lbl').textContent = t('s3');
+  document.getElementById('s4-lbl').textContent = t('s4');
+  document.getElementById('srv-title').textContent = t('srvTitle');
+
+  // service cards
+  document.querySelectorAll('.service-card h3, .service-card p').forEach(el=>{
+    const v = el.getAttribute('data-'+lang); if(v) el.textContent=v;
+  });
+
+  document.getElementById('inv-page-title').textContent = t('invPageTitle');
+  document.getElementById('inv-new-btn').textContent    = t('invNewBtn');
+  document.getElementById('inv-details-title').textContent = t('invDetailsTitle');
+  document.getElementById('lbl-client').textContent = t('lblClient');
+  document.getElementById('lbl-custid').textContent = t('lblCustid');
+  document.getElementById('lbl-phone').textContent  = t('lblPhone');
+  document.getElementById('lbl-iban').textContent   = t('lblIban');
+  document.getElementById('lbl-addr').textContent   = t('lblAddr');
+  document.getElementById('lbl-email').textContent  = t('lblEmail');
+  document.getElementById('lbl-invnum').textContent = t('lblInvnum');
+  document.getElementById('lbl-date').textContent   = t('lblDate');
+  document.getElementById('lbl-status').textContent = t('lblStatus');
+  document.getElementById('lbl-items').textContent  = t('lblItems');
+  document.getElementById('th-qty').textContent     = t('thQty');
+  document.getElementById('th-type').textContent    = t('thType');
+  document.getElementById('th-item').textContent    = t('thItem');
+  document.getElementById('th-desc').textContent    = t('thDesc');
+  document.getElementById('th-unit').textContent    = t('thUnit');
+  document.getElementById('th-disc').textContent    = t('thDisc');
+  document.getElementById('add-item-btn').textContent  = t('addItemBtn');
+  document.getElementById('lbl-subtotal').textContent  = t('lblSubtotal');
+  document.getElementById('lbl-disc-total').textContent= t('lblDiscTotal');
+  document.getElementById('lbl-total').textContent     = t('lblTotal');
+  document.getElementById('save-inv-btn').textContent  = t('saveInvBtn');
+  document.getElementById('cancel-inv-btn').textContent= t('cancelInvBtn');
+  document.getElementById('lbl-notes').textContent     = t('lblNotes');
+
+  document.getElementById('staff-page-title').textContent = t('staffPageTitle');
+  document.getElementById('add-staff-btn').textContent    = t('addStaffBtn');
+  document.getElementById('add-staff-title').textContent  = t('addStaffTitle');
+  document.getElementById('lbl-sfname').textContent  = t('lblSfname');
+  document.getElementById('lbl-sfrole').textContent  = t('lblSfrole');
+  document.getElementById('lbl-sfrate').textContent  = t('lblSfrate');
+  document.getElementById('lbl-sfphone').textContent = t('lblSfphone');
+  document.getElementById('save-staff-btn').textContent   = t('saveStaffBtn');
+  document.getElementById('cancel-staff-btn').textContent = t('cancelStaffBtn');
+  document.getElementById('worklog-title').textContent    = t('worklogTitle');
+  document.getElementById('lbl-logstaff').textContent = t('lblLogstaff');
+  document.getElementById('lbl-logdate').textContent  = t('lblLogdate');
+  document.getElementById('lbl-loghours').textContent = t('lblLoghours');
+  document.getElementById('lbl-logjob').textContent   = t('lblLogjob');
+  document.getElementById('log-work-btn').textContent  = t('logWorkBtn');
+  document.getElementById('th-staff').textContent  = t('thStaff');
+  document.getElementById('th-wdate').textContent  = t('thWdate');
+  document.getElementById('th-whours').textContent = t('thWhours');
+  document.getElementById('th-wjob').textContent   = t('thWjob');
+  document.getElementById('th-wpay').textContent   = t('thWpay');
+
+  // role select options
+  const roleOpts = t('roles');
+  const roleSel = document.getElementById('sf-role');
+  Array.from(roleSel.options).forEach((o,i)=>{ o.text = roleOpts[i]||o.text; });
+
+  renderInvoices(); renderStaff(); renderWorkLog(); renderClients(); updateStats();
+  // تحديث chips لو الفورم مفتوح
+  if(document.getElementById('invoice-form').style.display !== 'none') buildServiceChips();
+}
+
+function toggleLang(){
+  lang = lang==='en'?'ar':'en';
+  save(); applyLang();
+}
+
+// ── NAVIGATION ──────────────────────────────────────
+function showPage(p, ev){
+  const e = ev||event;
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-links button').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  if(e && e.target && e.target.classList.contains('nav-links')=== false) e.target.classList.add('active');
+  // re-activate correct nav button
+  const navBtns = document.querySelectorAll('.nav-links button');
+  const pages=['home','booking','invoices','clients','staff'];
+  const idx=pages.indexOf(p);
+  if(idx>=0) navBtns[idx].classList.add('active');
+  if(p==='home') updateStats();
+  if(p==='invoices') renderInvoices();
+  if(p==='clients'){ renderClients(); }
+  if(p==='staff'){ renderStaff(); renderWorkLog(); }
+  if(p==='booking'){
+    const f=document.getElementById('booking-iframe');
+    try{ f.style.height=Math.max(f.contentWindow.document.body.scrollHeight,2000)+'px'; }catch(e){}
+  }
+}
+window.addEventListener('message',e=>{
+  if(e.data&&e.data.type==='booking-height')
+    document.getElementById('booking-iframe').style.height=e.data.height+'px';
+});
+
+// ── STATS ────────────────────────────────────────────
+function updateStats(){
+  const total=invoices.reduce((s,i)=>s+(i.grand||0),0);
+  document.getElementById('stat-total').textContent='BHD '+total.toFixed(3);
+  document.getElementById('stat-paid').textContent=invoices.filter(i=>i.status==='paid').length;
+  document.getElementById('stat-pending').textContent=invoices.filter(i=>i.status==='unpaid').length;
+  document.getElementById('stat-staff').textContent=staffList.length;
+}
+
+// ── CLIENTS ──────────────────────────────────────────
+let editingClientId = null;
+
+function updateClientPicker(){
+  const sel = document.getElementById('client-picker');
+  if(!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = `<option value="">— ${lang==='ar'?'اختر عميل محفوظ':'Select saved client'} —</option>`
+    + clients.map(c=>`<option value="${c.id}">${c.name}${c.custid?' — '+c.custid:''}</option>`).join('');
+  if(cur) sel.value = cur;
+}
+
+function fillClientFromPicker(){
+  const id = +document.getElementById('client-picker').value;
+  if(!id){ clearClientFields(); return; }
+  const c = clients.find(x=>x.id===id);
+  if(!c) return;
+  document.getElementById('inv-client').value = c.name  ||'';
+  document.getElementById('inv-custid').value = c.custid||'';
+  document.getElementById('inv-phone').value  = c.phone ||'';
+  document.getElementById('inv-iban').value   = c.iban  ||'';
+  document.getElementById('inv-addr').value   = c.addr  ||'';
+  document.getElementById('inv-email').value  = c.email ||'';
+  // إخفاء زر الحفظ — العميل محمّل بالفعل
+  document.getElementById('btn-save-client').style.display = 'none';
+}
+
+function clearClientFields(){
+  document.getElementById('client-picker').value = '';
+  ['inv-client','inv-custid','inv-phone','inv-iban','inv-addr','inv-email'].forEach(id=>{
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('btn-save-client').style.display = '';
+}
+
+function markClientDirty(){
+  // لو المستخدم يعدّل يدوياً، اعرض زر الحفظ
+  document.getElementById('btn-save-client').style.display = '';
+}
+
+function saveCurrentClientToList(){
+  const name = document.getElementById('inv-client').value.trim();
+  if(!name){ alert(lang==='ar'?'أدخل اسم العميل أولاً':'Enter client name first'); return; }
+  const pickerId = +document.getElementById('client-picker').value;
+  if(pickerId){
+    // تحديث عميل موجود
+    const c = clients.find(x=>x.id===pickerId);
+    if(c){
+      c.name   = name;
+      c.custid = document.getElementById('inv-custid').value;
+      c.phone  = document.getElementById('inv-phone').value;
+      c.iban   = document.getElementById('inv-iban').value;
+      c.addr   = document.getElementById('inv-addr').value;
+      c.email  = document.getElementById('inv-email').value;
+    }
+  } else {
+    // عميل جديد
+    clients.push({
+      id: Date.now(), name,
+      custid: document.getElementById('inv-custid').value,
+      phone:  document.getElementById('inv-phone').value,
+      iban:   document.getElementById('inv-iban').value,
+      addr:   document.getElementById('inv-addr').value,
+      email:  document.getElementById('inv-email').value,
+    });
+  }
+  save(); updateClientPicker();
+  document.getElementById('btn-save-client').style.display = 'none';
+  // اختر العميل في القائمة
+  const newC = clients.find(x=>x.name===name);
+  if(newC) document.getElementById('client-picker').value = newC.id;
+  alert(lang==='ar'?'✅ تم حفظ العميل':'✅ Client saved!');
+}
+
+// ── صفحة إدارة العملاء ────────────────────────────
+function showAddClientForm(prefill){
+  editingClientId = null;
+  document.getElementById('client-form').style.display = 'block';
+  document.getElementById('client-form-title').textContent = lang==='ar'?'إضافة عميل':'Add Client';
+  ['clf-name','clf-custid','clf-phone','clf-iban','clf-addr','clf-email'].forEach(id=>{
+    document.getElementById(id).value = '';
+  });
+  if(prefill){
+    document.getElementById('clf-name').value   = prefill.name  ||'';
+    document.getElementById('clf-custid').value = prefill.custid||'';
+    document.getElementById('clf-phone').value  = prefill.phone ||'';
+    document.getElementById('clf-iban').value   = prefill.iban  ||'';
+    document.getElementById('clf-addr').value   = prefill.addr  ||'';
+    document.getElementById('clf-email').value  = prefill.email ||'';
+    editingClientId = prefill.id;
+    document.getElementById('client-form-title').textContent = lang==='ar'?'تعديل العميل':'Edit Client';
+  }
+}
+
+function hideClientForm(){
+  document.getElementById('client-form').style.display = 'none';
+  editingClientId = null;
+}
+
+function saveClient(){
+  const name = document.getElementById('clf-name').value.trim();
+  if(!name){ alert(lang==='ar'?'أدخل الاسم':'Enter name'); return; }
+  const data = {
+    name,
+    custid: document.getElementById('clf-custid').value,
+    phone:  document.getElementById('clf-phone').value,
+    iban:   document.getElementById('clf-iban').value,
+    addr:   document.getElementById('clf-addr').value,
+    email:  document.getElementById('clf-email').value,
+  };
+  if(editingClientId){
+    const c = clients.find(x=>x.id===editingClientId);
+    if(c) Object.assign(c, data);
+  } else {
+    clients.push({ id: Date.now(), ...data });
+  }
+  save(); hideClientForm(); renderClients(); updateClientPicker();
+}
+
+function deleteClient(id){
+  if(!confirm(lang==='ar'?'حذف هذا العميل؟':'Delete this client?')) return;
+  clients = clients.filter(c=>c.id!==id);
+  save(); renderClients(); updateClientPicker();
+}
+
+function renderClients(){
+  const c = document.getElementById('clients-container');
+  if(!c) return;
+  if(!clients.length){
+    c.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem">${lang==='ar'?'لا يوجد عملاء بعد. أضف عميلاً جديداً.':'No clients yet. Add your first client.'}</div>`;
+    return;
+  }
+  const invCount = id => invoices.filter(inv=>inv._clientId===id).length;
+  c.innerHTML = `<div class="clients-grid">`+clients.map(cl=>`
+    <div class="client-card">
+      <div class="client-inv-count">${invCount(cl.id)} ${lang==='ar'?'فاتورة':'inv'}</div>
+      <div class="client-avatar">${cl.name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase()}</div>
+      <div class="client-name">${cl.name}</div>
+      <div class="client-meta">
+        ${cl.custid?`<div>🪪 ${cl.custid}</div>`:''}
+        ${cl.phone?`<div>📞 ${cl.phone}</div>`:''}
+        ${cl.email?`<div>✉️ ${cl.email}</div>`:''}
+        ${cl.iban?`<div style="font-size:0.75rem;color:var(--muted);margin-top:0.2rem">IBAN: ${cl.iban}</div>`:''}
+      </div>
+      <div class="client-actions">
+        <button class="btn-sm" onclick="newInvoiceForClient(${cl.id})">${lang==='ar'?'فاتورة جديدة':'New Invoice'}</button>
+        <button class="btn-sm" onclick="showAddClientForm(clients.find(x=>x.id===${cl.id}))">${lang==='ar'?'تعديل':'Edit'}</button>
+        <button class="btn-sm danger" onclick="deleteClient(${cl.id})">${lang==='ar'?'حذف':'Delete'}</button>
+      </div>
+    </div>`).join('')+`</div>`;
+}
+
+function newInvoiceForClient(clientId){
+  const c = clients.find(x=>x.id===clientId);
+  if(!c) return;
+  showPage('invoices', {target: document.querySelectorAll('.nav-links button')[2]});
+  showNewInvoiceForm();
+  // ملء البيانات
+  document.getElementById('inv-client').value = c.name  ||'';
+  document.getElementById('inv-custid').value = c.custid||'';
+  document.getElementById('inv-phone').value  = c.phone ||'';
+  document.getElementById('inv-iban').value   = c.iban  ||'';
+  document.getElementById('inv-addr').value   = c.addr  ||'';
+  document.getElementById('inv-email').value  = c.email ||'';
+  document.getElementById('client-picker').value = clientId;
+  document.getElementById('btn-save-client').style.display = 'none';
+}
+
+// ── INVOICE ──────────────────────────────────────────
+
+// قائمة الخدمات المحفوظة — عدّل السعر هنا
+const PRESET_SERVICES = [
+  { id:'photo',      icon:'📷', en:'Photography',                        ar:'تصوير فوتو',                        type:'Package', unit:25, qty:1 },
+  { id:'video',      icon:'🎬', en:'Videography',                        ar:'تصوير فيديو',                       type:'Package', unit:25, qty:1 },
+  { id:'montage',    icon:'🎞️', en:'Video Editing (Montage)',             ar:'مونتاج فيديو',                      type:'Package', unit:25, qty:1 },
+  { id:'photo_vid',  icon:'📷🎬',en:'Photography + Videography',          ar:'تصوير فوتو مع فيديو',               type:'Package', unit:25, qty:1 },
+  { id:'all',        icon:'🏆', en:'Photography + Videography + Editing', ar:'تصوير فوتو وفيديو مع مونتاج',      type:'Package', unit:25, qty:1 },
+  { id:'vid_mont',   icon:'🎬🎞️',en:'Videography + Editing',              ar:'تصوير فيديو مع مونتاج',             type:'Package', unit:25, qty:1 },
+  { id:'drone',      icon:'🚁', en:'Drone Footage',                       ar:'تصوير درون',                        type:'Add-on',  unit:25, qty:1 },
+  { id:'portrait',   icon:'🤳', en:'Portrait Session',                    ar:'جلسة بورتريه',                      type:'Session', unit:25, qty:1 },
+  { id:'reel',       icon:'📱', en:'Social Media Reel',                   ar:'ريل سوشيال ميديا',                  type:'Add-on',  unit:25, qty:1 },
+];
+
+let lineItems = [];
+let selectedServiceIds = new Set();
+
+function buildServiceChips(){
+  const wrap = document.getElementById('service-chips');
+  wrap.innerHTML = PRESET_SERVICES.map(s=>`
+    <div class="svc-chip ${selectedServiceIds.has(s.id)?'selected':''}" id="chip-${s.id}" onclick="toggleService('${s.id}')">
+      <span class="chip-icon">${s.icon}</span>
+      <span>${lang==='ar'? s.ar : s.en}</span>
+    </div>`).join('');
+}
+
+function toggleService(id){
+  const svc = PRESET_SERVICES.find(s=>s.id===id);
+  if(!svc) return;
+  if(selectedServiceIds.has(id)){
+    // إزالة
+    selectedServiceIds.delete(id);
+    lineItems = lineItems.filter(it=>it._svcId !== id);
+  } else {
+    // إضافة
+    selectedServiceIds.add(id);
+    // رقم البند = عدد البنود الحالي + 1
+    const itemNo = lineItems.length + 1;
+    lineItems.push({
+      _svcId: id,
+      qty: svc.qty,
+      type: svc.type,
+      itemNo: String(itemNo),
+      desc: lang==='ar' ? svc.ar : svc.en,
+      unit: svc.unit,
+      disc: 0
+    });
+  }
+  // تحديث أرقام البنود
+  lineItems.forEach((it,i)=>{ it.itemNo = String(i+1); });
+  buildServiceChips();
+  renderLineItems();
+}
+
+function addCustomItem(){
+  lineItems.push({_svcId:null, qty:1, type:'Package', itemNo:String(lineItems.length+1), desc:'', unit:0, disc:0});
+  renderLineItems();
+}
+
+function showNewInvoiceForm(){
+  lineItems = [];
+  selectedServiceIds = new Set();
+  document.getElementById('invoice-form').style.display='block';
+  document.getElementById('inv-number').value='#'+(1000+invoices.length+1);
+  document.getElementById('inv-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('inv-client').value='';
+  document.getElementById('inv-custid').value='';
+  document.getElementById('inv-phone').value='';
+  document.getElementById('inv-iban').value='';
+  document.getElementById('inv-addr').value='';
+  document.getElementById('inv-email').value='';
+  document.getElementById('inv-notes').value='';
+  document.getElementById('inv-status').value='draft';
+  document.getElementById('client-picker').value='';
+  document.getElementById('btn-save-client').style.display='';
+  updateClientPicker();
+  buildServiceChips();
+  renderLineItems();
+}
+function hideInvoiceForm(){document.getElementById('invoice-form').style.display='none';}
+
+function removeLineItem(i){
+  const it = lineItems[i];
+  if(it._svcId) selectedServiceIds.delete(it._svcId);
+  lineItems.splice(i,1);
+  lineItems.forEach((x,j)=>{ x.itemNo=String(j+1); });
+  buildServiceChips();
+  renderLineItems();
+}
+
+function renderLineItems(){
+  const tb=document.getElementById('line-items');
+  if(!lineItems.length){
+    tb.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--muted);font-size:0.85rem">${lang==='ar'?'اختر خدمة من الأعلى أو أضف خدمة مخصصة':'Select a service above or add a custom one'}</td></tr>`;
+    calcTotals(); return;
+  }
+  tb.innerHTML=lineItems.map((it,i)=>`
+    <tr>
+      <td><input value="${it.desc}" oninput="lineItems[${i}].desc=this.value" placeholder="Description" style="min-width:120px"></td>
+      <td><input value="${it.type}" style="width:80px" oninput="lineItems[${i}].type=this.value"></td>
+      <td><input value="${it.qty}" type="number" min="1" style="width:52px" oninput="lineItems[${i}].qty=+this.value;calcTotals()"></td>
+      <td><input value="${it.unit}" type="number" step="0.001" style="width:82px" oninput="lineItems[${i}].unit=+this.value;calcTotals()"></td>
+      <td>
+        ${it._showDisc
+          ? `<div style="display:flex;align-items:center;gap:4px">
+               <input value="${it.disc||0}" type="number" step="0.001" style="width:66px" oninput="lineItems[${i}].disc=+this.value;calcTotals()">
+               <button onclick="lineItems[${i}].disc=0;lineItems[${i}]._showDisc=false;renderLineItems()" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:0.9rem;padding:0 2px" title="Remove discount">✕</button>
+             </div>`
+          : `<button onclick="lineItems[${i}]._showDisc=true;renderLineItems()" style="background:none;border:1px dashed var(--border);color:var(--muted);border-radius:4px;padding:0.25rem 0.55rem;font-size:0.75rem;cursor:pointer;white-space:nowrap">+ disc</button>`
+        }
+      </td>
+      <td style="color:var(--gold);font-weight:600;font-size:0.88rem">${((it.qty*it.unit)-(it.disc||0)).toFixed(3)}</td>
+      <td><button class="remove-row" onclick="removeLineItem(${i})">✕</button></td>
+    </tr>`).join('');
+  calcTotals();
+}
+
+function calcTotals(){
+  const sub   = lineItems.reduce((s,i)=>s+i.qty*i.unit, 0);
+  const disc  = lineItems.reduce((s,i)=>s+(i.disc||0), 0);
+  const grand = sub - disc;
+  document.getElementById('subtotal').textContent   = 'BHD '+sub.toFixed(3);
+  document.getElementById('disc-total').textContent = disc > 0 ? '- BHD '+disc.toFixed(3) : '- BHD 0.000';
+  document.getElementById('grand-total').textContent= 'BHD '+grand.toFixed(3);
+}
+
+function saveInvoice(){
+  const sub  = lineItems.reduce((s,i)=>s+i.qty*i.unit,0);
+  const disc = lineItems.reduce((s,i)=>s+(i.disc||0),0);
+  invoices.unshift({
+    id:Date.now(),
+    number:document.getElementById('inv-number').value||'#1001',
+    client:document.getElementById('inv-client').value||'Client',
+    custid:document.getElementById('inv-custid').value,
+    phone:document.getElementById('inv-phone').value,
+    iban:document.getElementById('inv-iban').value,
+    addr:document.getElementById('inv-addr').value,
+    email:document.getElementById('inv-email').value,
+    date:document.getElementById('inv-date').value,
+    status:document.getElementById('inv-status').value,
+    notes:document.getElementById('inv-notes').value,
+    items:[...lineItems],
+    subtotal:sub, disc, grand:sub-disc
+  });
+  save(); hideInvoiceForm(); renderInvoices();
+}
+function renderInvoices(){
+  const c=document.getElementById('invoices-container');
+  if(!invoices.length){c.innerHTML=`<div style="text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem">${t('invEmpty')}</div>`;return;}
+  c.innerHTML=invoices.map(inv=>`
+    <div class="invoice-row" onclick="viewInvoice(${inv.id})">
+      <div>
+        <div style="font-weight:600;color:var(--white);margin-bottom:0.2rem">${inv.client}</div>
+        <div class="inv-meta">${inv.number} · ${inv.date}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap">
+        <span class="badge badge-${inv.status}">${inv.status}</span>
+        <span class="inv-amount">BHD ${(inv.grand||0).toFixed(3)}</span>
+        <div class="action-btns" onclick="event.stopPropagation()">
+          <button class="btn-sm" onclick="toggleStatus(${inv.id})">${t('togglePaid')}</button>
+          <button class="btn-sm danger" onclick="deleteInvoice(${inv.id})">${t('deleteInv')}</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function toggleStatus(id){
+  const inv=invoices.find(i=>i.id===id);
+  if(!inv)return;
+  inv.status=inv.status==='paid'?'unpaid':'paid';
+  save();renderInvoices();
+}
+function deleteInvoice(id){
+  if(!confirm('Delete?'))return;
+  invoices=invoices.filter(i=>i.id!==id);save();renderInvoices();
+}
+function viewInvoice(id){
+  const inv=invoices.find(i=>i.id===id);if(!inv)return;
+  const rows=inv.items.map(it=>`
+    <tr>
+      <td>${it.desc||''}</td>
+      <td>${it.type||'Package'}</td>
+      <td>${it.qty}</td>
+      <td style="text-align:right">${(+it.unit||0).toFixed(3)} BD</td>
+      <td style="text-align:right">${it.disc&&it.disc>0?'- '+(+it.disc).toFixed(3)+' BD':''}</td>
+      <td style="text-align:right;font-weight:600">${((it.qty*(+it.unit||0))-(it.disc||0)).toFixed(3)} BD</td>
+    </tr>`).join('');
+  const notesHtml = inv.notes ? inv.notes.split('\n').filter(Boolean).map(l=>`<div>${l}</div>`).join('') : '';
+  document.getElementById('inv-doc-content').innerHTML=`
+    <div class="inv-doc-head">
+      <div class="inv-doc-brand">SHUAIB STUDIO</div>
+      <div class="inv-doc-date">${inv.date}</div>
+    </div>
+    <div class="inv-doc-num">${inv.number}</div>
+    <table class="inv-bill-table">
+      <thead><tr><th colspan="2">${t('billTo')}</th></tr></thead>
+      <tbody>
+        <tr><td>${t('customer')}</td><td>${inv.client}</td></tr>
+        ${inv.custid?`<tr><td>${t('customerId')}</td><td>${inv.custid}</td></tr>`:''}
+        ${inv.addr?`<tr><td>${t('address')}</td><td>${inv.addr}</td></tr>`:''}
+        ${inv.phone?`<tr><td>${t('phone')}</td><td>${inv.phone}</td></tr>`:''}
+        ${inv.iban?`<tr><td>${t('iban')}</td><td>${inv.iban}</td></tr>`:''}
+        ${inv.email?`<tr><td>Email</td><td>${inv.email}</td></tr>`:''}
+      </tbody>
+    </table>
+    <div style="height:1rem"></div>
+    <table class="inv-lines-table">
+      <thead><tr>
+        <th>${t('desc')}</th><th>${t('type')}</th><th>${t('qty')}</th>
+        <th style="text-align:right">${t('unitPrice')}</th>
+        <th style="text-align:right">${t('discount')}</th>
+        <th style="text-align:right">${t('lineTotal')}</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4"></td>
+          <td class="total-label" style="text-align:right">${t('total')}</td>
+          <td style="text-align:right">${(inv.grand||0).toFixed(3)} BD</td>
+        </tr>
+      </tfoot>
+    </table>
+    ${notesHtml?`
+    <div class="inv-notes-section">
+      <div class="inv-notes-label">${t('note')}</div>
+      <div class="inv-notes-content">${notesHtml}</div>
+    </div>`:''}
+    <div class="inv-print-bar">
+      <button onclick="window.print()" style="background:#2d5da1;color:#fff;border:none;padding:0.6rem 1.5rem;border-radius:5px;font-weight:600;cursor:pointer;font-size:0.88rem">${t('printInv')}</button>
+      <span style="font-size:0.8rem;color:#999">SHUAIB STUDIO · Manama, Bahrain</span>
+    </div>`;
+  document.getElementById('inv-modal').classList.add('show');
+}
+function closeInvModal(){document.getElementById('inv-modal').classList.remove('show');}
+
+// ── STAFF ─────────────────────────────────────────────
+function showAddStaffForm(){document.getElementById('staff-form').style.display='block';}
+function saveStaff(){
+  const n=document.getElementById('sf-name').value.trim();
+  if(!n){alert(lang==='ar'?'أدخل الاسم':'Please enter a name.');return;}
+  staffList.push({id:Date.now(),name:n,role:document.getElementById('sf-role').value,rate:+document.getElementById('sf-rate').value||0,phone:document.getElementById('sf-phone').value});
+  save();document.getElementById('staff-form').style.display='none';
+  document.getElementById('sf-name').value='';document.getElementById('sf-phone').value='';
+  renderStaff();updateStaffDropdown();updateStats();
+}
+function renderStaff(){
+  const c=document.getElementById('staff-container');
+  if(!staffList.length){c.innerHTML=`<div style="text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem;grid-column:1/-1">${t('staffEmpty')}</div>`;return;}
+  c.innerHTML=staffList.map(s=>`
+    <div class="staff-card">
+      <div class="staff-avatar">${s.name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase()}</div>
+      <div class="staff-name">${s.name}</div>
+      <div class="staff-role">${s.role}</div>
+      <div class="staff-rate">BHD ${s.rate.toFixed(3)} / ${lang==='ar'?'يوم':'day'}</div>
+      ${s.phone?`<div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem">${s.phone}</div>`:''}
+      <div class="staff-actions">
+        <button class="btn-sm" onclick="generateSlip(${s.id})">${t('slipBtn')}</button>
+        <button class="btn-sm danger" onclick="deleteStaff(${s.id})">${t('removeBtn')}</button>
+      </div>
+    </div>`).join('');
+  updateStaffDropdown();
+}
+function deleteStaff(id){
+  if(!confirm(lang==='ar'?'حذف هذا الموظف؟':'Remove staff member?'))return;
+  staffList=staffList.filter(s=>s.id!==id);
+  workLog=workLog.filter(w=>w.staffId!==id);
+  save();renderStaff();renderWorkLog();updateStats();
+}
+function updateStaffDropdown(){
+  const sel=document.getElementById('log-staff');
+  sel.innerHTML=`<option value="">—</option>`+staffList.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+}
+
+// ── WORK LOG ──────────────────────────────────────────
+function logWork(){
+  const sid=+document.getElementById('log-staff').value;
+  if(!sid){alert(lang==='ar'?'اختر موظف':'Select a staff member.');return;}
+  const date=document.getElementById('log-date').value;
+  if(!date){alert(lang==='ar'?'اختر التاريخ':'Select a date.');return;}
+  const hours=+document.getElementById('log-hours').value||8;
+  const job=document.getElementById('log-job').value||'—';
+  const staff=staffList.find(s=>s.id===sid);
+  workLog.unshift({id:Date.now(),staffId:sid,staffName:staff.name,date,hours,job,pay:staff.rate});
+  save();renderWorkLog();
+  document.getElementById('log-hours').value='';
+  document.getElementById('log-job').value='';
+}
+function renderWorkLog(){
+  const tb=document.getElementById('work-log-body');
+  if(!workLog.length){tb.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)">${t('wlogEmpty')}</td></tr>`;return;}
+  tb.innerHTML=workLog.map(w=>`
+    <tr>
+      <td style="font-weight:500">${w.staffName}</td>
+      <td>${w.date}</td>
+      <td>${w.hours}h</td>
+      <td style="color:var(--muted)">${w.job}</td>
+      <td style="color:var(--gold);font-weight:500">BHD ${w.pay.toFixed(3)}</td>
+      <td>
+        <button class="btn-sm" onclick="generateSlipForLog(${w.id})" style="font-size:0.75rem;padding:0.3rem 0.6rem">${t('slipBtn')}</button>
+        <button class="btn-sm danger" onclick="deleteLog(${w.id})" style="font-size:0.75rem;padding:0.3rem 0.6rem">✕</button>
+      </td>
+    </tr>`).join('');
+}
+function deleteLog(id){workLog=workLog.filter(w=>w.id!==id);save();renderWorkLog();}
+
+// ── SALARY SLIP ───────────────────────────────────────
+function generateSlip(staffId){
+  const staff=staffList.find(s=>s.id===staffId);if(!staff)return;
+  const logs=workLog.filter(w=>w.staffId===staffId);
+  const totalPay=logs.reduce((s,w)=>s+w.pay,0);
+  const rows=logs.length?logs.map(w=>`<tr><td>${w.date}</td><td>${w.job}</td><td>${w.hours}h</td><td style="text-align:right">BHD ${w.pay.toFixed(3)}</td></tr>`).join('')
+    :`<tr><td colspan="4" style="text-align:center;color:#999;padding:1rem">—</td></tr>`;
+  renderSlipDoc(staff,rows,logs.length,totalPay,false,'');
+}
+function generateSlipForLog(logId){
+  const log=workLog.find(w=>w.id===logId);if(!log)return;
+  const staff=staffList.find(s=>s.id===log.staffId);if(!staff)return;
+  const rows=`<tr><td>${log.date}</td><td>${log.job}</td><td>${log.hours}h</td><td style="text-align:right">BHD ${log.pay.toFixed(3)}</td></tr>`;
+  renderSlipDoc(staff,rows,1,log.pay,true,log.date);
+}
+function renderSlipDoc(staff,rows,days,total,single,date){
+  const today=new Date().toISOString().split('T')[0];
+  const initials=staff.name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('slip-doc-content').innerHTML=`
+    <div class="slip-header">
+      <div style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--gold)">Shuaib Studio</div>
+      <div style="color:#888;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em">${t('slipLabel')}</div>
+    </div>
+    <div style="padding:1.75rem 2rem">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid #e5e5e5">
+        <div style="width:44px;height:44px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-weight:700;color:#333;font-size:1rem">${initials}</div>
+        <div>
+          <div style="font-weight:600;font-size:1rem">${staff.name}</div>
+          <div style="font-size:0.82rem;color:#777">${staff.role}</div>
+          ${staff.phone?`<div style="font-size:0.8rem;color:#999">${staff.phone}</div>`:''}
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid #e5e5e5;font-size:0.85rem">
+        <div><div style="font-size:0.7rem;text-transform:uppercase;color:#999;margin-bottom:0.2rem">${t('slipPeriod')}</div><div style="font-weight:500">${single?date:t('slipDays')+': '+days}</div></div>
+        <div><div style="font-size:0.7rem;text-transform:uppercase;color:#999;margin-bottom:0.2rem">${t('slipRate')}</div><div style="font-weight:500">BHD ${staff.rate.toFixed(3)}</div></div>
+        <div><div style="font-size:0.7rem;text-transform:uppercase;color:#999;margin-bottom:0.2rem">${t('slipDays')}</div><div style="font-weight:500">${days}</div></div>
+        <div><div style="font-size:0.7rem;text-transform:uppercase;color:#999;margin-bottom:0.2rem">${t('slipDate')}</div><div style="font-weight:500">${today}</div></div>
+      </div>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:1rem;font-size:0.85rem">
+        <thead><tr style="background:#f5f5f5">
+          <th style="text-align:left;padding:0.5rem 0.75rem;font-size:0.73rem;text-transform:uppercase;color:#666">${t('thWdate')}</th>
+          <th style="text-align:left;padding:0.5rem 0.75rem;font-size:0.73rem;text-transform:uppercase;color:#666">${t('thWjob')}</th>
+          <th style="text-align:left;padding:0.5rem 0.75rem;font-size:0.73rem;text-transform:uppercase;color:#666">${t('thWhours')}</th>
+          <th style="text-align:right;padding:0.5rem 0.75rem;font-size:0.73rem;text-transform:uppercase;color:#666">${t('thWpay')}</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+        <tfoot><tr class="slip-total-row">
+          <td colspan="3" style="padding:0.75rem;font-weight:600;color:#fff">${t('slipTotal')}</td>
+          <td style="text-align:right;padding:0.75rem;font-weight:700;font-size:1rem;color:var(--gold)">BHD ${total.toFixed(3)}</td>
+        </tr></tfoot>
+      </table>
+      <div style="text-align:center;margin-top:1rem">
+        <button onclick="window.print()" style="background:#c9a463;color:#000;border:none;padding:0.6rem 1.5rem;border-radius:6px;font-weight:700;cursor:pointer;font-size:0.88rem">${t('printSlip')}</button>
+      </div>
+    </div>
+    <div style="background:#f9f9f9;padding:1rem 2rem;font-size:0.75rem;color:#999;border-top:1px solid #eee;text-align:center">Shuaib Studio · Manama, Bahrain</div>`;
+  document.getElementById('slip-modal').classList.add('show');
+}
+function closeSlipModal(){document.getElementById('slip-modal').classList.remove('show');}
+
+// ── INIT ─────────────────────────────────────────────
+document.getElementById('inv-date').value=new Date().toISOString().split('T')[0];
+applyLang();
+</script>
+</body>
+</html>
