@@ -101,7 +101,7 @@ The file is organized in this order:
 
 ### Theming (CSS variables)
 
-Defined on `:root` (dark default) and overridden by `body.light-mode`. The `<body>` currently has `class="light-mode"` **by default**. Key variables: `--bg`, `--bg-soft`, `--card`, `--card-hover`, `--gold`, `--gold-light`, `--gold-dim`, `--text`, `--text-dim`, `--line`, `--green`. Theme toggle button is `#themeToggle` — since 2026-10-20 a sun/moon switch (76×40 px, sliding knob, twinkling sparks in dark mode) styled by `.theme-toggle` with `body.light-mode` selectors; `aria-checked` = dark mode, kept in sync by `syncThemeToggle()`.
+Defined on `:root` (dark default) and overridden by `body.light-mode`. The `<body>` currently has `class="light-mode"` **by default**. Key variables: `--bg`, `--bg-soft`, `--card`, `--card-hover`, `--gold`, `--gold-light`, `--gold-dim`, `--text`, `--text-dim`, `--line`, `--green`. Theme toggle button is `#themeToggle` — since 2026-10-20 a day/night scene switch (design from `day-night-switch.html`, drawn at 220×88 and scaled by `.4` to 88×35 px: night sky with stars + mountains ↔ day sky with clouds, sliding moon/sun knob) styled by `.theme-toggle` with `body.light-mode` selectors; `aria-checked` = dark mode, kept in sync by `syncThemeToggle()`.
 
 ---
 
@@ -388,5 +388,7 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 - **2026-10-20** — زر الوضع الليلي/النهاري صار مفتاحًا بقمر وشمس (مأخوذ من تصميم `theme-toggle.html`، مصغّر إلى 76×40 بكسل): كرة تنزلق بين القمر (ليلي) والشمس (نهاري) مع نجوم تلمع في الوضع الليلي. لم يُنقل شعاع ضوء القمر والغبار على كامل الصفحة. المنطق كما هو (`body.light-mode`).
 
 - **2026-10-20** — شريط أنواع التصوير صار **ثابتًا** (أُلغيت الحركة المتكررة ونسخ الأزرار الثلاث `.cat-track`/`.cat-copy` ودالة `layoutCategoryMarquee`): الأزرار الخمسة تظهر كلها دائمًا وتلتف إلى سطر ثانٍ عند ضيق الشاشة (`.categories{flex-wrap:wrap}`). الأزرار تُعرَّف بـ`data-key` وتُحدَّد في `selectCategory` بمقارنته. هذا يلغي بند «شريط الأنواع المتحرك» السابق.
+
+- **2026-10-20** — زر الوضع الليلي/النهاري استُبدل بتصميم `day-night-switch.html` (مشهد ليل بنجوم وجبال ↔ مشهد نهار بغيوم، وكرة قمر/شمس تنزلق)، مرسومًا بحجم 220×88 ومصغّرًا بـ`scale(.4)` إلى 88×35 بكسل داخل `.theme-toggle`. المنطق كما هو (`body.light-mode`).
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
