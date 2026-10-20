@@ -38,7 +38,7 @@ ShuaibStudio/
 ├── sw.js              # Service worker: browser cache for photos + page (faster repeat visits)
 ├── vercel.json        # Hosting headers: long-lived caching for thumbs/ (deployed on Vercel)
 ├── hero.jpg           # Hero/studio image asset
-├── logo.png           # Studio logo (white S monogram on transparent, cropped) — tinted gold via CSS mask in `.brand-logo`
+├── logo.png           # Studio logo (gray metallic S monogram + "SHUAIB STUDIO", transparent bg, 581×700) — shown as `<img class="brand-logo">` at the top of the page
 ├── scripts/
 │   ├── build-login.mjs # Encrypts private/payroll.src.html → payroll.enc.js with a username + password
 │   └── make-thumbs.sh # Generates the small thumbs/ copies of every photo (run after adding photos)
@@ -394,5 +394,7 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 - **2026-10-20** — أزرار أنواع التصوير في **سطر واحد** (بدل الالتفاف): `.categories{flex-wrap:nowrap}` والأزرار تتمدد/تتقلص (`flex:1 1 auto`)، وعلى الجوال (≤640px) يصبح الأيقونة فوق الاسم بخط أصغر ليتسع الخمسة؛ وإن ضاقت الشاشة أكثر يُمرَّر الشريط أفقيًا. (يستبدل بند الالتفاف السابق.)
 
 - **2026-10-20** — زر الوضع الليلي رجع إلى تصميم «Moonlight» (`theme-toggle.html`) مع شعاع ضوء القمر والغبار العائم في الوضع الليلي (`.moon-fx` خلف المحتوى)، بدل تصميم `day-night-switch.html`. وأزرار أنواع التصوير في سطر واحد.
+
+- **2026-10-20** — تغيير الشعار: `logo.png` صار الشعار الجديد (حرف S رمادي معدني مع نص «SHUAIB STUDIO»، خلفية شفافة، قُصّ إلى 581×700). لم يعد يُلوَّن بـCSS mask بل يُعرض كصورة عادية `<img class="brand-logo" width=130>` أعلى `<header>`، فيعمل أيضًا على `file://`.
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
