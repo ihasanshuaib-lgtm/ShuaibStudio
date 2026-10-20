@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>شعيب استوديو | حجز موعد التصوير</title>
+<script>document.documentElement.classList.add('js');</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -685,6 +686,40 @@ body:not(.light-mode) .total-bar{background:rgba(39,55,65,.94);border-color:#405
 @media(max-width:700px){.wrap{width:calc(100% - 24px);padding:18px 0 30px}.studio-logo{font-size:19px}header{margin-bottom:24px}.brand-logo{width:82px;height:82px}header h1{font-size:30px}.section-title{margin:26px 0 14px}.categories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.categories .category{min-width:0;min-height:94px;padding:14px 8px}.packages,.services{grid-template-columns:1fr}.info-card,.summary-card{padding:16px}.send-row{flex-direction:column}.total-bar{left:8px;right:8px;bottom:8px;padding:12px 14px;border-radius:18px}.total-bar .tb-amount{font-size:20px}.total-bar .tb-go{padding:10px 13px}.gallery-section{padding:10px}.gallery{min-height:220px;height:270px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
+
+/* ===== Fade-in عند فتح الصفحة / التمرير ===== */
+.js .rv{
+  opacity:0;
+  transform:translateY(26px);
+  transition:opacity .9s cubic-bezier(.22,.7,.2,1), transform .9s cubic-bezier(.22,.7,.2,1);
+  will-change:opacity,transform;
+}
+.js .rv.in{opacity:1;transform:none;will-change:auto;}
+.js .top-bar.rv{transform:translateY(-16px);}
+.js .brand-logo.rv{transform:translateY(18px) scale(.86);}
+.js .brand-logo.rv.in{transform:none;}
+
+/* البطاقات تظهر واحدة تلو الأخرى بعد ظهور حاويتها (وعند تبديل النوع أيضًا) */
+@keyframes cardIn{
+  from{opacity:0;transform:translateY(20px) scale(.97);}
+  to{opacity:1;transform:none;}
+}
+.js .categories.in .category,
+.js .packages.in .package,
+.js .services.in .service{
+  animation:cardIn .75s cubic-bezier(.22,.7,.2,1) backwards;
+  animation-delay:calc(var(--n,0) * 70ms + 120ms);
+}
+.categories .category:nth-child(2),.packages .package:nth-child(2),.services .service:nth-child(2){--n:1}
+.categories .category:nth-child(3),.packages .package:nth-child(3),.services .service:nth-child(3){--n:2}
+.categories .category:nth-child(4),.packages .package:nth-child(4),.services .service:nth-child(4){--n:3}
+.categories .category:nth-child(5),.packages .package:nth-child(5),.services .service:nth-child(5){--n:4}
+.categories .category:nth-child(6),.packages .package:nth-child(6),.services .service:nth-child(6){--n:5}
+.packages .package:nth-child(n+7),.services .service:nth-child(n+7){--n:6}
+
+@media(prefers-reduced-motion:reduce){
+  .js .rv,.js .brand-logo.rv,.js .top-bar.rv{opacity:1;transform:none;}
+}
 </style>
 </head>
 <body class="light-mode">
@@ -829,7 +864,7 @@ const CATEGORIES = {
       timeLabel: 'وقت التصوير',
       timePlaceholder: 'مثال: 7:00 مساءً',
       extraFields: [
-        {id:'venue', label:'اسم القصر / الصالة', placeholder:'مثال: قصر الأفراح'}
+        {id:'venue', label:'اسم / الصالة', placeholder:'مثال: قصر الأفراح'}
       ]
     },
     packages: [
@@ -1875,6 +1910,37 @@ if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
     navigator.serviceWorker.register('sw.js').catch(()=>{});
   });
 }
+</script>
+
+<script>
+// ===== ظهور تدريجي (fade in) لكل عناصر الصفحة =====
+(function(){
+  var sel = '.top-bar, .brand-logo, header h1, header .sub, .wrap > .section-title, .categories, .gallery-section, .info-card, .packages, .services, .summary-card';
+  var els = [].slice.call(document.querySelectorAll(sel));
+  if(!('IntersectionObserver' in window)){ els.forEach(function(e){ e.classList.add('in'); }); return; }
+  els.forEach(function(e){ e.classList.add('rv'); });
+
+  var io = new IntersectionObserver(function(entries){
+    var k = 0;
+    entries.forEach(function(en){
+      if(!en.isIntersecting) return;
+      var el = en.target;
+      el.style.transitionDelay = (k++ * 110) + 'ms';
+      el.classList.add('in');
+      io.unobserve(el);
+      // نُزيل التأخير بعد الانتهاء حتى لا يؤثر على أي انتقال لاحق
+      setTimeout(function(){ el.style.transitionDelay = ''; }, 1400 + k * 110);
+    });
+  }, {threshold:0.08, rootMargin:'0px 0px -30px 0px'});
+
+  function start(){ els.forEach(function(e){ io.observe(e); }); }
+  // ننتظر الخطوط (أقصى 800ms) حتى لا يظهر النص بخط مؤقت ثم يتبدّل
+  if(document.fonts && document.fonts.ready){
+    Promise.race([document.fonts.ready, new Promise(function(r){ setTimeout(r, 800); })]).then(start);
+  } else { start(); }
+  // أمان: لو لم يظهر شيء لأي سبب، أظهر الكل بعد 4 ثوانٍ
+  setTimeout(function(){ els.forEach(function(e){ e.classList.add('in'); }); }, 4000);
+})();
 </script>
 
 <script>document.querySelectorAll("img.brand-logo").forEach(function(img){img.addEventListener("error",function(){img.style.display="none";});});</script>
