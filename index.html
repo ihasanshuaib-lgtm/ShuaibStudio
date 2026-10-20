@@ -181,6 +181,15 @@
 
   /* header */
   header{text-align:center;margin-bottom:34px;}
+  /* الشعار: logo.png أبيض على شفاف، فنلوّنه بالذهبي عبر mask ليظهر في الوضعين */
+  .brand-logo{
+    display:block;
+    width:84px;height:100px;
+    margin:0 auto 12px;
+    background:var(--gold);
+    -webkit-mask:url(logo.png) center/contain no-repeat;
+    mask:url(logo.png) center/contain no-repeat;
+  }
   .brand-mark{
     display:inline-flex;align-items:center;gap:10px;
     color:var(--gold-light);
@@ -520,6 +529,7 @@
   </div>
 
   <header>
+    <div class="brand-logo" role="img" aria-label="شعار شعيب استوديو"></div>
     <h1>حجز موعد التصوير</h1>
     <p class="sub">اختر باقتك وخدماتك الإضافية، وسنُجهّز كل التفاصيل لحفلتك</p>
   </header>

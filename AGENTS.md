@@ -38,6 +38,7 @@ ShuaibStudio/
 ├── sw.js              # Service worker: browser cache for photos + page (faster repeat visits)
 ├── vercel.json        # Hosting headers: long-lived caching for thumbs/ (deployed on Vercel)
 ├── hero.jpg           # Hero/studio image asset
+├── logo.png           # Studio logo (white S monogram on transparent, cropped) — tinted gold via CSS mask in `.brand-logo`
 ├── scripts/
 │   ├── build-login.mjs # Encrypts private/payroll.src.html → payroll.enc.js with a username + password
 │   └── make-thumbs.sh # Generates the small thumbs/ copies of every photo (run after adding photos)
@@ -372,5 +373,7 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 - **2026-10-20** — **المعرض صار ثلاثي الأبعاد** (بدل البطاقات المتناثرة): أشكال Helix/Barrel/Ring/Sphere، سحب للتدوير، أزرار السابق/التالي/إيقاف، وعدد الصور في المعرض 10. بقيت المصغّرات `thumbs/` ومنطق الصور المفقودة كما هي. `node --check` يمر.
 
 - **2026-10-20** — الشكل الافتراضي للمعرض صار **Barrel**؛ ورسالة الواتساب/الإيميل صارت تتضمن الحقول الإضافية لكل نوع (`extraFields`: اسم القصر/الصالة، مكان التصوير، موقع الإيفنت، الجامعة، نوع المنتج…) التي كانت تُعرض في النموذج لكنها لا تدخل الرسالة أبدًا (`buildMessage()` → `extraLines`).
+
+- **2026-10-20** — إضافة شعار الاستوديو `logo.png` (حرف S أبيض على خلفية شفافة، قُصّ من 1170×869 إلى 360×440) أعلى الصفحة فوق عنوان «حجز موعد التصوير» داخل `<header>` عبر `<div class="brand-logo">`. يُلوَّن بلون `--gold` بواسطة CSS `mask` لأنه أبيض ولن يظهر على الخلفية الفاتحة، فيعمل في الوضعين الفاتح والداكن.
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
