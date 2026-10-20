@@ -31,7 +31,7 @@
 ShuaibStudio/
 ├── AGENTS.md          # This documentation file (keep updated)
 ├── index.html         # The entire site: markup, styles, and scripts
-├── login.html         # Login page (username + password) opened by clicking the "شعيب استوديو" logo
+├── login.html         # Login page (username + password) reachable only by its direct URL (the logo no longer links to it)
 ├── payroll.enc.js     # AES-256-GCM encrypted payroll page (generated — safe to commit; see section 13)
 ├── .gitignore         # Ignores .DS_Store and private/
 ├── private/           # LOCAL ONLY (git-ignored): payroll.src.html = plaintext source of the protected page
@@ -350,7 +350,7 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 ## 13. Login page & protected payroll page
 
-- Clicking the logo (`.studio-logo` in `index.html`) goes to `login.html` (RTL form, same gold theme, follows the OS dark/light setting, has a back link to `index.html`).
+- (Since 2026-10-20 the logo is a plain `<div>` again and no longer links anywhere; `login.html` is reached only by its direct URL.) Previously, clicking the logo (`.studio-logo` in `index.html`) went to `login.html` (RTL form, same gold theme, follows the OS dark/light setting, has a back link to `index.html`).
 - The protected page is `photographers-pay-v6.html` (حساب رواتب المصورين, copied from `~/Downloads`). Its plaintext lives only in `private/payroll.src.html` (**git-ignored, never deploy it**).
 - **There is no backend**, so protection is client-side encryption: `scripts/build-login.mjs` encrypts the page with AES-256-GCM; the key comes from PBKDF2-SHA256 (310 000 iterations) over `username.trim().toLowerCase() + "\0" + password`. The result is `window.PAYROLL_ENC` in `payroll.enc.js`. `login.html` derives the key from what the user types and decrypts; a wrong username or password fails the GCM check, so the page never appears. On success `document.write` replaces the login page with the payroll page, plus a floating "خروج" button. The derived key is kept in `sessionStorage` (`shuaib-admin-key`) so a refresh in the same tab stays logged in; closing the tab or pressing "خروج" logs out. The username is case-insensitive; the password is case-sensitive.
 - Web Crypto needs a secure context: works on `https://shuaib-studio.vercel.app` and `http://localhost`, not on a plain `file://`.
@@ -365,5 +365,7 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 - Editing the payroll page = edit `private/payroll.src.html`, then re-run the build script and commit `payroll.enc.js`.
 
 - **2026-10-19** — تغيير بيانات الدخول إلى يوزر جديد وباسورد جديد بإعادة تشغيل `scripts/build-login.mjs` (أُعيد توليد `payroll.enc.js`)؛ الباسورد 6 أحرف فيُظهر السكربت تحذيرًا بدل الرفض. لم تُكتب البيانات في الريبو.
+
+- **2026-10-20** — إزالة رابط شعار «شعيب استوديو» إلى `login.html`: عاد الشعار `<div class="studio-logo">` عاديًا بدون رابط (وحُذف `text-decoration:none`). صفحة الدخول ما زالت موجودة وتُفتح برابطها المباشر فقط.
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
