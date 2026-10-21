@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shuaib Studio — Photography & Videography</title>
+<title>Shuaib Studio | Studio Management</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -574,6 +574,57 @@ details.card summary{color:var(--white)}
 /* home period chips spacing */
 #home-flt{justify-content:center;align-items:center}
 
+
+/* ===== usability polish: clearer hierarchy, responsive navigation ===== */
+:root{
+  --radius-card:18px;
+  --shadow-soft:0 10px 26px rgba(112,96,80,.10);
+}
+body{line-height:1.55}
+nav{gap:.75rem;padding:.65rem clamp(.75rem,2vw,1.5rem);min-height:68px;height:auto}
+.logo{font-weight:800;letter-spacing:.01em}
+.nav-links{gap:.3rem}
+.nav-links button{padding:.55rem .85rem;border-radius:999px;font-size:.82rem}
+.page{padding:clamp(1rem,3vw,2.2rem);max-width:1180px}
+.section-header{margin-bottom:1.25rem}
+.section-header h2{font-size:clamp(1.25rem,2.5vw,1.75rem);font-weight:800;letter-spacing:-.02em}
+.card,.pr-card,.service-card,.stat-box,.staff-card,.client-card,.invoice-row{
+  border-radius:18px;
+}
+.stat-box{padding:1.15rem 1.25rem;transition:transform .2s,box-shadow .2s}
+.stat-box:hover{transform:translateY(-2px);box-shadow:var(--float)}
+.stat-label{font-weight:700}
+.stat-val{font-weight:750;letter-spacing:-.035em}
+button,input,select,textarea{transition:background-color .18s,border-color .18s,box-shadow .18s,transform .18s}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:3px solid rgba(90,167,232,.65);outline-offset:2px
+}
+button{ -webkit-tap-highlight-color:transparent }
+.service-card h3,.staff-name,.client-name{font-weight:750}
+.hero{padding:clamp(2.5rem,7vw,5rem) 1rem clamp(2rem,5vw,4rem)}
+.hero p{max-width:620px}
+.btn-gold,.btn-outline,.btn-sm,.lang-btn{font-weight:750}
+.pr-hero{padding:clamp(1.1rem,3vw,1.7rem)}
+.pr-big{font-weight:750;letter-spacing:-.04em}
+.pr-card h2,.pr-h2{font-weight:750}
+.pr-t th{font-weight:750}
+@media(max-width:760px){
+  nav{align-items:flex-start}
+  nav>div:last-child{width:100%;align-items:stretch!important}
+  .nav-links{width:100%;overflow-x:auto;flex-wrap:nowrap;padding:.2rem .1rem .5rem;scrollbar-width:thin}
+  .nav-links button{flex:0 0 auto}
+  .lang-btn{align-self:flex-start}
+  .page{padding:.9rem}
+  .hero{margin-bottom:1.5rem}
+  .stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat-box{padding:.9rem}
+  .stat-val{font-size:1.25rem}
+}
+@media(max-width:380px){
+  .stats-row{grid-template-columns:1fr}
+  .nav-links button{font-size:.76rem;padding:.48rem .7rem}
+}
+
 </style>
 </head>
 <body>
@@ -804,7 +855,7 @@ details.card summary{color:var(--white)}
 <!-- PAYROLL -->
 <div class="page" id="page-payroll">
   <div class="section-header">
-    <h2 id="pr-title">Photographer Payroll</h2>
+    <h2 id="pr-title">Session Costs & Team Payments</h2>
     <div class="pr-head"><button class="btn-gold" id="pr-repbtn">Report</button></div>
   </div>
   <div class="flt" id="pr-flt"></div>
@@ -815,7 +866,7 @@ details.card summary{color:var(--white)}
 
 <!-- SCHEDULE -->
 <div class="page" id="page-schedule">
-  <div class="section-header"><h2 id="sc-title">Shooting schedule</h2></div>
+  <div class="section-header"><h2 id="sc-title">Production Calendar</h2></div>
   <div id="sc-root"></div>
 </div>
 
@@ -857,7 +908,7 @@ function save(){
 const T = {
   en:{
     logo:'Shuaib Studio',
-    nav:['Home','Booking','Invoices','Clients','Staff','Payroll','Schedule'],
+    nav:['Dashboard','Bookings','Invoices & Quotes','Clients','Team','Session Costs','Calendar'],
     langBtn:'عربي',
     heroTag:'Photography & Videography Studio',
     heroTitle:'We Capture <em>Moments</em><br>That Last Forever',
@@ -895,7 +946,7 @@ const T = {
   },
   ar:{
     logo:'شعيب استوديو',
-    nav:['الرئيسية','حجز','الفواتير','العملاء','الموظفون','الرواتب','الجدول'],
+    nav:['لوحة التحكم','الحجوزات','الفواتير والعروض','العملاء','فريق العمل','تكاليف الجلسات','التقويم'],
     langBtn:'English',
     heroTag:'استوديو تصوير واستوديو فيديوغرافي',
     heroTitle:'نحن نلتقط <em>اللحظات</em><br>التي تدوم للأبد',
