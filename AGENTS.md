@@ -403,4 +403,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-10-20** — **خلفية كل الصفحات أغمق قليلًا (الوضع الفاتح)**: ضُربت ألوان الخلفيات/البطاقات/الظلال الفاتحة جدًا (كل قناة ≥ `#c8`، ما عدا الأبيض الصافي للضوء) بمعامل 0.93 داخل كتلة الثيم الأزرق الرمادي في `index.html` و`pay.html` (مثلًا `--bg:#eef2f6` → `#dde1e5`، `--bg-soft:#e4ebf1` → `#d4dbe0`، وتدرّج الـbody)، وفي `login.html` (`--bg:#faf6ee` → `#ebe7dd`، `--bg-soft:#f1e9d8` → `#e0d9c9`). الوضع الليلي لم يتغيّر. للتعديل لاحقًا غيّر هذه المتغيرات.
 
+- **2026-10-21** — **لوحة التحكم (`pay.html`)**: حُذف قسم «خدماتنا / Our Services» (بطاقات الخدمات الست) من الصفحة الرئيسية مع نصوصه في كود الترجمة (`srvTitle`)؛ وتبويب «الجدول» أُعيدت تسميته إلى **«التقويم / Calendar»** (`page-schedule`: تقويم الإنتاج + «التصوير القادم» `upTitle` يُرسم عبر `PR.renderSchedule()` من جلسات الرواتب). صفحة التقويم كانت موجودة أصلًا في `pay.html`.
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.

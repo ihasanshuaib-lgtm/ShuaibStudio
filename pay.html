@@ -639,7 +639,7 @@ button{ -webkit-tap-highlight-color:transparent }
       <button onclick="showPage('clients',event)" data-en="Clients" data-ar="العملاء">Clients</button>
       <button onclick="showPage('staff',event)" data-en="Staff" data-ar="الموظفون">Staff</button>
       <button onclick="showPage('payroll',event)" data-en="Payroll" data-ar="الرواتب">Payroll</button>
-      <button onclick="showPage('schedule',event)" data-en="Schedule" data-ar="الجدول">Schedule</button>
+      <button onclick="showPage('schedule',event)" data-en="Calendar" data-ar="التقويم">Calendar</button>
     </div>
     <button class="lang-btn" onclick="toggleLang()" id="lang-btn">عربي</button>
   </div>
@@ -664,15 +664,6 @@ button{ -webkit-tap-highlight-color:transparent }
     <div class="stat-box"><div class="stat-label" id="s4-lbl">Staff Members</div><div class="stat-val" id="stat-staff">0</div></div>
     <div class="stat-box"><div class="stat-label" id="s5-lbl">Photographers net (this month)</div><div class="stat-val" id="stat-pr-net">BHD 0.000</div></div>
     <div class="stat-box"><div class="stat-label" id="s6-lbl">Sessions profit (this month)</div><div class="stat-val gold" id="stat-pr-profit">BHD 0.000</div></div>
-  </div>
-  <div class="section-header"><h2 id="srv-title">Our Services</h2></div>
-  <div class="services-grid">
-    <div class="service-card"><div class="service-icon">📷</div><h3 data-en="Wedding Photography" data-ar="تصوير الأعراس">Wedding Photography</h3><p data-en="Full-day coverage, edited gallery, and prints." data-ar="تغطية يوم كامل، معرض محرر ومطبوعات.">Full-day coverage, edited gallery, and prints.</p><div class="service-price">From BHD 250</div></div>
-    <div class="service-card"><div class="service-icon">🎬</div><h3 data-en="Wedding Videography" data-ar="تصوير أفلام الأعراس">Wedding Videography</h3><p data-en="Cinematic highlight film and full ceremony." data-ar="فيلم سينمائي احترافي لكامل المناسبة.">Cinematic highlight film and full ceremony.</p><div class="service-price">From BHD 350</div></div>
-    <div class="service-card"><div class="service-icon">🏢</div><h3 data-en="Corporate Events" data-ar="المناسبات والفعاليات">Corporate Events</h3><p data-en="Conference, product launch and brand shoots." data-ar="مؤتمرات، إطلاق منتجات وتصوير العلامة التجارية.">Conference, product launch and brand shoots.</p><div class="service-price">From BHD 150</div></div>
-    <div class="service-card"><div class="service-icon">🎞️</div><h3 data-en="Brand Videos" data-ar="مقاطع العلامة التجارية">Brand Videos</h3><p data-en="Promotional and social media content." data-ar="محتوى ترويجي ومقاطع سوشيال ميديا.">Promotional and social media content.</p><div class="service-price">From BHD 200</div></div>
-    <div class="service-card"><div class="service-icon">👶</div><h3 data-en="Portrait Sessions" data-ar="جلسات البورتريه">Portrait Sessions</h3><p data-en="Family, newborn and individual portraits." data-ar="جلسات العائلة، المواليد والأفراد.">Family, newborn and individual portraits.</p><div class="service-price">From BHD 80</div></div>
-    <div class="service-card"><div class="service-icon">🏠</div><h3 data-en="Real Estate" data-ar="التصوير العقاري">Real Estate</h3><p data-en="Property photos and aerial drone footage." data-ar="تصوير العقارات ومقاطع الدرون.">Property photos and aerial drone footage.</p><div class="service-price">From BHD 120</div></div>
   </div>
 </div>
 
@@ -915,7 +906,6 @@ const T = {
     heroSub:'Professional photography and cinematic videography for weddings, events, brands, and beyond — based in Bahrain.',
     heroBtn1:'Book Now',heroBtn2:'Create Invoice',
     s1:'Total Invoiced',s2:'Paid',s3:'Pending',s4:'Staff Members',s5:'Photographers cost',s6:'Sessions profit',
-    srvTitle:'Our Services',
     invPageTitle:'Invoices',invNewBtn:'+ New Invoice',
     invDetailsTitle:'Invoice Details',
     lblClient:'Client Name',lblCustid:'Customer ID#',lblPhone:'Phone',lblIban:'IBAN',
@@ -953,7 +943,6 @@ const T = {
     heroSub:'تصوير احترافي وتصوير سينمائي للأعراس والفعاليات والعلامات التجارية — في البحرين.',
     heroBtn1:'احجز الآن',heroBtn2:'إنشاء فاتورة',
     s1:'إجمالي الفواتير',s2:'مدفوع',s3:'معلق',s4:'الموظفون',s5:'قيمة المصورين',s6:'ربح الجلسات',
-    srvTitle:'خدماتنا',
     invPageTitle:'الفواتير',invNewBtn:'+ فاتورة جديدة',
     invDetailsTitle:'تفاصيل الفاتورة',
     lblClient:'اسم العميل',lblCustid:'رقم هوية العميل',lblPhone:'الهاتف',lblIban:'IBAN',
@@ -1010,12 +999,6 @@ function applyLang(){
   document.getElementById('s4-lbl').textContent = t('s4');
   document.getElementById('s5-lbl').textContent = t('s5');
   document.getElementById('s6-lbl').textContent = t('s6');
-  document.getElementById('srv-title').textContent = t('srvTitle');
-
-  // service cards
-  document.querySelectorAll('.service-card h3, .service-card p').forEach(el=>{
-    const v = el.getAttribute('data-'+lang); if(v) el.textContent=v;
-  });
 
   document.getElementById('inv-page-title').textContent = t('invPageTitle');
   document.getElementById('inv-new-btn').textContent    = t('invNewBtn');
