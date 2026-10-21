@@ -2112,9 +2112,34 @@ function buildMessage(){
   return lines.join('\n');
 }
 
+// عند العرض داخل تبويب «حجز» في pay.html: نرسل بيانات الحجز ليُنشئ جلسة جاهزة في التكاليف
+function postBookingToParent(){
+  if(window.parent === window) return;
+  const rate = getDiscountRate();
+  const cat = CATEGORIES[activeCategory];
+  const extras = {};
+  cat.info.extraFields.forEach(f=>{
+    const v = document.getElementById('extra-' + f.id)?.value.trim();
+    if(v) extras[f.label] = v;
+  });
+  window.parent.postMessage({type:'booking-created', booking:{
+    categoryKey: activeCategory,
+    category: cat.name,
+    name: document.getElementById('custName').value.trim(),
+    date: document.getElementById('custDate').value,
+    time: document.getElementById('custTime').value,
+    package: selectedPackage ? selectedPackage.name : '',
+    services: currentServices().filter(s=>selectedServices[s.id]).map(s=>s.name),
+    extras,
+    notes: document.getElementById('custNotes').value.trim(),
+    total: +(calcRawTotal() * (1 - rate)).toFixed(3)
+  }}, '*');
+}
+
 sendWhatsapp.addEventListener('click', ()=>{
   const msg = buildMessage();
   if(!msg) return;
+  postBookingToParent();
   const url = `https://wa.me/${STUDIO_WHATSAPP}?text=${encodeURIComponent(msg)}`;
   showBlessingThenGo(url);
 });
@@ -2122,6 +2147,7 @@ sendWhatsapp.addEventListener('click', ()=>{
 sendEmail.addEventListener('click', ()=>{
   const msg = buildMessage();
   if(!msg) return;
+  postBookingToParent();
   const subject = encodeURIComponent('طلب حجز جديد - شعيب استوديو');
   const body = encodeURIComponent(msg);
   window.location.href = `mailto:${STUDIO_EMAIL}?subject=${subject}&body=${body}`;

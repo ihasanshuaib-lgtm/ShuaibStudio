@@ -282,6 +282,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,12,10,0.96);backdrop-fi
 .pr-row{display:flex;justify-content:space-between;align-items:center;gap:0.5rem;flex-wrap:wrap}
 .pr-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--gold);color:var(--text);padding:0.5rem 1.1rem;border-radius:20px;z-index:300;max-width:90vw;font-size:0.85rem}
 .pr-toast[hidden]{display:none}
+#bk-banner[hidden]{display:none !important}
 .pr-toast textarea{display:block;width:80vw;max-width:420px;height:130px;margin:8px 0;background:#fff;color:#111}
 /* payroll report */
 .pr-rep-bar{max-width:820px;margin:0 auto 1rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:0.75rem}
@@ -813,12 +814,13 @@ button{ -webkit-tap-highlight-color:transparent }
             <option>Drone Operator</option><option>Other</option>
           </select>
         </div>
-        <div class="form-group"><label id="lbl-sfrate">Daily Rate (BHD)</label><input id="sf-rate" type="number" /></div>
         <div class="form-group"><label id="lbl-sfphone">Phone</label><input id="sf-phone" /></div>
+        <div class="form-group"><label id="lbl-sfequip">Equipment owned</label><input id="sf-equip" /></div>
+        <div class="form-group"><label id="lbl-sfrate">Wage (BHD)</label><input id="sf-rate" type="number" step="any" min="0" /></div>
       </div>
       <div style="display:flex;gap:0.75rem;margin-top:0.5rem">
         <button class="btn-gold" onclick="saveStaff()" id="save-staff-btn">Save</button>
-        <button class="btn-outline" onclick="document.getElementById('staff-form').style.display='none'" id="cancel-staff-btn">Cancel</button>
+        <button class="btn-outline" onclick="hideStaffForm()" id="cancel-staff-btn">Cancel</button>
       </div>
     </div>
   </div>
@@ -826,26 +828,6 @@ button{ -webkit-tap-highlight-color:transparent }
   <div class="staff-grid" id="staff-container">
     <div style="text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem;grid-column:1/-1" id="staff-empty">No staff added yet.</div>
   </div>
-  <details class="card"><summary class="card-title" id="worklog-title" style="cursor:pointer;margin-bottom:0;border-bottom:0;padding-bottom:0">Daily Work Log</summary><div style="margin-top:1.25rem">
-    <div class="form-grid" style="margin-bottom:1rem">
-      <div class="form-group"><label id="lbl-logstaff">Staff Member</label><select id="log-staff"><option value="">—</option></select></div>
-      <div class="form-group"><label id="lbl-logdate">Date</label><input id="log-date" type="date" /></div>
-      <div class="form-group"><label id="lbl-loghours">Hours</label><input id="log-hours" type="number" placeholder="8" min="0" max="24" step="0.5" /></div>
-      <div class="form-group"><label id="lbl-logjob">Job / Project</label><input id="log-job" /></div>
-    </div>
-    <button class="btn-gold" onclick="logWork()" id="log-work-btn" style="margin-bottom:1.25rem">Log Work Day</button>
-    <div class="flt" id="wl-flt"></div>
-    <table class="work-log-table">
-      <thead><tr>
-        <th id="th-staff">Staff</th><th id="th-wdate">Date</th>
-        <th id="th-whours">Hours</th><th id="th-wjob">Job</th>
-        <th id="th-wpay">Pay (BHD)</th><th></th>
-      </tr></thead>
-      <tbody id="work-log-body">
-        <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)" id="wlog-empty">No work logged yet.</td></tr>
-      </tbody>
-    </table>
-  </div></div></details>
 </div>
 
 <!-- PAYROLL -->
@@ -861,16 +843,12 @@ button{ -webkit-tap-highlight-color:transparent }
 </div>
 
 
+<div id="bk-banner" hidden style="position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:300;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;max-width:94vw;padding:.7rem 1rem;border-radius:14px;background:var(--card-g,var(--surface));border:1px solid var(--border);box-shadow:0 12px 34px rgba(0,0,0,.28);font-size:.88rem"></div>
+
 <!-- INVOICE MODAL -->
 <div class="inv-preview" id="inv-modal">
   <button class="modal-close" onclick="closeInvModal()">✕</button>
   <div class="inv-doc" id="inv-doc-content"></div>
-</div>
-
-<!-- SLIP MODAL -->
-<div class="slip-preview" id="slip-modal">
-  <button class="modal-close" onclick="closeSlipModal()">✕</button>
-  <div class="slip-doc" id="slip-doc-content"></div>
 </div>
 
 <!-- PAYROLL REPORT MODAL -->
@@ -917,13 +895,8 @@ const T = {
     invEmpty:'No invoices yet. Create your first one.',
     staffPageTitle:'Staff Management',addStaffBtn:'+ Add Staff',
     addStaffTitle:'Add Staff Member',
-    lblSfname:'Full Name',lblSfrole:'Role',lblSfrate:'Daily Rate (BHD)',lblSfphone:'Phone',
+    lblSfname:'Employee name',lblSfrole:'Position',lblSfrate:'Wage (BHD)',lblSfphone:'Phone',lblSfequip:'Equipment owned',
     saveStaffBtn:'Save',cancelStaffBtn:'Cancel',staffEmpty:'No staff added yet.',
-    worklogTitle:'Daily Work Log — manual daily-rate tracking',
-    lblLogstaff:'Staff Member',lblLogdate:'Date',lblLoghours:'Hours',lblLogjob:'Job / Project',
-    logWorkBtn:'Log Work Day',
-    thStaff:'Staff',thWdate:'Date',thWhours:'Hours',thWjob:'Job',thWpay:'Pay (BHD)',
-    wlogEmpty:'No work logged yet.',
     slipBtn:'Salary Slip',removeBtn:'Remove',
     togglePaid:'Toggle Paid',deleteInv:'Delete',toPayroll:'Payroll',
     slipLabel:'Salary Slip',slipTotal:'Total Salary',
@@ -954,13 +927,8 @@ const T = {
     invEmpty:'لا توجد فواتير بعد.',
     staffPageTitle:'إدارة الموظفين',addStaffBtn:'+ إضافة موظف',
     addStaffTitle:'إضافة موظف',
-    lblSfname:'الاسم الكامل',lblSfrole:'المنصب',lblSfrate:'الأجر اليومي (BD)',lblSfphone:'الهاتف',
+    lblSfname:'اسم الموظف',lblSfrole:'المنصب',lblSfrate:'الأجر (BD)',lblSfphone:'رقم الهاتف',lblSfequip:'المعدات التي يملكها',
     saveStaffBtn:'حفظ',cancelStaffBtn:'إلغاء',staffEmpty:'لا يوجد موظفون بعد.',
-    worklogTitle:'سجل الأيام اليومي (بالأجر اليومي)',
-    lblLogstaff:'الموظف',lblLogdate:'التاريخ',lblLoghours:'عدد الساعات',lblLogjob:'المهمة / المشروع',
-    logWorkBtn:'تسجيل يوم عمل',
-    thStaff:'الموظف',thWdate:'التاريخ',thWhours:'الساعات',thWjob:'المهمة',thWpay:'الأجر (BD)',
-    wlogEmpty:'لا يوجد سجل عمل بعد.',
     slipBtn:'كشف راتب',removeBtn:'حذف',
     togglePaid:'تغيير الحالة',deleteInv:'حذف',toPayroll:'للرواتب',
     slipLabel:'كشف الراتب',slipTotal:'إجمالي الراتب',
@@ -1033,19 +1001,9 @@ function applyLang(){
   document.getElementById('lbl-sfrole').textContent  = t('lblSfrole');
   document.getElementById('lbl-sfrate').textContent  = t('lblSfrate');
   document.getElementById('lbl-sfphone').textContent = t('lblSfphone');
+  document.getElementById('lbl-sfequip').textContent = t('lblSfequip');
   document.getElementById('save-staff-btn').textContent   = t('saveStaffBtn');
   document.getElementById('cancel-staff-btn').textContent = t('cancelStaffBtn');
-  document.getElementById('worklog-title').textContent    = t('worklogTitle');
-  document.getElementById('lbl-logstaff').textContent = t('lblLogstaff');
-  document.getElementById('lbl-logdate').textContent  = t('lblLogdate');
-  document.getElementById('lbl-loghours').textContent = t('lblLoghours');
-  document.getElementById('lbl-logjob').textContent   = t('lblLogjob');
-  document.getElementById('log-work-btn').textContent  = t('logWorkBtn');
-  document.getElementById('th-staff').textContent  = t('thStaff');
-  document.getElementById('th-wdate').textContent  = t('thWdate');
-  document.getElementById('th-whours').textContent = t('thWhours');
-  document.getElementById('th-wjob').textContent   = t('thWjob');
-  document.getElementById('th-wpay').textContent   = t('thWpay');
 
   // role select options
   const roleOpts = t('roles');
@@ -1053,7 +1011,7 @@ function applyLang(){
   Array.from(roleSel.options).forEach((o,i)=>{ o.text = roleOpts[i]||o.text; });
 
   renderHomeFlt(); renderInvFlt(); renderClFlt(); renderStFlt();
-  renderInvoices(); renderStaff(); renderWorkLog(); renderClients(); PR.render(); updateStats();
+  renderInvoices(); renderStaff(); renderClients(); PR.render(); updateStats();
   // تحديث chips لو الفورم مفتوح
   if(document.getElementById('invoice-form').style.display !== 'none') buildServiceChips();
 }
@@ -1078,7 +1036,7 @@ function showPage(p, ev){
   if(p==='home'){ updateStats(); PR.renderSchedule(); }
   if(p==='invoices') renderInvoices();
   if(p==='clients'){ renderClients(); }
-  if(p==='staff'){ renderStFlt(); renderStaff(); renderWorkLog(); }
+  if(p==='staff'){ renderStFlt(); renderStaff(); }
   if(p==='payroll') PR.render();
   if(p==='booking'){
     const f=document.getElementById('booking-iframe');
@@ -1086,9 +1044,22 @@ function showPage(p, ev){
   }
 }
 window.addEventListener('message',e=>{
+  const f=document.getElementById('booking-iframe');
+  if(!f||e.source!==f.contentWindow)return;
   if(e.data&&e.data.type==='booking-height')
-    document.getElementById('booking-iframe').style.height=e.data.height+'px';
+    f.style.height=e.data.height+'px';
+  else if(e.data&&e.data.type==='booking-created')
+    onBookingCreated(e.data.booking);
 });
+// حجز جديد → جلسة في التكاليف + شريط إشعار بزر «فتح الجلسة»
+function onBookingCreated(b){
+  const r=PR.addBooking(b);if(!r)return;
+  const bar=document.getElementById('bk-banner');
+  bar.innerHTML=`<span>${r.isNew?A_('✓ أُضيف الحجز إلى التكاليف كجلسة جاهزة — اكتب أسماء المصورين والمعدات.','✓ Booking added to costs as a ready session — just enter photographers and equipment.'):A_('هذا الحجز موجود مسبقًا في التكاليف.','This booking is already in costs.')}</span><button class="btn-gold" id="bk-open">${A_('فتح الجلسة','Open session')}</button><button class="btn-outline" id="bk-x" aria-label="close">✕</button>`;
+  bar.hidden=false;
+  document.getElementById('bk-open').onclick=()=>{bar.hidden=true;PR.openSession(r.id)};
+  document.getElementById('bk-x').onclick=()=>{bar.hidden=true};
+}
 
 // ── FILTER STATE ─────────────────────────────────────
 const _td=new Date(),TODAY_YM=_td.getFullYear()+'-'+String(_td.getMonth()+1).padStart(2,'0');
@@ -1096,7 +1067,6 @@ let HP='month';                                   // home period
 let IF={q:'',st:'all',per:'all'};                 // invoices
 let CF={q:'',w:'all'};                            // clients
 let SF={q:'',role:'all'};                         // staff
-let WF={staff:'',month:''};                       // work log
 const inPer=(d,mode)=>mode==='all'||!d||(mode==='month'?d.slice(0,7)===TODAY_YM:d.slice(0,4)===TODAY_YM.slice(0,4));
 const perChips=()=>[['all',A_('الكل','All time')],['year',A_('هذه السنة','This year')],['month',A_('هذا الشهر','This month')]];
 const noRes=(msg)=>`<div style="text-align:center;padding:2.5rem;color:var(--muted);font-size:0.9rem;grid-column:1/-1">${msg}</div>`;
@@ -1550,143 +1520,60 @@ function viewInvoice(id){
 function closeInvModal(){document.getElementById('inv-modal').classList.remove('show');}
 
 // ── STAFF ─────────────────────────────────────────────
-function showAddStaffForm(){document.getElementById('staff-form').style.display='block';}
+
+let editingStaffId=null;
+function showAddStaffForm(){
+  editingStaffId=null;
+  ['sf-name','sf-phone','sf-equip','sf-rate'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('staff-form').style.display='block';
+}
+function hideStaffForm(){editingStaffId=null;document.getElementById('staff-form').style.display='none';}
+function editStaff(id){
+  const m=staffList.find(x=>x.id===id);if(!m)return;
+  editingStaffId=id;
+  document.getElementById('sf-name').value=m.name||'';
+  document.getElementById('sf-role').value=m.role||'';
+  document.getElementById('sf-phone').value=m.phone||'';
+  document.getElementById('sf-equip').value=m.equip||'';
+  document.getElementById('sf-rate').value=m.rate||'';
+  document.getElementById('staff-form').style.display='block';
+  document.getElementById('staff-form').scrollIntoView({behavior:'smooth',block:'center'});
+}
 function saveStaff(){
   const n=document.getElementById('sf-name').value.trim();
-  if(!n){alert(lang==='ar'?'أدخل الاسم':'Please enter a name.');return;}
-  staffList.push({id:Date.now(),name:n,role:document.getElementById('sf-role').value,rate:+document.getElementById('sf-rate').value||0,phone:document.getElementById('sf-phone').value});
-  save();document.getElementById('staff-form').style.display='none';
-  document.getElementById('sf-name').value='';document.getElementById('sf-phone').value='';
-  renderStaff();updateStaffDropdown();updateStats();
+  if(!n){alert(lang==='ar'?'أدخل اسم الموظف':'Please enter the employee name.');return;}
+  const data={name:n,role:document.getElementById('sf-role').value,phone:document.getElementById('sf-phone').value.trim(),
+    equip:document.getElementById('sf-equip').value.trim(),rate:+document.getElementById('sf-rate').value||0};
+  const old=editingStaffId&&staffList.find(x=>x.id===editingStaffId);
+  if(old)Object.assign(old,data);else staffList.push({id:Date.now(),...data});
+  save();hideStaffForm();
+  renderStaff();updateStats();PR.render();
 }
 function renderStaff(){
   const c=document.getElementById('staff-container');
-  if(!staffList.length){c.innerHTML=`<div style="text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem;grid-column:1/-1">${t('staffEmpty')}</div>`;updateStaffDropdown();return;}
+  if(!staffList.length){c.innerHTML=`<div style="text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem;grid-column:1/-1">${t('staffEmpty')}</div>`;return;}
   const q=SF.q.trim().toLowerCase();
   const list=staffList.filter(s=>(SF.role==='all'||s.role===SF.role)&&(!q||String(s.name).toLowerCase().includes(q)||String(s.phone||'').toLowerCase().includes(q)));
   c.innerHTML=list.length?list.map(s=>`
     <div class="staff-card">
-      <div class="staff-avatar">${s.name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase()}</div>
-      <div class="staff-name">${s.name}</div>
-      <div class="staff-role">${s.role}</div>
-      <div class="staff-rate">BHD ${s.rate.toFixed(3)} / ${lang==='ar'?'يوم':'day'}</div>
-      ${s.phone?`<div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem">${s.phone}</div>`:''}
+      <div class="staff-avatar">${escH(s.name).split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase()}</div>
+      <div class="staff-name">${escH(s.name)}</div>
+      <div class="staff-role">${escH(s.role||'—')}</div>
+      <div style="font-size:0.82rem;color:var(--muted);margin-top:0.3rem">📞 ${escH(s.phone||'—')}</div>
+      <div style="font-size:0.82rem;color:var(--muted);margin-top:0.3rem">🎒 ${escH(s.equip||'—')}</div>
+      <div class="staff-rate" style="margin-top:0.4rem">${A_('الأجر','Wage')}: BHD ${(+s.rate||0).toFixed(3)}</div>
       <div class="staff-actions">
-        <button class="btn-sm" onclick="PR.openStaffReport(${s.id})">${t('slipBtn')}</button>
+        <button class="btn-sm" onclick="editStaff(${s.id})">${A_('تعديل','Edit')}</button>
         <button class="btn-sm danger" onclick="deleteStaff(${s.id})">${t('removeBtn')}</button>
       </div>
     </div>`).join(''):noRes(A_('لا يوجد موظفون بهذا الفلتر.','No staff match this filter.'));
-  updateStaffDropdown();
 }
 function deleteStaff(id){
   if(!confirm(lang==='ar'?'حذف هذا الموظف؟':'Remove staff member?'))return;
   staffList=staffList.filter(s=>s.id!==id);
-  workLog=workLog.filter(w=>w.staffId!==id);
-  save();renderStaff();renderWorkLog();updateStats();
-}
-function updateStaffDropdown(){
-  const sel=document.getElementById('log-staff');
-  sel.innerHTML=`<option value="">—</option>`+staffList.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+  save();renderStaff();updateStats();PR.render();
 }
 
-// ── WORK LOG ──────────────────────────────────────────
-function logWork(){
-  const sid=+document.getElementById('log-staff').value;
-  if(!sid){alert(lang==='ar'?'اختر موظف':'Select a staff member.');return;}
-  const date=document.getElementById('log-date').value;
-  if(!date){alert(lang==='ar'?'اختر التاريخ':'Select a date.');return;}
-  const hours=+document.getElementById('log-hours').value||8;
-  const job=document.getElementById('log-job').value||'—';
-  const staff=staffList.find(s=>s.id===sid);
-  workLog.unshift({id:Date.now(),staffId:sid,staffName:staff.name,date,hours,job,pay:staff.rate});
-  save();renderWorkLog();
-  document.getElementById('log-hours').value='';
-  document.getElementById('log-job').value='';
-}
-function renderWorkLog(){
-  const tb=document.getElementById('work-log-body');
-  const months=[...new Set(workLog.map(w=>(w.date||'').slice(0,7)).filter(Boolean))].sort().reverse();
-  document.getElementById('wl-flt').innerHTML=
-    fSel('wl-staff',A_('الموظف','Staff'),[['',A_('الكل','All')],...staffList.map(s=>[s.id,escH(s.name)])],WF.staff)+
-    fSel('wl-month',A_('الشهر','Month'),[['',A_('الكل','All')],...months.map(m=>[m,m])],WF.month)+
-    fReset('wl-reset',!!(WF.staff||WF.month));
-  if(!workLog.length){tb.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)">${t('wlogEmpty')}</td></tr>`;return;}
-  const list=workLog.filter(w=>(!WF.staff||String(w.staffId)===String(WF.staff))&&(!WF.month||(w.date||'').slice(0,7)===WF.month));
-  if(!list.length){tb.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)">${A_('لا توجد سجلات بهذا الفلتر.','No entries match this filter.')}</td></tr>`;return;}
-  tb.innerHTML=list.map(w=>`
-    <tr>
-      <td style="font-weight:500">${w.staffName}</td>
-      <td>${w.date}</td>
-      <td>${w.hours}h</td>
-      <td style="color:var(--muted)">${w.job}</td>
-      <td style="color:var(--gold);font-weight:500">BHD ${w.pay.toFixed(3)}</td>
-      <td>
-        <button class="btn-sm" onclick="generateSlipForLog(${w.id})" style="font-size:0.75rem;padding:0.3rem 0.6rem">${t('slipBtn')}</button>
-        <button class="btn-sm danger" onclick="deleteLog(${w.id})" style="font-size:0.75rem;padding:0.3rem 0.6rem">✕</button>
-      </td>
-    </tr>`).join('');
-}
-function deleteLog(id){workLog=workLog.filter(w=>w.id!==id);save();renderWorkLog();}
-
-// ── SALARY SLIP ───────────────────────────────────────
-function generateSlip(staffId){
-  const staff=staffList.find(s=>s.id===staffId);if(!staff)return;
-  const logs=workLog.filter(w=>w.staffId===staffId);
-  const totalPay=logs.reduce((s,w)=>s+w.pay,0);
-  const rows=logs.length?logs.map(w=>`<tr><td>${w.date}</td><td>${w.job}</td><td>${w.hours}h</td><td style="text-align:right">BHD ${w.pay.toFixed(3)}</td></tr>`).join('')
-    :`<tr><td colspan="4" style="text-align:center;color:#999;padding:1rem">—</td></tr>`;
-  renderSlipDoc(staff,rows,logs.length,totalPay,false,'');
-}
-function generateSlipForLog(logId){
-  const log=workLog.find(w=>w.id===logId);if(!log)return;
-  const staff=staffList.find(s=>s.id===log.staffId);if(!staff)return;
-  const rows=`<tr><td>${log.date}</td><td>${log.job}</td><td>${log.hours}h</td><td style="text-align:right">BHD ${log.pay.toFixed(3)}</td></tr>`;
-  renderSlipDoc(staff,rows,1,log.pay,true,log.date);
-}
-function renderSlipDoc(staff,rows,days,total,single,date){
-  const today=new Date().toISOString().split('T')[0];
-  const initials=staff.name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase();
-  document.getElementById('slip-doc-content').innerHTML=`
-    <div class="slip-header">
-      <div style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--gold)">Shuaib Studio</div>
-      <div style="color:#888;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em">${t('slipLabel')}</div>
-    </div>
-    <div style="padding:1.75rem 2rem">
-      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid #e5e5e5">
-        <div style="width:44px;height:44px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-weight:700;color:#333;font-size:1rem">${initials}</div>
-        <div>
-          <div style="font-weight:600;font-size:1rem">${staff.name}</div>
-          <div style="font-size:0.82rem;color:#777">${staff.role}</div>
-          ${staff.phone?`<div style="font-size:0.8rem;color:#999">${staff.phone}</div>`:''}
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid #e5e5e5;font-size:0.85rem">
-        <div><div style="font-size:0.7rem;text-transform:uppercase;color:#999;margin-bottom:0.2rem">${t('slipPeriod')}</div><div style="font-weight:500">${single?date:t('slipDays')+': '+days}</div></div>
-        <div><div style="font-size:0.7rem;text-transform:uppercase;color:#999;margin-bottom:0.2rem">${t('slipRate')}</div><div style="font-weight:500">BHD ${staff.rate.toFixed(3)}</div></div>
-        <div><div style="font-size:0.7rem;text-transform:uppercase;color:#999;margin-bottom:0.2rem">${t('slipDays')}</div><div style="font-weight:500">${days}</div></div>
-        <div><div style="font-size:0.7rem;text-transform:uppercase;color:#999;margin-bottom:0.2rem">${t('slipDate')}</div><div style="font-weight:500">${today}</div></div>
-      </div>
-      <table style="width:100%;border-collapse:collapse;margin-bottom:1rem;font-size:0.85rem">
-        <thead><tr style="background:#f5f5f5">
-          <th style="text-align:left;padding:0.5rem 0.75rem;font-size:0.73rem;text-transform:uppercase;color:#666">${t('thWdate')}</th>
-          <th style="text-align:left;padding:0.5rem 0.75rem;font-size:0.73rem;text-transform:uppercase;color:#666">${t('thWjob')}</th>
-          <th style="text-align:left;padding:0.5rem 0.75rem;font-size:0.73rem;text-transform:uppercase;color:#666">${t('thWhours')}</th>
-          <th style="text-align:right;padding:0.5rem 0.75rem;font-size:0.73rem;text-transform:uppercase;color:#666">${t('thWpay')}</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-        <tfoot><tr class="slip-total-row">
-          <td colspan="3" style="padding:0.75rem;font-weight:600;color:#fff">${t('slipTotal')}</td>
-          <td style="text-align:right;padding:0.75rem;font-weight:700;font-size:1rem;color:var(--gold)">BHD ${total.toFixed(3)}</td>
-        </tr></tfoot>
-      </table>
-      <div style="text-align:center;margin-top:1rem">
-        <button onclick="window.print()" style="background:#c9a463;color:#000;border:none;padding:0.6rem 1.5rem;border-radius:6px;font-weight:700;cursor:pointer;font-size:0.88rem">${t('printSlip')}</button>
-      </div>
-    </div>
-    <div style="background:#f9f9f9;padding:1rem 2rem;font-size:0.75rem;color:#999;border-top:1px solid #eee;text-align:center">Shuaib Studio · Manama, Bahrain</div>`;
-  document.getElementById('slip-modal').classList.add('show');
-}
-function closeSlipModal(){document.getElementById('slip-modal').classList.remove('show');}
 
 // ── shared filter UI helpers ──────────────────────────
 const A_=(a,e)=>lang==='ar'?a:e;
@@ -1788,7 +1675,7 @@ function norm(o){
     if(!s.lines){const l=Object.entries(s.pay||{}).map(([p,a])=>({id:uid(),r:'',p,a}));n={...s,lines:l};delete n.pay}
     n.eq=Array.isArray(n.eq)?n.eq:[];
     n.lines=n.lines.map(l=>{const c={...l};delete c.e;return c});
-    return n});
+    return n}).filter(s=>s.n||+s.p||s.lines.length||s.eq.length||s.inv||s.bk);   // حذف الجلسات الفارغة بلا عنوان (بقايا الضغط المتكرر)
   const cfg=Object.assign({fee:1,reserve:5},o.cfg);delete cfg.learn;delete cfg.eq;
   return{roles:o.roles||defRoles(),pkgs:o.pkgs||defPkgs(),equip:o.equip||defEquip(),subs:o.subs||[],cfg,sessions:ss,adv:o.adv||{}};
 }
@@ -2124,7 +2011,13 @@ function bind(){
   });
 }
 function newSession(d){
-  const s={id:uid(),d,n:'',p:'',lines:[],eq:[]};S.sessions.push(s);EDIT.add(s.id);OPEN.add(s.id);persist();render();
+  // الفلاتر النشطة كانت تُخفي الجلسة الجديدة الفارغة فلا تظهر → الضغط المتكرر يصنع جلسات بلا عنوان؛ لذلك نصفّرها دائمًا
+  F={ph:'',pk:'',q:''};V.y=+d.slice(0,4);V.m=+d.slice(5,7);
+  // نعيد استخدام مسودة فارغة موجودة بدل إنشاء أخرى
+  let s=S.sessions.find(x=>!x.n&&!(+x.p)&&!x.lines.length&&!(x.eq||[]).length&&!x.inv&&!x.bk);
+  if(s){s.d=d}else{s={id:uid(),d,n:'',p:'',lines:[],eq:[]};S.sessions.push(s)}
+  EDIT.add(s.id);OPEN.add(s.id);persist();
+  try{render()}catch(err){console.error(err)}
   const i=document.querySelector('[data-i="'+s.id+'"][data-f="n"]');if(i){i.focus();i.scrollIntoView({block:'center'})}
 }
 const goPay=()=>showPage('payroll',{target:document.querySelectorAll('.nav-links button')[5]});
@@ -2144,12 +2037,28 @@ function fromInvoice(id){
   V.y=+s.d.slice(0,4);V.m=+s.d.slice(5,7);F={ph:'',pk:'',q:''};
   goPay();render();
 }
+// حجز جديد من تبويب «حجز»: يُنشأ في التكاليف جلسة جاهزة (التاريخ/الوقت/الاسم/السعر/الباقة) وتبقى فقط أسماء المصورين والمعدات
+const BK_PKG={weddings:'الأعراس',realestate:'المنتجات',event:'الإيفنت'};
+function addBooking(b){
+  if(!b||!b.date)return null;
+  const key=[b.date,b.time,b.name,b.category,b.total].join('|');
+  let s=S.sessions.find(x=>x.bk===key),isNew=false;
+  if(!s){
+    const pk=S.pkgs.find(k=>k.n===BK_PKG[b.categoryKey]);
+    s={id:uid(),d:b.date,t:b.time||'',n:[b.name,b.category].filter(Boolean).join(' — '),p:+b.total||0,k:pk?pk.id:'',lines:[],eq:[],bk:key};
+    S.sessions.push(s);isNew=true;
+  }
+  EDIT.add(s.id);OPEN.add(s.id);persist();
+  V.y=+s.d.slice(0,4);V.m=+s.d.slice(5,7);F={ph:'',pk:'',q:''};
+  try{render()}catch(err){console.error(err)}
+  return{id:s.id,isNew};
+}
 function openStaffReport(id){
   goPay();
   showRep(String(id));
 }
 bind();
-return{render,renderSchedule,periodStats,fromInvoice,openStaffReport,closeReport,openSession,newOn};
+return{render,renderSchedule,periodStats,fromInvoice,openStaffReport,closeReport,openSession,newOn,addBooking};
 })();
 
 // ── FILTER EVENTS (chips, search, selects, reset) ────
@@ -2168,18 +2077,12 @@ document.addEventListener('click',e=>{
   if(id==='inv-reset'){IF={q:'',st:'all',per:'all'};renderInvFlt();renderInvoices();}
   else if(id==='cl-reset'){CF={q:'',w:'all'};renderClFlt();renderClients();}
   else if(id==='st-reset'){SF={q:'',role:'all'};renderStFlt();renderStaff();}
-  else if(id==='wl-reset'){WF={staff:'',month:''};renderWorkLog();}
 });
 document.addEventListener('input',e=>{
   const t=e.target,show=(rid,on)=>{const r=document.getElementById(rid);if(r)r.hidden=!on};
   if(t.id==='inv-q'){IF.q=t.value;renderInvoices();show('inv-reset',IF.q||IF.st!=='all'||IF.per!=='all');}
   else if(t.id==='cl-q'){CF.q=t.value;renderClients();show('cl-reset',CF.q||CF.w!=='all');}
   else if(t.id==='st-q'){SF.q=t.value;renderStaff();show('st-reset',SF.q||SF.role!=='all');}
-});
-document.addEventListener('change',e=>{
-  const t=e.target;
-  if(t.id==='wl-staff'){WF.staff=t.value;renderWorkLog();}
-  else if(t.id==='wl-month'){WF.month=t.value;renderWorkLog();}
 });
 
 // ── INIT ─────────────────────────────────────────────
