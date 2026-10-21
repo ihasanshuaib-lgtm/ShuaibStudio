@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>شعيب استوديو | حجز موعد التصوير</title>
+<script src="supabase-config.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -2112,9 +2113,8 @@ function buildMessage(){
   return lines.join('\n');
 }
 
-// عند العرض داخل تبويب «حجز» في pay.html: نرسل بيانات الحجز ليُنشئ جلسة جاهزة في التكاليف
-function postBookingToParent(){
-  if(window.parent === window) return;
+// بيانات الحجز (تُستخدم للإرسال إلى قاعدة البيانات وإلى pay.html عند العرض داخل تبويب «حجز»)
+function bookingPayload(){
   const rate = getDiscountRate();
   const cat = CATEGORIES[activeCategory];
   const extras = {};
@@ -2122,7 +2122,7 @@ function postBookingToParent(){
     const v = document.getElementById('extra-' + f.id)?.value.trim();
     if(v) extras[f.label] = v;
   });
-  window.parent.postMessage({type:'booking-created', booking:{
+  const b = {
     categoryKey: activeCategory,
     category: cat.name,
     name: document.getElementById('custName').value.trim(),
@@ -2133,13 +2133,47 @@ function postBookingToParent(){
     extras,
     notes: document.getElementById('custNotes').value.trim(),
     total: +(calcRawTotal() * (1 - rate)).toFixed(3)
-  }}, '*');
+  };
+  b.key = [b.date, b.time, b.name, b.category, b.total].join('|');   // نفس مفتاح pay.html لمنع التكرار
+  return b;
+}
+
+// حفظ الحجز في Supabase (إضافة فقط). فشله لا يمنع واتساب/البريد، ولا يُرسَل الحجز نفسه مرتين
+async function saveBookingRemote(b){
+  const c = window.SB;
+  if(!c || !c.key) return;
+  let sent = [];
+  try{ sent = JSON.parse(sessionStorage.getItem('sent-bookings') || '[]'); }catch(e){}
+  if(sent.includes(b.key)) return;
+  try{
+    const r = await fetch(c.url + '/rest/v1/bookings', {
+      method:'POST',
+      headers:{apikey:c.key, Authorization:'Bearer ' + c.key, 'Content-Type':'application/json', Prefer:'return=minimal'},
+      body: JSON.stringify({payload:b}),
+      keepalive:true
+    });
+    if(r.ok){
+      sent.push(b.key);
+      try{ sessionStorage.setItem('sent-bookings', JSON.stringify(sent)); }catch(e){}
+    }
+  }catch(e){ /* بلا اتصال: نتجاهل */ }
+}
+
+// عند العرض داخل تبويب «حجز» في pay.html: نرسل بيانات الحجز ليُنشئ جلسة جاهزة في التكاليف
+function postBookingToParent(b){
+  if(window.parent === window) return;
+  window.parent.postMessage({type:'booking-created', booking:b}, '*');
+}
+function submitBooking(){
+  const b = bookingPayload();
+  postBookingToParent(b);
+  saveBookingRemote(b);
 }
 
 sendWhatsapp.addEventListener('click', ()=>{
   const msg = buildMessage();
   if(!msg) return;
-  postBookingToParent();
+  submitBooking();
   const url = `https://wa.me/${STUDIO_WHATSAPP}?text=${encodeURIComponent(msg)}`;
   showBlessingThenGo(url);
 });
@@ -2147,7 +2181,7 @@ sendWhatsapp.addEventListener('click', ()=>{
 sendEmail.addEventListener('click', ()=>{
   const msg = buildMessage();
   if(!msg) return;
-  postBookingToParent();
+  submitBooking();
   const subject = encodeURIComponent('طلب حجز جديد - شعيب استوديو');
   const body = encodeURIComponent(msg);
   window.location.href = `mailto:${STUDIO_EMAIL}?subject=${subject}&body=${body}`;

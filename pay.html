@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="supabase-config.js"></script>
 <title>Shuaib Studio | Studio Management</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -665,6 +666,9 @@ button{ -webkit-tap-highlight-color:transparent }
     <div class="stat-box"><div class="stat-label" id="s5-lbl">Photographers net (this month)</div><div class="stat-val" id="stat-pr-net">BHD 0.000</div></div>
     <div class="stat-box"><div class="stat-label" id="s6-lbl">Sessions profit (this month)</div><div class="stat-val gold" id="stat-pr-profit">BHD 0.000</div></div>
   </div>
+
+  <!-- حجوزات الزبائن القادمة من index.html عبر Supabase -->
+  <div class="card" id="sb-box" style="margin-top:1.2rem"></div>
 
   <!-- التقويم (التصوير القادم + تقويم الإنتاج) داخل لوحة التحكم -->
   <div id="page-schedule" style="margin-top:1.5rem">
@@ -2039,18 +2043,21 @@ function fromInvoice(id){
 }
 // حجز جديد من تبويب «حجز»: يُنشأ في التكاليف جلسة جاهزة (التاريخ/الوقت/الاسم/السعر/الباقة) وتبقى فقط أسماء المصورين والمعدات
 const BK_PKG={weddings:'الأعراس',realestate:'المنتجات',event:'الإيفنت'};
-function addBooking(b){
+function addBooking(b,quiet){
   if(!b||!b.date)return null;
-  const key=[b.date,b.time,b.name,b.category,b.total].join('|');
+  const key=b.key||[b.date,b.time,b.name,b.category,b.total].join('|');
   let s=S.sessions.find(x=>x.bk===key),isNew=false;
   if(!s){
     const pk=S.pkgs.find(k=>k.n===BK_PKG[b.categoryKey]);
     s={id:uid(),d:b.date,t:b.time||'',n:[b.name,b.category].filter(Boolean).join(' — '),p:+b.total||0,k:pk?pk.id:'',lines:[],eq:[],bk:key};
     S.sessions.push(s);isNew=true;
   }
-  EDIT.add(s.id);OPEN.add(s.id);persist();
-  V.y=+s.d.slice(0,4);V.m=+s.d.slice(5,7);F={ph:'',pk:'',q:''};
-  try{render()}catch(err){console.error(err)}
+  persist();
+  if(!quiet){
+    EDIT.add(s.id);OPEN.add(s.id);
+    V.y=+s.d.slice(0,4);V.m=+s.d.slice(5,7);F={ph:'',pk:'',q:''};
+    try{render()}catch(err){console.error(err)}
+  }
   return{id:s.id,isNew};
 }
 function openStaffReport(id){
@@ -2060,6 +2067,73 @@ function openStaffReport(id){
 bind();
 return{render,renderSchedule,periodStats,fromInvoice,openStaffReport,closeReport,openSession,newOn,addBooking};
 })();
+
+// ── حجوزات الزبائن (Supabase): تسجيل دخول صاحب الاستوديو ثم تحويل الحجوزات الجديدة إلى جلسات في التكاليف ──
+const SBK='ss_sb';
+let sbAuth=null;try{sbAuth=JSON.parse(localStorage.getItem(SBK)||'null')}catch(e){}
+let sbMsg='',sbBusy=false;
+const sbCfg=()=>window.SB||{};
+function sbSave(a){sbAuth=a;try{a?localStorage.setItem(SBK,JSON.stringify(a)):localStorage.removeItem(SBK)}catch(e){}}
+async function sbToken(body,grant){
+  const c=sbCfg();
+  const r=await fetch(c.url+'/auth/v1/token?grant_type='+grant,{method:'POST',headers:{apikey:c.key,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const j=await r.json();
+  if(!r.ok)throw new Error(j.error_description||j.msg||j.message||'login failed');
+  return {access:j.access_token,refresh:j.refresh_token,email:(j.user&&j.user.email)||(sbAuth&&sbAuth.email)||''};
+}
+async function sbReq(path,opt={},retry=true){
+  const c=sbCfg();
+  const r=await fetch(c.url+'/rest/v1/'+path,{...opt,headers:{apikey:c.key,Authorization:'Bearer '+sbAuth.access,'Content-Type':'application/json',...(opt.headers||{})}});
+  if(r.status===401&&retry&&sbAuth.refresh){
+    try{sbSave(await sbToken({refresh_token:sbAuth.refresh},'refresh_token'))}catch(e){sbSave(null);sbRender();throw e}
+    return sbReq(path,opt,false);
+  }
+  if(!r.ok)throw new Error(await r.text());
+  return r;
+}
+async function sbSync(manual){
+  if(!sbAuth||sbBusy)return;
+  sbBusy=true;
+  try{
+    const rows=await (await sbReq('bookings?imported=eq.false&select=id,payload&order=created_at.asc')).json();
+    let n=0,first=null;
+    rows.forEach(r=>{const x=PR.addBooking(r.payload,true);if(x){if(x.isNew){n++;first=first||x.id}}});
+    if(rows.length){
+      await sbReq('bookings?id=in.('+rows.map(r=>r.id).join(',')+')',{method:'PATCH',body:JSON.stringify({imported:true}),headers:{Prefer:'return=minimal'}});
+      PR.render();
+    }
+    sbMsg=A_(`آخر مزامنة: ${new Date().toLocaleTimeString()} — ${n} حجز جديد`,`Last sync: ${new Date().toLocaleTimeString()} — ${n} new booking(s)`);
+    if(n){
+      const bar=document.getElementById('bk-banner');
+      bar.innerHTML=`<span>${A_(`✓ وصل ${n} حجز جديد وأُضيف إلى التكاليف كجلسات جاهزة — اكتب أسماء المصورين والمعدات.`,`✓ ${n} new booking(s) added to costs as ready sessions — enter photographers and equipment.`)}</span><button class="btn-gold" id="bk-open">${A_('فتح الجلسة','Open session')}</button><button class="btn-outline" id="bk-x" aria-label="close">✕</button>`;
+      bar.hidden=false;
+      document.getElementById('bk-open').onclick=()=>{bar.hidden=true;PR.openSession(first)};
+      document.getElementById('bk-x').onclick=()=>{bar.hidden=true};
+    }
+  }catch(e){sbMsg=A_('تعذّرت المزامنة: ','Sync failed: ')+String(e.message||e).slice(0,160)}
+  sbBusy=false;sbRender();
+}
+function sbRender(){
+  const b=document.getElementById('sb-box');if(!b)return;
+  const c=sbCfg(),inp='style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem .75rem;color:var(--text);font-size:.88rem;min-width:180px"';
+  let h=`<div class="card-title">${A_('حجوزات الزبائن (من صفحة الحجز)','Customer bookings (from the booking page)')}</div>`;
+  if(!c.key)h+=`<p class="pr-hint">${A_('لم يُضبط مفتاح Supabase بعد: افتح supabase-config.js وضع المفتاح العام (anon/publishable).','Supabase key not set: put the public (anon/publishable) key in supabase-config.js.')}</p>`;
+  else if(!sbAuth)h+=`<form id="sb-form" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center"><input id="sb-email" type="email" autocomplete="username" placeholder="${A_('البريد','Email')}" ${inp}><input id="sb-pass" type="password" autocomplete="current-password" placeholder="${A_('كلمة المرور','Password')}" ${inp}><button class="btn-gold" type="submit">${A_('تسجيل الدخول','Sign in')}</button></form>`+(sbMsg?`<p class="pr-hint" style="color:var(--danger)">${escH(sbMsg)}</p>`:'')+`<p class="pr-hint">${A_('سجّل دخول حساب الاستوديو لتصلك حجوزات الزبائن تلقائيًا في التكاليف.','Sign in with the studio account to receive customer bookings in costs automatically.')}</p>`;
+  else h+=`<div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center"><span>✅ ${escH(sbAuth.email||'')}</span><button class="btn-sm" id="sb-sync">${A_('مزامنة الآن','Sync now')}</button><button class="btn-sm" id="sb-out">${A_('خروج','Sign out')}</button></div><p class="pr-hint">${escH(sbMsg||'')}</p>`;
+  b.innerHTML=h;
+}
+document.addEventListener('submit',async e=>{
+  if(e.target.id!=='sb-form')return;e.preventDefault();
+  try{sbSave(await sbToken({email:document.getElementById('sb-email').value.trim(),password:document.getElementById('sb-pass').value},'password'));sbMsg='';sbRender();sbSync()}
+  catch(err){sbMsg=A_('فشل الدخول: ','Sign-in failed: ')+String(err.message||err);sbRender()}
+});
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.id==='sb-sync')sbSync(true);
+  else if(b.id==='sb-out'){sbSave(null);sbMsg='';sbRender()}
+});
+window.addEventListener('focus',()=>sbSync());
+setInterval(()=>sbSync(),60000);
 
 // ── FILTER EVENTS (chips, search, selects, reset) ────
 document.addEventListener('click',e=>{
@@ -2088,6 +2162,7 @@ document.addEventListener('input',e=>{
 // ── INIT ─────────────────────────────────────────────
 document.getElementById('inv-date').value=new Date().toISOString().split('T')[0];
 applyLang();
+sbRender();sbSync();
 </script>
 </body>
 </html>
