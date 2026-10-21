@@ -639,7 +639,6 @@ button{ -webkit-tap-highlight-color:transparent }
       <button onclick="showPage('clients',event)" data-en="Clients" data-ar="العملاء">Clients</button>
       <button onclick="showPage('staff',event)" data-en="Staff" data-ar="الموظفون">Staff</button>
       <button onclick="showPage('payroll',event)" data-en="Payroll" data-ar="الرواتب">Payroll</button>
-      <button onclick="showPage('schedule',event)" data-en="Calendar" data-ar="التقويم">Calendar</button>
     </div>
     <button class="lang-btn" onclick="toggleLang()" id="lang-btn">عربي</button>
   </div>
@@ -664,6 +663,12 @@ button{ -webkit-tap-highlight-color:transparent }
     <div class="stat-box"><div class="stat-label" id="s4-lbl">Staff Members</div><div class="stat-val" id="stat-staff">0</div></div>
     <div class="stat-box"><div class="stat-label" id="s5-lbl">Photographers net (this month)</div><div class="stat-val" id="stat-pr-net">BHD 0.000</div></div>
     <div class="stat-box"><div class="stat-label" id="s6-lbl">Sessions profit (this month)</div><div class="stat-val gold" id="stat-pr-profit">BHD 0.000</div></div>
+  </div>
+
+  <!-- التقويم (التصوير القادم + تقويم الإنتاج) داخل لوحة التحكم -->
+  <div id="page-schedule" style="margin-top:1.5rem">
+    <div class="section-header"><h2 id="sc-title">Production Calendar</h2></div>
+    <div id="sc-root"></div>
   </div>
 </div>
 
@@ -855,11 +860,6 @@ button{ -webkit-tap-highlight-color:transparent }
   <div class="pr-toast" id="pr-toast" hidden></div>
 </div>
 
-<!-- SCHEDULE -->
-<div class="page" id="page-schedule">
-  <div class="section-header"><h2 id="sc-title">Production Calendar</h2></div>
-  <div id="sc-root"></div>
-</div>
 
 <!-- INVOICE MODAL -->
 <div class="inv-preview" id="inv-modal">
@@ -1072,15 +1072,14 @@ function showPage(p, ev){
   if(e && e.target && e.target.classList.contains('nav-links')=== false) e.target.classList.add('active');
   // re-activate correct nav button
   const navBtns = document.querySelectorAll('.nav-links button');
-  const pages=['home','booking','invoices','clients','staff','payroll','schedule'];
+  const pages=['home','booking','invoices','clients','staff','payroll'];
   const idx=pages.indexOf(p);
   if(idx>=0) navBtns[idx].classList.add('active');
-  if(p==='home') updateStats();
+  if(p==='home'){ updateStats(); PR.renderSchedule(); }
   if(p==='invoices') renderInvoices();
   if(p==='clients'){ renderClients(); }
   if(p==='staff'){ renderStFlt(); renderStaff(); renderWorkLog(); }
   if(p==='payroll') PR.render();
-  if(p==='schedule') PR.renderSchedule();
   if(p==='booking'){
     const f=document.getElementById('booking-iframe');
     try{ f.style.height=Math.max(f.contentWindow.document.body.scrollHeight,2000)+'px'; }catch(e){}

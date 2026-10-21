@@ -405,4 +405,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-10-21** — **لوحة التحكم (`pay.html`)**: حُذف قسم «خدماتنا / Our Services» (بطاقات الخدمات الست) من الصفحة الرئيسية مع نصوصه في كود الترجمة (`srvTitle`)؛ وتبويب «الجدول» أُعيدت تسميته إلى **«التقويم / Calendar»** (`page-schedule`: تقويم الإنتاج + «التصوير القادم» `upTitle` يُرسم عبر `PR.renderSchedule()` من جلسات الرواتب). صفحة التقويم كانت موجودة أصلًا في `pay.html`.
 
+- **2026-10-21** — **التقويم صار داخل لوحة التحكم (الرئيسية) في `pay.html`**: نُقل `#page-schedule` (تقويم الإنتاج + «التصوير القادم») من صفحة مستقلة إلى أسفل صفّ الإحصائيات في `#page-home` (صار `<div>` عاديًا لا `.page`)، وحُذف تبويب «التقويم» من القائمة العلوية وكلمة `schedule` من مصفوفة الصفحات؛ و`showPage('home')` يستدعي الآن `updateStats()` و`PR.renderSchedule()`. الأحداث ما زالت مربوطة عبر `G('page-schedule')`.
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
