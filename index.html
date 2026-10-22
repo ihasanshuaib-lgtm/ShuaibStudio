@@ -2175,7 +2175,9 @@ sendWhatsapp.addEventListener('click', ()=>{
   if(!msg) return;
   submitBooking();
   const url = `https://wa.me/${STUDIO_WHATSAPP}?text=${encodeURIComponent(msg)}`;
-  showBlessingThenGo(url);
+  // رسالة «الله يطرح البركة» تظهر في الأعراس فقط؛ بقية الأنواع تفتح واتساب مباشرة
+  if(activeCategory === 'weddings') showBlessingThenGo(url);
+  else window.open(url, '_blank');
 });
 
 sendEmail.addEventListener('click', ()=>{
@@ -2188,7 +2190,7 @@ sendEmail.addEventListener('click', ()=>{
 });
 
 // ============================================
-// رسالة الدعاء ثم التحويل إلى واتساب
+// رسالة الدعاء ثم التحويل إلى واتساب (للأعراس فقط)
 // ============================================
 const blessOv = document.getElementById('blessOv');
 const blessGo = document.getElementById('blessGo');
