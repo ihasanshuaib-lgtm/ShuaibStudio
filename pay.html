@@ -875,6 +875,7 @@ function save(){
   localStorage.setItem('ss_worklog',  JSON.stringify(workLog));
   localStorage.setItem('ss_clients',  JSON.stringify(clients));
   localStorage.setItem('ss_lang',     lang);
+  syncTouch();
 }
 
 // ── LANGUAGE ────────────────────────────────────────
@@ -1684,7 +1685,7 @@ function norm(o){
   return{roles:o.roles||defRoles(),pkgs:o.pkgs||defPkgs(),equip:o.equip||defEquip(),subs:o.subs||[],cfg,sessions:ss,adv:o.adv||{}};
 }
 let S;try{S=norm(JSON.parse(localStorage.getItem(KEY)))}catch(e){S=norm()}
-const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}syncTouch()};
 let V={y:now.getFullYear(),m:now.getMonth()+1},F={ph:'',pk:'',q:''},REP=null;
 const OPEN=new Set(),EDIT=new Set();
 const SC={y:now.getFullYear(),m:now.getMonth()+1,sel:TD,ph:'',pk:''};
@@ -2073,6 +2074,9 @@ const SBK='ss_sb';
 let sbAuth=null;try{sbAuth=JSON.parse(localStorage.getItem(SBK)||'null')}catch(e){}
 let sbMsg='',sbBusy=false;
 const sbCfg=()=>window.SB||{};
+// اليوزر hasan يُحوَّل إلى ihasanshuaib@gmail.com لأن Supabase Auth يعمل بالبريد؛ ويُقبل البريد الكامل أيضًا
+const SB_USERS={hasan:'ihasanshuaib@gmail.com'};
+const sbUserEmail=u=>{u=String(u||'').trim().toLowerCase();return u.includes('@')?u:(SB_USERS[u]||u+'@shuaib-studio.com')};
 function sbSave(a){sbAuth=a;try{a?localStorage.setItem(SBK,JSON.stringify(a)):localStorage.removeItem(SBK)}catch(e){}}
 async function sbToken(body,grant){
   const c=sbCfg();
@@ -2116,24 +2120,61 @@ async function sbSync(manual){
 function sbRender(){
   const b=document.getElementById('sb-box');if(!b)return;
   const c=sbCfg(),inp='style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem .75rem;color:var(--text);font-size:.88rem;min-width:180px"';
-  let h=`<div class="card-title">${A_('حجوزات الزبائن (من صفحة الحجز)','Customer bookings (from the booking page)')}</div>`;
+  let h=`<div class="card-title">${A_('الحساب السحابي: حفظ البيانات وحجوزات الزبائن','Cloud account: data backup & customer bookings')}</div>`;
   if(!c.key)h+=`<p class="pr-hint">${A_('لم يُضبط مفتاح Supabase بعد: افتح supabase-config.js وضع المفتاح العام (anon/publishable).','Supabase key not set: put the public (anon/publishable) key in supabase-config.js.')}</p>`;
-  else if(!sbAuth)h+=`<form id="sb-form" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center"><input id="sb-email" type="email" autocomplete="username" placeholder="${A_('البريد','Email')}" ${inp}><input id="sb-pass" type="password" autocomplete="current-password" placeholder="${A_('كلمة المرور','Password')}" ${inp}><button class="btn-gold" type="submit">${A_('تسجيل الدخول','Sign in')}</button></form>`+(sbMsg?`<p class="pr-hint" style="color:var(--danger)">${escH(sbMsg)}</p>`:'')+`<p class="pr-hint">${A_('سجّل دخول حساب الاستوديو لتصلك حجوزات الزبائن تلقائيًا في التكاليف.','Sign in with the studio account to receive customer bookings in costs automatically.')}</p>`;
-  else h+=`<div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center"><span>✅ ${escH(sbAuth.email||'')}</span><button class="btn-sm" id="sb-sync">${A_('مزامنة الآن','Sync now')}</button><button class="btn-sm" id="sb-out">${A_('خروج','Sign out')}</button></div><p class="pr-hint">${escH(sbMsg||'')}</p>`;
+  else if(!sbAuth)h+=`<form id="sb-form" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center"><input id="sb-email" type="text" autocomplete="username" autocapitalize="none" placeholder="${A_('اليوزر','Username')}" ${inp}><input id="sb-pass" type="password" autocomplete="current-password" placeholder="${A_('كلمة المرور','Password')}" ${inp}><button class="btn-gold" type="submit">${A_('تسجيل الدخول','Sign in')}</button></form>`+(sbMsg?`<p class="pr-hint" style="color:var(--danger)">${escH(sbMsg)}</p>`:'')+`<p class="pr-hint">${A_('سجّل دخول حساب الاستوديو لتُحفظ بياناتك سحابيًا وتظهر في أي متصفح، ولتصلك حجوزات الزبائن تلقائيًا في التكاليف.','Sign in with the studio account to save your data in the cloud (any browser) and receive customer bookings automatically.')}</p>`;
+  else h+=`<div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center"><span>✅ ${escH((sbAuth.email||'').split('@')[0])}</span><button class="btn-sm" id="sb-sync">${A_('مزامنة الآن','Sync now')}</button><button class="btn-sm" id="sb-out">${A_('خروج','Sign out')}</button></div><p class="pr-hint">${escH(sbMsg||'')}</p><p class="pr-hint">${escH(syncMsg||'')}</p>`;
   b.innerHTML=h;
 }
 document.addEventListener('submit',async e=>{
   if(e.target.id!=='sb-form')return;e.preventDefault();
-  try{sbSave(await sbToken({email:document.getElementById('sb-email').value.trim(),password:document.getElementById('sb-pass').value},'password'));sbMsg='';sbRender();sbSync()}
+  try{sbSave(await sbToken({email:sbUserEmail(document.getElementById('sb-email').value),password:document.getElementById('sb-pass').value},'password'));sbMsg='';sbRender();sbSync();syncPull()}
   catch(err){sbMsg=A_('فشل الدخول: ','Sign-in failed: ')+String(err.message||err);sbRender()}
 });
 document.addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
-  if(b.id==='sb-sync')sbSync(true);
+  if(b.id==='sb-sync'){sbSync(true);syncPull()}
   else if(b.id==='sb-out'){sbSave(null);sbMsg='';sbRender()}
 });
 window.addEventListener('focus',()=>sbSync());
 setInterval(()=>sbSync(),60000);
+
+// ── مزامنة سحابية: كل بيانات pay.html تُحفظ في Supabase (جدول app_state) فتظهر في أي متصفح/جهاز بعد تسجيل الدخول ──
+// القاعدة: آخر تعديل يفوز (ss_ts = وقت آخر تعديل محلي؛ remote.ts = وقت آخر رفع). قبل استبدال البيانات المحلية تُحفظ نسخة في ss_backup_before_sync
+const SYNC_KEYS=['ss_invoices','ss_staff','ss_worklog','ss_clients','ss_payroll'];
+var syncTimer=0,syncPushing=false,syncMsg="";
+const lts=()=>+localStorage.getItem('ss_ts')||0;
+function syncTouch(){
+  try{localStorage.setItem('ss_ts',String(Date.now()))}catch(e){}
+  clearTimeout(syncTimer);syncTimer=setTimeout(syncPush,1500);
+}
+function syncSnapshot(){const d={};SYNC_KEYS.forEach(k=>d[k]=localStorage.getItem(k));return d}
+async function syncPush(){
+  if(!sbAuth||!sbCfg().key||syncPushing)return;
+  syncPushing=true;
+  try{
+    const ts=lts()||Date.now();
+    await sbReq('app_state?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'pay',value:{ts,data:syncSnapshot()},updated_at:new Date().toISOString()})});
+    syncMsg=A_('☁ تم الحفظ سحابيًا ','☁ Saved to cloud ')+new Date().toLocaleTimeString();
+  }catch(e){syncMsg=A_('تعذّر الحفظ السحابي (البيانات محفوظة في هذا المتصفح): ','Cloud save failed (data is kept in this browser): ')+String(e.message||e).slice(0,140)}
+  syncPushing=false;sbRender();
+}
+async function syncPull(){
+  if(!sbAuth||!sbCfg().key)return;
+  try{
+    const rows=await (await sbReq('app_state?key=eq.pay&select=value')).json();
+    const r=rows[0]&&rows[0].value;
+    if(!r||!r.data){ if(SYNC_KEYS.some(k=>localStorage.getItem(k))) await syncPush(); return; }
+    if(r.ts>lts()){
+      try{localStorage.setItem('ss_backup_before_sync',JSON.stringify(syncSnapshot()))}catch(e){}
+      SYNC_KEYS.forEach(k=>{r.data[k]==null?localStorage.removeItem(k):localStorage.setItem(k,r.data[k])});
+      localStorage.setItem('ss_ts',String(r.ts));
+      location.reload();
+    }else if(r.ts<lts()){ await syncPush(); }
+    else{syncMsg=A_('☁ البيانات متزامنة ','☁ In sync ')+new Date().toLocaleTimeString();sbRender()}
+  }catch(e){syncMsg=A_('تعذّرت المزامنة السحابية: ','Cloud sync failed: ')+String(e.message||e).slice(0,140);sbRender()}
+}
+window.addEventListener('focus',()=>syncPull());
 
 // ── FILTER EVENTS (chips, search, selects, reset) ────
 document.addEventListener('click',e=>{
@@ -2162,7 +2203,7 @@ document.addEventListener('input',e=>{
 // ── INIT ─────────────────────────────────────────────
 document.getElementById('inv-date').value=new Date().toISOString().split('T')[0];
 applyLang();
-sbRender();sbSync();
+sbRender();sbSync();syncPull();
 </script>
 </body>
 </html>

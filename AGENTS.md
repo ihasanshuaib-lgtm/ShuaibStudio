@@ -37,6 +37,7 @@ ShuaibStudio/
 ├── private/           # LOCAL ONLY (git-ignored): payroll.src.html = plaintext source of the protected page
 ├── supabase-config.js # Supabase URL + public (anon/publishable) key — loaded by index.html and pay.html (key must be pasted in)
 ├── supabase/bookings.sql # SQL for the `bookings` table + RLS (run once in Supabase SQL Editor)
+├── supabase/app_state.sql # SQL for the `app_state` table (cloud copy of pay.html data) + RLS (run once)
 ├── sw.js              # Service worker: browser cache for photos + page (faster repeat visits)
 ├── vercel.json        # Hosting headers: long-lived caching for thumbs/ (deployed on Vercel)
 ├── hero.jpg           # Hero/studio image asset
@@ -418,5 +419,9 @@ Recent history (most recent first) — run `git log --oneline` for the current h
   **خطوات الإعداد (مرة واحدة)**: (1) شغّل `supabase/bookings.sql` في Supabase → SQL Editor؛ (2) أنشئ مستخدمًا في Authentication → Users (حساب الاستوديو)؛ (3) الصق مفتاح `anon`/`publishable` (وليس `service_role`) في `supabase-config.js`؛ (4) commit + push. بدون المفتاح لا يُرسل شيء ويُظهر `pay.html` تنبيهًا بذلك.
 
 - **2026-10-22** — رسالة «الله يطرح البركة إن شاء الله» (`#blessOv` ← `showBlessingThenGo`) صارت تظهر بعد ضغط «إرسال عبر واتساب» في **الأعراس فقط** (`activeCategory === 'weddings'`)؛ بقية الأنواع تفتح واتساب مباشرة (`window.open(url,'_blank')`).
+
+- **2026-10-24** — **بيانات `pay.html` لا تظهر في متصفح آخر → مزامنة سحابية**: كانت كل البيانات (الفواتير `ss_invoices`، الموظفون `ss_staff`، العملاء `ss_clients`، السجل `ss_worklog`، التكاليف `ss_payroll`) في `localStorage` فقط، أي لكل متصفح/نطاق نسخته. الآن بعد تسجيل دخول حساب الاستوديو (بطاقة `#sb-box`) تُحفظ نسخة في Supabase جدول `app_state` (صف واحد `key='pay'` قيمته `{ts, data:{<المفاتيح الخمسة>}}`): `save()` و`persist()` يستدعيان `syncTouch()` (يحدّث `ss_ts` ويرفع بعد 1.5 ثانية عبر `syncPush()`)، و`syncPull()` عند الفتح/التركيز/الدخول تقارن `remote.ts` مع `ss_ts` المحلي: الأحدث يفوز (إذا السحابة أحدث تُحفظ نسخة محلية في `ss_backup_before_sync` ثم تُستبدل البيانات وتُعاد الصفحة). بدون تسجيل دخول لا شيء يتغيّر (يبقى `localStorage` فقط). جُرّب بمحاكاة: حفظ موظف ← مسح بيانات المتصفح ← إعادة فتح ← عادت البيانات. الجدول: `supabase/app_state.sql` (RLS: المستخدم المسجّل فقط). **خطوات**: شغّل `app_state.sql` في SQL Editor، وسجّل الدخول أولًا من المتصفح الذي فيه بياناتك الحقيقية (ليُرفع)، ثم من بقية المتصفحات. يُنصح بتعطيل «Allow new users to sign up» من Authentication → Sign In / Providers.
+
+- **2026-10-24** — تسجيل دخول `pay.html` (بطاقة `#sb-box`) صار **باليوزر** بدل البريد: الحقل يقبل `hasan` ويُحوّله `sbUserEmail()` (الخريطة `SB_USERS`) إلى `ihasanshuaib@gmail.com` (Supabase Auth يعمل بالبريد؛ ويُقبل البريد الكامل أيضًا). يجب أن يكون لهذا البريد مستخدم في Supabase → Authentication → Users (مؤكَّد Confirmed). كلمة المرور لا تُكتب في الريبو.
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
