@@ -2085,12 +2085,16 @@ function addBooking(b,quiet){
   }
   return{id:s.id,isNew};
 }
+// نسخة بدون أسعار من الجلسات لصفحة الموظفين (staff.html): تاريخ/وقت/اسم/باقة/مصورون/معدات فقط
+function scheduleSnapshot(){
+  return S.sessions.filter(s=>s.d).map(s=>({d:s.d,t:s.t||'',n:s.n||'',pk:pkgName(s),ph:phNames(s),eq:eqList(s).map(e=>e.n)}));
+}
 function openStaffReport(id){
   goPay();
   showRep(String(id));
 }
 bind();
-return{render,renderSchedule,periodStats,fromInvoice,openStaffReport,closeReport,openSession,newOn,addBooking};
+return{render,renderSchedule,periodStats,fromInvoice,openStaffReport,closeReport,openSession,newOn,addBooking,scheduleSnapshot};
 })();
 
 // ── حجوزات الزبائن (Supabase): تسجيل دخول صاحب الاستوديو ثم تحويل الحجوزات الجديدة إلى جلسات في التكاليف ──
@@ -2196,8 +2200,14 @@ async function syncPush(){
     const ts=lts()||Date.now();
     await sbReq('app_state?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'pay',value:{ts,data:syncSnapshot()},updated_at:new Date().toISOString()})});
     syncMsg=A_('☁ تم الحفظ سحابيًا ','☁ Saved to cloud ')+new Date().toLocaleTimeString();
+    await pushSchedule();
   }catch(e){syncMsg=A_('تعذّر الحفظ السحابي (البيانات محفوظة في هذا المتصفح): ','Cloud save failed (data is kept in this browser): ')+String(e.message||e).slice(0,140)}
   syncPushing=false;sbRender();
+}
+async function pushSchedule(){
+  try{
+    await sbReq('staff_schedule?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'sched',value:{ts:Date.now(),sessions:PR.scheduleSnapshot()},updated_at:new Date().toISOString()})});
+  }catch(e){syncMsg+=' — '+A_('تعذّر تحديث صفحة الموظفين: ','Staff page update failed: ')+String(e.message||e).slice(0,100)}
 }
 async function syncPull(){
   if(!sbAuth||!sbCfg().key)return;
@@ -2211,7 +2221,7 @@ async function syncPull(){
       localStorage.setItem('ss_ts',String(r.ts));
       location.reload();
     }else if(r.ts<lts()){ await syncPush(); }
-    else{syncMsg=A_('☁ البيانات متزامنة ','☁ In sync ')+new Date().toLocaleTimeString();sbRender()}
+    else{syncMsg=A_('☁ البيانات متزامنة ','☁ In sync ')+new Date().toLocaleTimeString();await pushSchedule();sbRender()}
   }catch(e){syncMsg=A_('تعذّرت المزامنة السحابية: ','Cloud sync failed: ')+String(e.message||e).slice(0,140);sbRender()}
 }
 window.addEventListener('focus',()=>syncPull());

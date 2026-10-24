@@ -37,6 +37,8 @@ ShuaibStudio/
 ├── private/           # LOCAL ONLY (git-ignored): payroll.src.html = plaintext source of the protected page
 ├── supabase-config.js # Supabase URL + public (anon/publishable) key — loaded by index.html and pay.html (key must be pasted in)
 ├── supabase/bookings.sql # SQL for the `bookings` table + RLS (run once in Supabase SQL Editor)
+├── staff.html         # Employees-only page (login → calendar + upcoming shoots + shoot-count report, NO prices) — own link /staff.html
+├── supabase/staff.sql  # SQL: `staff_schedule` table (no prices) + restricts `app_state` to the owner email (run once)
 ├── supabase/app_state.sql # SQL for the `app_state` table (cloud copy of pay.html data) + RLS (run once)
 ├── sw.js              # Service worker: browser cache for photos + page (faster repeat visits)
 ├── vercel.json        # Hosting headers: long-lived caching for thumbs/ (deployed on Vercel)
@@ -425,5 +427,7 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 - **2026-10-24** — تسجيل دخول `pay.html` (بطاقة `#sb-box`) صار **باليوزر** بدل البريد: الحقل يقبل `hasan` ويُحوّله `sbUserEmail()` (الخريطة `SB_USERS`) إلى `ihasanshuaib@gmail.com` (Supabase Auth يعمل بالبريد؛ ويُقبل البريد الكامل أيضًا). يجب أن يكون لهذا البريد مستخدم في Supabase → Authentication → Users (مؤكَّد Confirmed). كلمة المرور لا تُكتب في الريبو.
 
 - **2026-10-24** — **بوابة دخول (يوزر + باسورد) لـ`pay.html`**: شاشة كاملة `#gate` (`#gate-form`: `gate-user`/`gate-pass`) تُخفي كل الصفحة (`html.locked body>*:not(#gate){display:none}`، وتُفعَّل قبل الرسم بسكربت في `<head>` إن لم يوجد `ss_sb`) حتى يتم تسجيل الدخول عبر Supabase Auth (`sbToken`؛ اليوزر `hasan` ← `ihasanshuaib@gmail.com` عبر `SB_USERS`). `gateRefresh()` (تُستدعى من `sbRender`) تُظهر/تُخفي البوابة حسب `sbAuth`؛ «خروج» في بطاقة الحساب السحابي أو فشل تجديد الجلسة يعيد القفل. **ملاحظة أمنية**: الصفحة ملف ثابت علني، فالبوابة تحجب الواجهة فقط؛ الحماية الفعلية لبيانات السحابة هي RLS في Supabase، وبيانات `localStorage` تبقى في المتصفح نفسه.
+
+- **2026-10-24** — **صفحة الموظفين `staff.html` (رابط منفصل، بلا أسعار)**: صفحة مستقلة بدخول (يوزر/باسورد عبر Supabase Auth؛ `staff` ← `staff@shuaib-studio.com` عبر `USERS`، ويُقبل البريد الكامل) تعرض: تقويم شهري، «التصوير القادم»، تفاصيل اليوم، فلتر المصوّر (يُحفظ في `ss_staff_ph`)، و**تقرير عدد التصويرات** (سنة/شهر: العدد، أيام التصوير، القادم، حسب الشهر، حسب المصوّر، قائمة التصويرات، زر طباعة). تقرأ من جدول `staff_schedule` (صف `key='sched'` قيمته `{ts, sessions:[{d,t,n,pk,ph[],eq[]}]}` — لا أسعار ولا أجور) وتتحدث كل دقيقة وعند التركيز. يرفعه `pay.html`: `PR.scheduleSnapshot()` ← `pushSchedule()` بعد كل `syncPush()` وعند المزامنة المتساوية. `supabase/staff.sql`: ينشئ الجدول (قراءة لأي مستخدم مسجّل، كتابة للمالك فقط `auth.jwt()->>'email' = 'ihasanshuaib@gmail.com'`) **ويقيّد `app_state` (فيه الأسعار) على المالك فقط** حتى لا يقرأه حساب الموظفين. **خطوات**: شغّل `staff.sql`، أنشئ مستخدم الموظفين في Authentication → Users (`staff@shuaib-studio.com` + باسورد + Auto Confirm)، ثم افتح `pay.html` واضغط «مزامنة الآن» ليُرفع الجدول، وأعطِ الموظفين رابط `/staff.html` ويوزر `staff` والباسورد.
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.

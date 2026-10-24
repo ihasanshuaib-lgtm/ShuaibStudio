@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>شعيب استوديو | جدول التصوير للموظفين</title>
+<script src="supabase-config.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>try{if(!localStorage.getItem('ss_staff_auth'))document.documentElement.classList.add('locked')}catch(e){document.documentElement.classList.add('locked')}</script>
+<style>
+:root{
+  --bg:#dde1e5;--card:#e8ecf0;--soft:#d4dbe0;--line:#c3ccd3;
+  --text:#344653;--dim:#6f8190;--gold:#52707f;--accent:#5d7f92;--on-accent:#fff;--danger:#b94f4f;
+  --today:#c9a463;
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#1d272e;--card:#26343d;--soft:#2d3d48;--line:#3b4f5c;--text:#e7f0f5;--dim:#9fb2bf;--gold:#a9c1d1;--accent:#6e8fa3;--danger:#e88;--today:#d4b06a}
+}
+*{box-sizing:border-box;margin:0}
+html,body{min-height:100%}
+body{font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:0 0 40px}
+button,select,input{font:inherit;color:inherit}
+.wrap{max-width:1100px;margin:0 auto;padding:22px 16px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+h1{font-size:1.35rem;font-weight:700}
+h1 small{display:block;font-size:.8rem;font-weight:400;color:var(--dim);margin-top:2px}
+h2{font-size:1.02rem;font-weight:600;margin:0 0 10px}
+.btn{padding:.5rem .95rem;border-radius:10px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:.88rem}
+.btn:hover{border-color:var(--accent)}
+.btn.pri{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:16px}
+.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.bar label{font-size:.82rem;color:var(--dim);display:flex;flex-direction:column;gap:3px}
+select{padding:.45rem .65rem;border-radius:9px;border:1px solid var(--line);background:var(--bg);min-width:120px}
+.month{font-weight:700;min-width:120px;text-align:center}
+.grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.wh{font-size:.72rem;color:var(--dim);text-align:center;padding:3px 0}
+.cd{min-height:68px;border-radius:10px;background:var(--bg);border:1px solid var(--line);padding:4px 5px;text-align:start;cursor:pointer;display:flex;flex-direction:column;gap:2px;overflow:hidden;position:relative}
+.cd.off{background:none;border:0;cursor:default}
+.cd.today{border-color:var(--today);box-shadow:0 0 0 1px var(--today) inset}
+.cd.sel{background:var(--soft);border-color:var(--accent)}
+.dn{font-size:.78rem;font-weight:600}
+.ev{font-size:.66rem;line-height:1.25;background:var(--accent);color:var(--on-accent);border-radius:5px;padding:1px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:normal}
+.cnt{position:absolute;top:3px;left:4px;font-size:.66rem;background:var(--gold);color:var(--bg);border-radius:999px;padding:0 6px;font-weight:700}
+.sess{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.sess b{font-size:.95rem}
+.sess .t{font-size:.8rem;color:var(--gold);margin-inline-end:6px}
+.sess .pk{font-size:.72rem;background:var(--soft);border-radius:6px;padding:1px 7px;margin-inline-start:6px}
+.sess .ln{font-size:.82rem;color:var(--dim);margin-top:4px}
+.up{display:flex;gap:10px;align-items:center;width:100%;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:8px 10px;margin-bottom:7px;text-align:start;cursor:pointer}
+.up:first-child{border-color:var(--accent)}
+.ud{min-width:44px;text-align:center;font-size:.7rem;color:var(--dim)}
+.ud b{display:block;font-size:1.15rem;color:var(--text)}
+.um{flex:1;font-size:.88rem}
+.um small{display:block;color:var(--dim);font-size:.75rem}
+.when{font-size:.74rem;color:var(--gold);white-space:nowrap}
+.hint{font-size:.82rem;color:var(--dim);padding:6px 0}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.stat{flex:1;min-width:130px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.stat span{font-size:.75rem;color:var(--dim)}
+.stat b{display:block;font-size:1.5rem;color:var(--gold)}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th,td{padding:.45rem .6rem;border-bottom:1px solid var(--line);text-align:start}
+th{font-size:.74rem;color:var(--dim);font-weight:600}
+.scroll{overflow-x:auto}
+#status{font-size:.75rem;color:var(--dim)}
+/* gate */
+#gate{display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
+html.locked #gate{display:flex}
+html.locked .wrap{display:none}
+.gate-card{width:min(380px,100%);padding:30px 24px;border-radius:20px;background:var(--card);border:1px solid var(--line);text-align:center}
+.gate-card h1{margin-bottom:4px}
+.gate-card p{font-size:.85rem;color:var(--dim);margin-bottom:16px}
+.gate-card input{width:100%;margin-bottom:10px;padding:.75rem .9rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);outline:none}
+.gate-card input:focus{border-color:var(--accent)}
+.gate-card .btn{width:100%;padding:.8rem}
+#gate-err{min-height:1.2rem;margin-top:8px;font-size:.82rem;color:var(--danger)}
+@media print{
+  .noprint{display:none !important}
+  body{background:#fff;color:#000}
+  .panel{border:0;padding:0}
+}
+</style>
+</head>
+<body>
+<div id="gate" role="dialog" aria-modal="true" aria-label="تسجيل الدخول">
+  <form class="gate-card" id="gate-form">
+    <h1>شعيب استوديو</h1>
+    <p>جدول التصوير للموظفين — سجّل الدخول</p>
+    <input id="gate-user" type="text" autocomplete="username" autocapitalize="none" placeholder="اسم المستخدم" required>
+    <input id="gate-pass" type="password" autocomplete="current-password" placeholder="كلمة المرور" required>
+    <button class="btn pri" type="submit" id="gate-btn">دخول</button>
+    <div id="gate-err" role="alert"></div>
+  </form>
+</div>
+
+<div class="wrap">
+  <header class="noprint">
+    <h1>جدول التصوير<small>التقويم والتصوير القادم وتقرير عدد التصويرات</small></h1>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <span id="status"></span>
+      <button class="btn" id="refresh" type="button">تحديث</button>
+      <button class="btn" id="logout" type="button">خروج</button>
+    </div>
+  </header>
+
+  <div class="bar noprint">
+    <label>المصوّر
+      <select id="f-ph"></select>
+    </label>
+  </div>
+
+  <div class="grid">
+    <section class="panel">
+      <div class="bar noprint">
+        <button class="btn" id="prev" type="button" aria-label="الشهر السابق">›</button>
+        <span class="month" id="month"></span>
+        <button class="btn" id="next" type="button" aria-label="الشهر التالي">‹</button>
+        <button class="btn" id="today" type="button">اليوم</button>
+      </div>
+      <div class="cal" id="cal"></div>
+      <h2 id="day-title" style="margin-top:14px"></h2>
+      <div id="day-list"></div>
+    </section>
+    <section class="panel">
+      <h2>📅 التصوير القادم</h2>
+      <div id="upcoming"></div>
+    </section>
+  </div>
+
+  <section class="panel" id="report">
+    <h2>📊 تقرير عدد التصويرات</h2>
+    <div class="bar noprint">
+      <label>السنة <select id="r-y"></select></label>
+      <label>الشهر <select id="r-m"></select></label>
+      <button class="btn pri" id="print" type="button">🖨 طباعة</button>
+    </div>
+    <div id="r-body"></div>
+  </section>
+</div>
+
+<script>
+(function(){
+const MON=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const WD=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const pad=n=>String(n).padStart(2,'0');
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const G=id=>document.getElementById(id);
+const now=new Date(),TD=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+const AK='ss_staff_auth';
+// اسم المستخدم → بريد Supabase (يُقبل البريد الكامل أيضًا)
+const USERS={staff:'staff@shuaib-studio.com'};
+const toEmail=u=>{u=String(u||'').trim().toLowerCase();return u.includes('@')?u:(USERS[u]||u+'@shuaib-studio.com')};
+
+let auth=null;try{auth=JSON.parse(localStorage.getItem(AK)||'null')}catch(e){}
+let sessions=[],loaded=false;
+const st={y:now.getFullYear(),m:now.getMonth()+1,sel:TD,ph:localStorage.getItem('ss_staff_ph')||'',ry:now.getFullYear(),rm:now.getMonth()+1};
+const cfg=()=>window.SB||{};
+
+// ── Supabase (REST) ──
+function saveAuth(a){auth=a;try{a?localStorage.setItem(AK,JSON.stringify(a)):localStorage.removeItem(AK)}catch(e){}lock()}
+function lock(){document.documentElement.classList.toggle('locked',!auth)}
+async function token(body,grant){
+  const c=cfg();
+  const r=await fetch(c.url+'/auth/v1/token?grant_type='+grant,{method:'POST',headers:{apikey:c.key,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const j=await r.json();
+  if(!r.ok)throw new Error(j.error_description||j.msg||'login failed');
+  return {access:j.access_token,refresh:j.refresh_token,email:(j.user&&j.user.email)||''};
+}
+async function req(path,retry=true){
+  const c=cfg();
+  const r=await fetch(c.url+'/rest/v1/'+path,{headers:{apikey:c.key,Authorization:'Bearer '+auth.access}});
+  if(r.status===401&&retry&&auth.refresh){
+    try{saveAuth(await token({refresh_token:auth.refresh},'refresh_token'))}catch(e){saveAuth(null);throw e}
+    return req(path,false);
+  }
+  if(!r.ok)throw new Error(await r.text());
+  return r.json();
+}
+async function load(){
+  if(!auth)return;
+  try{
+    const rows=await req('staff_schedule?key=eq.sched&select=value');
+    const v=rows[0]&&rows[0].value;
+    sessions=(v&&v.sessions)||[];loaded=true;
+    G('status').textContent='آخر تحديث: '+new Date().toLocaleTimeString('ar');
+  }catch(e){G('status').textContent='تعذّر التحميل';}
+  render();
+}
+
+// ── helpers ──
+const list=()=>sessions.filter(s=>s.d&&(!st.ph||(s.ph||[]).includes(st.ph))).sort((a,b)=>(a.d+(a.t||''))<(b.d+(b.t||''))?-1:1);
+const fmt=d=>`${+d.slice(8)} ${MON[+d.slice(5,7)-1]} ${d.slice(0,4)}`;
+const wdOf=d=>WD[new Date(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8)).getDay()];
+const dl=d=>Math.round((Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8))-Date.UTC(+TD.slice(0,4),+TD.slice(5,7)-1,+TD.slice(8)))/864e5);
+const when=n=>n==0?'اليوم':n==1?'غدًا':n==2?'بعد يومين':'بعد '+n+' أيام';
+function card(s){
+  return `<div class="sess"><div>${s.t?`<span class="t">${esc(s.t)}</span>`:''}<b>${esc(s.n||'بدون اسم')}</b>${s.pk?`<span class="pk">${esc(s.pk)}</span>`:''}</div>`+
+  ((s.ph||[]).length?`<div class="ln">👥 ${s.ph.map(esc).join('، ')}</div>`:'')+
+  ((s.eq||[]).length?`<div class="ln">🎒 ${s.eq.map(esc).join('، ')}</div>`:'')+`</div>`;
+}
+
+// ── render ──
+function render(){
+  if(!auth)return;
+  // مصوّرون
+  const names=[...new Set(sessions.flatMap(s=>s.ph||[]))].sort();
+  G('f-ph').innerHTML='<option value="">الكل</option>'+names.map(n=>`<option value="${esc(n)}"${n===st.ph?' selected':''}>${esc(n)}</option>`).join('');
+  if(st.ph&&!names.includes(st.ph)){st.ph='';}
+  // تقويم
+  const L=list(),ym=st.y+'-'+pad(st.m),lead=new Date(st.y,st.m-1,1).getDay(),nd=new Date(st.y,st.m,0).getDate(),by={};
+  L.filter(s=>s.d.slice(0,7)==ym).forEach(s=>(by[s.d]||(by[s.d]=[])).push(s));
+  G('month').textContent=MON[st.m-1]+' '+st.y;
+  let c=WD.map(w=>`<div class="wh">${w.slice(0,3)}</div>`).join('')+'<div class="cd off"></div>'.repeat(lead);
+  for(let d=1;d<=nd;d++){
+    const k=ym+'-'+pad(d),A=by[k]||[];
+    c+=`<button type="button" class="cd${k==TD?' today':''}${k==st.sel?' sel':''}" data-day="${k}"><span class="dn">${d}</span>${A.slice(0,2).map(s=>`<i class="ev">${s.t?esc(s.t)+' ':''}${esc(s.n||'—')}</i>`).join('')}${A.length>2?`<i class="ev">+${A.length-2}</i>`:''}${A.length?`<b class="cnt">${A.length}</b>`:''}</button>`;
+  }
+  G('cal').innerHTML=c;
+  const day=L.filter(s=>s.d==st.sel);
+  G('day-title').textContent=fmt(st.sel)+' · '+wdOf(st.sel);
+  G('day-list').innerHTML=day.length?day.map(card).join(''):`<p class="hint">${loaded?'لا توجد تصويرات في هذا اليوم.':'جارٍ التحميل…'}</p>`;
+  // القادم
+  const up=L.filter(s=>s.d>=TD).slice(0,12);
+  G('upcoming').innerHTML=up.length?up.map(s=>`<button type="button" class="up" data-go="${s.d}"><span class="ud"><b>${+s.d.slice(8)}</b>${wdOf(s.d)}</span><span class="um">${esc(s.n||'—')}${s.t?` <small>${esc(s.t)}</small>`:''}${(s.ph||[]).length?`<small>${s.ph.map(esc).join('، ')}</small>`:''}</span><span class="when">${when(dl(s.d))}</span></button>`).join(''):`<p class="hint">${loaded?'لا توجد تصويرات قادمة.':'جارٍ التحميل…'}</p>`;
+  report();
+}
+
+// ── تقرير ──
+function report(){
+  const years=[...new Set([now.getFullYear(),st.ry,...sessions.filter(s=>s.d).map(s=>+s.d.slice(0,4))])].sort();
+  G('r-y').innerHTML=years.map(y=>`<option value="${y}"${y==st.ry?' selected':''}>${y}</option>`).join('');
+  G('r-m').innerHTML=`<option value="0"${st.rm==0?' selected':''}>كل السنة</option>`+MON.map((n,i)=>`<option value="${i+1}"${st.rm==i+1?' selected':''}>${n}</option>`).join('');
+  const L=list().filter(s=>+s.d.slice(0,4)==st.ry&&(!st.rm||+s.d.slice(5,7)==st.rm));
+  const per=st.rm?MON[st.rm-1]+' '+st.ry:'سنة '+st.ry;
+  const days=new Set(L.map(s=>s.d)).size,up=L.filter(s=>s.d>=TD).length;
+  const by={};L.forEach(s=>(s.ph||[]).forEach(p=>by[p]=(by[p]||0)+1));
+  const rows=Object.entries(by).sort((a,b)=>b[1]-a[1]);
+  const mm={};L.forEach(s=>{const k=+s.d.slice(5,7);mm[k]=(mm[k]||0)+1});
+  G('r-body').innerHTML=
+    `<p class="hint">${esc(per)}${st.ph?' — المصوّر: '+esc(st.ph):''}</p>`+
+    `<div class="stats"><div class="stat"><span>عدد التصويرات</span><b>${L.length}</b></div><div class="stat"><span>أيام فيها تصوير</span><b>${days}</b></div><div class="stat"><span>القادمة منها</span><b>${up}</b></div></div>`+
+    (!st.rm&&L.length?`<h2>حسب الشهر</h2><div class="scroll"><table><thead><tr><th>الشهر</th><th>عدد التصويرات</th></tr></thead><tbody>${Object.keys(mm).map(Number).sort((a,b)=>a-b).map(m=>`<tr><td>${MON[m-1]}</td><td>${mm[m]}</td></tr>`).join('')}</tbody></table></div>`:'')+
+    (!st.ph&&rows.length?`<h2 style="margin-top:12px">حسب المصوّر</h2><div class="scroll"><table><thead><tr><th>المصوّر</th><th>عدد التصويرات</th></tr></thead><tbody>${rows.map(([n,c])=>`<tr><td>${esc(n)}</td><td>${c}</td></tr>`).join('')}</tbody></table></div>`:'')+
+    `<h2 style="margin-top:12px">قائمة التصويرات</h2>`+
+    (L.length?`<div class="scroll"><table><thead><tr><th>#</th><th>التاريخ</th><th>الوقت</th><th>التصوير</th><th>المصورون</th></tr></thead><tbody>${L.map((s,i)=>`<tr><td>${i+1}</td><td>${fmt(s.d)}</td><td>${esc(s.t||'—')}</td><td>${esc(s.n||'—')}${s.pk?' <small>('+esc(s.pk)+')</small>':''}</td><td>${(s.ph||[]).map(esc).join('، ')||'—'}</td></tr>`).join('')}</tbody></table></div>`:`<p class="hint">لا توجد تصويرات في هذه الفترة.</p>`);
+}
+
+// ── events ──
+G('f-ph').addEventListener('change',e=>{st.ph=e.target.value;try{localStorage.setItem('ss_staff_ph',st.ph)}catch(x){}render()});
+G('r-y').addEventListener('change',e=>{st.ry=+e.target.value;report()});
+G('r-m').addEventListener('change',e=>{st.rm=+e.target.value;report()});
+G('prev').addEventListener('click',()=>{st.m--;if(st.m<1){st.m=12;st.y--}render()});
+G('next').addEventListener('click',()=>{st.m++;if(st.m>12){st.m=1;st.y++}render()});
+G('today').addEventListener('click',()=>{st.y=now.getFullYear();st.m=now.getMonth()+1;st.sel=TD;render()});
+G('cal').addEventListener('click',e=>{const b=e.target.closest('[data-day]');if(b){st.sel=b.dataset.day;render()}});
+G('upcoming').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){const d=b.dataset.go;st.y=+d.slice(0,4);st.m=+d.slice(5,7);st.sel=d;render();G('cal').scrollIntoView({behavior:'smooth',block:'start'})}});
+G('print').addEventListener('click',()=>window.print());
+G('refresh').addEventListener('click',load);
+G('logout').addEventListener('click',()=>{saveAuth(null);sessions=[];loaded=false});
+G('gate-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const btn=G('gate-btn'),err=G('gate-err');btn.disabled=true;err.textContent='';
+  if(!cfg().key){err.textContent='لم يُضبط مفتاح Supabase (supabase-config.js).';btn.disabled=false;return}
+  try{
+    saveAuth(await token({email:toEmail(G('gate-user').value),password:G('gate-pass').value},'password'));
+    G('gate-pass').value='';load();
+  }catch(x){err.textContent='اسم المستخدم أو كلمة المرور غير صحيحة.'}
+  btn.disabled=false;
+});
+window.addEventListener('focus',load);
+setInterval(()=>{if(auth)load()},60000);
+lock();render();if(auth)load();
+})();
+</script>
+</body>
+</html>
