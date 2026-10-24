@@ -424,4 +424,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-10-24** — تسجيل دخول `pay.html` (بطاقة `#sb-box`) صار **باليوزر** بدل البريد: الحقل يقبل `hasan` ويُحوّله `sbUserEmail()` (الخريطة `SB_USERS`) إلى `ihasanshuaib@gmail.com` (Supabase Auth يعمل بالبريد؛ ويُقبل البريد الكامل أيضًا). يجب أن يكون لهذا البريد مستخدم في Supabase → Authentication → Users (مؤكَّد Confirmed). كلمة المرور لا تُكتب في الريبو.
 
+- **2026-10-24** — **بوابة دخول (يوزر + باسورد) لـ`pay.html`**: شاشة كاملة `#gate` (`#gate-form`: `gate-user`/`gate-pass`) تُخفي كل الصفحة (`html.locked body>*:not(#gate){display:none}`، وتُفعَّل قبل الرسم بسكربت في `<head>` إن لم يوجد `ss_sb`) حتى يتم تسجيل الدخول عبر Supabase Auth (`sbToken`؛ اليوزر `hasan` ← `ihasanshuaib@gmail.com` عبر `SB_USERS`). `gateRefresh()` (تُستدعى من `sbRender`) تُظهر/تُخفي البوابة حسب `sbAuth`؛ «خروج» في بطاقة الحساب السحابي أو فشل تجديد الجلسة يعيد القفل. **ملاحظة أمنية**: الصفحة ملف ثابت علني، فالبوابة تحجب الواجهة فقط؛ الحماية الفعلية لبيانات السحابة هي RLS في Supabase، وبيانات `localStorage` تبقى في المتصفح نفسه.
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.

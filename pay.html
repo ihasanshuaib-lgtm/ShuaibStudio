@@ -628,8 +628,32 @@ button{ -webkit-tap-highlight-color:transparent }
 }
 
 </style>
+<script>try{if(!localStorage.getItem('ss_sb'))document.documentElement.classList.add('locked')}catch(e){document.documentElement.classList.add('locked')}</script>
+<style>
+/* بوابة الدخول: الصفحة مخفية حتى تسجيل الدخول */
+#gate{display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;padding:20px;background:var(--dark,#dde1e5)}
+html.locked #gate{display:flex}
+html.locked body>*:not(#gate){display:none !important}
+.gate-card{width:min(380px,100%);padding:32px 26px;border-radius:20px;background:var(--surface,#e4e8ec);border:1px solid var(--border,#c8d1d8);box-shadow:0 20px 60px rgba(0,0,0,.18);text-align:center}
+.gate-card h1{font-size:1.25rem;margin-bottom:.3rem;color:var(--text,#344653)}
+.gate-card p{font-size:.85rem;color:var(--muted,#8193a0);margin-bottom:1.1rem}
+.gate-card input{width:100%;margin-bottom:.7rem;padding:.75rem .9rem;border-radius:10px;border:1px solid var(--border,#c8d1d8);background:var(--dark,#dde1e5);color:var(--text,#344653);font-size:.95rem;outline:none}
+.gate-card input:focus{border-color:var(--gold,#6e8798)}
+.gate-card button{width:100%;padding:.8rem;font-size:.95rem}
+#gate-err{min-height:1.2rem;margin-top:.6rem;font-size:.82rem;color:var(--danger,#c25c5c)}
+</style>
 </head>
 <body>
+<div id="gate" role="dialog" aria-modal="true" aria-label="تسجيل الدخول">
+  <form class="gate-card" id="gate-form" autocomplete="on">
+    <h1>شعيب استوديو</h1>
+    <p>لوحة التحكم — سجّل الدخول للمتابعة</p>
+    <input id="gate-user" type="text" autocomplete="username" autocapitalize="none" placeholder="اسم المستخدم" required>
+    <input id="gate-pass" type="password" autocomplete="current-password" placeholder="كلمة المرور" required>
+    <button class="btn-gold" type="submit" id="gate-btn">دخول</button>
+    <div id="gate-err" role="alert"></div>
+  </form>
+</div>
 
 <nav>
   <div class="logo" id="nav-logo">Shuaib Studio</div>
@@ -2117,7 +2141,14 @@ async function sbSync(manual){
   }catch(e){sbMsg=A_('تعذّرت المزامنة: ','Sync failed: ')+String(e.message||e).slice(0,160)}
   sbBusy=false;sbRender();
 }
+function gateRefresh(){
+  document.documentElement.classList.toggle('locked',!sbAuth);
+  const e=document.getElementById('gate-err');
+  if(e)e.textContent=sbAuth?'':(sbCfg().key?(gateMsg||''):A_('لم يُضبط مفتاح Supabase بعد (supabase-config.js).','Supabase key is not set (supabase-config.js).'));
+}
+let gateMsg='';
 function sbRender(){
+  gateRefresh();
   const b=document.getElementById('sb-box');if(!b)return;
   const c=sbCfg(),inp='style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem .75rem;color:var(--text);font-size:.88rem;min-width:180px"';
   let h=`<div class="card-title">${A_('الحساب السحابي: حفظ البيانات وحجوزات الزبائن','Cloud account: data backup & customer bookings')}</div>`;
@@ -2127,6 +2158,15 @@ function sbRender(){
   b.innerHTML=h;
 }
 document.addEventListener('submit',async e=>{
+  if(e.target.id==='gate-form'){
+    e.preventDefault();
+    const btn=document.getElementById('gate-btn');btn.disabled=true;gateMsg='';
+    try{
+      sbSave(await sbToken({email:sbUserEmail(document.getElementById('gate-user').value),password:document.getElementById('gate-pass').value},'password'));
+      document.getElementById('gate-pass').value='';sbMsg='';sbRender();sbSync();syncPull();
+    }catch(err){gateMsg=A_('اسم المستخدم أو كلمة المرور غير صحيحة.','Wrong username or password.');gateRefresh()}
+    btn.disabled=false;return;
+  }
   if(e.target.id!=='sb-form')return;e.preventDefault();
   try{sbSave(await sbToken({email:sbUserEmail(document.getElementById('sb-email').value),password:document.getElementById('sb-pass').value},'password'));sbMsg='';sbRender();sbSync();syncPull()}
   catch(err){sbMsg=A_('فشل الدخول: ','Sign-in failed: ')+String(err.message||err);sbRender()}
