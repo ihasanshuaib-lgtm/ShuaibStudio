@@ -108,6 +108,26 @@ th,td{border-bottom:1px solid var(--line)}
 #gate{background:radial-gradient(ellipse at 50% 0%,#f6f3ef 0%,#efebe6 55%,#e8e2db 100%)}
 .gate-card{background:var(--card-g);border:1px solid #fff;box-shadow:var(--lift)}
 .brand{font-weight:800;color:#4a423b;letter-spacing:.01em}
+/* قائمة المهام (To-do) */
+.todo-grp{border:1px solid #fff;background:var(--card-g);box-shadow:var(--lift-sm);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.todo-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.todo-h b{font-size:1rem}
+.todo-prog{font-size:.78rem;color:var(--gold);font-weight:700}
+.todo-bar{height:6px;border-radius:999px;background:var(--soft);box-shadow:var(--sunk);overflow:hidden;margin-bottom:8px}
+.todo-bar i{display:block;height:100%;background:var(--btn-sage);border-radius:999px;transition:width .25s}
+.todo{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;font-size:.95rem}
+.todo:hover{background:var(--soft)}
+.todo input{width:20px;height:20px;accent-color:#789680;flex-shrink:0;cursor:pointer}
+.todo.done span{text-decoration:line-through;color:var(--dim)}
+/* نافذة تفاصيل التصوير */
+#modal{display:none;position:fixed;inset:0;z-index:90;align-items:center;justify-content:center;padding:18px;background:rgba(74,66,59,.45);backdrop-filter:blur(8px)}
+#modal.show{display:flex}
+.m-card{width:min(440px,100%);max-height:90vh;overflow:auto;background:var(--card-g);border:1px solid #fff;box-shadow:var(--lift);border-radius:20px;padding:22px 20px}
+.m-card h3{font-size:1.15rem;margin-bottom:12px}
+.m-row{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:.92rem}
+.m-row:last-of-type{border-bottom:0}
+.m-row span:first-child{min-width:78px;color:var(--dim)}
+.m-row b{font-weight:600}
 @media print{
   .noprint{display:none !important}
   body{background:#fff;color:#000}
@@ -125,6 +145,10 @@ th,td{border-bottom:1px solid var(--line)}
     <button class="btn pri" type="submit" id="gate-btn">دخول</button>
     <div id="gate-err" role="alert"></div>
   </form>
+</div>
+
+<div id="modal" role="dialog" aria-modal="true" aria-label="تفاصيل التصوير">
+  <div class="m-card" id="m-card"></div>
 </div>
 
 <div class="wrap">
@@ -162,7 +186,7 @@ th,td{border-bottom:1px solid var(--line)}
   </div>
 
   <section class="panel" id="tasks-panel">
-    <h2>📝 المهام</h2>
+    <h2>✅ المهام</h2>
     <div id="tasks"></div>
   </section>
 
@@ -234,6 +258,7 @@ const dl=d=>Math.round((Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8))-Date
 const when=n=>n==0?'اليوم':n==1?'غدًا':n==2?'بعد يومين':'بعد '+n+' أيام';
 function card(s){
   return `<div class="sess"><div>${s.t?`<span class="t">${esc(s.t)}</span>`:''}<b>${esc(s.n||'بدون اسم')}</b>${s.pk?`<span class="pk">${esc(s.pk)}</span>`:''}</div>`+
+  (s.loc?`<div class="ln">📍 ${esc(s.loc)}</div>`:'')+
   ((s.ph||[]).length?`<div class="ln">👥 ${s.ph.map(esc).join('، ')}</div>`:'')+
   ((s.eq||[]).length?`<div class="ln">🎒 ${s.eq.map(esc).join('، ')}</div>`:'')+`</div>`;
 }
@@ -260,16 +285,27 @@ function render(){
   G('day-list').innerHTML=day.length?day.map(card).join(''):`<p class="hint">${loaded?'لا توجد تصويرات في هذا اليوم.':'جارٍ التحميل…'}</p>`;
   // القادم
   const up=L.filter(s=>s.d>=TD).slice(0,12);
-  G('upcoming').innerHTML=up.length?up.map(s=>`<button type="button" class="up" data-go="${s.d}"><span class="ud"><b>${+s.d.slice(8)}</b>${wdOf(s.d)}</span><span class="um">${esc(s.n||'—')}${s.t?` <small>${esc(s.t)}</small>`:''}${(s.ph||[]).length?`<small>${s.ph.map(esc).join('، ')}</small>`:''}</span><span class="when">${when(dl(s.d))}</span></button>`).join(''):`<p class="hint">${loaded?'لا توجد تصويرات قادمة.':'جارٍ التحميل…'}</p>`;
+  G('upcoming').innerHTML=up.length?up.map(s=>`<button type="button" class="up" data-up="${s.d}|${s.t||''}|${esc(s.n||'')}"><span class="ud"><b>${+s.d.slice(8)}</b>${wdOf(s.d)}</span><span class="um">${esc(s.n||'—')}${s.t?` <small>🕒 ${esc(s.t)}</small>`:''}${s.loc?`<small>📍 ${esc(s.loc)}</small>`:''}${(s.ph||[]).length?`<small>${s.ph.map(esc).join('، ')}</small>`:''}</span><span class="when">${when(dl(s.d))}</span></button>`).join(''):`<p class="hint">${loaded?'لا توجد تصويرات قادمة.':'جارٍ التحميل…'}</p>`;
   taskList();
   report();
 }
 
 // ── المهام لكل مصوّر (يضيفها صاحب الاستوديو) ──
+let done={};try{done=JSON.parse(localStorage.getItem('ss_todo_done')||'{}')}catch(e){}
 function taskList(){
   const e=Object.entries(tasks).filter(([n,a])=>(a||[]).length&&(!st.ph||n===st.ph));
-  G('tasks').innerHTML=e.length?e.map(([n,a])=>`<div class="sess"><b>${esc(n)}</b><div class="ln" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">${a.map(k=>`<span class="pk" style="margin:0">${esc(k)}</span>`).join('')}</div></div>`).join(''):`<p class="hint">${loaded?'لا توجد مهام.':'جارٍ التحميل…'}</p>`;
+  G('tasks').innerHTML=e.length?e.map(([n,a])=>{
+    const k=i=>n+'|'+a[i],c=a.filter((_,i)=>done[k(i)]).length;
+    return `<div class="todo-grp"><div class="todo-h"><b>${esc(n)}</b><span class="todo-prog" dir="ltr">${c} / ${a.length}</span></div><div class="todo-bar"><i style="width:${Math.round(c/a.length*100)}%"></i></div>`+
+      a.map((x,i)=>`<label class="todo${done[k(i)]?' done':''}"><input type="checkbox" data-tk="${esc(k(i))}"${done[k(i)]?' checked':''}><span>${esc(x)}</span></label>`).join('')+`</div>`;
+  }).join(''):`<p class="hint">${loaded?'لا توجد مهام.':'جارٍ التحميل…'}</p>`;
 }
+G('tasks').addEventListener('change',e=>{
+  const c=e.target.closest('[data-tk]');if(!c)return;
+  if(c.checked)done[c.dataset.tk]=1;else delete done[c.dataset.tk];
+  try{localStorage.setItem('ss_todo_done',JSON.stringify(done))}catch(x){}
+  taskList();
+});
 
 // ── تقرير ──
 function report(){
@@ -299,7 +335,23 @@ G('prev').addEventListener('click',()=>{st.m--;if(st.m<1){st.m=12;st.y--}render(
 G('next').addEventListener('click',()=>{st.m++;if(st.m>12){st.m=1;st.y++}render()});
 G('today').addEventListener('click',()=>{st.y=now.getFullYear();st.m=now.getMonth()+1;st.sel=TD;render()});
 G('cal').addEventListener('click',e=>{const b=e.target.closest('[data-day]');if(b){st.sel=b.dataset.day;render()}});
-G('upcoming').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){const d=b.dataset.go;st.y=+d.slice(0,4);st.m=+d.slice(5,7);st.sel=d;render();G('cal').scrollIntoView({behavior:'smooth',block:'start'})}});
+G('upcoming').addEventListener('click',e=>{const b=e.target.closest('[data-up]');if(!b)return;const [d,tm,n]=b.dataset.up.split('|');const s=sessions.find(x=>x.d===d&&(x.t||'')===tm&&(x.n||'')===n)||sessions.find(x=>x.d===d);if(s)showDetails(s)});
+function showDetails(s){
+  const row=(k,v)=>v?`<div class="m-row"><span>${k}</span><b>${v}</b></div>`:'';
+  G('m-card').innerHTML=`<h3>${esc(s.n||'بدون اسم')}</h3>`+
+    row('📅 التاريخ',esc(fmt(s.d))+' · '+wdOf(s.d)+' ('+when(dl(s.d))+')')+
+    row('🕒 الوقت',esc(s.t||'غير محدد'))+
+    row('📍 المكان',esc(s.loc||'غير محدد'))+
+    row('📦 الباقة',esc(s.pk||''))+
+    row('👥 المصورون',(s.ph||[]).map(esc).join('، '))+
+    row('🎒 المعدات',(s.eq||[]).map(esc).join('، '))+
+    `<div style="display:flex;gap:8px;margin-top:14px"><button class="btn pri" type="button" id="m-cal" style="flex:1">عرض في التقويم</button><button class="btn" type="button" id="m-close" style="flex:1">إغلاق</button></div>`;
+  G('modal').classList.add('show');
+  G('m-close').onclick=()=>G('modal').classList.remove('show');
+  G('m-cal').onclick=()=>{G('modal').classList.remove('show');st.y=+s.d.slice(0,4);st.m=+s.d.slice(5,7);st.sel=s.d;render();G('cal').scrollIntoView({behavior:'smooth',block:'start'})};
+}
+G('modal').addEventListener('click',e=>{if(e.target.id==='modal')G('modal').classList.remove('show')});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')G('modal').classList.remove('show')});
 G('print').addEventListener('click',()=>window.print());
 G('refresh').addEventListener('click',load);
 G('logout').addEventListener('click',()=>{saveAuth(null);sessions=[];loaded=false});

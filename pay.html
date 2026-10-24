@@ -1783,7 +1783,7 @@ const eqChips=(s,edit)=>S.equip.length?`<div class="pr-eqs">${edit?S.equip.map(e
 function sessCard(s){
   const ed=EDIT.has(s.id),open=ed||OPEN.has(s.id),pay=spay(s),eq=eqFee(s),pr=(+s.p||0)-pay-eq,pk=pkgName(s);
   const dd=s.d?{d:+s.d.slice(8),m:MON()[+s.d.slice(5,7)-1]}:{d:'—',m:''};
-  const sub=[s.t||'',pk].filter(Boolean).map(esc).join(' · ');
+  const sub=[s.t||'',pk,s.loc?'📍 '+s.loc:''].filter(Boolean).map(esc).join(' · ');
   const head=`<button type="button" class="ps-head" data-tg="${s.id}" aria-expanded="${open}"><span class="ps-date"><b>${dd.d}</b><i>${dd.m}</i></span><span class="ps-main"><b class="ps-name">${s.n?esc(s.n):tr('noName')}</b>${sub?`<small>${sub}</small>`:''}</span><span class="ps-price"><span id="prh${s.id}">${f3(s.p)}</span><small>${tr('cur')}</small></span><span class="ps-chev" aria-hidden="true"></span></button>`;
   let body;
   if(!ed){
@@ -1792,7 +1792,7 @@ function sessCard(s){
     `<div class="pr-sum"><span>${tr('price')} <b>${f3(s.p)}</b></span><span>${tr('phTotal')} <b>${f3(pay)}</b></span><span>${tr('eqTotal')} <b>${f3(eq)}</b></span><span>${tr('sessNet')} <b class="${pr<0?'pr-neg':'pr-b'}">${f3(pr)}</b></span></div>`+
     `<div class="pr-acts"><button class="btn-sm" data-ed="${s.id}">${tr('edit')}</button><button class="btn-sm" data-dup="${s.id}">${tr('dup')}</button><button class="btn-sm danger" data-ds="${s.id}">${tr('del')}</button></div>`;
   }else{
-    body=`<div class="pr-sh"><label>${tr('sessPrice')}<input type="number" step="any" min="0" data-i="${s.id}" data-f="p" value="${s.p}"></label><label>${tr('pkg')}<select data-pk="${s.id}"><option value="">${tr('noPkg')}</option>${S.pkgs.map(k=>`<option value="${k.id}"${k.id==s.k?' selected':''}>${esc(k.n)}</option>`).join('')}</select></label><label>${tr('date')}<input type="date" data-i="${s.id}" data-f="d" value="${s.d}"></label><label>${tr('time')}<input type="time" data-i="${s.id}" data-f="t" value="${s.t||''}"></label><label class="grow">${tr('sessName')}<input class="pr-txt" data-i="${s.id}" data-f="n" value="${esc(s.n)}"></label></div>
+    body=`<div class="pr-sh"><label>${tr('sessPrice')}<input type="number" step="any" min="0" data-i="${s.id}" data-f="p" value="${s.p}"></label><label>${tr('pkg')}<select data-pk="${s.id}"><option value="">${tr('noPkg')}</option>${S.pkgs.map(k=>`<option value="${k.id}"${k.id==s.k?' selected':''}>${esc(k.n)}</option>`).join('')}</select></label><label>${tr('date')}<input type="date" data-i="${s.id}" data-f="d" value="${s.d}"></label><label>${tr('time')}<input type="time" data-i="${s.id}" data-f="t" value="${s.t||''}"></label><label class="grow">${tr('sessName')}<input class="pr-txt" data-i="${s.id}" data-f="n" value="${esc(s.n)}"></label><label class="grow">${A_('المكان','Location')}<input class="pr-txt" data-i="${s.id}" data-f="loc" value="${esc(s.loc||'')}"></label></div>
 <div class="pr-lines">${s.lines.map(l=>`<div class="pr-ln"><select data-i="${s.id}" data-l="${l.id}" data-lf="r">${roleOpts(l.r)}</select><select data-i="${s.id}" data-l="${l.id}" data-lf="p">${persOpts(l.p,tr('pickPh'))}</select><input type="number" step="any" min="0" data-i="${s.id}" data-l="${l.id}" data-lf="a" value="${l.a}" aria-label="${tr('amount')}"><button class="pr-x" data-dl="${s.id}" data-l="${l.id}" aria-label="${tr('del')}">×</button></div>`).join('')}</div>
 <div class="pr-adds">${S.roles.map(r=>`<button data-al="${s.id}" data-role="${r.id}">+ ${esc(r.n)}<b>${f3(rateOf(s.k,r.id))}</b></button>`).join('')}</div>
 <h4 class="ps-h4">${tr('equipH')}</h4>${eqChips(s,true)}
@@ -2092,7 +2092,9 @@ function addBooking(b,quiet){
   let s=S.sessions.find(x=>x.bk===key),isNew=false;
   if(!s){
     const pk=S.pkgs.find(k=>k.n===BK_PKG[b.categoryKey]);
-    s={id:uid(),d:b.date,t:b.time||'',n:[b.name,b.category].filter(Boolean).join(' — '),p:+b.total||0,k:pk?pk.id:'',lines:[],eq:[],bk:key};
+    // المكان من الحقول الإضافية للحجز (اسم القصر/الصالة، مكان التصوير، موقع الإيفنت، الجامعة…)
+    const loc=Object.entries(b.extras||{}).filter(([k])=>/القصر|الصالة|مكان|موقع|الجامعة|المدرسة/.test(k)).map(([,v])=>v).join('، ');
+    s={id:uid(),d:b.date,t:b.time||'',n:[b.name,b.category].filter(Boolean).join(' — '),loc,p:+b.total||0,k:pk?pk.id:'',lines:[],eq:[],bk:key};
     S.sessions.push(s);isNew=true;
   }
   persist();
@@ -2119,7 +2121,7 @@ function totals(){
   return T;
 }
 function scheduleSnapshot(){
-  return S.sessions.filter(s=>s.d).map(s=>({d:s.d,t:s.t||'',n:s.n||'',pk:pkgName(s),ph:phNames(s),eq:eqList(s).map(e=>e.n)}));
+  return S.sessions.filter(s=>s.d).map(s=>({d:s.d,t:s.t||'',n:s.n||'',loc:s.loc||'',pk:pkgName(s),ph:phNames(s),eq:eqList(s).map(e=>e.n)}));
 }
 function openStaffReport(id){
   goPay();
@@ -2132,10 +2134,12 @@ return{render,renderSchedule,periodStats,fromInvoice,openStaffReport,closeReport
 // ── حجوزات الزبائن (Supabase): تسجيل دخول صاحب الاستوديو ثم تحويل الحجوزات الجديدة إلى جلسات في التكاليف ──
 const SBK='ss_sb';
 let sbAuth=null;try{sbAuth=JSON.parse(localStorage.getItem(SBK)||'null')}catch(e){}
+if(sbAuth&&String(sbAuth.email||'').toLowerCase()!==SB_OWNER){sbAuth=null;try{localStorage.removeItem(SBK)}catch(e){}}
 let sbMsg='',sbBusy=false;
 const sbCfg=()=>window.SB||{};
 // اليوزر hasan يُحوَّل إلى ihasanshuaib@gmail.com لأن Supabase Auth يعمل بالبريد؛ ويُقبل البريد الكامل أيضًا
 const SB_USERS={hasan:'ihasanshuaib@gmail.com'};
+const SB_OWNER='ihasanshuaib@gmail.com';   // pay.html لصاحب الاستوديو فقط؛ بقية الحسابات (المصورون) تدخل staff.html
 const sbUserEmail=u=>{u=String(u||'').trim().toLowerCase();return u.includes('@')?u:(SB_USERS[u]||u+'@shuaib-studio.com')};
 function sbSave(a){sbAuth=a;try{a?localStorage.setItem(SBK,JSON.stringify(a)):localStorage.removeItem(SBK)}catch(e){}}
 async function sbToken(body,grant){
@@ -2198,13 +2202,15 @@ document.addEventListener('submit',async e=>{
     e.preventDefault();
     const btn=document.getElementById('gate-btn');btn.disabled=true;gateMsg='';
     try{
-      sbSave(await sbToken({email:sbUserEmail(document.getElementById('gate-user').value),password:document.getElementById('gate-pass').value},'password'));
+      const a=await sbToken({email:sbUserEmail(document.getElementById('gate-user').value),password:document.getElementById('gate-pass').value},'password');
+      if(String(a.email||'').toLowerCase()!==SB_OWNER){gateMsg=A_('هذا الحساب غير مصرّح له بدخول لوحة التحكم (استخدم صفحة الموظفين).','This account is not allowed to open the dashboard (use the staff page).');gateRefresh();btn.disabled=false;return}
+      sbSave(a);
       document.getElementById('gate-pass').value='';sbMsg='';sbRender();sbSync();syncPull();
     }catch(err){gateMsg=A_('اسم المستخدم أو كلمة المرور غير صحيحة.','Wrong username or password.');gateRefresh()}
     btn.disabled=false;return;
   }
   if(e.target.id!=='sb-form')return;e.preventDefault();
-  try{sbSave(await sbToken({email:sbUserEmail(document.getElementById('sb-email').value),password:document.getElementById('sb-pass').value},'password'));sbMsg='';sbRender();sbSync();syncPull()}
+  try{const a=await sbToken({email:sbUserEmail(document.getElementById('sb-email').value),password:document.getElementById('sb-pass').value},'password');if(String(a.email||'').toLowerCase()!==SB_OWNER)throw new Error(A_('حساب غير مصرّح','Account not allowed'));sbSave(a);sbMsg='';sbRender();sbSync();syncPull()}
   catch(err){sbMsg=A_('فشل الدخول: ','Sign-in failed: ')+String(err.message||err);sbRender()}
 });
 document.addEventListener('click',e=>{

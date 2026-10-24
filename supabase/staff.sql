@@ -31,3 +31,12 @@ create policy "owner updates schedule" on public.staff_schedule for update to au
   with check ((auth.jwt() ->> 'email') = 'ihasanshuaib@gmail.com');
 
 grant select, insert, update on public.staff_schedule to authenticated;
+
+-- 3) حجوزات الزبائن (اسم/تاريخ/سعر): القراءة والتعديل للمالك فقط (الإضافة تبقى مفتوحة للزوار)
+drop policy if exists "owner reads bookings" on public.bookings;
+create policy "owner reads bookings" on public.bookings for select to authenticated
+  using ((auth.jwt() ->> 'email') = 'ihasanshuaib@gmail.com');
+drop policy if exists "owner updates bookings" on public.bookings;
+create policy "owner updates bookings" on public.bookings for update to authenticated
+  using ((auth.jwt() ->> 'email') = 'ihasanshuaib@gmail.com')
+  with check ((auth.jwt() ->> 'email') = 'ihasanshuaib@gmail.com');
