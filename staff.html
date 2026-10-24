@@ -10,16 +10,20 @@
 <script>try{if(!localStorage.getItem('ss_staff_auth'))document.documentElement.classList.add('locked')}catch(e){document.documentElement.classList.add('locked')}</script>
 <style>
 :root{
-  --bg:#dde1e5;--card:#e8ecf0;--soft:#d4dbe0;--line:#c3ccd3;
-  --text:#344653;--dim:#6f8190;--gold:#52707f;--accent:#5d7f92;--on-accent:#fff;--danger:#b94f4f;
-  --today:#c9a463;
-}
-@media(prefers-color-scheme:dark){
-  :root{--bg:#1d272e;--card:#26343d;--soft:#2d3d48;--line:#3b4f5c;--text:#e7f0f5;--dim:#9fb2bf;--gold:#a9c1d1;--accent:#6e8fa3;--danger:#e88;--today:#d4b06a}
+  /* نفس ثيم بقية الصفحات: Soft UI بيج · سيج · وردي */
+  --bg:#efebe6;--card:#ebe6df;--soft:#e4ded6;--line:#ddd5cb;
+  --text:#5a524b;--dim:#8a8178;--gold:#9a6f66;--accent:#789680;--on-accent:#fff;--danger:#b86a63;
+  --today:#b98b80;
+  --sh-l:#ffffff;--sh-d:#d3cbc1;
+  --lift:6px 6px 14px var(--sh-d),-6px -6px 14px var(--sh-l);
+  --lift-sm:3px 3px 8px var(--sh-d),-3px -3px 8px var(--sh-l);
+  --sunk:inset 3px 3px 7px #d6cec4,inset -3px -3px 7px #fbf9f6;
+  --card-g:linear-gradient(145deg,#f4f0eb,#e7e1d9);
+  --btn-sage:linear-gradient(145deg,#9fb8a4,#86a08b);
 }
 *{box-sizing:border-box;margin:0}
 html,body{min-height:100%}
-body{font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:0 0 40px}
+body{font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;background:radial-gradient(ellipse at 50% 0%,#f6f3ef 0%,#efebe6 55%,#e8e2db 100%) fixed;color:var(--text);padding:0 0 40px}
 button,select,input{font:inherit;color:inherit}
 .wrap{max-width:1100px;margin:0 auto;padding:22px 16px}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
@@ -78,6 +82,32 @@ html.locked .wrap{display:none}
 .gate-card input:focus{border-color:var(--accent)}
 .gate-card .btn{width:100%;padding:.8rem}
 #gate-err{min-height:1.2rem;margin-top:8px;font-size:.82rem;color:var(--danger)}
+
+/* ===== Soft UI overrides (نفس بقية الصفحات) ===== */
+::selection{background:#d9c7bf;color:#4a423b}
+.panel{background:var(--card-g);border:1px solid rgba(255,255,255,.85);box-shadow:var(--lift);border-radius:18px}
+.btn{background:var(--card-g);border:1px solid #fff;box-shadow:var(--lift-sm);border-radius:12px;color:var(--text);font-weight:600;transition:transform .15s,box-shadow .2s}
+.btn:hover{border-color:#fff;box-shadow:var(--sunk)}
+.btn.pri{background:var(--btn-sage);color:#fff;border:1px solid rgba(255,255,255,.35);text-shadow:0 1px 1px rgba(60,80,65,.25)}
+.btn.pri:hover{transform:translateY(-1px);box-shadow:var(--lift-sm),0 0 0 2px rgba(147,173,152,.45),0 0 16px rgba(147,173,152,.55)}
+.btn.pri:active{transform:none;box-shadow:inset 3px 3px 7px #627a69,inset -3px -3px 7px #a4bca9}
+select,.gate-card input{background:var(--soft);border:none;box-shadow:var(--sunk);border-radius:12px;color:var(--text)}
+.gate-card input:focus,select:focus{outline:2px solid rgba(90,167,232,.55)}
+.cd{background:var(--card);border:1px solid #fff;box-shadow:var(--lift-sm);border-radius:12px}
+.cd.off{background:none;border:0;box-shadow:none}
+.cd.today{border-color:var(--today);box-shadow:var(--lift-sm),0 0 0 1px var(--today) inset}
+.cd.sel{background:#e4ded6;box-shadow:var(--sunk);border-color:transparent}
+.ev{background:var(--accent);color:#fff}
+.cnt{background:var(--today);color:#fff}
+.sess,.up,.stat{background:var(--card-g);border:1px solid #fff;box-shadow:var(--lift-sm);border-radius:14px}
+.up:first-child{border-color:var(--accent);box-shadow:var(--lift-sm),0 0 0 1px var(--accent) inset}
+.sess .t,.when{color:var(--gold)}
+.sess .pk{background:var(--soft);box-shadow:var(--sunk)}
+.stat b{color:var(--gold)}
+th,td{border-bottom:1px solid var(--line)}
+#gate{background:radial-gradient(ellipse at 50% 0%,#f6f3ef 0%,#efebe6 55%,#e8e2db 100%)}
+.gate-card{background:var(--card-g);border:1px solid #fff;box-shadow:var(--lift)}
+.brand{font-weight:800;color:#4a423b;letter-spacing:.01em}
 @media print{
   .noprint{display:none !important}
   body{background:#fff;color:#000}
@@ -131,6 +161,11 @@ html.locked .wrap{display:none}
     </section>
   </div>
 
+  <section class="panel" id="tasks-panel">
+    <h2>📝 المهام</h2>
+    <div id="tasks"></div>
+  </section>
+
   <section class="panel" id="report">
     <h2>📊 تقرير عدد التصويرات</h2>
     <div class="bar noprint">
@@ -156,7 +191,7 @@ const USERS={staff:'staff@shuaib-studio.com'};
 const toEmail=u=>{u=String(u||'').trim().toLowerCase();return u.includes('@')?u:(USERS[u]||u+'@shuaib-studio.com')};
 
 let auth=null;try{auth=JSON.parse(localStorage.getItem(AK)||'null')}catch(e){}
-let sessions=[],loaded=false;
+let sessions=[],tasks={},loaded=false;
 const st={y:now.getFullYear(),m:now.getMonth()+1,sel:TD,ph:localStorage.getItem('ss_staff_ph')||'',ry:now.getFullYear(),rm:now.getMonth()+1};
 const cfg=()=>window.SB||{};
 
@@ -185,7 +220,7 @@ async function load(){
   try{
     const rows=await req('staff_schedule?key=eq.sched&select=value');
     const v=rows[0]&&rows[0].value;
-    sessions=(v&&v.sessions)||[];loaded=true;
+    sessions=(v&&v.sessions)||[];tasks=(v&&v.tasks)||{};loaded=true;
     G('status').textContent='آخر تحديث: '+new Date().toLocaleTimeString('ar');
   }catch(e){G('status').textContent='تعذّر التحميل';}
   render();
@@ -226,7 +261,14 @@ function render(){
   // القادم
   const up=L.filter(s=>s.d>=TD).slice(0,12);
   G('upcoming').innerHTML=up.length?up.map(s=>`<button type="button" class="up" data-go="${s.d}"><span class="ud"><b>${+s.d.slice(8)}</b>${wdOf(s.d)}</span><span class="um">${esc(s.n||'—')}${s.t?` <small>${esc(s.t)}</small>`:''}${(s.ph||[]).length?`<small>${s.ph.map(esc).join('، ')}</small>`:''}</span><span class="when">${when(dl(s.d))}</span></button>`).join(''):`<p class="hint">${loaded?'لا توجد تصويرات قادمة.':'جارٍ التحميل…'}</p>`;
+  taskList();
   report();
+}
+
+// ── المهام لكل مصوّر (يضيفها صاحب الاستوديو) ──
+function taskList(){
+  const e=Object.entries(tasks).filter(([n,a])=>(a||[]).length&&(!st.ph||n===st.ph));
+  G('tasks').innerHTML=e.length?e.map(([n,a])=>`<div class="sess"><b>${esc(n)}</b><div class="ln" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">${a.map(k=>`<span class="pk" style="margin:0">${esc(k)}</span>`).join('')}</div></div>`).join(''):`<p class="hint">${loaded?'لا توجد مهام.':'جارٍ التحميل…'}</p>`;
 }
 
 // ── تقرير ──
