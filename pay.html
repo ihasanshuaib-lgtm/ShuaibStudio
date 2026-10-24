@@ -2219,7 +2219,7 @@ document.addEventListener('click',e=>{
   else if(b.id==='sb-out'){sbSave(null);sbMsg='';sbRender()}
 });
 window.addEventListener('focus',()=>sbSync());
-setInterval(()=>sbSync(),60000);
+setInterval(()=>{if(!document.hidden)sbSync()},30000);   // حجوزات الزبائن الجديدة تصل تلقائيًا كل 30 ثانية
 
 // ── مزامنة سحابية: كل بيانات pay.html تُحفظ في Supabase (جدول app_state) فتظهر في أي متصفح/جهاز بعد تسجيل الدخول ──
 // القاعدة: آخر تعديل يفوز (ss_ts = وقت آخر تعديل محلي؛ remote.ts = وقت آخر رفع). قبل استبدال البيانات المحلية تُحفظ نسخة في ss_backup_before_sync
@@ -2244,7 +2244,7 @@ async function syncPush(){
 }
 async function pushSchedule(){
   try{
-    await sbReq('staff_schedule?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'sched',value:{ts:Date.now(),sessions:PR.scheduleSnapshot(),tasks:Object.fromEntries(staffList.filter(t=>(t.tasks||[]).length).map(t=>[t.name,t.tasks]))},updated_at:new Date().toISOString()})});
+    await sbReq('staff_schedule?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'sched',value:{ts:Date.now(),team:staffList.filter(t=>t.on!==0&&t.on!==false).map(t=>t.name),sessions:PR.scheduleSnapshot(),tasks:Object.fromEntries(staffList.filter(t=>(t.tasks||[]).length).map(t=>[t.name,t.tasks]))},updated_at:new Date().toISOString()})});
   }catch(e){syncMsg+=' — '+A_('تعذّر تحديث صفحة الموظفين: ','Staff page update failed: ')+String(e.message||e).slice(0,100)}
 }
 async function syncPull(){
@@ -2263,6 +2263,12 @@ async function syncPull(){
   }catch(e){syncMsg=A_('تعذّرت المزامنة السحابية: ','Cloud sync failed: ')+String(e.message||e).slice(0,140);sbRender()}
 }
 window.addEventListener('focus',()=>syncPull());
+// سحب تلقائي كل 30 ثانية (من جهاز/متصفح آخر) لكن فقط وقت الخمول: لا كتابة جارية في حقل ولا تعديل خلال آخر 10 ثوانٍ، لأن السحب قد يعيد تحميل الصفحة
+setInterval(()=>{
+  const a=document.activeElement,typing=a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName);
+  if(document.hidden||typing||Date.now()-lts()<10000)return;
+  syncPull();
+},30000);
 
 // ── FILTER EVENTS (chips, search, selects, reset) ────
 document.addEventListener('click',e=>{

@@ -215,7 +215,7 @@ const USERS={staff:'staff@shuaib-studio.com'};
 const toEmail=u=>{u=String(u||'').trim().toLowerCase();return u.includes('@')?u:(USERS[u]||u+'@shuaib-studio.com')};
 
 let auth=null;try{auth=JSON.parse(localStorage.getItem(AK)||'null')}catch(e){}
-let sessions=[],tasks={},loaded=false;
+let sessions=[],tasks={},team=[],loaded=false;
 const st={y:now.getFullYear(),m:now.getMonth()+1,sel:TD,ph:localStorage.getItem('ss_staff_ph')||'',ry:now.getFullYear(),rm:now.getMonth()+1};
 const cfg=()=>window.SB||{};
 
@@ -244,7 +244,7 @@ async function load(){
   try{
     const rows=await req('staff_schedule?key=eq.sched&select=value');
     const v=rows[0]&&rows[0].value;
-    sessions=(v&&v.sessions)||[];tasks=(v&&v.tasks)||{};loaded=true;
+    sessions=(v&&v.sessions)||[];tasks=(v&&v.tasks)||{};team=(v&&v.team)||[];loaded=true;
     G('status').textContent='آخر تحديث: '+new Date().toLocaleTimeString('ar');
   }catch(e){G('status').textContent='تعذّر التحميل';}
   render();
@@ -267,7 +267,8 @@ function card(s){
 function render(){
   if(!auth)return;
   // مصوّرون
-  const names=[...new Set(sessions.flatMap(s=>s.ph||[]))].sort();
+  // قائمة المصورين من صفحة «فريق العمل» في pay.html (مع أي اسم قديم ما زال في الجلسات)
+  const names=[...new Set([...team,...sessions.flatMap(s=>s.ph||[])])].sort((a,b)=>a.localeCompare(b,'ar'));
   G('f-ph').innerHTML='<option value="">الكل</option>'+names.map(n=>`<option value="${esc(n)}"${n===st.ph?' selected':''}>${esc(n)}</option>`).join('');
   if(st.ph&&!names.includes(st.ph)){st.ph='';}
   // تقويم
@@ -365,8 +366,10 @@ G('gate-form').addEventListener('submit',async e=>{
   }catch(x){err.textContent='اسم المستخدم أو كلمة المرور غير صحيحة.'}
   btn.disabled=false;
 });
+// تحديث تلقائي: كل 15 ثانية والصفحة ظاهرة، وفورًا عند العودة للتبويب
 window.addEventListener('focus',load);
-setInterval(()=>{if(auth)load()},60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&auth)load()});
+setInterval(()=>{if(auth&&!document.hidden)load()},15000);
 lock();render();if(auth)load();
 })();
 </script>
