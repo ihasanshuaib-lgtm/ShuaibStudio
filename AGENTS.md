@@ -466,4 +466,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-10-26** — تعديل باقة «مخصص»: حُذفت عبارة «السعر = الساعات × …» من البطاقة؛ وصار الزبون يحدّد **عدد مصوري الفوتو** (0–4) و**عدد مصوري الفيديو** (0–4) و**عدد الساعات** (0–12) بثلاثة عدّادات (`customState = {hours, photo, video}`، الإعداد `custom: {perHour:25, minHours:0, defaultHours:2, maxHours:12, maxEach:4}`). **السعر = الساعات × (الفوتو + الفيديو) × 25**. اسم الباقة يوضح التفاصيل مثل «باقة مخصّصة (3 ساعات — مصوّر فوتو واحد + مصوّرا فيديو)» فيصل في رسالة الواتساب؛ ولا يُسمح بصفر مصورين مع وجود ساعات (يبقى واحد على الأقل). في `pay.html` صار اسم الجلسة للنوع المخصص «العميل — مخصص — اسم الباقة» لتظهر الساعات والمصورون. جُرّب: 3 س × (1 فوتو + 1 فيديو) = 150؛ 3 فوتو + 2 فيديو × 3 س = 375؛ الحدود 4+4 × 12 س = 2400.
 
+- **2026-10-26** — سعر الساعة لكل مصوّر في باقة «مخصص» صار **29 د.ب** بدل 25 (`CATEGORIES.custom.custom.perHour = 29`)، فالسعر = الساعات × (مصوّرو الفوتو + مصوّرو الفيديو) × 29 (مثال: ساعتان × مصوّر = 58).
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
