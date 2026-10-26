@@ -2094,7 +2094,7 @@ function addBooking(b,quiet){
     const pk=S.pkgs.find(k=>k.n===BK_PKG[b.categoryKey]);
     // المكان من الحقول الإضافية للحجز (اسم القصر/الصالة، مكان التصوير، موقع الإيفنت، الجامعة…)
     const loc=Object.entries(b.extras||{}).filter(([k])=>/القصر|الصالة|مكان|موقع|الجامعة|المدرسة/.test(k)).map(([,v])=>v).join('، ');
-    s={id:uid(),d:b.date,t:b.time||'',n:[b.name,b.category].filter(Boolean).join(' — '),loc,p:+b.total||0,k:pk?pk.id:'',lines:[],eq:[],bk:key};
+    s={id:uid(),d:b.date,t:b.time||'',n:[b.name,b.category,b.categoryKey==='custom'?b.package:''].filter(Boolean).join(' — '),loc,p:+b.total||0,k:pk?pk.id:'',lines:[],eq:[],bk:key};
     S.sessions.push(s);isNew=true;
   }
   persist();

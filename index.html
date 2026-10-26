@@ -169,7 +169,6 @@
   .custom-pkg .cp-lbl{font-size:13.5px;color:var(--text-dim);min-width:92px}
   .custom-pkg .qty-box{display:inline-flex;align-items:center;gap:8px}
   .custom-pkg .cp-val{min-width:78px;text-align:center;font-weight:700}
-  .custom-pkg .cp-note{margin-top:10px;font-size:12.5px;color:var(--text-dim)}
   .site-foot{text-align:center;padding:26px 0 8px}
   .ig-link{display:inline-flex;align-items:center;gap:10px;padding:.75rem 1.4rem;border-radius:14px;border:1px solid var(--rim,#fff);background:var(--card-g,var(--card));color:var(--text);text-decoration:none;font:600 14.5px 'Tajawal',sans-serif;box-shadow:var(--lift-sm,0 4px 10px rgba(0,0,0,.15));transition:transform .15s,box-shadow .2s}
   .ig-link svg{color:#b5557a}
@@ -1298,8 +1297,8 @@ const CATEGORIES = {
         {id:'customLocation', label:'مكان التصوير', placeholder:'اسم المكان / المنطقة'}
       ]
     },
-    // السعر = الساعات × عدد المصورين × perHour (د.ب لكل ساعة لكل مصوّر)
-    custom: {perHour:25, minHours:0, defaultHours:2, maxHours:12, maxPhotographers:6},
+    // السعر = الساعات × (مصوّرو الفوتو + مصوّرو الفيديو) × perHour (د.ب لكل ساعة لكل مصوّر)
+    custom: {perHour:25, minHours:0, defaultHours:2, maxHours:12, maxEach:4},
     packages: [],
     services: [
       {id:'cs1', name:'تعديل الصور', price:10},
@@ -1787,19 +1786,22 @@ function selectCategory(key){
 }
 
 // ---------- الباقة المخصّصة بالسعر الحي (نوع «مخصص») ----------
-let customState = {hours:1, ph:1};
+// الزبون يحدّد: عدد مصوري الفوتو، عدد مصوري الفيديو، وعدد الساعات؛ والسعر = الساعات × (الفوتو + الفيديو) × perHour
+let customState = {hours:1, photo:1, video:0};
 const hoursLabel = n => n === 0 ? 'بدون تصوير' : n === 1 ? 'ساعة واحدة' : n === 2 ? 'ساعتان' : n <= 10 ? `${n} ساعات` : `${n} ساعة`;
-const photogLabel = n => n === 1 ? 'مصوّر واحد' : n === 2 ? 'مصوّران' : `${n} مصوّرين`;
+const photoLabel = n => n === 1 ? 'مصوّر فوتو واحد' : n === 2 ? 'مصوّرا فوتو' : `${n} مصوّري فوتو`;
+const videoLabel = n => n === 1 ? 'مصوّر فيديو واحد' : n === 2 ? 'مصوّرا فيديو' : `${n} مصوّري فيديو`;
 function customPackage(c){
-  const price = customState.hours * customState.ph * c.perHour;   // 0 ساعة = خدمات فقط بلا تصوير
+  const {hours, photo, video} = customState, crew = photo + video;
+  const price = hours * crew * c.perHour;                       // 0 ساعة = خدمات فقط بلا تصوير
+  const who = [photo ? photoLabel(photo) : '', video ? videoLabel(video) : ''].filter(Boolean).join(' + ');
   return {
-    id:'custom', icon:'🛠️', custom:true, price,
-    hours:customState.hours, photographers:customState.ph,
-    name: customState.hours === 0 ? 'باقة مخصّصة (بدون تصوير — خدمات فقط)' : `باقة مخصّصة (${hoursLabel(customState.hours)} × ${photogLabel(customState.ph)})`
+    id:'custom', icon:'🛠️', custom:true, price, hours, photo, video, photographers:crew,
+    name: hours === 0 ? 'باقة مخصّصة (بدون تصوير — خدمات فقط)' : `باقة مخصّصة (${hoursLabel(hours)} — ${who})`
   };
 }
 function buildCustomCard(c){
-  customState = {hours:c.defaultHours, ph:1};
+  customState = {hours:c.defaultHours, photo:1, video:0};
   const div = document.createElement('div');
   div.className = 'package custom-pkg';
   div.id = 'pkg-custom';
@@ -1814,17 +1816,18 @@ function buildCustomCard(c){
         <div class="pkg-name">🛠️ باقة مخصّصة <span class="badge">صمّمها بنفسك</span></div>
         <div class="pkg-price"><span id="cpPrice">0</span> <small>BD</small></div>
       </div>
-      <div class="pkg-details-line">اختر عدد ساعات التصوير وعدد المصورين، ويتحدّث السعر فورًا. (اجعل الساعات «بدون تصوير» إن أردت الخدمات فقط.)</div>
+      <div class="pkg-details-line">اختر عدد مصوري الفوتو وعدد مصوري الفيديو وعدد الساعات، ويتحدّث السعر فورًا. (اجعل الساعات «بدون تصوير» إن أردت الخدمات فقط.)</div>
       <div class="cp-grid">
-        ${stepper('hours','ساعات التصوير')}
-        ${stepper('ph','عدد المصورين')}
+        ${stepper('photo','📷 مصوّرو الفوتو')}
+        ${stepper('video','🎥 مصوّرو الفيديو')}
+        ${stepper('hours','⏱️ عدد الساعات')}
       </div>
-      <div class="cp-note">السعر = الساعات × عدد المصورين × ${c.perHour} BD لكل ساعة لكل مصوّر.</div>
     </div>`;
   const paint = ()=>{
     const pk = customPackage(c);
     div.querySelector('#cpv-hours').textContent = customState.hours === 0 ? 'بدون' : customState.hours + ' س';
-    div.querySelector('#cpv-ph').textContent = customState.ph;
+    div.querySelector('#cpv-photo').textContent = customState.photo;
+    div.querySelector('#cpv-video').textContent = customState.video;
     div.querySelector('#cpPrice').textContent = pk.price;
     return pk;
   };
@@ -1837,9 +1840,22 @@ function buildCustomCard(c){
   div.addEventListener('click', e=>{ if(!e.target.closest('.qty-box')) choose(); });
   div.querySelectorAll('.qty-box').forEach(box=>{
     const key = box.dataset.cp;
-    const lim = key === 'hours' ? [c.minHours, c.maxHours] : [1, c.maxPhotographers];
-    box.querySelector('.dec').addEventListener('click', e=>{ e.stopPropagation(); customState[key] = Math.max(lim[0], customState[key] - 1); choose(); });
-    box.querySelector('.inc').addEventListener('click', e=>{ e.stopPropagation(); customState[key] = Math.min(lim[1], customState[key] + 1); choose(); });
+    const lim = key === 'hours' ? [c.minHours, c.maxHours] : [0, c.maxEach];
+    const other = key === 'photo' ? 'video' : 'photo';
+    box.querySelector('.dec').addEventListener('click', e=>{
+      e.stopPropagation();
+      let v = Math.max(lim[0], customState[key] - 1);
+      // لا يُسمح بصفر مصورين إذا كان هناك ساعات تصوير: يجب أن يبقى مصوّر واحد على الأقل
+      if(key !== 'hours' && v + customState[other] === 0 && customState.hours > 0) v = customState[key];
+      customState[key] = v; choose();
+    });
+    box.querySelector('.inc').addEventListener('click', e=>{
+      e.stopPropagation();
+      customState[key] = Math.min(lim[1], customState[key] + 1);
+      // عند العودة من «بدون تصوير» وبلا مصورين نضيف مصوّر فوتو واحدًا حتى لا يكون السعر صفرًا
+      if(customState.hours > 0 && customState.photo + customState.video === 0) customState.photo = 1;
+      choose();
+    });
   });
   paint();
   return div;
