@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>شعيب استوديو | حجز موعد التصوير</title>
 <script src="supabase-config.js"></script>
+<script src="photos-data.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -162,6 +163,9 @@
   .gallery.grab{cursor:grabbing;}
   .gallery .scene{position:absolute;inset:0;transform-style:preserve-3d;}
   .gallery.zooming{overflow:visible;z-index:60;}
+  .gallery-more-wrap{text-align:center;padding:12px 0 2px}
+  .gallery-more{display:inline-block;padding:.7rem 1.6rem;border-radius:14px;border:1px solid rgba(255,255,255,.35);background:linear-gradient(145deg,#9fb8a4,#86a08b);color:#fff;font:700 15px 'Tajawal',sans-serif;text-decoration:none;box-shadow:3px 3px 8px var(--sh-d,#d3cbc1),-3px -3px 8px var(--sh-l,#fff);text-shadow:0 1px 1px rgba(60,80,65,.25);transition:transform .15s,box-shadow .2s}
+  .gallery-more:hover{transform:translateY(-1px);box-shadow:0 0 0 2px rgba(147,173,152,.45),0 0 16px rgba(147,173,152,.55)}
   .gallery .card{cursor:zoom-in;}
   .gallery .card.zoomed{cursor:zoom-out;}
   .gallery .card{
@@ -1009,6 +1013,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         <button class="gallery-btn" id="galleryAuto" type="button" aria-pressed="true" aria-label="إيقاف الحركة">&#10074;&#10074;</button>
       </div>
     </div>
+    <div class="gallery-more-wrap" id="galleryMoreWrap"><a class="gallery-more" id="galleryMore" href="photos.html">المزيد من الصور ←</a></div>
     <div class="gallery-hint" id="galleryHint" style="display:none;"></div>
   </div>
 
@@ -1324,91 +1329,7 @@ renderInfoCard();
 // ثم أضف أسماء الملفات في photos بنفس الاسم بالضبط (المسافات مسموحة)
 // ملاحظة: إذا كان المجلد فارغًا تُعرض بطاقات "قريبًا" ولا تُستخدم صور نوع آخر
 // ============================================
-const CATEGORY_PHOTOS = {
-  weddings: {
-    folder: 'photos/',
-    photos: [
-      '8.jpeg',
-      'DSC02717-2.jpg',
-      'DSC02746-2.jpg',
-      'DSC02752-2.jpg',
-      'gallery1.jpg',
-      'gallery2.jpg',
-      'gallery3.jpg',
-      'gallery5.jpg',
-      'Artboard 1٠.jpg',
-    ],
-  },
-  realestate: {
-    folder: 'prodacts_pic/',
-    photos: [
-      '1.png',
-      '3.png',
-      '6.png',
-      '7.jpg',
-      '7.png',
-      '8 2.jpg',
-      '8.jpg',
-      '32.png',
-      '35.png',
-      'Artboard 2.jpg',
-      'Artboard 3.jpg',
-      'Artboard 4.jpg',
-      'Artboard 6.jpg',
-      'Artboard 7.jpg',
-      'Artboard 9.jpg',
-      'Artboard 10.jpg',
-      'Artboard 11.jpg',
-      'Artboard 12.jpg',
-      'Artboard 13.jpg',
-      'Artboard 15.jpg',
-      'DSC04646.jpg',
-      'DSC04651-2.jpg',
-      'DSC04678-2.jpg',
-      'DSC08001.JPG',
-      'DSC08008.JPG',
-      'DSC08895.jpg',
-    ],
-  },
-  event: {
-    folder: 'Event_pic/',
-    photos: [
-      '8H7A1539.jpg',
-      '8H7A1551.jpg',
-      '8H7A1571.jpg',
-      '8H7A1652.jpg',
-      'DSC00311-2.jpg',
-      'DSC01713-2.jpg',
-      'DSC01718-2.jpg',
-      'DSC01719-2.jpg',
-      'DSC01752-2.jpg',
-      'DSC01838-2.jpg',
-      'DSC03145-2.jpg',
-      'DSC03146-2.jpg',
-    ],
-  },
-  montage: {
-    folder: 'Editing_pic/',
-    photos: [
-      '1.jpg',
-      '2.jpg',
-      '3.jpg',
-      '4.jpg',
-      '5.jpg',
-      '6.png',
-    ],
-  },
-  graduation: {
-    folder: 'party_pic/',
-    photos: [
-      '١.jpg',
-      '٢.jpg',
-      '٣.jpg',
-      '٤.jpg',
-      '٥.jpg',
-    ],
-  },
-};
+const CATEGORY_PHOTOS = window.CATEGORY_PHOTOS;   // معرَّفة في photos-data.js
 
 // عدد الصور التي تُعرض في الجلري
 const GALLERY_COUNT = 10;
@@ -1426,7 +1347,7 @@ const FALLBACK_FOLDER = 'photos/';
 // THUMB_VERSION: ارفعه عند إعادة توليد الصور ليتجاهل المتصفح النسخ القديمة.
 // ============================================
 const THUMB_DIR = 'thumbs/';
-const THUMB_VERSION = '4';
+const THUMB_VERSION = window.THUMB_VERSION;   // معرَّف في photos-data.js
 
 // رابط الصورة المصغّرة المقابلة لصورة أصلية
 // photos/DSC02717.jpg → thumbs/photos/DSC02717.jpg.jpg?v=1
@@ -1758,6 +1679,8 @@ function renderGallery(){
   galleryHint.innerHTML = hasPhotos ? '' :
     `لا توجد صور بعد في مجلد <b>${galleryFolder(activeCategory)}</b> — أضف صور هذا النوع هناك لتظهر هنا`;
   gallerySection.style.display = 'block';
+  document.getElementById('galleryMore').href = 'photos.html?c=' + encodeURIComponent(activeCategory);
+  document.getElementById('galleryMoreWrap').style.display = hasPhotos ? '' : 'none';
   buildGallerySlides(currentGalleryImages);
   galleryMeasure();
   gT = gTarget = 0; gZoom = -1; gZs = 0; gZi = -1;
@@ -2341,7 +2264,8 @@ window.addEventListener('resize', updateJumpActive);
 updateJumpActive();
 
 // اختيار "تصوير الأعراس" تلقائيًا عند فتح الصفحة
-selectCategory('weddings');
+// الرجوع من photos.html يعيد نفس نوع التصوير عبر ?c=
+selectCategory(CATEGORIES[new URLSearchParams(location.search).get('c')] ? new URLSearchParams(location.search).get('c') : 'weddings');
 
 // بعد ظهور الصفحة: سخّن صور بقية الأنواع في الخلفية (فتصبح الفتحات التالية فورية)
 window.addEventListener('load', warmOtherCategories);
