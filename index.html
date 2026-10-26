@@ -163,13 +163,6 @@
   .gallery.grab{cursor:grabbing;}
   .gallery .scene{position:absolute;inset:0;transform-style:preserve-3d;}
   .gallery.zooming{overflow:visible;z-index:60;}
-  .custom-pkg{grid-column:1/-1}
-  .custom-pkg .cp-grid{display:flex;flex-wrap:wrap;gap:14px 26px;margin-top:14px;align-items:center}
-  .custom-pkg .cp-row{display:flex;align-items:center;gap:10px}
-  .custom-pkg .cp-lbl{font-size:13.5px;color:var(--text-dim);min-width:92px}
-  .custom-pkg .qty-box{display:inline-flex;align-items:center;gap:8px}
-  .custom-pkg .cp-val{min-width:64px;text-align:center;font-weight:700}
-  .custom-pkg .cp-note{margin-top:10px;font-size:12.5px;color:var(--text-dim)}
   .site-foot{text-align:center;padding:26px 0 8px}
   .ig-link{display:inline-flex;align-items:center;gap:10px;padding:.75rem 1.4rem;border-radius:14px;border:1px solid var(--rim,#fff);background:var(--card-g,var(--card));color:var(--text);text-decoration:none;font:600 14.5px 'Tajawal',sans-serif;box-shadow:var(--lift-sm,0 4px 10px rgba(0,0,0,.15));transition:transform .15s,box-shadow .2s}
   .ig-link svg{color:#b5557a}
@@ -1107,8 +1100,6 @@ const CATEGORIES = {
   weddings: {
     name: 'تصوير الأعراس',
     icon: '💍',
-    // باقة مخصّصة بالسعر الحي: السعر = الساعات × المصورين × perHour (د.ب لكل ساعة لكل مصوّر)
-    custom: {perHour:25, minHours:2, maxHours:12, maxPhotographers:4},
     info: {
       nameLabel: 'الاسم الكامل',
       namePlaceholder: 'اسم العريس / العميل',
@@ -1146,8 +1137,6 @@ const CATEGORIES = {
   realestate: {
     name: 'تصوير منتجات وأطعمة',
     icon: '🍽️',
-    // باقة مخصّصة بالسعر الحي: السعر = الساعات × المصورين × perHour (د.ب لكل ساعة لكل مصوّر)
-    custom: {perHour:20, minHours:1, maxHours:6, maxPhotographers:3},
     info: {
       nameLabel: 'اسم العميل / المتجر',
       namePlaceholder: 'اسم العميل أو المتجر',
@@ -1200,8 +1189,6 @@ const CATEGORIES = {
   event: {
     name: 'تصوير إيفنت',
     icon: '🎉',
-    // باقة مخصّصة بالسعر الحي: السعر = الساعات × المصورين × perHour (د.ب لكل ساعة لكل مصوّر)
-    custom: {perHour:25, minHours:2, maxHours:12, maxPhotographers:4},
     info: {
       nameLabel: 'اسم العميل / الجهة المنظمة',
       namePlaceholder: 'اسم العميل',
@@ -1263,8 +1250,6 @@ const CATEGORIES = {
   graduation: {
     name: 'حفل تخرج',
     icon: '🎓',
-    // باقة مخصّصة بالسعر الحي: السعر = الساعات × المصورين × perHour (د.ب لكل ساعة لكل مصوّر)
-    custom: {perHour:30, minHours:2, maxHours:10, maxPhotographers:4},
     info: {
       nameLabel: 'اسم الخريج / العميل',
       namePlaceholder: 'اسم الخريج',
@@ -1767,65 +1752,6 @@ function selectCategory(key){
   update();
 }
 
-// ---------- الباقة المخصّصة بالسعر الحي ----------
-let customState = {hours:1, ph:1};
-const hoursLabel = n => n === 1 ? 'ساعة واحدة' : n === 2 ? 'ساعتان' : n <= 10 ? `${n} ساعات` : `${n} ساعة`;
-const photogLabel = n => n === 1 ? 'مصوّر واحد' : n === 2 ? 'مصوّران' : `${n} مصوّرين`;
-function customPackage(c){
-  const price = customState.hours * customState.ph * c.perHour;
-  return {
-    id:'custom', icon:'🛠️', custom:true, price,
-    hours:customState.hours, photographers:customState.ph,
-    name:`باقة مخصّصة (${hoursLabel(customState.hours)} × ${photogLabel(customState.ph)})`
-  };
-}
-function buildCustomCard(c){
-  customState = {hours:c.minHours, ph:1};
-  const div = document.createElement('div');
-  div.className = 'package custom-pkg';
-  div.id = 'pkg-custom';
-  const stepper = (key, label)=>`
-    <div class="cp-row"><span class="cp-lbl">${label}</span>
-      <div class="qty-box" data-cp="${key}"><button type="button" class="dec" aria-label="إنقاص">−</button><span class="cp-val" id="cpv-${key}"></span><button type="button" class="inc" aria-label="زيادة">+</button></div></div>`;
-  div.innerHTML = `
-    <input type="radio" name="package" value="custom">
-    <div class="radio-dot"></div>
-    <div class="pkg-body">
-      <div class="pkg-top">
-        <div class="pkg-name">🛠️ باقة مخصّصة <span class="badge">صمّمها بنفسك</span></div>
-        <div class="pkg-price"><span id="cpPrice">0</span> <small>BD</small></div>
-      </div>
-      <div class="pkg-details-line">لا تناسبك الباقات الجاهزة؟ اختر عدد ساعات التصوير وعدد المصورين، ويتحدّث السعر فورًا.</div>
-      <div class="cp-grid">
-        ${stepper('hours','ساعات التصوير')}
-        ${stepper('ph','عدد المصورين')}
-      </div>
-      <div class="cp-note">السعر = الساعات × عدد المصورين × ${c.perHour} BD لكل ساعة لكل مصوّر.</div>
-    </div>`;
-  const paint = ()=>{
-    const pk = customPackage(c);
-    div.querySelector('#cpv-hours').textContent = customState.hours + ' س';
-    div.querySelector('#cpv-ph').textContent = customState.ph;
-    div.querySelector('#cpPrice').textContent = pk.price;
-    return pk;
-  };
-  const choose = ()=>{
-    selectedPackage = paint();
-    document.querySelectorAll('.package').forEach(el=>el.classList.remove('selected'));
-    div.classList.add('selected');
-    update();
-  };
-  div.addEventListener('click', e=>{ if(!e.target.closest('.qty-box')) choose(); });
-  div.querySelectorAll('.qty-box').forEach(box=>{
-    const key = box.dataset.cp;
-    const lim = key === 'hours' ? [c.minHours, c.maxHours] : [1, c.maxPhotographers];
-    box.querySelector('.dec').addEventListener('click', e=>{ e.stopPropagation(); customState[key] = Math.max(lim[0], customState[key] - 1); choose(); });
-    box.querySelector('.inc').addEventListener('click', e=>{ e.stopPropagation(); customState[key] = Math.min(lim[1], customState[key] + 1); choose(); });
-  });
-  paint();
-  return div;
-}
-
 function renderPackagesAndServices(){
   packagesList.innerHTML = '';
   servicesList.innerHTML = '';
@@ -1843,7 +1769,6 @@ function renderPackagesAndServices(){
     return;
   }
 
-  let customCard = null;   // بطاقة الباقة المخصّصة (تُضاف بعد الباقات الجاهزة)
   cat.packages.forEach(p=>{
     const div = document.createElement('div');
     div.className = 'package' + (p.tier ? ` tier-${p.tier}` : '') + (p.badge ? ' popular' : '');
@@ -1869,8 +1794,6 @@ function renderPackagesAndServices(){
     });
     packagesList.appendChild(div);
   });
-
-  if(cat.custom) packagesList.appendChild(buildCustomCard(cat.custom));
 
   if(cat.services.length === 0){
     servicesList.innerHTML = '';
