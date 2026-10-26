@@ -163,6 +163,11 @@
   .gallery.grab{cursor:grabbing;}
   .gallery .scene{position:absolute;inset:0;transform-style:preserve-3d;}
   .gallery.zooming{overflow:visible;z-index:60;}
+  .site-foot{text-align:center;padding:26px 0 8px}
+  .ig-link{display:inline-flex;align-items:center;gap:10px;padding:.75rem 1.4rem;border-radius:14px;border:1px solid var(--rim,#fff);background:var(--card-g,var(--card));color:var(--text);text-decoration:none;font:600 14.5px 'Tajawal',sans-serif;box-shadow:var(--lift-sm,0 4px 10px rgba(0,0,0,.15));transition:transform .15s,box-shadow .2s}
+  .ig-link svg{color:#b5557a}
+  .ig-link b{color:var(--gold-light)}
+  .ig-link:hover{transform:translateY(-1px);box-shadow:var(--lift-sm,0 4px 10px rgba(0,0,0,.15)),0 0 0 2px rgba(181,85,122,.35)}
   .gallery-more-wrap{text-align:center;padding:12px 0 2px}
   .gallery-more{display:inline-block;padding:.7rem 1.6rem;border-radius:14px;border:1px solid rgba(255,255,255,.35);background:linear-gradient(145deg,#9fb8a4,#86a08b);color:#fff;font:700 15px 'Tajawal',sans-serif;text-decoration:none;box-shadow:3px 3px 8px var(--sh-d,#d3cbc1),-3px -3px 8px var(--sh-l,#fff);text-shadow:0 1px 1px rgba(60,80,65,.25);transition:transform .15s,box-shadow .2s}
   .gallery-more:hover{transform:translateY(-1px);box-shadow:0 0 0 2px rgba(147,173,152,.45),0 0 16px rgba(147,173,152,.55)}
@@ -1062,6 +1067,13 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       <button class="confirm-btn email-btn" id="sendEmail" disabled>إرسال الحجز عبر البريد</button>
     </div>
   </div>
+
+  <footer class="site-foot">
+    <a class="ig-link" href="https://www.instagram.com/shuaib_studio/" target="_blank" rel="noopener noreferrer" aria-label="حساب شعيب استوديو على إنستقرام">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r=".9" fill="currentColor" stroke="none"/></svg>
+      <span>تابعنا على إنستقرام <b dir="ltr">@shuaib_studio</b></span>
+    </a>
+  </footer>
 </div>
 
 <div class="total-bar" id="totalBar" role="status" aria-live="polite">
