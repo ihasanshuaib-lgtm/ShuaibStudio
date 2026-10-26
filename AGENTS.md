@@ -97,10 +97,10 @@ The file is organized in this order:
    - Header (title + subtitle)
    - **Section ١** — "نوع التصوير" (category pills, `#categoriesList`)
    - **Gallery** — "من أعمالنا" (`#gallerySection`, `#gallerySlideshow`, `#galleryTitle`, `#galleryHint`)
-   - **Section ٢** — "بيانات العميل" (client info form, `#infoCard`)
-   - **Section ٣** — "اختر الباقة" (packages, `#packagesList`)
-   - **Section ٤** — "خدمات إضافية" (extra services, `#servicesList`)
-   - **Section ٥** — "ملخص الحجز" (booking summary card)
+   - **Section ٢** — "اختر الباقة" (packages, `#packagesList`, anchor `#sec-pkg`)
+   - **Section ٣** — "خدمات إضافية" (extra services, `#servicesList`, `#sec-srv`)
+   - **Section ٤** — "بيانات العميل" (client info form, `#infoCard`, `#sec-info`) — moved after the services on 2026-10-26
+   - **Section ٥** — "ملخص الحجز" (booking summary card, `#sec-sum`)
 3. `<script>` — all application logic (see below). At the very end it runs `selectCategory('weddings')`, then on `window load` it calls `warmOtherCategories()` and registers `sw.js`.
 4. Page CSS also defines `.gallery .card img.ph` (the thumbnail image inside each gallery card).
 
@@ -441,5 +441,7 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 - **2026-10-24** — **تحديث تلقائي**: `staff.html` يعيد تحميل الجدول والمهام كل **15 ثانية** (والتبويب ظاهر) وفورًا عند العودة للتبويب (`visibilitychange`/`focus`). `pay.html` يرفع أي تعديل تلقائيًا بعد 1.5 ثانية (`syncTouch`→`syncPush`→`pushSchedule`، لا يحتاج «مزامنة الآن»)، ويسحب تغييرات الأجهزة الأخرى كل **30 ثانية** (`syncPull`) فقط وقت الخمول (لا حقل نشط ولا تعديل خلال آخر 10 ثوانٍ لأن السحب قد يعيد تحميل الصفحة)، ويجلب حجوزات الزبائن الجديدة كل 30 ثانية (`sbSync`). مجموع التأخير من تعديلك إلى ظهوره عند الموظف ≈ 2–17 ثانية.
 
 - **2026-10-24** — فلتر «المصوّر» في `staff.html` صار يأخذ قائمته من صفحة **الموظفين (فريق العمل)** في `pay.html` وليس من أسماء الجلسات فقط: `pushSchedule()` يرفع `value.team` = أسماء الموظفين النشطين، و`render()` تدمجها مع أي اسم ما زال في الجلسات. (كان يظهر فقط من له جلسة، فيبدو فيه مصوّر واحد.)
+
+- **2026-10-26** — **إعادة ترتيب صفحة الحجز (`index.html`)**: الترتيب صار: نوع التصوير ← المعرض ← **الباقات** ← **الخدمات الإضافية** ← **بيانات العميل** ← **ملخص الحجز**؛ وأُعيد ترقيم العناوين (١ النوع، ٢ الباقات، ٣ الخدمات، ٤ بيانات العميل، ٥ الملخص) وترتيب أزرار شريط الانتقال السريع `#jumpNav` ليطابق. لا تغيير في المنطق (المعرّفات والدوال كما هي). جُرّب: لا أخطاء، 5 باقات و12 خدمة وحقول البيانات الأربعة تظهر.
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
