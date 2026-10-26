@@ -161,6 +161,9 @@
   }
   .gallery.grab{cursor:grabbing;}
   .gallery .scene{position:absolute;inset:0;transform-style:preserve-3d;}
+  .gallery.zooming{overflow:visible;z-index:60;}
+  .gallery .card{cursor:zoom-in;}
+  .gallery .card.zoomed{cursor:zoom-out;}
   .gallery .card{
     position:absolute;left:50%;top:50%;
     width:var(--cw,150px);height:var(--ch,210px);
@@ -1520,6 +1523,7 @@ let gCards = [], gN = 0;
 let gT = 0, gTarget = 0, gMx = 0, gMy = 0, gTmx = 0, gTmy = 0;
 let gDragging = false, gMoved = 0, gLastX = 0, gDownCard = null;
 let gLastMove = 0, gLastFrame = 0, gLastIdx = -1;
+let gZoom = -1, gZs = 0, gZi = -1;   // تكبير بطاقة بالضغط: الفهرس المكبَّر / نسبة التكبير المتحركة (0..1) / آخر فهرس مكبَّر
 let gCw = 150, gCh = 210, gSw = 800, gSh = 400;
 let gMorphTimer = 0, gRaf = 0, gVisible = false;
 
@@ -1613,6 +1617,7 @@ function galleryApply(){
     galleryScene.style.transform = `translateY(${-gSh * 0.05}px) rotateX(${rotX * 0.5}deg) rotateY(${rotY * 0.5}deg)`;
   }
   const dy = Math.min(gCh * 0.3, (gSh * 0.8) / gN);
+  const zMax = Math.max(1, Math.min(2.3, (gSw * 0.9) / gCw));   // تكبير كبير؛ الإطار يصبح overflow:visible أثناء التكبير فلا يقصّ الصورة
   for(let i = 0; i < gN; i++){
     const d = gWrap(i - gT), a = d * step, cs = Math.cos(a), sn = Math.sin(a);
     let tr, op;
@@ -1631,9 +1636,15 @@ function galleryApply(){
       op = 1 - gSmooth(1.2, 2.1, Math.abs(a));
     }
     const c = gCards[i];
+    let z = Math.round((1 - Math.abs(d) / (gN / 2)) * 100);
+    if(gZs > 0.001){
+      if(i === gZi){ tr += ` scale(${(1 + (zMax - 1) * gZs).toFixed(3)})`; op = op + (1 - op) * gZs; z = 500; }
+      else op *= (1 - 0.55 * gZs);
+    }
     c.style.transform = tr;
     c.style.opacity = op.toFixed(3);
-    c.style.zIndex = Math.round((1 - Math.abs(d) / (gN / 2)) * 100);
+    c.style.zIndex = z;
+    c.classList.toggle('zoomed', i === gZoom);
   }
   const idx = ((Math.round(gT) % gN) + gN) % gN;
   if(idx !== gLastIdx){
@@ -1648,7 +1659,10 @@ function galleryFrame(now){
   if(!gVisible) return;                     // لا نرسم والقسم مخفي
   const dt = Math.min(0.05, (now - (gLastFrame || now)) / 1000);
   gLastFrame = now;
-  if(gAuto && !gDragging) gTarget += GALLERY_SPEED * dt;
+  if(gAuto && !gDragging && gZoom < 0) gTarget += GALLERY_SPEED * dt;
+  gZs += ((gZoom >= 0 ? 1 : 0) - gZs) * (1 - Math.exp(-dt * 9));
+  if(gZoom >= 0) gZi = gZoom;
+  gallerySlideshow.classList.toggle('zooming', gZs > 0.01);
   gT += (gTarget - gT) * (1 - Math.exp(-dt * (gDragging ? 18 : 6)));
   if(!reduceMotion && now - gLastMove > 2500 && !gDragging){
     gTmx = Math.sin(now / 2600) * 0.45;
@@ -1671,7 +1685,7 @@ function stopGallerySlideshow(){
 }
 
 function gallerySetMode(m){
-  gMode = m;
+  gMode = m; gZoom = -1;
   galleryTabs.forEach(b=>b.setAttribute('aria-selected', b.dataset.mode === m ? 'true' : 'false'));
   galleryScene.classList.add('morph');
   clearTimeout(gMorphTimer);
@@ -1684,7 +1698,8 @@ function gallerySetAuto(v){
   galleryAutoBtn.setAttribute('aria-label', v ? 'إيقاف الحركة' : 'تشغيل الحركة');
   if(!v) gTarget = Math.round(gTarget);
 }
-function galleryStep(dir){ gTarget = Math.round(gTarget) + dir; }
+function galleryStep(dir){
+  gZoom = -1; gTarget = Math.round(gTarget) + dir; }
 function galleryPps(){ return Math.max(90, gallerySlideshow.clientWidth / (gMode === 'ring' ? 3 : 5)); }
 
 // ربط الأحداث مرة واحدة فقط
@@ -1708,15 +1723,21 @@ window.addEventListener('pointermove', e=>{
   if(gDragging){
     const dx = e.clientX - gLastX; gLastX = e.clientX; gMoved += Math.abs(dx);
     gTarget -= dx / galleryPps();
+    if(gMoved > 6) gZoom = -1;      // السحب يُرجع الصورة لحجمها الطبيعي
   }
 });
 function galleryRelease(){
   if(!gDragging) return;
   gDragging = false; gallerySlideshow.classList.remove('grab');
-  if(gMoved < 6 && gDownCard) gTarget += gWrap(+gDownCard.dataset.i - gTarget); // ضغطة على بطاقة = إبرازها
+  if(gMoved < 6 && gDownCard){
+    const i = +gDownCard.dataset.i;
+    if(gZoom === i) gZoom = -1;                                // ضغطة ثانية: رجوع للحجم الطبيعي
+    else { gTarget += gWrap(i - gTarget); gZoom = i; }         // ضغطة: إبراز الصورة وتكبيرها
+  }
   else if(!gAuto) gTarget = Math.round(gTarget);
   gDownCard = null;
 }
+window.addEventListener('keydown', e=>{ if(e.key === 'Escape') gZoom = -1; });
 window.addEventListener('pointerup', galleryRelease);
 window.addEventListener('pointercancel', galleryRelease);
 window.addEventListener('resize', galleryMeasure);
@@ -1739,7 +1760,7 @@ function renderGallery(){
   gallerySection.style.display = 'block';
   buildGallerySlides(currentGalleryImages);
   galleryMeasure();
-  gT = gTarget = 0;
+  gT = gTarget = 0; gZoom = -1; gZs = 0; gZi = -1;
   gallerySetMode(gMode);
   gallerySetAuto(gAuto);
   galleryStartLoop();
