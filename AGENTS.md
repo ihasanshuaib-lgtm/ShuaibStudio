@@ -454,4 +454,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-10-26** — **رابط إنستقرام**: أُضيف في أسفل `index.html` (بعد ملخص الحجز) تذييل `.site-foot` فيه زر «تابعنا على إنستقرام @shuaib_studio» (`.ig-link`) يفتح `https://www.instagram.com/shuaib_studio/` في تبويب جديد (`rel="noopener noreferrer"`). حُذفت معاملات التتبع من الرابط الأصلي (`?mdxt=…&utm_source=qr`) لأنها لا تغيّر الوجهة.
 
+- **2026-10-26** — أُضيف إلى تذييل `index.html` زر **واتساب** (`.wa-link`) بجوار زر إنستقرام: «تواصل عبر واتساب 36659456» يفتح `https://wa.me/97336659456` (نفس رقم `STUDIO_WHATSAPP`) في تبويب جديد؛ والزران يتجاوران في سطر ويلتفان على الشاشات الضيقة.
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
