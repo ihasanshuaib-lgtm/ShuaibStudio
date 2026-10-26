@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>شعيب استوديو | ابحث عن صورك بسيلفي</title>
+<meta name="description" content="التقط سيلفي وتجد صورك من المناسبة فقط، وحمّلها بجودتها الكاملة.">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#efebe6;--card:#ebe6df;--soft:#e4ded6;--line:#ddd5cb;
+  --text:#5a524b;--dim:#8a8178;--gold:#9a6f66;--accent:#789680;--danger:#b86a63;
+  --sh-l:#ffffff;--sh-d:#d3cbc1;
+  --lift:6px 6px 14px var(--sh-d),-6px -6px 14px var(--sh-l);
+  --lift-sm:3px 3px 8px var(--sh-d),-3px -3px 8px var(--sh-l);
+  --sunk:inset 3px 3px 7px #d6cec4,inset -3px -3px 7px #fbf9f6;
+  --card-g:linear-gradient(145deg,#f4f0eb,#e7e1d9);
+  --btn-sage:linear-gradient(145deg,#9fb8a4,#86a08b);
+}
+*{box-sizing:border-box;margin:0}
+body{font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;color:var(--text);min-height:100vh;line-height:1.7;
+  background:radial-gradient(ellipse at 50% 0%,#f6f3ef 0%,#efebe6 55%,#e8e2db 100%) fixed}
+a,button,input{font:inherit;color:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:18px 16px 50px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0 18px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:.7rem 1.3rem;border-radius:12px;border:1px solid #fff;background:var(--card-g);box-shadow:var(--lift-sm);cursor:pointer;text-decoration:none;font-weight:600;font-size:.95rem;transition:transform .15s,box-shadow .2s}
+.btn:hover{box-shadow:var(--sunk)}
+.btn.pri{background:var(--btn-sage);color:#fff;border-color:rgba(255,255,255,.35);text-shadow:0 1px 1px rgba(60,80,65,.25)}
+.btn.pri:hover{transform:translateY(-1px);box-shadow:var(--lift-sm),0 0 0 2px rgba(147,173,152,.45),0 0 16px rgba(147,173,152,.55)}
+.btn[disabled]{opacity:.5;pointer-events:none}
+.hero{text-align:center;padding:10px 0 22px}
+.hero img{width:96px;height:auto;margin-bottom:8px}
+h1{font-size:1.6rem;font-weight:700;margin-bottom:6px}
+.sub{color:var(--dim);font-size:.98rem}
+.card{background:var(--card-g);border:1px solid rgba(255,255,255,.85);box-shadow:var(--lift);border-radius:20px;padding:20px;margin-bottom:18px}
+.card h2{font-size:1.05rem;margin-bottom:12px}
+.steps{display:grid;gap:12px;list-style:none;padding:0;counter-reset:s}
+.steps li{display:flex;gap:12px;align-items:flex-start;counter-increment:s}
+.steps li::before{content:counter(s);flex:0 0 32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:var(--gold);background:var(--card);box-shadow:var(--lift-sm)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+input[type=text]{flex:1;min-width:200px;padding:.8rem 1rem;border-radius:12px;border:none;background:var(--soft);box-shadow:var(--sunk);outline:none;direction:ltr;text-align:left}
+input[type=text]:focus{outline:2px solid rgba(90,167,232,.55)}
+.msg{margin-top:10px;font-size:.88rem;color:var(--danger);min-height:1.2rem}
+.note{font-size:.84rem;color:var(--dim)}
+.off{text-align:center;color:var(--dim);padding:6px 0}
+.small{text-align:center;margin-top:6px}
+.small a{color:var(--dim);font-size:.82rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="btn" href="index.html">→ صفحة الحجز</a>
+  </div>
+
+  <div class="hero">
+    <img src="logo.png" alt="شعار شعيب استوديو" width="96">
+    <h1>ابحث عن صورك بسيلفي</h1>
+    <p class="sub">التقط سيلفي واحدة، فتظهر لك صورك أنت فقط من المناسبة، وتحمّلها بجودتها الكاملة.</p>
+  </div>
+
+  <section class="card">
+    <h2>كيف تعمل؟</h2>
+    <ol class="steps">
+      <li><span>أدخل <b>رمز المناسبة</b> أدناه، أو امسح باركود المناسبة الذي وضعناه لك.</span></li>
+      <li><span>وافق على استخدام السيلفي للبحث عن صورك فقط، ثم التقط صورة لوجهك بإضاءة جيدة.</span></li>
+      <li><span>تظهر لك الصور التي ظهرت فيها، وتحمّلها فرديًا أو كلها مرة واحدة.</span></li>
+    </ol>
+  </section>
+
+  <section class="card" id="go-card">
+    <h2>ادخل إلى مناسبتك</h2>
+    <form class="row" id="go-form" autocomplete="off">
+      <input type="text" id="code" placeholder="رمز المناسبة (مثال: aB3dE9xK)" aria-label="رمز المناسبة" maxlength="200" spellcheck="false">
+      <button class="btn pri" type="submit" id="go-btn">ابدأ البحث</button>
+    </form>
+    <div class="msg" id="msg" role="alert"></div>
+    <p class="note">رمز المناسبة موجود في الرابط أو الباركود الذي أرسلناه لك. يمكنك أيضًا لصق الرابط كاملًا.</p>
+  </section>
+
+  <section class="card">
+    <h2>خصوصيتك</h2>
+    <p class="note">تُعالَج السيلفي مؤقتًا للمطابقة فقط ولا تُحفظ، ولا ترى إلا الصور التي ظهرتَ فيها. لا تشارك رمز المناسبة علنًا.</p>
+  </section>
+
+  <p class="small"><a id="admin" href="#" hidden>دخول المصوّر</a></p>
+</div>
+
+<script>
+(function(){
+// ⚙️ رابط أداة التعرف على الصور بعد نشرها على الخادم (النطاق الفرعي)، مثال: 'https://photos.shuaibstudio.com'
+// اتركه فارغًا إلى أن يتم نشر الأداة؛ عندها تُظهر الصفحة «الخدمة غير مفعّلة بعد».
+const TOOL_URL = '';
+
+const G=id=>document.getElementById(id);
+const base=TOOL_URL.replace(/\/+$/,'');
+const form=G('go-form'),msg=G('msg');
+if(!base){
+  G('go-card').innerHTML='<h2>ادخل إلى مناسبتك</h2><p class="off">الخدمة غير مفعّلة بعد. تواصل معنا عبر واتساب 36659456 للحصول على صورك.</p>';
+}else{
+  G('admin').href=base+'/admin';G('admin').hidden=false;
+  const pre=new URLSearchParams(location.search).get('e');if(pre)G('code').value=pre;
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    let v=G('code').value.trim();
+    const m=v.match(/\/e\/([A-Za-z0-9_-]+)/);if(m)v=m[1];      // يقبل الرابط كاملًا
+    if(!/^[A-Za-z0-9_-]{4,40}$/.test(v)){msg.textContent='رمز المناسبة غير صالح. تأكد من نسخه كما وصلك.';return}
+    msg.textContent='';
+    location.href=base+'/e/'+encodeURIComponent(v);
+  });
+}
+})();
+</script>
+</body>
+</html>
