@@ -2395,7 +2395,7 @@ function sbRender(){
   let h=`<div class="card-title">${A_('الحساب السحابي: حفظ البيانات وحجوزات الزبائن','Cloud account: data backup & customer bookings')}</div>`;
   if(!c.key)h+=`<p class="pr-hint">${A_('لم يُضبط مفتاح Supabase بعد: افتح supabase-config.js وضع المفتاح العام (anon/publishable).','Supabase key not set: put the public (anon/publishable) key in supabase-config.js.')}</p>`;
   else if(!sbAuth)h+=`<form id="sb-form" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center"><input id="sb-email" type="text" autocomplete="username" autocapitalize="none" placeholder="${A_('اليوزر','Username')}" ${inp}><input id="sb-pass" type="password" autocomplete="current-password" placeholder="${A_('كلمة المرور','Password')}" ${inp}><button class="btn-gold" type="submit">${A_('تسجيل الدخول','Sign in')}</button></form>`+(sbMsg?`<p class="pr-hint" style="color:var(--danger)">${escH(sbMsg)}</p>`:'')+`<p class="pr-hint">${A_('سجّل دخول حساب الاستوديو لتُحفظ بياناتك سحابيًا وتظهر في أي متصفح، ولتصلك حجوزات الزبائن تلقائيًا في التكاليف.','Sign in with the studio account to save your data in the cloud (any browser) and receive customer bookings automatically.')}</p>`;
-  else h+=`<div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center"><span>✅ ${escH((sbAuth.email||'').split('@')[0])}</span><button class="btn-sm" id="sb-sync">${A_('مزامنة الآن','Sync now')}</button><button class="btn-sm" id="sb-out">${A_('خروج','Sign out')}</button></div><p class="pr-hint">${escH(sbMsg||'')}</p><p class="pr-hint">${escH(syncMsg||'')}</p>`;
+  else h+=`<div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center"><span>✅ ${escH((sbAuth.email||'').split('@')[0])}</span><button class="btn-sm" id="sb-sync">${A_('مزامنة الآن','Sync now')}</button><button class="btn-sm" id="sb-out">${A_('خروج','Sign out')}</button><button class="btn-sm danger" id="sb-wipe" style="margin-inline-start:auto">🗑 ${A_('مسح كل البيانات والبدء من جديد','Erase all data & start over')}</button></div><p class="pr-hint">${escH(sbMsg||'')}</p><p class="pr-hint">${escH(syncMsg||'')}</p>`;
   b.innerHTML=h;
 }
 document.addEventListener('submit',async e=>{
@@ -2418,6 +2418,7 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   if(b.id==='sb-sync'){sbSync(true);syncPull()}
   else if(b.id==='sb-out'){sbSave(null);sbMsg='';sbRender()}
+  else if(b.id==='sb-wipe')wipeAll();
 });
 window.addEventListener('focus',()=>sbSync());
 setInterval(()=>{if(!document.hidden)sbSync()},30000);   // حجوزات الزبائن الجديدة تصل تلقائيًا كل 30 ثانية
@@ -2427,7 +2428,9 @@ setInterval(()=>{if(!document.hidden)sbSync()},30000);   // حجوزات الز�
 const SYNC_KEYS=['ss_invoices','ss_staff','ss_worklog','ss_clients','ss_payroll','ss_services'];
 var syncTimer=0,syncPushing=false,syncMsg="";
 const lts=()=>+localStorage.getItem('ss_ts')||0;
+var wiping=false;
 function syncTouch(){
+  if(wiping)return;
   try{localStorage.setItem('ss_ts',String(Date.now()))}catch(e){}
   clearTimeout(syncTimer);syncTimer=setTimeout(syncPush,1500);
 }
@@ -2447,6 +2450,36 @@ async function pushSchedule(){
   try{
     await sbReq('staff_schedule?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'sched',value:{ts:Date.now(),team:staffList.filter(t=>t.on!==0&&t.on!==false).map(t=>t.name),sessions:PR.scheduleSnapshot(),tasks:Object.fromEntries(staffList.filter(t=>(t.tasks||[]).length).map(t=>[t.name,t.tasks]))},updated_at:new Date().toISOString()})});
   }catch(e){syncMsg+=' — '+A_('تعذّر تحديث صفحة الموظفين: ','Staff page update failed: ')+String(e.message||e).slice(0,100)}
+}
+// ── مسح كل البيانات والبدء من جديد (محليًا + سحابيًا) ──
+// خطوات: تأكيد بكتابة كلمة ← تنزيل نسخة احتياطية JSON ← تفريغ السحابة (app_state + staff_schedule + وسم الحجوزات القديمة كمستوردة حتى لا تعود) ← مسح المتصفح ← إعادة تحميل.
+// لو فشل التفريغ السحابي لا يُمسح شيء محليًا. المتصفحات الأخرى تسحب الحالة الفارغة تلقائيًا (لأن وقتها أحدث).
+async function wipeAll(){
+  const word=A_('مسح','ERASE');
+  const ok=prompt(A_('⚠️ سيُمسح كل شيء نهائيًا: الفواتير والعملاء والموظفون والجلسات والتكاليف (في هذا المتصفح وفي السحابة وفي بقية المتصفحات).\nسيتم تنزيل نسخة احتياطية قبل المسح.\n\nاكتب كلمة «مسح» للتأكيد:','⚠️ This permanently erases everything (invoices, clients, staff, sessions, costs) here, in the cloud and on your other browsers.\nA backup file is downloaded first.\n\nType ERASE to confirm:'));
+  if(ok==null||ok.trim().toUpperCase()!==word.toUpperCase())return;
+  wiping=true;clearTimeout(syncTimer);
+  try{
+    // 1) نسخة احتياطية
+    const snap={exportedAt:new Date().toISOString(),data:syncSnapshot()};
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([JSON.stringify(snap)],{type:'application/json'}));
+    a.download='shuaib-backup-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a);a.click();a.remove();
+    // 2) تفريغ السحابة
+    const ts=Date.now(),empty={};SYNC_KEYS.forEach(k=>empty[k]=null);
+    await sbReq('app_state?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'pay',value:{ts,data:empty},updated_at:new Date().toISOString()})});
+    await sbReq('staff_schedule?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'sched',value:{ts,team:[],sessions:[],tasks:{}},updated_at:new Date().toISOString()})});
+    await sbReq('bookings?imported=eq.false',{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({imported:true})});
+    // 3) مسح المتصفح (ss_ts = وقت التفريغ حتى لا تُستعاد بيانات قديمة)
+    SYNC_KEYS.forEach(k=>localStorage.removeItem(k));
+    localStorage.removeItem('ss_backup_before_sync');
+    localStorage.setItem('ss_ts',String(ts));
+    location.reload();
+  }catch(e){
+    wiping=false;
+    alert(A_('تعذّر المسح السحابي، لم يُمسح شيء. ','Cloud erase failed, nothing was erased. ')+String(e.message||e).slice(0,160));
+  }
 }
 async function syncPull(){
   if(!sbAuth||!sbCfg().key)return;
