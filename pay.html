@@ -627,6 +627,36 @@ button{ -webkit-tap-highlight-color:transparent }
   .nav-links button{font-size:.76rem;padding:.48rem .7rem}
 }
 
+/* ===== dashboard header · quick actions · dues · services editor · toast ===== */
+.dash-head{display:flex;justify-content:space-between;align-items:flex-end;gap:1.25rem;flex-wrap:wrap;padding:1.25rem 0 1.25rem;margin-bottom:1rem;border-bottom:1px solid var(--border)}
+.dash-hi h1{font-size:clamp(1.4rem,3.4vw,2rem);font-weight:800;color:var(--white);margin:.2rem 0 .3rem;letter-spacing:-.02em}
+[dir="rtl"] .dash-hi h1{letter-spacing:0}
+.dash-hi p{color:var(--muted);font-size:.92rem}
+.dash-hi .hero-tag{margin-bottom:0;letter-spacing:.02em;text-transform:none}
+.quick-acts{display:grid;grid-template-columns:repeat(4,minmax(92px,1fr));gap:.6rem}
+.qa{display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.8rem .6rem;border-radius:16px;border:1px solid #fff;background:var(--card-g);box-shadow:var(--lift-sm);color:var(--text);cursor:pointer;font:inherit}
+.qa span{font-size:1.35rem;line-height:1}.qa b{font-size:.8rem;font-weight:700;white-space:nowrap}
+.qa:hover{transform:translateY(-2px);box-shadow:var(--float)}
+.qa:active{box-shadow:var(--sunk);transform:none}
+.qa-main{background:var(--btn-sage);color:#fff;border-color:rgba(255,255,255,.4)}
+@media(max-width:640px){.quick-acts{width:100%;grid-template-columns:repeat(4,minmax(0,1fr))}.qa{padding:.65rem .3rem}.qa b{font-size:.7rem;white-space:normal;text-align:center}}
+.due-row{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.6rem .2rem;border-bottom:1px solid var(--border)}
+.due-row:last-child{border-bottom:0}
+.due-row .grow{flex:1 1 160px;min-width:0}
+.due-row small{display:block;color:var(--muted);font-size:.76rem}
+.due-amt{font-weight:800;color:var(--danger);direction:ltr;white-space:nowrap}
+.inv-rem{font-size:.76rem;color:var(--danger);font-weight:700}
+.inv-print-bar{flex-wrap:wrap}
+.svc-ed{display:grid;grid-template-columns:2.6rem 1fr 1fr 6rem 5.5rem 2rem;gap:.4rem;align-items:center;margin-bottom:.4rem}
+.svc-ed input{width:100%;min-width:0;background:#ece7e0;border:1px solid var(--border);border-radius:10px;padding:.4rem .55rem;color:var(--text);font:inherit;font-size:.82rem;box-shadow:var(--sunk);outline:none}
+.svc-ed input:focus{border-color:var(--focus);box-shadow:var(--sunk),var(--focus-ring)}
+@media(max-width:640px){.svc-ed{grid-template-columns:2.6rem 1fr 5rem 2rem}.svc-ed .hide-sm{display:none}}
+.app-toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:400;background:var(--card-g);border:1px solid var(--sage-d);box-shadow:var(--float);color:var(--text);padding:.6rem 1.2rem;border-radius:14px;font-size:.88rem;font-weight:600;max-width:90vw}
+.app-toast[hidden]{display:none}
+.btn-sm.wa-btn,.btn-outline.wa-btn{background:linear-gradient(145deg,#3ddc7a,#22b85f)!important;color:#fff!important;border-color:rgba(255,255,255,.4)!important}
+.stamp-paid{display:inline-block;margin-inline-start:.75rem;padding:.1rem .6rem;border:2px solid #2e8b57;color:#2e8b57;border-radius:6px;font-size:.85rem;font-weight:800;letter-spacing:.08em;transform:rotate(-4deg);vertical-align:middle}
+@media print{.app-toast{display:none!important}}
+
 </style>
 <script>try{if(!localStorage.getItem('ss_sb'))document.documentElement.classList.add('locked')}catch(e){document.documentElement.classList.add('locked')}</script>
 <style>
@@ -672,13 +702,17 @@ html.locked body>*:not(#gate){display:none !important}
 
 <!-- HOME -->
 <div class="page active" id="page-home">
-  <div class="hero">
-    <div class="hero-tag" id="h-tag">Photography &amp; Videography Studio</div>
-    <h1 id="h-title">We Capture <em>Moments</em><br>That Last Forever</h1>
-    <p id="h-sub">Professional photography and cinematic videography for weddings, events, brands, and beyond — based in Bahrain.</p>
-    <div class="hero-cta">
-      <button class="btn-gold" onclick="showPage('booking',event)" id="h-btn1">Book Now · احجز الآن</button>
-      <button class="btn-outline" onclick="showPage('invoices',event)" id="h-btn2">Create Invoice</button>
+  <div class="dash-head">
+    <div class="dash-hi">
+      <div class="hero-tag" id="h-tag"></div>
+      <h1 id="h-title"></h1>
+      <p id="h-sub"></p>
+    </div>
+    <div class="quick-acts">
+      <button class="qa qa-main" type="button" onclick="quickNewInvoice()"><span>🧾</span><b id="qa1"></b></button>
+      <button class="qa" type="button" onclick="PR.newOn(todayISO())"><span>📸</span><b id="qa2"></b></button>
+      <button class="qa" type="button" onclick="quickNewClient()"><span>👤</span><b id="qa3"></b></button>
+      <button class="qa" type="button" onclick="showPage('booking',event)"><span>📅</span><b id="qa4"></b></button>
     </div>
   </div>
   <div class="flt" id="home-flt"></div>
@@ -691,8 +725,12 @@ html.locked body>*:not(#gate){display:none !important}
     <div class="stat-box"><div class="stat-label" id="s6-lbl">Sessions profit (this month)</div><div class="stat-val gold" id="stat-pr-profit">BHD 0.000</div></div>
   </div>
 
+  <!-- المبالغ المستحقة على العملاء -->
+  <div class="card" id="due-box" style="margin-top:1.2rem"></div>
   <!-- حجوزات الزبائن القادمة من index.html عبر Supabase -->
   <div class="card" id="sb-box" style="margin-top:1.2rem"></div>
+  <!-- نسخة احتياطية كاملة -->
+  <div class="card" id="bk-box"></div>
 
   <!-- التقويم (التصوير القادم + تقويم الإنتاج) داخل لوحة التحكم -->
   <div id="page-schedule" style="margin-top:1.5rem">
@@ -705,7 +743,10 @@ html.locked body>*:not(#gate){display:none !important}
 <div class="page" id="page-invoices">
   <div class="section-header">
     <h2 id="inv-page-title">Invoices</h2>
-    <button class="btn-gold" onclick="showNewInvoiceForm()" id="inv-new-btn">+ New Invoice</button>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <button class="btn-outline" onclick="exportInvoicesCsv()" id="inv-export-btn">⬇ CSV</button>
+      <button class="btn-gold" onclick="showNewInvoiceForm()" id="inv-new-btn">+ New Invoice</button>
+    </div>
   </div>
   <div id="invoice-form" style="display:none">
     <div class="card">
@@ -740,6 +781,7 @@ html.locked body>*:not(#gate){display:none !important}
             <option value="paid">Paid</option>
           </select>
         </div>
+        <div class="form-group"><label id="lbl-paidamt">Paid / deposit (BHD)</label><input id="inv-paid" type="number" step="0.001" min="0" placeholder="0.000" oninput="calcTotals()" /></div>
       </div>
     </div>
     <div class="card">
@@ -749,6 +791,7 @@ html.locked body>*:not(#gate){display:none !important}
       <div id="service-selector" style="margin-bottom:1.5rem">
         <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em" id="lbl-pick-services">اختر الخدمات</div>
         <div id="service-chips" style="display:flex;flex-wrap:wrap;gap:0.5rem"></div>
+        <details id="svc-editor" style="margin-top:.8rem"><summary id="svc-ed-sum" style="cursor:pointer;font-size:.8rem;color:var(--muted);font-weight:600">⚙</summary><div id="svc-ed-list" style="margin-top:.7rem"></div></details>
       </div>
 
       <!-- جدول البنود المختارة -->
@@ -771,15 +814,17 @@ html.locked body>*:not(#gate){display:none !important}
         <div><span id="lbl-subtotal">Subtotal</span>: <strong id="subtotal">BHD 0.000</strong></div>
         <div><span id="lbl-disc-total">Discount</span>: <strong id="disc-total" style="color:var(--danger)">- BHD 0.000</strong></div>
         <div class="total-line"><span id="lbl-total">Total</span>: <span id="grand-total">BHD 0.000</span></div>
+        <div id="rem-line" style="margin-top:.4rem"><span id="lbl-remaining">Remaining</span>: <strong id="inv-remaining" style="color:var(--danger)">BHD 0.000</strong></div>
       </div>
     </div>
-    <div style="display:flex;gap:0.75rem;margin-bottom:2rem">
-      <button class="btn-gold" onclick="saveInvoice()" id="save-inv-btn">Save Invoice</button>
-      <button class="btn-outline" onclick="hideInvoiceForm()" id="cancel-inv-btn">Cancel</button>
-    </div>
-    <div class="form-group" style="margin-bottom:1.5rem">
+    <div class="form-group" style="margin-bottom:1.25rem">
       <label id="lbl-notes">Notes (dates, sessions, etc.)</label>
-      <textarea id="inv-notes" rows="5" placeholder="1- 01/06/2026&#10;2- 02/06/2026"></textarea>
+      <textarea id="inv-notes" rows="4" placeholder="1- 01/06/2026&#10;2- 02/06/2026"></textarea>
+    </div>
+    <div style="display:flex;gap:0.75rem;margin-bottom:2rem;flex-wrap:wrap">
+      <button class="btn-gold" onclick="saveInvoice()" id="save-inv-btn">Save Invoice</button>
+      <button class="btn-outline wa-btn" onclick="saveInvoice(true)" id="save-wa-btn">WhatsApp</button>
+      <button class="btn-outline" onclick="hideInvoiceForm()" id="cancel-inv-btn">Cancel</button>
     </div>
   </div>
   <div class="flt" id="inv-flt"></div>
@@ -871,6 +916,7 @@ html.locked body>*:not(#gate){display:none !important}
 </div>
 
 
+<div class="app-toast" id="app-toast" role="status" hidden></div>
 <div id="bk-banner" hidden style="position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:300;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;max-width:94vw;padding:.7rem 1rem;border-radius:14px;background:var(--card-g,var(--surface));border:1px solid var(--border);box-shadow:0 12px 34px rgba(0,0,0,.28);font-size:.88rem"></div>
 
 <!-- INVOICE MODAL -->
@@ -891,7 +937,7 @@ let invoices  = JSON.parse(localStorage.getItem('ss_invoices')||'[]');
 let staffList = JSON.parse(localStorage.getItem('ss_staff')||'[]');
 let workLog   = JSON.parse(localStorage.getItem('ss_worklog')||'[]');
 let clients   = JSON.parse(localStorage.getItem('ss_clients')||'[]');
-let lang = localStorage.getItem('ss_lang')||'en';
+let lang = localStorage.getItem('ss_lang')||'ar';
 
 function save(){
   localStorage.setItem('ss_invoices', JSON.stringify(invoices));
@@ -899,6 +945,7 @@ function save(){
   localStorage.setItem('ss_worklog',  JSON.stringify(workLog));
   localStorage.setItem('ss_clients',  JSON.stringify(clients));
   localStorage.setItem('ss_lang',     lang);
+  try{localStorage.setItem('ss_services', JSON.stringify(SERVICES));}catch(e){}
   syncTouch();
 }
 
@@ -912,7 +959,9 @@ const T = {
     heroTitle:'We Capture <em>Moments</em><br>That Last Forever',
     heroSub:'Professional photography and cinematic videography for weddings, events, brands, and beyond — based in Bahrain.',
     heroBtn1:'Book Now',heroBtn2:'Create Invoice',
-    s1:'Total Invoiced',s2:'Paid',s3:'Pending',s4:'Staff Members',s5:'Photographers cost',s6:'Sessions profit',
+    qa:['New invoice','New session','New client','Bookings'],clientsTitle:'Clients',addClientBtn:'+ Add Client',
+    lblPaidAmt:'Paid / deposit (BHD)',exportCsv:'⬇ Export CSV',saveWa:'💬 Save & send on WhatsApp',
+    s1:'Total invoiced',s2:'Collected',s3:'Outstanding',s4:'Staff Members',s5:'Photographers cost',s6:'Sessions profit',
     invPageTitle:'Invoices',invNewBtn:'+ New Invoice',
     invDetailsTitle:'Invoice Details',
     lblClient:'Client Name',lblCustid:'Customer ID#',lblPhone:'Phone',lblIban:'IBAN',
@@ -944,7 +993,9 @@ const T = {
     heroTitle:'نحن نلتقط <em>اللحظات</em><br>التي تدوم للأبد',
     heroSub:'تصوير احترافي وتصوير سينمائي للأعراس والفعاليات والعلامات التجارية — في البحرين.',
     heroBtn1:'احجز الآن',heroBtn2:'إنشاء فاتورة',
-    s1:'إجمالي الفواتير',s2:'مدفوع',s3:'معلق',s4:'الموظفون',s5:'قيمة المصورين',s6:'ربح الجلسات',
+    qa:['فاتورة جديدة','جلسة جديدة','عميل جديد','الحجوزات'],clientsTitle:'العملاء',addClientBtn:'+ إضافة عميل',
+    lblPaidAmt:'المدفوع / العربون (د.ب)',exportCsv:'⬇ تصدير Excel',saveWa:'💬 حفظ وإرسال واتساب',
+    s1:'إجمالي الفواتير',s2:'المحصّل',s3:'المتبقي على العملاء',s4:'الموظفون',s5:'قيمة المصورين',s6:'ربح الجلسات',
     invPageTitle:'الفواتير',invNewBtn:'+ فاتورة جديدة',
     invDetailsTitle:'تفاصيل الفاتورة',
     lblClient:'اسم العميل',lblCustid:'رقم هوية العميل',lblPhone:'الهاتف',lblIban:'IBAN',
@@ -985,11 +1036,15 @@ function applyLang(){
   const navLabels = t('nav');
   navBtns.forEach((b,i)=>{ b.textContent = navLabels[i]; });
 
-  document.getElementById('h-tag').textContent = t('heroTag');
-  document.getElementById('h-title').innerHTML = t('heroTitle');
-  document.getElementById('h-sub').textContent = t('heroSub');
-  document.getElementById('h-btn1').textContent = t('heroBtn1');
-  document.getElementById('h-btn2').textContent = t('heroBtn2');
+  ['qa1','qa2','qa3','qa4'].forEach((id,i)=>{document.getElementById(id).textContent=t('qa')[i]});
+  document.getElementById('clients-page-title').textContent = t('clientsTitle');
+  document.getElementById('add-client-btn').textContent = t('addClientBtn');
+  document.getElementById('th-linetotal').textContent = t('lineTotal');
+  document.getElementById('lbl-paidamt').textContent = t('lblPaidAmt');
+  document.getElementById('inv-export-btn').textContent = t('exportCsv');
+  document.getElementById('save-wa-btn').textContent = t('saveWa');
+  Array.from(document.getElementById('inv-status').options).forEach((o,i)=>{o.text=t('statusOpts')[i]||o.text});
+  renderBackupBox(); renderSvcEditor();
   document.getElementById('s1-lbl').textContent = t('s1');
   document.getElementById('s2-lbl').textContent = t('s2');
   document.getElementById('s3-lbl').textContent = t('s3');
@@ -1126,15 +1181,124 @@ function renderStFlt(){
 
 // ── STATS ────────────────────────────────────────────
 function updateStats(){
-  const inv=invoices.filter(i=>inPer(i.date,HP));
-  document.getElementById('stat-total').textContent='BHD '+inv.reduce((s,i)=>s+(i.grand||0),0).toFixed(3);
-  document.getElementById('stat-paid').textContent=inv.filter(i=>i.status==='paid').length;
-  document.getElementById('stat-pending').textContent=inv.filter(i=>i.status==='unpaid').length;
+  const inv=invoices.filter(i=>i.status!=='draft'&&inPer(i.date,HP));
+  const tot=inv.reduce((s,i)=>s+(i.grand||0),0),col=inv.reduce((s,i)=>s+invPaid(i),0);
+  document.getElementById('stat-total').textContent='BHD '+tot.toFixed(3);
+  document.getElementById('stat-paid').textContent='BHD '+col.toFixed(3);
+  document.getElementById('stat-pending').textContent='BHD '+(tot-col).toFixed(3);
   document.getElementById('stat-staff').textContent=staffList.length;
   const ps=PR.periodStats(HP);
   document.getElementById('stat-pr-net').textContent='BHD '+ps.pay.toFixed(3);
   document.getElementById('stat-pr-profit').textContent='BHD '+ps.profit.toFixed(3);
+  renderGreeting(); renderDue();
 }
+
+// ── helpers: dates, payments, toast, files ───────────
+function todayISO(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function daysSince(d){if(!d)return 0;return Math.floor((Date.now()-new Date(d+'T00:00').getTime())/864e5)}
+function invPaid(i){return i.status==='paid'?(i.grand||0):Math.min(+i.paid||0,i.grand||0)}
+function invRem(i){return Math.max(0,(i.grand||0)-invPaid(i))}
+function stLabel(st){return (t('statusOpts')[{draft:0,unpaid:1,paid:2}[st]])||st}
+function note(m){const e=document.getElementById('app-toast');if(!e)return;e.textContent=m;e.hidden=false;clearTimeout(note.t);note.t=setTimeout(()=>{e.hidden=true},2600)}
+function dlFile(name,content,type){const b=new Blob([content],{type});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+function navBtn(i){return document.querySelectorAll('.nav-links button')[i]}
+function quickNewInvoice(){showPage('invoices',{target:navBtn(2)});showNewInvoiceForm()}
+function quickNewClient(){showPage('clients',{target:navBtn(3)});showAddClientForm();document.getElementById('clf-name').focus()}
+
+function renderGreeting(){
+  const h=new Date().getHours(),td=todayISO(),wk=new Date();wk.setDate(wk.getDate()+7);const wkI=todayISO(wk);
+  document.getElementById('h-tag').textContent=new Date().toLocaleDateString(lang==='ar'?'ar-BH':'en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('h-title').textContent=(h<12?A_('صباح الخير','Good morning'):A_('مساء الخير','Good evening'))+' 👋';
+  const snap=PR.scheduleSnapshot(),nT=snap.filter(x=>x.d===td).length,nW=snap.filter(x=>x.d>=td&&x.d<=wkI).length;
+  const nD=invoices.filter(i=>i.status!=='draft'&&invRem(i)>0.0005).length;
+  document.getElementById('h-sub').textContent=`${A_('جلسات اليوم','Shoots today')}: ${nT} · ${A_('خلال 7 أيام','Next 7 days')}: ${nW} · ${A_('فواتير غير محصّلة','Unpaid invoices')}: ${nD}`;
+}
+function renderDue(){
+  const box=document.getElementById('due-box');if(!box)return;
+  const ttl=`💰 ${A_('المبالغ المستحقة على العملاء','Money to collect')}`;
+  const list=invoices.filter(i=>i.status!=='draft'&&invRem(i)>0.0005).sort((a,b)=>(a.date||'')<(b.date||'')?-1:1);
+  if(!list.length){box.innerHTML=`<div class="card-title">${ttl}</div><p class="pr-hint">${A_('كل الفواتير محصّلة 👌','All invoices are collected 👌')}</p>`;return}
+  const sum=list.reduce((s,i)=>s+invRem(i),0);
+  box.innerHTML=`<div class="card-title" style="display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap"><span>${ttl} (${list.length})</span><span class="due-amt">BHD ${sum.toFixed(3)}</span></div>`+
+    list.slice(0,8).map(i=>{const age=daysSince(i.date);return `<div class="due-row"><div class="grow"><b>${escH(i.client)}</b><small>${escH(i.number)} · ${escH(i.date||'')}${age>0?' · '+A_(`منذ ${age} يوم`,`${age} days ago`):''}${invPaid(i)>0?' · '+A_('مدفوع','paid')+' '+invPaid(i).toFixed(3):''}</small></div><span class="due-amt">${invRem(i).toFixed(3)}</span><button class="btn-sm wa-btn" onclick="waInvoice(${i.id},true)">💬 ${A_('تذكير','Remind')}</button><button class="btn-sm" onclick="markPaid(${i.id})">✓ ${A_('تم الدفع','Paid')}</button></div>`}).join('')+
+    (list.length>8?`<p class="pr-hint">+${list.length-8} ${A_('أخرى في صفحة الفواتير','more on the Invoices page')}</p>`:'');
+}
+function markPaid(id){
+  const inv=invoices.find(i=>i.id===id);if(!inv)return;
+  inv.status='paid';inv.paid=inv.grand||0;inv.paidAt=todayISO();
+  save();updateStats();renderInvoices();note(A_('✓ تم تسجيل الدفع','✓ Marked as paid'));
+}
+function waPhone(p){let d=String(p||'').replace(/\D/g,'');if(d.startsWith('00'))d=d.slice(2);if(d.length===8)d='973'+d;return d}
+function waInvoice(id,reminder){
+  const inv=invoices.find(i=>i.id===id);if(!inv)return;
+  const f=x=>(+x||0).toFixed(3),rem=invRem(inv),paid=invPaid(inv);
+  const lines=(inv.items||[]).map(it=>`• ${it.desc||''} — ${f((it.qty*(+it.unit||0))-(it.disc||0))} BD`).join('\n');
+  let m;
+  if(lang==='ar'){
+    m=reminder
+      ?`مرحبًا ${inv.client} 🌷\nتذكير لطيف بخصوص الفاتورة ${inv.number} بتاريخ ${inv.date}.\nالمبلغ المتبقي: ${f(rem)} د.ب\nشكرًا لتعاملك مع شعيب استوديو 📸`
+      :`مرحبًا ${inv.client} 🌷\nتفاصيل الفاتورة ${inv.number} من شعيب استوديو (${inv.date}):\n${lines}\n\nالإجمالي: ${f(inv.grand)} د.ب`+(paid>0&&rem>0?`\nالمدفوع: ${f(paid)} د.ب\nالمتبقي: ${f(rem)} د.ب`:'')+(inv.status==='paid'?'\n✅ تم الدفع بالكامل':'')+`\n\nشكرًا لثقتك 📸`;
+  }else{
+    m=reminder
+      ?`Hi ${inv.client} 🌷\nA friendly reminder about invoice ${inv.number} dated ${inv.date}.\nBalance due: ${f(rem)} BHD\nThank you for choosing Shuaib Studio 📸`
+      :`Hi ${inv.client} 🌷\nInvoice ${inv.number} from Shuaib Studio (${inv.date}):\n${lines}\n\nTotal: ${f(inv.grand)} BHD`+(paid>0&&rem>0?`\nPaid: ${f(paid)} BHD\nBalance: ${f(rem)} BHD`:'')+(inv.status==='paid'?'\n✅ Paid in full':'')+`\n\nThank you 📸`;
+  }
+  window.open('https://wa.me/'+waPhone(inv.phone)+'?text='+encodeURIComponent(m),'_blank');
+}
+function filteredInvoices(){
+  const q=IF.q.trim().toLowerCase();
+  return invoices.filter(inv=>(IF.st==='all'||inv.status===IF.st)&&inPer(inv.date,IF.per)&&(!q||[inv.client,inv.number,inv.phone].some(v=>String(v||'').toLowerCase().includes(q))));
+}
+function exportInvoicesCsv(){
+  const list=filteredInvoices();if(!list.length){note(A_('لا توجد فواتير للتصدير','No invoices to export'));return}
+  const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const head=lang==='ar'?['رقم الفاتورة','التاريخ','العميل','الهاتف','الحالة','المجموع الفرعي','الخصم','الإجمالي','المدفوع','المتبقي','الخدمات']:['Invoice #','Date','Client','Phone','Status','Subtotal','Discount','Total','Paid','Remaining','Services'];
+  const rows=list.map(i=>[i.number,i.date,i.client,i.phone,stLabel(i.status),(i.subtotal||0).toFixed(3),(i.disc||0).toFixed(3),(i.grand||0).toFixed(3),invPaid(i).toFixed(3),invRem(i).toFixed(3),(i.items||[]).map(x=>x.desc).join(' | ')]);
+  dlFile('invoices-'+todayISO()+'.csv','﻿'+[head,...rows].map(r=>r.map(q).join(',')).join('\r\n'),'text/csv;charset=utf-8');
+}
+function renderBackupBox(){
+  const b=document.getElementById('bk-box');if(!b)return;
+  let last='';try{last=localStorage.getItem('ss_last_backup')||''}catch(e){}
+  b.innerHTML=`<div class="card-title">🗂 ${A_('نسخة احتياطية كاملة','Full backup')}</div><p class="pr-hint">${A_('ملف واحد فيه كل البيانات (الفواتير، العملاء، الموظفون، الجلسات، الخدمات). يُنصح بتنزيله أسبوعيًا.','One file with all data (invoices, clients, staff, sessions, services). Download it weekly.')} ${last?A_('آخر نسخة: ','Last backup: ')+last:A_('لم تُنزَّل نسخة بعد.','No backup downloaded yet.')}</p><div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn-gold" type="button" onclick="downloadBackup()">⬇ ${A_('تنزيل النسخة','Download backup')}</button><label class="btn-outline" style="cursor:pointer">⬆ ${A_('استعادة من ملف','Restore from file')}<input type="file" accept="application/json,.json" hidden onchange="restoreBackup(this.files[0]);this.value=''"></label></div>`;
+}
+function downloadBackup(){
+  dlFile('shuaib-studio-backup-'+todayISO()+'.json',JSON.stringify({app:'shuaib-studio',v:1,at:new Date().toISOString(),data:syncSnapshot()}),'application/json');
+  try{localStorage.setItem('ss_last_backup',todayISO())}catch(e){}
+  renderBackupBox();note(A_('✓ تم تنزيل النسخة','✓ Backup downloaded'));
+}
+function restoreBackup(f){
+  if(!f)return;const r=new FileReader();
+  r.onload=()=>{
+    let data;try{const o=JSON.parse(r.result);data=o.data||o;if(!SYNC_KEYS.some(k=>k in data))throw 0}catch(e){note(A_('الملف غير صالح','Invalid file'));return}
+    if(!confirm(A_('ستُستبدل كل البيانات الحالية بمحتوى الملف. متابعة؟','All current data will be replaced by the file. Continue?')))return;
+    try{localStorage.setItem('ss_backup_before_sync',JSON.stringify(syncSnapshot()))}catch(e){}
+    SYNC_KEYS.forEach(k=>{if(k in data){data[k]==null?localStorage.removeItem(k):localStorage.setItem(k,data[k])}});
+    localStorage.setItem('ss_ts',String(Date.now()));location.reload();
+  };
+  r.readAsText(f);
+}
+
+// ── services editor (names & prices, saved) ──────────
+function renderSvcEditor(){
+  const w=document.getElementById('svc-ed-list');if(!w)return;
+  document.getElementById('svc-ed-sum').textContent='⚙ '+A_('تعديل الخدمات والأسعار (تُحفظ تلقائيًا)','Edit services & prices (auto-saved)');
+  w.innerHTML=SERVICES.map((s,i)=>`<div class="svc-ed"><input value="${escH(s.icon||'')}" data-sv="${i}" data-k="icon" aria-label="icon" style="text-align:center"><input value="${escH(s.ar)}" data-sv="${i}" data-k="ar" placeholder="الاسم بالعربي"><input class="hide-sm" value="${escH(s.en)}" data-sv="${i}" data-k="en" placeholder="English name"><input class="hide-sm" value="${escH(s.type)}" data-sv="${i}" data-k="type" placeholder="Type"><input type="number" step="0.001" min="0" value="${+s.unit||0}" data-sv="${i}" data-k="unit" aria-label="${A_('السعر','Price')}"><button type="button" class="remove-row" onclick="delSvc(${i})" aria-label="${A_('حذف','Delete')}">✕</button></div>`).join('')+
+    `<button type="button" class="btn-sm" onclick="addSvc()">+ ${A_('خدمة جديدة','New service')}</button>`;
+}
+function addSvc(){SERVICES.push({id:'c'+Date.now(),icon:'✨',en:'',ar:A_('خدمة جديدة','New service'),type:'Package',unit:0,qty:1});save();renderSvcEditor();buildServiceChips()}
+function delSvc(i){if(!confirm(A_('حذف هذه الخدمة من القائمة؟','Remove this service from the list?')))return;SERVICES.splice(i,1);save();renderSvcEditor();buildServiceChips()}
+document.addEventListener('input',e=>{
+  const d=e.target.dataset;if(!d||d.sv===undefined)return;
+  const s=SERVICES[+d.sv];if(!s)return;
+  s[d.k]=d.k==='unit'?(+e.target.value||0):e.target.value;
+  clearTimeout(renderSvcEditor.t);renderSvcEditor.t=setTimeout(save,600);
+  buildServiceChips();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape')return;
+  closeInvModal();
+  const m=document.getElementById('pr-rep-modal');if(m&&m.classList.contains('show'))PR.closeReport();
+});
 
 // ── CLIENTS ──────────────────────────────────────────
 let editingClientId = null;
@@ -1207,7 +1371,7 @@ function saveCurrentClientToList(){
   // اختر العميل في القائمة
   const newC = clients.find(x=>x.name===name);
   if(newC) document.getElementById('client-picker').value = newC.id;
-  alert(lang==='ar'?'✅ تم حفظ العميل':'✅ Client saved!');
+  note(A_('✓ تم حفظ العميل','✓ Client saved'));
 }
 
 // ── صفحة إدارة العملاء ────────────────────────────
@@ -1268,7 +1432,7 @@ function renderClients(){
     c.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem">${lang==='ar'?'لا يوجد عملاء بعد. أضف عميلاً جديداً.':'No clients yet. Add your first client.'}</div>`;
     return;
   }
-  const invCount = id => invoices.filter(inv=>inv._clientId===id).length;
+  const invCount = id => {const cl=clients.find(x=>x.id===id);return invoices.filter(inv=>inv._clientId===id||(!inv._clientId&&cl&&(inv.client||'').trim()===cl.name.trim())).length};
   const q = CF.q.trim().toLowerCase();
   const list = clients.filter(cl=>
     (CF.w==='all'||(CF.w==='with'?invCount(cl.id)>0:invCount(cl.id)===0)) &&
@@ -1278,7 +1442,7 @@ function renderClients(){
     <div class="client-card">
       <div class="client-inv-count">${invCount(cl.id)} ${lang==='ar'?'فاتورة':'inv'}</div>
       <div class="client-avatar">${cl.name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase()}</div>
-      <div class="client-name">${cl.name}</div>
+      <div class="client-name">${escH(cl.name)}</div>
       <div class="client-meta">
         ${cl.custid?`<div>🪪 ${cl.custid}</div>`:''}
         ${cl.phone?`<div>📞 ${cl.phone}</div>`:''}
@@ -1324,20 +1488,22 @@ const PRESET_SERVICES = [
   { id:'reel',       icon:'📱', en:'Social Media Reel',                   ar:'ريل سوشيال ميديا',                  type:'Add-on',  unit:25, qty:1 },
 ];
 
+let SERVICES=(()=>{try{const x=JSON.parse(localStorage.getItem('ss_services')||'null');if(Array.isArray(x)&&x.length)return x}catch(e){}return PRESET_SERVICES.map(s=>({...s}))})();
 let lineItems = [];
 let selectedServiceIds = new Set();
+let editingInvId = null;
 
 function buildServiceChips(){
   const wrap = document.getElementById('service-chips');
-  wrap.innerHTML = PRESET_SERVICES.map(s=>`
+  wrap.innerHTML = SERVICES.map(s=>`
     <div class="svc-chip ${selectedServiceIds.has(s.id)?'selected':''}" id="chip-${s.id}" onclick="toggleService('${s.id}')">
       <span class="chip-icon">${s.icon}</span>
-      <span>${lang==='ar'? s.ar : s.en}</span>
+      <span>${escH(lang==='ar'? s.ar : (s.en||s.ar))}</span>
     </div>`).join('');
 }
 
 function toggleService(id){
-  const svc = PRESET_SERVICES.find(s=>s.id===id);
+  const svc = SERVICES.find(s=>s.id===id);
   if(!svc) return;
   if(selectedServiceIds.has(id)){
     // إزالة
@@ -1353,7 +1519,7 @@ function toggleService(id){
       qty: svc.qty,
       type: svc.type,
       itemNo: String(itemNo),
-      desc: lang==='ar' ? svc.ar : svc.en,
+      desc: lang==='ar' ? svc.ar : (svc.en||svc.ar),
       unit: svc.unit,
       disc: 0
     });
@@ -1369,25 +1535,43 @@ function addCustomItem(){
   renderLineItems();
 }
 
+function nextInvNo(){
+  const n=invoices.map(i=>parseInt(String(i.number||'').replace(/\D/g,''),10)||0);
+  return '#'+(Math.max(1000,...n)+1);
+}
 function showNewInvoiceForm(){
   lineItems = [];
   selectedServiceIds = new Set();
+  editingInvId = null;
   document.getElementById('invoice-form').style.display='block';
-  document.getElementById('inv-number').value='#'+(1000+invoices.length+1);
-  document.getElementById('inv-date').value=new Date().toISOString().split('T')[0];
-  document.getElementById('inv-client').value='';
-  document.getElementById('inv-custid').value='';
-  document.getElementById('inv-phone').value='';
-  document.getElementById('inv-iban').value='';
-  document.getElementById('inv-addr').value='';
-  document.getElementById('inv-email').value='';
-  document.getElementById('inv-notes').value='';
-  document.getElementById('inv-status').value='draft';
+  document.getElementById('inv-details-title').textContent=t('invDetailsTitle');
+  document.getElementById('inv-number').value=nextInvNo();
+  document.getElementById('inv-date').value=todayISO();
+  ['inv-client','inv-custid','inv-phone','inv-iban','inv-addr','inv-email','inv-notes','inv-paid'].forEach(id=>{document.getElementById(id).value=''});
+  document.getElementById('inv-status').value='unpaid';
   document.getElementById('client-picker').value='';
   document.getElementById('btn-save-client').style.display='';
   updateClientPicker();
   buildServiceChips();
+  renderSvcEditor();
   renderLineItems();
+  document.getElementById('invoice-form').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function editInvoice(id,dup){
+  const inv=invoices.find(i=>i.id===id);if(!inv)return;
+  closeInvModal();
+  showPage('invoices',{target:navBtn(2)});
+  showNewInvoiceForm();
+  editingInvId=dup?null:id;
+  const set=(k,v)=>{document.getElementById(k).value=v==null?'':v};
+  set('inv-client',inv.client);set('inv-custid',inv.custid);set('inv-phone',inv.phone);set('inv-iban',inv.iban);
+  set('inv-addr',inv.addr);set('inv-email',inv.email);set('inv-notes',inv.notes);
+  if(!dup){set('inv-number',inv.number);set('inv-date',inv.date);set('inv-status',inv.status);set('inv-paid',+inv.paid?inv.paid:'')}
+  if(inv._clientId&&clients.some(c=>c.id===inv._clientId)){document.getElementById('client-picker').value=inv._clientId;document.getElementById('btn-save-client').style.display='none'}
+  lineItems=(inv.items||[]).map(x=>({...x}));
+  selectedServiceIds=new Set(lineItems.map(x=>x._svcId).filter(Boolean));
+  buildServiceChips();renderLineItems();
+  document.getElementById('inv-details-title').textContent=dup?A_('فاتورة جديدة (نسخة من ','New invoice (copy of ')+inv.number+')':A_('تعديل الفاتورة ','Edit invoice ')+inv.number;
 }
 function hideInvoiceForm(){document.getElementById('invoice-form').style.display='none';}
 
@@ -1431,63 +1615,76 @@ function calcTotals(){
   const sub   = lineItems.reduce((s,i)=>s+i.qty*i.unit, 0);
   const disc  = lineItems.reduce((s,i)=>s+(i.disc||0), 0);
   const grand = sub - disc;
+  const paid  = +document.getElementById('inv-paid').value||0;
   document.getElementById('subtotal').textContent   = 'BHD '+sub.toFixed(3);
-  document.getElementById('disc-total').textContent = disc > 0 ? '- BHD '+disc.toFixed(3) : '- BHD 0.000';
+  document.getElementById('disc-total').textContent = '- BHD '+disc.toFixed(3);
   document.getElementById('grand-total').textContent= 'BHD '+grand.toFixed(3);
+  document.getElementById('lbl-remaining').textContent = A_('المتبقي على العميل','Balance due');
+  document.getElementById('inv-remaining').textContent = 'BHD '+Math.max(0,grand-paid).toFixed(3);
+  document.getElementById('rem-line').style.display = paid>0 ? '' : 'none';
 }
 
-function saveInvoice(){
+function saveInvoice(sendWa){
   const sub  = lineItems.reduce((s,i)=>s+i.qty*i.unit,0);
   const disc = lineItems.reduce((s,i)=>s+(i.disc||0),0);
-  invoices.unshift({
-    id:Date.now(),
-    number:document.getElementById('inv-number').value||'#1001',
-    client:document.getElementById('inv-client').value||'Client',
-    custid:document.getElementById('inv-custid').value,
-    phone:document.getElementById('inv-phone').value,
-    iban:document.getElementById('inv-iban').value,
-    addr:document.getElementById('inv-addr').value,
-    email:document.getElementById('inv-email').value,
-    date:document.getElementById('inv-date').value,
-    status:document.getElementById('inv-status').value,
-    notes:document.getElementById('inv-notes').value,
-    items:[...lineItems],
-    subtotal:sub, disc, grand:sub-disc
-  });
-  save(); hideInvoiceForm(); renderInvoices();
+  const grand= sub-disc;
+  const g=id=>document.getElementById(id).value;
+  const client=g('inv-client').trim();
+  if(!client){note(A_('أدخل اسم العميل','Enter the client name'));document.getElementById('inv-client').focus();return}
+  if(!lineItems.length){note(A_('اختر خدمة واحدة على الأقل','Add at least one service'));return}
+  let status=g('inv-status'),paid=+g('inv-paid')||0;
+  if(status!=='draft'&&grand>0&&paid>=grand-0.0005)status='paid';
+  if(status==='paid')paid=grand;
+  // ربط الفاتورة بالعميل، وإضافته تلقائيًا لقائمة العملاء إن كان جديدًا
+  const pick=+g('client-picker');
+  let cl=pick?clients.find(c=>c.id===pick):clients.find(c=>c.name.trim().toLowerCase()===client.toLowerCase());
+  if(!cl){cl={id:Date.now()+1,name:client,custid:g('inv-custid'),phone:g('inv-phone'),iban:g('inv-iban'),addr:g('inv-addr'),email:g('inv-email')};clients.push(cl)}
+  const data={number:g('inv-number')||nextInvNo(),client,custid:g('inv-custid'),phone:g('inv-phone'),iban:g('inv-iban'),addr:g('inv-addr'),email:g('inv-email'),
+    date:g('inv-date'),status,paid,notes:g('inv-notes'),items:lineItems.map(x=>({...x})),subtotal:sub,disc,grand,_clientId:cl.id};
+  let id;
+  const old=editingInvId&&invoices.find(i=>i.id===editingInvId);
+  if(old){Object.assign(old,data);id=old.id}else{id=Date.now();invoices.unshift({id,...data})}
+  editingInvId=null;
+  save(); hideInvoiceForm(); renderInvoices(); updateStats(); updateClientPicker();
+  note(A_('✓ تم حفظ الفاتورة ','✓ Invoice saved ')+data.number);
+  if(sendWa)waInvoice(id,false);
 }
 function renderInvoices(){
   const c=document.getElementById('invoices-container');
   if(!invoices.length){c.innerHTML=`<div style="text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem">${t('invEmpty')}</div>`;return;}
-  const q=IF.q.trim().toLowerCase();
-  const list=invoices.filter(inv=>(IF.st==='all'||inv.status===IF.st)&&inPer(inv.date,IF.per)&&(!q||(inv.client||'').toLowerCase().includes(q)||String(inv.number||'').toLowerCase().includes(q)));
+  const list=filteredInvoices();
   if(!list.length){c.innerHTML=noRes(A_('لا توجد فواتير بهذا الفلتر.','No invoices match this filter.'));return;}
-  c.innerHTML=list.map(inv=>`
+  const sum=list.filter(i=>i.status!=='draft').reduce((s,i)=>s+(i.grand||0),0),rem=list.filter(i=>i.status!=='draft').reduce((s,i)=>s+invRem(i),0);
+  c.innerHTML=`<div class="pr-hint" style="display:flex;gap:1rem;flex-wrap:wrap;margin:0 0 .25rem"><span>${list.length} ${A_('فاتورة','invoice(s)')}</span><span>${A_('المجموع','Total')}: <b>BHD ${sum.toFixed(3)}</b></span><span>${A_('المتبقي','Outstanding')}: <b style="color:var(--danger)">BHD ${rem.toFixed(3)}</b></span></div>`+
+  list.map(inv=>{const r=invRem(inv),part=inv.status!=='paid'&&invPaid(inv)>0;return `
     <div class="invoice-row" onclick="viewInvoice(${inv.id})">
       <div>
-        <div style="font-weight:600;color:var(--white);margin-bottom:0.2rem">${inv.client}</div>
-        <div class="inv-meta">${inv.number} · ${inv.date}</div>
+        <div style="font-weight:600;color:var(--white);margin-bottom:0.2rem">${escH(inv.client)}</div>
+        <div class="inv-meta">${escH(inv.number)} · ${escH(inv.date)}${part?` · <span class="inv-rem">${A_('متبقي','Due')} ${r.toFixed(3)}</span>`:''}</div>
       </div>
       <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap">
-        <span class="badge badge-${inv.status}">${inv.status}</span>
+        <span class="badge badge-${inv.status}">${part?A_('دفعة جزئية','Partly paid'):stLabel(inv.status)}</span>
         <span class="inv-amount">BHD ${(inv.grand||0).toFixed(3)}</span>
         <div class="action-btns" onclick="event.stopPropagation()">
           <button class="btn-sm" onclick="toggleStatus(${inv.id})">${t('togglePaid')}</button>
+          <button class="btn-sm" onclick="editInvoice(${inv.id})" title="${A_('تعديل','Edit')}" aria-label="${A_('تعديل','Edit')}">✎</button>
+          <button class="btn-sm wa-btn" onclick="waInvoice(${inv.id},false)" title="WhatsApp" aria-label="WhatsApp">💬</button>
           <button class="btn-sm" onclick="PR.fromInvoice(${inv.id})">${t('toPayroll')}</button>
           <button class="btn-sm danger" onclick="deleteInvoice(${inv.id})">${t('deleteInv')}</button>
         </div>
       </div>
-    </div>`).join('');
+    </div>`}).join('');
 }
 function toggleStatus(id){
   const inv=invoices.find(i=>i.id===id);
   if(!inv)return;
-  inv.status=inv.status==='paid'?'unpaid':'paid';
-  save();renderInvoices();
+  if(inv.status==='paid'){inv.status='unpaid';if((+inv.paid||0)>=(inv.grand||0))inv.paid=0}
+  else{inv.status='paid';inv.paid=inv.grand||0;inv.paidAt=todayISO()}
+  save();renderInvoices();updateStats();
 }
 function deleteInvoice(id){
-  if(!confirm('Delete?'))return;
-  invoices=invoices.filter(i=>i.id!==id);save();renderInvoices();
+  if(!confirm(A_('حذف هذه الفاتورة نهائيًا؟','Delete this invoice permanently?')))return;
+  invoices=invoices.filter(i=>i.id!==id);save();renderInvoices();updateStats();
 }
 function viewInvoice(id){
   const inv=invoices.find(i=>i.id===id);if(!inv)return;
@@ -1506,11 +1703,11 @@ function viewInvoice(id){
       <div class="inv-doc-brand">SHUAIB STUDIO</div>
       <div class="inv-doc-date">${inv.date}</div>
     </div>
-    <div class="inv-doc-num">${inv.number}</div>
+    <div class="inv-doc-num">${escH(inv.number)}${inv.status==='paid'?'<span class="stamp-paid">PAID</span>':''}</div>
     <table class="inv-bill-table">
       <thead><tr><th colspan="2">${t('billTo')}</th></tr></thead>
       <tbody>
-        <tr><td>${t('customer')}</td><td>${inv.client}</td></tr>
+        <tr><td>${t('customer')}</td><td>${escH(inv.client)}</td></tr>
         ${inv.custid?`<tr><td>${t('customerId')}</td><td>${inv.custid}</td></tr>`:''}
         ${inv.addr?`<tr><td>${t('address')}</td><td>${inv.addr}</td></tr>`:''}
         ${inv.phone?`<tr><td>${t('phone')}</td><td>${inv.phone}</td></tr>`:''}
@@ -1533,6 +1730,7 @@ function viewInvoice(id){
           <td class="total-label" style="text-align:right">${t('total')}</td>
           <td style="text-align:right">${(inv.grand||0).toFixed(3)} BD</td>
         </tr>
+        ${inv.status!=='paid'&&invPaid(inv)>0?`<tr><td colspan="4"></td><td class="total-label" style="text-align:right">${A_('المدفوع','Paid')}</td><td style="text-align:right">${invPaid(inv).toFixed(3)} BD</td></tr><tr><td colspan="4"></td><td class="total-label" style="text-align:right">${A_('المتبقي','Balance due')}</td><td style="text-align:right">${invRem(inv).toFixed(3)} BD</td></tr>`:''}
       </tfoot>
     </table>
     ${notesHtml?`
@@ -1542,6 +1740,9 @@ function viewInvoice(id){
     </div>`:''}
     <div class="inv-print-bar">
       <button onclick="window.print()" style="background:#2d5da1;color:#fff;border:none;padding:0.6rem 1.5rem;border-radius:5px;font-weight:600;cursor:pointer;font-size:0.88rem">${t('printInv')}</button>
+      <button class="btn-sm" onclick="editInvoice(${inv.id})">✎ ${A_('تعديل','Edit')}</button>
+      <button class="btn-sm" onclick="editInvoice(${inv.id},true)">⧉ ${A_('نسخ كفاتورة جديدة','Duplicate')}</button>
+      <button class="btn-sm wa-btn" onclick="waInvoice(${inv.id},false)">💬 WhatsApp</button>
       <span style="font-size:0.8rem;color:#999">SHUAIB STUDIO · Manama, Bahrain</span>
     </div>`;
   document.getElementById('inv-modal').classList.add('show');
@@ -2133,13 +2334,13 @@ return{render,renderSchedule,periodStats,fromInvoice,openStaffReport,closeReport
 
 // ── حجوزات الزبائن (Supabase): تسجيل دخول صاحب الاستوديو ثم تحويل الحجوزات الجديدة إلى جلسات في التكاليف ──
 const SBK='ss_sb';
+const SB_OWNER='ihasanshuaib@gmail.com';   // pay.html لصاحب الاستوديو فقط؛ بقية الحسابات (المصورون) تدخل staff.html
 let sbAuth=null;try{sbAuth=JSON.parse(localStorage.getItem(SBK)||'null')}catch(e){}
 if(sbAuth&&String(sbAuth.email||'').toLowerCase()!==SB_OWNER){sbAuth=null;try{localStorage.removeItem(SBK)}catch(e){}}
 let sbMsg='',sbBusy=false;
 const sbCfg=()=>window.SB||{};
 // اليوزر hasan يُحوَّل إلى ihasanshuaib@gmail.com لأن Supabase Auth يعمل بالبريد؛ ويُقبل البريد الكامل أيضًا
 const SB_USERS={hasan:'ihasanshuaib@gmail.com'};
-const SB_OWNER='ihasanshuaib@gmail.com';   // pay.html لصاحب الاستوديو فقط؛ بقية الحسابات (المصورون) تدخل staff.html
 const sbUserEmail=u=>{u=String(u||'').trim().toLowerCase();return u.includes('@')?u:(SB_USERS[u]||u+'@shuaib-studio.com')};
 function sbSave(a){sbAuth=a;try{a?localStorage.setItem(SBK,JSON.stringify(a)):localStorage.removeItem(SBK)}catch(e){}}
 async function sbToken(body,grant){
@@ -2223,7 +2424,7 @@ setInterval(()=>{if(!document.hidden)sbSync()},30000);   // حجوزات الز�
 
 // ── مزامنة سحابية: كل بيانات pay.html تُحفظ في Supabase (جدول app_state) فتظهر في أي متصفح/جهاز بعد تسجيل الدخول ──
 // القاعدة: آخر تعديل يفوز (ss_ts = وقت آخر تعديل محلي؛ remote.ts = وقت آخر رفع). قبل استبدال البيانات المحلية تُحفظ نسخة في ss_backup_before_sync
-const SYNC_KEYS=['ss_invoices','ss_staff','ss_worklog','ss_clients','ss_payroll'];
+const SYNC_KEYS=['ss_invoices','ss_staff','ss_worklog','ss_clients','ss_payroll','ss_services'];
 var syncTimer=0,syncPushing=false,syncMsg="";
 const lts=()=>+localStorage.getItem('ss_ts')||0;
 function syncTouch(){
