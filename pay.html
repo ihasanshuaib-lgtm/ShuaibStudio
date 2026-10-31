@@ -494,6 +494,17 @@ details.card summary{color:var(--white)}
 @media print{
   body{background:#fff !important}
 }
+/* ملخص المصورين (الرئيسية) */
+.hp-row{border:1px solid var(--border);border-radius:12px;margin-bottom:.5rem;background:var(--surface)}
+.hp-row summary{display:flex;align-items:center;gap:.8rem;padding:.65rem .85rem;cursor:pointer;list-style:none;flex-wrap:wrap}
+.hp-row summary::-webkit-details-marker{display:none}
+.hp-row summary b{flex:1;min-width:110px}
+.hp-n{color:var(--muted);font-size:.84rem}
+.hp-amt{font-weight:700;color:var(--gold)}
+.hp-dates{list-style:none;margin:0;padding:.2rem .85rem .7rem}
+.hp-dates li{display:flex;gap:.7rem;align-items:center;padding:.3rem 0;border-top:1px solid var(--border);font-size:.86rem;flex-wrap:wrap}
+.hp-sn{flex:1;color:var(--muted)}
+.hp-tot{display:flex;gap:.8rem;justify-content:space-between;padding:.6rem .85rem;font-weight:700;border-top:2px solid var(--border);margin-top:.4rem}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 
 
@@ -727,6 +738,8 @@ html.locked body>*:not(#gate){display:none !important}
 
   <!-- المبالغ المستحقة على العملاء -->
   <div class="card" id="due-box" style="margin-top:1.2rem"></div>
+  <div class="card" id="home-ph" style="margin-top:1.2rem"></div>
+
   <!-- حجوزات الزبائن القادمة من index.html عبر Supabase -->
   <div class="card" id="sb-box" style="margin-top:1.2rem"></div>
   <!-- نسخة احتياطية كاملة -->
@@ -1180,6 +1193,17 @@ function renderStFlt(){
 }
 
 // ── STATS ────────────────────────────────────────────
+// ملخص المصورين في لوحة التحكم (حسب فلتر الفترة HP)
+function renderHomePh(){
+  const b=document.getElementById('home-ph');if(!b)return;
+  const per={month:A_('هذا الشهر','This month'),year:A_('هذه السنة','This year'),all:A_('كل الفترات','All time')}[HP]||'';
+  const rows=PR.photographerSummary(HP),fd=d=>d.slice(8)+'/'+d.slice(5,7)+'/'+d.slice(0,4);
+  const tot=rows.reduce((q,r)=>q+r.total,0),cnt=rows.reduce((q,r)=>q+r.count,0);
+  b.innerHTML=`<div class="card-title">👥 ${A_('ملخص المصورين','Photographers summary')} <small style="color:var(--muted);font-weight:400">· ${per}</small></div>`+
+    (rows.length?rows.map(r=>`<details class="hp-row"><summary><b>${escH(r.name)}</b><span class="hp-n">${r.count} ${A_('تصوير','shoot(s)')}</span><span class="hp-amt">BHD ${r.total.toFixed(3)}</span></summary><ul class="hp-dates">${r.dates.map(x=>`<li><span>${fd(x.d)}${x.t?' · '+escH(x.t):''}</span><span class="hp-sn">${escH(x.n||'—')}</span><b>${x.a.toFixed(3)}</b></li>`).join('')}</ul></details>`).join('')+
+      `<div class="hp-tot"><span>${A_('المجموع','Total')}</span><span>${cnt} ${A_('تصوير','shoot(s)')}</span><b>BHD ${tot.toFixed(3)}</b></div>`:
+      `<p class="pr-hint">${A_('لا توجد تصويرات مسندة لمصورين في هذه الفترة.','No shoots assigned to photographers in this period.')}</p>`);
+}
 function updateStats(){
   const inv=invoices.filter(i=>i.status!=='draft'&&inPer(i.date,HP));
   const tot=inv.reduce((s,i)=>s+(i.grand||0),0),col=inv.reduce((s,i)=>s+invPaid(i),0);
@@ -1190,7 +1214,7 @@ function updateStats(){
   const ps=PR.periodStats(HP);
   document.getElementById('stat-pr-net').textContent='BHD '+ps.pay.toFixed(3);
   document.getElementById('stat-pr-profit').textContent='BHD '+ps.profit.toFixed(3);
-  renderGreeting(); renderDue();
+  renderGreeting(); renderDue(); renderHomePh();
 }
 
 // ── helpers: dates, payments, toast, files ───────────
@@ -1922,6 +1946,7 @@ function norm(o){
     let n=s;
     if(!s.lines){const l=Object.entries(s.pay||{}).map(([p,a])=>({id:uid(),r:'',p,a}));n={...s,lines:l};delete n.pay}
     n.eq=Array.isArray(n.eq)?n.eq:[];
+    n.x=Array.isArray(n.x)?n.x:[];            // بنود إضافية: {id,k:'svc'|'ded',n,a}
     n.lines=n.lines.map(l=>{const c={...l};delete c.e;return c});
     return n}).filter(s=>s.n||+s.p||s.lines.length||s.eq.length||s.inv||s.bk);   // حذف الجلسات الفارغة بلا عنوان (بقايا الضغط المتكرر)
   const cfg=Object.assign({fee:1,reserve:5},o.cfg);delete cfg.learn;delete cfg.eq;
@@ -1940,6 +1965,9 @@ const rName=id=>(S.roles.find(x=>x.id==id)||{}).n||tr('photographer');
 const rateOf=(k,r)=>{const p=S.pkgs.find(x=>x.id==k),v=p&&p.rates&&p.rates[r];return v!==undefined&&v!==''?+v:+((S.roles.find(x=>x.id==r)||{}).rate)||0};
 const pkgName=s=>{const p=S.pkgs.find(x=>x.id==s.k);return p?p.n:''};
 const fmtD=d=>d?`${+d.slice(8)} ${MON()[+d.slice(5,7)-1]} ${d.slice(0,4)}`:'—';
+// بنود الجلسة الإضافية: خدمة إضافية (+) تزيد سعر الجلسة، وخصم (−) ينقصه
+const xTotal=s=>(s.x||[]).reduce((q,i)=>q+(i.k==='ded'?-1:1)*(+i.a||0),0);
+const sessPrice=s=>(+s.p||0)+xTotal(s);
 const spay=s=>s.lines.reduce((q,l)=>q+(+l.a||0),0);
 const eqList=s=>(s.eq||[]).map(id=>S.equip.find(e=>e.id==id)).filter(Boolean);
 const eqFee=s=>eqList(s).reduce((q,e)=>q+(+e.f||0),0);
@@ -1948,7 +1976,7 @@ const hasPh=(s,p)=>s.lines.some(l=>l.p==p);
 
 function agg(ym){
   const Ls=S.sessions.filter(s=>s.d&&s.d.slice(0,7)==ym),C=S.cfg,A=S.adv[ym]||{},P={};let price=0,pay=0,un=0,eqt=0;
-  Ls.forEach(s=>{price+=+s.p||0;eqt+=eqFee(s);s.lines.forEach(l=>{const g=+l.a||0;pay+=g;
+  Ls.forEach(s=>{price+=sessPrice(s);eqt+=eqFee(s);s.lines.forEach(l=>{const g=+l.a||0;pay+=g;
     if(l.p&&stf(l.p)){const q=P[l.p]||(P[l.p]={tot:0,det:[]});q.tot+=g;q.det.push({s:s.id,d:s.d,n:s.n,r:l.r,a:g})}else un+=g})});
   const rows=Ls.length?staffList.filter(t=>isOn(t)||P[t.id]).map(t=>{const q=P[t.id]||{tot:0,det:[]},fe=q.tot*C.fee/100,a=+A[t.id]||0;
     return{id:t.id,n:t.name,tot:q.tot,fee:fe,adv:a,net:q.tot-fe-a,cnt:new Set(q.det.map(x=>x.s)).size,det:q.det.sort(byD)}}):[];
@@ -1982,20 +2010,24 @@ const persOpts=(p,none)=>`<option value="">${none}</option>`+staffList.filter(t=
 // ── session card (collapsible) ──
 const eqChips=(s,edit)=>S.equip.length?`<div class="pr-eqs">${edit?S.equip.map(e=>{const on=(s.eq||[]).includes(e.id);return`<button type="button" class="eq-chip${on?' on':''}" data-eqt="${s.id}" data-eid="${e.id}" aria-pressed="${on}">${esc(e.n)}<b>${f3(e.f)}</b></button>`}).join(''):(eqList(s).map(e=>`<span class="eq-chip on ro">${esc(e.n)}<b>${f3(e.f)}</b></span>`).join('')||`<span class="pr-hint" style="margin:0">${tr('noEqUsed')}</span>`)}</div>`:`<p class="pr-hint">${tr('noEquip')}</p>`;
 function sessCard(s){
-  const ed=EDIT.has(s.id),open=ed||OPEN.has(s.id),pay=spay(s),eq=eqFee(s),pr=(+s.p||0)-pay-eq,pk=pkgName(s);
+  const ed=EDIT.has(s.id),open=ed||OPEN.has(s.id),pay=spay(s),eq=eqFee(s),pr=sessPrice(s)-pay-eq,pk=pkgName(s);
   const dd=s.d?{d:+s.d.slice(8),m:MON()[+s.d.slice(5,7)-1]}:{d:'—',m:''};
   const sub=[s.t||'',pk,s.loc?'📍 '+s.loc:''].filter(Boolean).map(esc).join(' · ');
-  const head=`<button type="button" class="ps-head" data-tg="${s.id}" aria-expanded="${open}"><span class="ps-date"><b>${dd.d}</b><i>${dd.m}</i></span><span class="ps-main"><b class="ps-name">${s.n?esc(s.n):tr('noName')}</b>${sub?`<small>${sub}</small>`:''}</span><span class="ps-price"><span id="prh${s.id}">${f3(s.p)}</span><small>${tr('cur')}</small></span><span class="ps-chev" aria-hidden="true"></span></button>`;
+  const head=`<button type="button" class="ps-head" data-tg="${s.id}" aria-expanded="${open}"><span class="ps-date"><b>${dd.d}</b><i>${dd.m}</i></span><span class="ps-main"><b class="ps-name">${s.n?esc(s.n):tr('noName')}</b>${sub?`<small>${sub}</small>`:''}</span><span class="ps-price"><span id="prh${s.id}">${f3(sessPrice(s))}</span><small>${tr('cur')}</small></span><span class="ps-chev" aria-hidden="true"></span></button>`;
   let body;
   if(!ed){
     body=(s.lines.length?`<div class="pr-scroll"><table class="pr-t"><thead><tr><th>${tr('role')}</th><th>${tr('photographer')}</th><th>${tr('amount')}</th></tr></thead><tbody>${s.lines.map(l=>`<tr><td>${esc(rName(l.r))}</td><td>${esc(l.p?pName(l.p):'—')}</td><td>${f3(l.a)}</td></tr>`).join('')}</tbody></table></div>`:`<p class="pr-hint">${tr('noLines')}</p>`)+
+    ((s.x||[]).length?`<h4 class="ps-h4">${A_('بنود إضافية','Extra items')}</h4><div class="pr-scroll"><table class="pr-t"><tbody>${s.x.map(i=>`<tr><td>${i.k==='ded'?A_('خصم','Discount'):A_('خدمة إضافية','Extra service')}</td><td>${esc(i.n||'—')}</td><td class="${i.k==='ded'?'pr-neg':'pr-b'}">${i.k==='ded'?'−':'+'}${f3(i.a)}</td></tr>`).join('')}</tbody></table></div>`:'')+
     `<h4 class="ps-h4">${tr('equipH')}</h4>${eqChips(s,false)}`+
-    `<div class="pr-sum"><span>${tr('price')} <b>${f3(s.p)}</b></span><span>${tr('phTotal')} <b>${f3(pay)}</b></span><span>${tr('eqTotal')} <b>${f3(eq)}</b></span><span>${tr('sessNet')} <b class="${pr<0?'pr-neg':'pr-b'}">${f3(pr)}</b></span></div>`+
+    `<div class="pr-sum"><span>${tr('price')} <b>${f3(sessPrice(s))}</b></span><span>${tr('phTotal')} <b>${f3(pay)}</b></span><span>${tr('eqTotal')} <b>${f3(eq)}</b></span><span>${tr('sessNet')} <b class="${pr<0?'pr-neg':'pr-b'}">${f3(pr)}</b></span></div>`+
     `<div class="pr-acts"><button class="btn-sm" data-ed="${s.id}">${tr('edit')}</button><button class="btn-sm" data-dup="${s.id}">${tr('dup')}</button><button class="btn-sm danger" data-ds="${s.id}">${tr('del')}</button></div>`;
   }else{
     body=`<div class="pr-sh"><label>${tr('sessPrice')}<input type="number" step="any" min="0" data-i="${s.id}" data-f="p" value="${s.p}"></label><label>${tr('pkg')}<select data-pk="${s.id}"><option value="">${tr('noPkg')}</option>${S.pkgs.map(k=>`<option value="${k.id}"${k.id==s.k?' selected':''}>${esc(k.n)}</option>`).join('')}</select></label><label>${tr('date')}<input type="date" data-i="${s.id}" data-f="d" value="${s.d}"></label><label>${tr('time')}<input type="time" data-i="${s.id}" data-f="t" value="${s.t||''}"></label><label class="grow">${tr('sessName')}<input class="pr-txt" data-i="${s.id}" data-f="n" value="${esc(s.n)}"></label><label class="grow">${A_('المكان','Location')}<input class="pr-txt" data-i="${s.id}" data-f="loc" value="${esc(s.loc||'')}"></label></div>
 <div class="pr-lines">${s.lines.map(l=>`<div class="pr-ln"><select data-i="${s.id}" data-l="${l.id}" data-lf="r">${roleOpts(l.r)}</select><select data-i="${s.id}" data-l="${l.id}" data-lf="p">${persOpts(l.p,tr('pickPh'))}</select><input type="number" step="any" min="0" data-i="${s.id}" data-l="${l.id}" data-lf="a" value="${l.a}" aria-label="${tr('amount')}"><button class="pr-x" data-dl="${s.id}" data-l="${l.id}" aria-label="${tr('del')}">×</button></div>`).join('')}</div>
 <div class="pr-adds">${S.roles.map(r=>`<button data-al="${s.id}" data-role="${r.id}">+ ${esc(r.n)}<b>${f3(rateOf(s.k,r.id))}</b></button>`).join('')}</div>
+<h4 class="ps-h4">${A_('بنود إضافية (خدمة إضافية / خصم)','Extra items (service / discount)')}</h4>
+<div class="pr-lines">${(s.x||[]).map(i=>`<div class="pr-ln"><select data-i="${s.id}" data-xi="${i.id}" data-xf="k"><option value="svc"${i.k!=='ded'?' selected':''}>${A_('خدمة إضافية (+)','Extra service (+)')}</option><option value="ded"${i.k==='ded'?' selected':''}>${A_('خصم (−)','Discount (−)')}</option></select><input class="pr-txt" placeholder="${A_('اسم البند','Item name')}" data-i="${s.id}" data-xi="${i.id}" data-xf="n" value="${esc(i.n||'')}"><input type="number" step="any" min="0" data-i="${s.id}" data-xi="${i.id}" data-xf="a" value="${i.a}" aria-label="${tr('amount')}"><button class="pr-x" data-dx="${s.id}" data-x="${i.id}" aria-label="${tr('del')}">×</button></div>`).join('')}</div>
+<div class="pr-adds"><button data-ax="svc" data-sid="${s.id}">+ ${A_('خدمة إضافية','Extra service')}</button><button data-ax="ded" data-sid="${s.id}">− ${A_('خصم','Discount')}</button></div>
 <h4 class="ps-h4">${tr('equipH')}</h4>${eqChips(s,true)}
 <div class="pr-sum"><span>${tr('sessPrice')} <b id="prsp${s.id}"></b></span><span>${tr('phTotal')} <b id="prtp${s.id}"></b></span><span>${tr('eqTotal')} <b id="preq${s.id}"></b></span><span>${tr('sessNet')} <b id="prpr${s.id}"></b></span></div>
 <div class="pr-acts"><button class="btn-gold" style="padding:.5rem 1.1rem" data-ed="${s.id}">${tr('done')}</button><button class="btn-sm danger" data-ds="${s.id}">${tr('del')}</button></div>`;
@@ -2021,7 +2053,7 @@ function calc(){
   if(!V.m)return;
   const a=agg(ymK()),T=(id,v)=>{const e=G(id);if(e)e.textContent=f3(v)},neg=(id,x)=>{const e=G(id);if(e)e.classList.toggle('pr-neg',x<0)};
   fillHero(a);
-  a.L.forEach(s=>{const x=spay(s),eq=eqFee(s),pr=(+s.p||0)-x-eq;T('prsp'+s.id,s.p);T('prh'+s.id,s.p);T('prtp'+s.id,x);T('preq'+s.id,eq);T('prpr'+s.id,pr);neg('prpr'+s.id,pr)});
+  a.L.forEach(s=>{const x=spay(s),eq=eqFee(s),sp=sessPrice(s),pr=sp-x-eq;T('prsp'+s.id,sp);T('prh'+s.id,sp);T('prtp'+s.id,x);T('preq'+s.id,eq);T('prpr'+s.id,pr);neg('prpr'+s.id,pr)});
   const rows=F.ph?a.rows.filter(r=>r.id==F.ph):a.rows;
   rows.forEach(r=>{T('prpt'+r.id,r.tot);T('prpf'+r.id,r.fee);T('prpn'+r.id,r.net);neg('prpn'+r.id,r.net);const c=G('prpc'+r.id);if(c)c.textContent=r.cnt});
   const sm=k=>rows.reduce((q,r)=>q+r[k],0);
@@ -2107,7 +2139,7 @@ function repH(){
   h+=`<article class="pr-sheet"><div class="pr-sheet-head"><div class="pr-sheet-brand">Shuaib Studio</div><div class="pr-sheet-ttl">${one?tr('repDues')+' '+esc(pName(one)):tr('repTitle')}<br>${per}</div></div><div class="pr-sheet-body"><div class="pr-meta"><span>${tr('cntSess')} <b>${sl.length}</b></span><span>${tr('from')} <b>${fmtD(ds[0])}</b></span><span>${tr('to')} <b>${fmtD(ds[ds.length-1])}</b></span><span>${tr('printDate')} <b>${fmtD(TD)}</b></span></div>`;
   if(!one){
     h+=`<div class="pr-boxes"><div><span>${tr('sProjects')}</span><b>${f3(T.price)}</b></div><div><span>${tr('sPay')}</span><b>${f3(T.pay)}</b></div><div><span>${tr('sEq')}</span><b>${f3(T.eqt)}</b></div><div><span>${tr('sSubs')}</span><b>${f3(T.subs)}</b></div><div><span>${tr('sFund')}</span><b>${f3(T.res)}</b></div><div><span>${tr('profit')}</span><b>${f3(T.profit)}</b></div></div>`;
-    h+=`<section><h3>${tr('sessionsH')}</h3><table><thead><tr><th>#</th><th>${tr('date')}</th><th>${tr('thSession')}</th><th>${tr('price')}</th><th>${tr('sPay')}</th><th>${tr('sEq')}</th><th>${tr('sessNet')}</th></tr></thead><tbody>${Ls.map((s,i)=>{const p=spay(s),e=eqFee(s);return`<tr><td>${i+1}</td><td>${fmtD(s.d)}</td><td>${s.n?esc(s.n):'—'}</td><td>${f3(s.p)}</td><td>${f3(p)}</td><td>${f3(e)}</td><td>${f3((+s.p||0)-p-e)}</td></tr>`}).join('')||`<tr><td colspan="7">${tr('noSessions')}</td></tr>`}</tbody></table></section>`;
+    h+=`<section><h3>${tr('sessionsH')}</h3><table><thead><tr><th>#</th><th>${tr('date')}</th><th>${tr('thSession')}</th><th>${tr('price')}</th><th>${tr('sPay')}</th><th>${tr('sEq')}</th><th>${tr('sessNet')}</th></tr></thead><tbody>${Ls.map((s,i)=>{const p=spay(s),e=eqFee(s);return`<tr><td>${i+1}</td><td>${fmtD(s.d)}</td><td>${s.n?esc(s.n):'—'}</td><td>${f3(sessPrice(s))}</td><td>${f3(p)}</td><td>${f3(e)}</td><td>${f3(sessPrice(s)-p-e)}</td></tr>`}).join('')||`<tr><td colspan="7">${tr('noSessions')}</td></tr>`}</tbody></table></section>`;
     const sm=k=>P.reduce((q,r)=>q+r[k],0);
     h+=`<section><h3>${tr('phSummary')}</h3><table><thead><tr><th>${tr('photographer')}</th><th>${tr('thSess')}</th><th>${tr('thGross')}</th><th>${tr('thFee')}</th><th>${tr('thAdv')}</th><th>${tr('thNet')}</th></tr></thead><tbody>${P.map(r=>`<tr><td>${esc(r.n)}</td><td>${r.cnt}</td><td>${f3(r.tot)}</td><td>${f3(r.fee)}</td><td>${f3(r.adv)}</td><td><b>${f3(r.net)}</b></td></tr>`).join('')}</tbody><tfoot><tr><td>${tr('total')}</td><td></td><td>${f3(sm('tot'))}</td><td>${f3(sm('fee'))}</td><td>${f3(sm('adv'))}</td><td>${f3(sm('net'))}</td></tr></tfoot></table></section>`;
   }
@@ -2183,6 +2215,7 @@ function bind(){
     else if(d.eqf){S.equip.find(x=>x.id==d.eqf).f=+v||0;persist();V.m?calc():viewYear()}
     else if(d.sbn){S.subs.find(x=>x.id==d.sbn).n=v;persist()}
     else if(d.sba){S.subs.find(x=>x.id==d.sba).a=+v||0;persist();V.m?calc():viewYear()}
+    else if(d.xi){const x=(ses(d.i).x||[]).find(q=>q.id==d.xi);if(x){x[d.xf]=d.xf==='a'?(v===''?'':+v):v;persist();calc()}}
     else if(d.l&&d.lf=='a'){ln(ses(d.i),d.l).a=v===''?'':+v;persist();calc()}
     else if(d.i&&!d.l&&d.f!='d'){ses(d.i)[d.f]=d.f=='p'?(v===''?'':+v):v;persist();calc()}
   });
@@ -2192,6 +2225,7 @@ function bind(){
     else if(t.id=='pr-msel'){V.m=+v;render()}
     else if(t.id=='pr-fph'){F.ph=v;render()}
     else if(t.id=='pr-fpk'){F.pk=v;render()}
+    else if(d.xi){const x=(ses(d.i).x||[]).find(q=>q.id==d.xi);if(x){x[d.xf]=d.xf==='a'?(v===''?'':+v):v;persist();viewMain()}}
     else if(d.l&&d.lf=='r'){const l=ln(ses(d.i),d.l),r=S.roles.find(x=>x.id==v);l.r=v;if(r){l.a=rateOf(ses(d.i).k,v);if(r.p)l.p=r.p}persist();render()}
     else if(d.l&&d.lf=='p'){ln(ses(d.i),d.l).p=v;persist();render()}
     else if(d.pk){const s=ses(d.pk),o=s.k,pk=S.pkgs.find(x=>x.id==v);s.lines.forEach(l=>{if((+l.a||0)==rateOf(o,l.r))l.a=rateOf(v,l.r)});s.k=v;if(pk&&pk.price!==''&&pk.price!=null&&s.p==='')s.p=+pk.price;persist();render()}
@@ -2209,10 +2243,12 @@ function bind(){
     else if(d.tg){const id=d.tg;if(EDIT.has(id)){EDIT.delete(id);OPEN.delete(id)}else OPEN.has(id)?OPEN.delete(id):OPEN.add(id);viewMain()}
     else if(d.ps){const Ls=shown(agg(ymK()).L);Ls.forEach(s=>d.ps=='open'?OPEN.add(s.id):(OPEN.delete(s.id),EDIT.delete(s.id)));viewMain()}
     else if(d.eqt){const s=ses(d.eqt);s.eq=s.eq||[];const i=s.eq.indexOf(d.eid);i<0?s.eq.push(d.eid):s.eq.splice(i,1);persist();viewMain()}
-    else if(d.ed){EDIT.has(d.ed)?EDIT.delete(d.ed):(EDIT.add(d.ed),OPEN.add(d.ed));viewMain()}
+    else if(d.ed){if(EDIT.has(d.ed)){EDIT.delete(d.ed);OPEN.delete(d.ed)}else{EDIT.add(d.ed);OPEN.add(d.ed)};viewMain()}   // «تم» تحفظ وتطوي الجلسة تلقائيًا
     else if(b.id=='pr-newS'){const ym=ymK();newSession(TD.slice(0,7)==ym?TD:ym+'-01')}
     else if(d.al){const s=ses(d.al),r=S.roles.find(x=>x.id==d.role);s.lines.push({id:uid(),r:r.id,p:r.p||'',a:rateOf(s.k,r.id)});persist();viewMain()}
     else if(d.dl){const s=ses(d.dl);s.lines=s.lines.filter(x=>x.id!=d.l);persist();viewMain()}
+    else if(d.ax){const s=ses(d.sid);s.x=s.x||[];s.x.push({id:uid(),k:d.ax,n:'',a:''});persist();viewMain()}
+    else if(d.dx){const s=ses(d.dx);s.x=(s.x||[]).filter(q=>q.id!=d.x);persist();viewMain()}
     else if(d.dup){const s=ses(d.dup),n={...s,id:uid(),eq:[...(s.eq||[])],lines:s.lines.map(l=>({...l,id:uid()}))};delete n.inv;S.sessions.push(n);EDIT.add(n.id);OPEN.add(n.id);persist();viewMain()}
     else if(d.ds){if(!sure(b))return;S.sessions=S.sessions.filter(x=>x.id!=d.ds);persist();render()}
     else if(d.dr){if(!sure(b))return;S.roles=S.roles.filter(x=>x.id!=d.dr);persist();render()}
@@ -2306,6 +2342,19 @@ function addBooking(b,quiet){
   }
   return{id:s.id,isNew};
 }
+// ملخص كل مصوّر في فترة (month/year/all): مجموع مبالغه من أسطر الجلسات + عدد التصويرات + تواريخها
+function photographerSummary(mode){
+  const inP=d=>mode==='all'||(mode==='month'?d.slice(0,7)===TD.slice(0,7):d.slice(0,4)===TD.slice(0,4)),T={};
+  S.sessions.filter(s=>s.d&&inP(s.d)).sort(byD).forEach(s=>{
+    const per={};
+    s.lines.forEach(l=>{if(l.p&&stf(l.p))per[l.p]=(per[l.p]||0)+(+l.a||0)});
+    Object.entries(per).forEach(([id,a])=>{
+      const q=T[id]||(T[id]={id,name:pName(id),total:0,count:0,dates:[]});
+      q.total+=a;q.count++;q.dates.push({d:s.d,t:s.t||'',n:s.n||'',a});
+    });
+  });
+  return Object.values(T).sort((x,y)=>y.total-x.total);
+}
 // نسخة بدون أسعار من الجلسات لصفحة الموظفين (staff.html): تاريخ/وقت/اسم/باقة/مصورون/معدات فقط
 // مجموع المبالغ لكل مصور (من أسطر الجلسات): الكل + هذا الشهر + عدد الجلسات
 function totals(){
@@ -2329,7 +2378,7 @@ function openStaffReport(id){
   showRep(String(id));
 }
 bind();
-return{render,renderSchedule,periodStats,fromInvoice,openStaffReport,closeReport,openSession,newOn,addBooking,scheduleSnapshot,totals};
+return{render,renderSchedule,periodStats,fromInvoice,openStaffReport,closeReport,openSession,newOn,addBooking,scheduleSnapshot,totals,photographerSummary};
 })();
 
 // ── حجوزات الزبائن (Supabase): تسجيل دخول صاحب الاستوديو ثم تحويل الحجوزات الجديدة إلى جلسات في التكاليف ──
@@ -2337,7 +2386,7 @@ const SBK='ss_sb';
 const SB_OWNER='ihasanshuaib@gmail.com';   // pay.html لصاحب الاستوديو فقط؛ بقية الحسابات (المصورون) تدخل staff.html
 let sbAuth=null;try{sbAuth=JSON.parse(localStorage.getItem(SBK)||'null')}catch(e){}
 if(sbAuth&&String(sbAuth.email||'').toLowerCase()!==SB_OWNER){sbAuth=null;try{localStorage.removeItem(SBK)}catch(e){}}
-let sbMsg='',sbBusy=false;
+let sbMsg='',sbBusy=false,sbAdvOpen=false;
 const sbCfg=()=>window.SB||{};
 // اليوزر hasan يُحوَّل إلى ihasanshuaib@gmail.com لأن Supabase Auth يعمل بالبريد؛ ويُقبل البريد الكامل أيضًا
 const SB_USERS={hasan:'ihasanshuaib@gmail.com'};
@@ -2395,7 +2444,7 @@ function sbRender(){
   let h=`<div class="card-title">${A_('الحساب السحابي: حفظ البيانات وحجوزات الزبائن','Cloud account: data backup & customer bookings')}</div>`;
   if(!c.key)h+=`<p class="pr-hint">${A_('لم يُضبط مفتاح Supabase بعد: افتح supabase-config.js وضع المفتاح العام (anon/publishable).','Supabase key not set: put the public (anon/publishable) key in supabase-config.js.')}</p>`;
   else if(!sbAuth)h+=`<form id="sb-form" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center"><input id="sb-email" type="text" autocomplete="username" autocapitalize="none" placeholder="${A_('اليوزر','Username')}" ${inp}><input id="sb-pass" type="password" autocomplete="current-password" placeholder="${A_('كلمة المرور','Password')}" ${inp}><button class="btn-gold" type="submit">${A_('تسجيل الدخول','Sign in')}</button></form>`+(sbMsg?`<p class="pr-hint" style="color:var(--danger)">${escH(sbMsg)}</p>`:'')+`<p class="pr-hint">${A_('سجّل دخول حساب الاستوديو لتُحفظ بياناتك سحابيًا وتظهر في أي متصفح، ولتصلك حجوزات الزبائن تلقائيًا في التكاليف.','Sign in with the studio account to save your data in the cloud (any browser) and receive customer bookings automatically.')}</p>`;
-  else h+=`<div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center"><span>✅ ${escH((sbAuth.email||'').split('@')[0])}</span><button class="btn-sm" id="sb-sync">${A_('مزامنة الآن','Sync now')}</button><button class="btn-sm" id="sb-out">${A_('خروج','Sign out')}</button><button class="btn-sm danger" id="sb-wipe" style="margin-inline-start:auto">🗑 ${A_('مسح كل البيانات والبدء من جديد','Erase all data & start over')}</button></div><p class="pr-hint">${escH(sbMsg||'')}</p><p class="pr-hint">${escH(syncMsg||'')}</p>`;
+  else h+=`<div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center"><span>✅ ${escH((sbAuth.email||'').split('@')[0])}</span><button class="btn-sm" id="sb-sync">${A_('مزامنة الآن','Sync now')}</button><button class="btn-sm" id="sb-out">${A_('خروج','Sign out')}</button><button class="btn-sm" id="sb-adv" style="margin-inline-start:auto" aria-expanded="${sbAdvOpen}">⚙ ${A_('خيارات متقدمة','Advanced')}</button></div><div id="sb-adv-box" ${sbAdvOpen?'':'hidden'} style="margin-top:.6rem;padding:.6rem .8rem;border:1px dashed var(--danger);border-radius:10px"><p class="pr-hint" style="margin:0 0 .5rem">${A_('منطقة خطرة: المسح نهائي (تُنزَّل نسخة احتياطية قبله).','Danger zone: erasing is permanent (a backup is downloaded first).')}</p><button class="btn-sm danger" id="sb-wipe">🗑 ${A_('مسح كل البيانات والبدء من جديد','Erase all data & start over')}</button></div><p class="pr-hint">${escH(sbMsg||'')}</p><p class="pr-hint">${escH(syncMsg||'')}</p>`;
   b.innerHTML=h;
 }
 document.addEventListener('submit',async e=>{
@@ -2418,6 +2467,7 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   if(b.id==='sb-sync'){sbSync(true);syncPull()}
   else if(b.id==='sb-out'){sbSave(null);sbMsg='';sbRender()}
+  else if(b.id==='sb-adv'){sbAdvOpen=!sbAdvOpen;sbRender()}
   else if(b.id==='sb-wipe')wipeAll();
 });
 window.addEventListener('focus',()=>sbSync());
