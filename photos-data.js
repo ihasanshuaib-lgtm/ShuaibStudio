@@ -1,41 +1,45 @@
 // قوائم صور كل نوع تصوير — مصدر واحد تستخدمه index.html (المعرض) و photos.html (المزيد من الصور)
 // لإضافة صور: انسخها إلى مجلد النوع، شغّل  bash scripts/make-thumbs.sh  و  bash scripts/make-hd.sh
 // ثم أضف أسماءها هنا بالضبط، وارفع THUMB_VERSION.
-window.THUMB_VERSION = '4';
+window.THUMB_VERSION = '5';
 window.CATEGORY_PHOTOS = {
   weddings: {
     folder: 'photos/',
     photos: [
       '8.jpeg',
+      'Artboard 1٠.jpg',
       'DSC02717-2.jpg',
       'DSC02746-2.jpg',
       'DSC02752-2.jpg',
+      'DSC04845.jpg',
+      'DSC04926.jpg',
+      'DSC04934-2.jpg',
+      'DSC05147.jpg',
       'gallery1.jpg',
       'gallery2.jpg',
       'gallery3.jpg',
       'gallery5.jpg',
-      'Artboard 1٠.jpg',
     ],
   },
   realestate: {
     folder: 'prodacts_pic/',
     photos: [
-      '1.png',
-      '3.png',
-      '6.png',
+      '00.jpg',
+      '0000.jpg',
+      '1.jpg',
+      '3.jpg',
+      '7 2.jpg',
       '7.jpg',
-      '7.png',
       '8 2.jpg',
       '8.jpg',
-      '32.png',
-      '35.png',
+      '10.jpg',
+      '11.jpg',
+      '13.jpg',
       'Artboard 2.jpg',
       'Artboard 3.jpg',
       'Artboard 4.jpg',
       'Artboard 6.jpg',
-      'Artboard 7.jpg',
       'Artboard 9.jpg',
-      'Artboard 10.jpg',
       'Artboard 11.jpg',
       'Artboard 12.jpg',
       'Artboard 13.jpg',
