@@ -668,7 +668,83 @@ button{ -webkit-tap-highlight-color:transparent }
 .stamp-paid{display:inline-block;margin-inline-start:.75rem;padding:.1rem .6rem;border:2px solid #2e8b57;color:#2e8b57;border-radius:6px;font-size:.85rem;font-weight:800;letter-spacing:.08em;transform:rotate(-4deg);vertical-align:middle}
 @media print{.app-toast{display:none!important}}
 
+/* ===== business modules: quotations · expenses · equipment · reports · settings ===== */
+.bz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem;margin-bottom:1rem}
+.bz-kpi{padding:.9rem 1rem;border-radius:16px;background:var(--card-g);border:1px solid rgba(255,255,255,.85);box-shadow:var(--lift-sm);min-width:0}
+.bz-kpi span{display:block;font-size:.72rem;color:var(--muted);font-weight:700;margin-bottom:.2rem}
+.bz-kpi b{font-size:1.2rem;color:var(--white);font-weight:800;direction:ltr;display:inline-block}
+.bz-kpi small{display:block;font-size:.72rem;color:var(--muted);margin-top:.15rem}
+.bz-health{display:inline-flex;align-items:center;gap:.45rem;padding:.28rem .8rem;border-radius:999px;font-weight:800;font-size:.8rem;white-space:nowrap}
+.bz-health i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.h-good{background:rgba(95,138,108,.16);color:#4c7a5a}.h-good i{background:#4c9a63}
+.h-warn{background:rgba(214,163,55,.18);color:#8f6812}.h-warn i{background:#d6a337}
+.h-bad{background:rgba(192,69,59,.15);color:#a83a31}.h-bad i{background:#c0453b}
+.bz-prog{height:10px;border-radius:6px;background:#e3ddd5;box-shadow:var(--sunk);overflow:hidden;margin:.45rem 0}
+.bz-prog i{display:block;height:100%;background:var(--btn-sage);border-radius:6px}
+.bz-recs{list-style:none;margin:.4rem 0 0;padding:0;display:flex;flex-direction:column;gap:.45rem}
+.bz-recs li{padding:.6rem .8rem;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-size:.86rem;line-height:1.7}
+.bz-recs li b{color:var(--white)}
+.bz-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.bz-table th{font-size:.72rem;color:var(--muted);font-weight:700;text-align:start;padding:.45rem .5rem;border-bottom:1px solid var(--border);white-space:nowrap}
+.bz-table td{padding:.5rem;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text)}
+.bz-table .num{direction:ltr;text-align:end;white-space:nowrap}
+[dir="rtl"] .bz-table .num{text-align:left}
+.bz-table tfoot td{font-weight:800;color:var(--rose-d);border-bottom:0}
+.bz-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.75rem;margin-bottom:.8rem}
+.bz-form label{display:flex;flex-direction:column;gap:.3rem;font-size:.74rem;color:var(--muted);font-weight:600;min-width:0}
+.bz-in{background:#ece7e0;border:1px solid var(--border);border-radius:12px;padding:.55rem .8rem;color:var(--text);font:inherit;font-size:.88rem;box-shadow:var(--sunk);outline:none;width:100%;min-width:0}
+.bz-in:focus{border-color:var(--focus);box-shadow:var(--sunk),var(--focus-ring)}
+.bz-in:disabled{opacity:.6}
+textarea.bz-in{min-height:70px;resize:vertical}
+@media(max-width:700px){.bz-in{font-size:16px}.bz-form label[style*="span 2"]{grid-column:auto!important}}
+.bz-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 1rem;align-items:start}
+@media(max-width:900px){.bz-two{grid-template-columns:1fr}}
+.bz-bars{display:flex;align-items:flex-end;gap:5px;height:150px;padding:.4rem 0 0}
+.bz-bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}
+.bz-bar i{display:block;width:100%;max-width:34px;border-radius:6px 6px 2px 2px;background:var(--btn-sage)}
+.bz-bar i.fc{background:repeating-linear-gradient(45deg,#c9b8ae,#c9b8ae 4px,#e2d6cf 4px,#e2d6cf 8px);border-radius:6px 6px 0 0}
+.bz-bar small{font-size:.62rem;color:var(--muted);margin-top:4px;white-space:nowrap}
+.bz-hbar{display:grid;grid-template-columns:minmax(80px,150px) 1fr auto;gap:.6rem;align-items:center;margin:.35rem 0;font-size:.82rem}
+.bz-hbar>div{height:9px;border-radius:5px;background:#e3ddd5;overflow:hidden}
+.bz-hbar>div i{display:block;height:100%;background:var(--rose);border-radius:5px}
+.bz-hbar b{direction:ltr;font-size:.8rem}
+.bz-warn{margin:.6rem 0;padding:.55rem .8rem;border-radius:12px;background:rgba(214,163,55,.14);border:1px solid rgba(214,163,55,.45);color:#8a6414;font-size:.84rem;font-weight:600;line-height:1.6}
+.badge-overdue{background:rgba(192,69,59,.15);color:#a83a31;border:1px solid rgba(192,69,59,.35)}
+.badge-sent{background:rgba(90,167,232,.14);color:#3a7cb5;border:1px solid rgba(90,167,232,.3)}
+.badge-approved{background:rgba(95,138,108,.14);color:#5f8a6c;border:1px solid rgba(95,138,108,.3)}
+.badge-rejected{background:rgba(120,120,120,.12);color:#777;border:1px solid rgba(120,120,120,.3)}
+.inv-co{font-size:.76rem;color:#2d5da1;padding-left:1.2rem;margin-top:.35rem;line-height:1.6;opacity:.85}
+.pr-sheet .num{text-align:end;direction:ltr}
+.pr-sheet .bz-grid{grid-template-columns:repeat(3,1fr)}.pr-sheet .bz-kpi{box-shadow:none;background:#f8f4ea;border:1px solid #e0dacb}
+.pr-sheet .bz-kpi b{color:#222}.pr-sheet .bz-hbar>div{background:#eee}
+
+/* ===== dark mode ===== */
+html[data-theme="dark"]{color-scheme:dark;
+  --gold:#d8b27a;--rose:#c99486;--rose-d:#e3a998;--sage:#8fb09a;--sage-d:#7aa086;--sage-dd:#a9cdb3;
+  --dark:#141210;--off:#1a1714;--surface:#1f1b18;--border:#3a322b;--text:#e9e0d3;--muted:#a3978a;--white:#f6efe4;
+  --danger:#e8968c;--success:#8fc39e;--sh-l:#2a2521;--sh-d:#070605;
+  --lift:6px 6px 14px #070605,-4px -4px 12px #26211d;--lift-sm:3px 3px 8px #070605,-2px -2px 6px #26211d;
+  --float:10px 12px 26px #050403,-6px -6px 16px #26211d;--sunk:inset 3px 3px 7px #0a0908,inset -2px -2px 6px #2b2622;
+  --card-g:linear-gradient(145deg,#24201c,#1b1815);--btn-sage:linear-gradient(145deg,#6f8f78,#5a7a63)}
+html[data-theme="dark"] body{background:radial-gradient(ellipse at 50% 0%,#211d19 0%,#141210 60%,#0e0c0a 100%) fixed !important}
+html[data-theme="dark"] nav{background:rgba(20,18,16,.92);border-bottom-color:#2c2621;box-shadow:0 8px 22px -12px #000}
+html[data-theme="dark"] .form-group input,html[data-theme="dark"] .form-group select,html[data-theme="dark"] .form-group textarea,html[data-theme="dark"] #client-picker,html[data-theme="dark"] .pr-rep-bar select{background:#181513 !important;border-color:#3a322b !important}
+html[data-theme="dark"] .inv-items input,html[data-theme="dark"] #page-payroll input,html[data-theme="dark"] #page-payroll select,html[data-theme="dark"] #page-payroll textarea,html[data-theme="dark"] .svc-ed input,html[data-theme="dark"] .f-search,html[data-theme="dark"] .flt .f-sel select,html[data-theme="dark"] .bz-in,html[data-theme="dark"] .gate-card input{background:#181513;border-color:#3a322b}
+html[data-theme="dark"] .nav-links button.active,html[data-theme="dark"] .client-inv-count,html[data-theme="dark"] .pr-dt,html[data-theme="dark"] .pr-sum,html[data-theme="dark"] .pr-ln,html[data-theme="dark"] .pr-pk,html[data-theme="dark"] .pr-seg,html[data-theme="dark"] .ps-date,html[data-theme="dark"] .sc-time,html[data-theme="dark"] .pr-cd{background:#181513}
+html[data-theme="dark"] .lang-btn,html[data-theme="dark"] .btn-outline,html[data-theme="dark"] .btn-sm,html[data-theme="dark"] .svc-chip,html[data-theme="dark"] .staff-avatar,html[data-theme="dark"] .client-avatar,html[data-theme="dark"] .modal-close,html[data-theme="dark"] .pr-tab,html[data-theme="dark"] .pr-adds button,html[data-theme="dark"] .pr-x.txt,html[data-theme="dark"] .pr-cd,html[data-theme="dark"] .pr-upi,html[data-theme="dark"] .pr-upg,html[data-theme="dark"] .f-chip,html[data-theme="dark"] .eq-chip,html[data-theme="dark"] .sc-arrow,html[data-theme="dark"] .qa{border-color:#3a322b}
+html[data-theme="dark"] .service-card,html[data-theme="dark"] .stat-box,html[data-theme="dark"] .card,html[data-theme="dark"] .staff-card,html[data-theme="dark"] .client-card,html[data-theme="dark"] .invoice-row,html[data-theme="dark"] .pr-card,html[data-theme="dark"] .flt,html[data-theme="dark"] .sc-sess,html[data-theme="dark"] .bz-kpi{border-color:#2f2924}
+html[data-theme="dark"] .pr-cd.sel,html[data-theme="dark"] .pr-upi.next{background:#1d2a36}
+html[data-theme="dark"] .svc-chip.selected{background:#1f2b22}
+html[data-theme="dark"] .bz-prog,html[data-theme="dark"] .bz-hbar>div{background:#2a2521}
+html[data-theme="dark"] .bz-bar i.fc{background:repeating-linear-gradient(45deg,#5a4a42,#5a4a42 4px,#3a302b 4px,#3a302b 8px)}
+html[data-theme="dark"] .h-good{color:#9fd3ac}html[data-theme="dark"] .h-warn{color:#f0c66a}html[data-theme="dark"] .h-bad{color:#f19a90}
+html[data-theme="dark"] .bz-warn{color:#f0c66a}
+html[data-theme="dark"] ::selection{background:#5a4a42;color:#fff}
+html[data-theme="dark"] ::-webkit-scrollbar-thumb{background:#3a322b}
+@media print{html[data-theme="dark"] body{background:#fff !important}}
+
 </style>
+<script>try{var _th=localStorage.getItem('ss_theme');if(_th==='dark'||(!_th&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
 <script>try{if(!localStorage.getItem('ss_sb'))document.documentElement.classList.add('locked')}catch(e){document.documentElement.classList.add('locked')}</script>
 <style>
 /* بوابة الدخول: الصفحة مخفية حتى تسجيل الدخول */
@@ -700,13 +776,19 @@ html.locked body>*:not(#gate){display:none !important}
   <div class="logo" id="nav-logo">Shuaib Studio</div>
   <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
     <div class="nav-links">
-      <button class="active" onclick="showPage('home',event)" data-en="Home" data-ar="الرئيسية">Home</button>
-      <button onclick="showPage('booking',event)" data-en="Booking" data-ar="حجز">Booking</button>
-      <button onclick="showPage('invoices',event)" data-en="Invoices" data-ar="الفواتير">Invoices</button>
-      <button onclick="showPage('clients',event)" data-en="Clients" data-ar="العملاء">Clients</button>
-      <button onclick="showPage('staff',event)" data-en="Staff" data-ar="الموظفون">Staff</button>
-      <button onclick="showPage('payroll',event)" data-en="Payroll" data-ar="الرواتب">Payroll</button>
+      <button class="active" data-page="home" onclick="showPage('home')">Home</button>
+      <button data-page="booking" onclick="showPage('booking')">Booking</button>
+      <button data-page="invoices" onclick="showPage('invoices')">Invoices</button>
+      <button data-page="quotes" onclick="showPage('quotes')">Quotations</button>
+      <button data-page="clients" onclick="showPage('clients')">Clients</button>
+      <button data-page="staff" onclick="showPage('staff')">Staff</button>
+      <button data-page="payroll" onclick="showPage('payroll')">Payroll</button>
+      <button data-page="expenses" onclick="showPage('expenses')">Expenses</button>
+      <button data-page="equipment" onclick="showPage('equipment')">Equipment</button>
+      <button data-page="reports" onclick="showPage('reports')">Reports</button>
+      <button data-page="settings" onclick="showPage('settings')">Settings</button>
     </div>
+    <button class="lang-btn" onclick="BZ.toggleTheme()" id="theme-btn" aria-label="Theme">🌙</button>
     <button class="lang-btn" onclick="toggleLang()" id="lang-btn">عربي</button>
   </div>
 </nav>
@@ -737,6 +819,7 @@ html.locked body>*:not(#gate){display:none !important}
   </div>
 
   <!-- المبالغ المستحقة على العملاء -->
+  <div class="card" id="home-biz" style="margin-top:1.2rem"></div>
   <div class="card" id="due-box" style="margin-top:1.2rem"></div>
   <div class="card" id="home-ph" style="margin-top:1.2rem"></div>
 
@@ -795,6 +878,7 @@ html.locked body>*:not(#gate){display:none !important}
           </select>
         </div>
         <div class="form-group"><label id="lbl-paidamt">Paid / deposit (BHD)</label><input id="inv-paid" type="number" step="0.001" min="0" placeholder="0.000" oninput="calcTotals()" /></div>
+        <div class="form-group"><label id="lbl-due">Due date</label><input id="inv-due" type="date" /></div>
       </div>
     </div>
     <div class="card">
@@ -826,6 +910,7 @@ html.locked body>*:not(#gate){display:none !important}
       <div class="inv-totals" style="margin-top:1.25rem">
         <div><span id="lbl-subtotal">Subtotal</span>: <strong id="subtotal">BHD 0.000</strong></div>
         <div><span id="lbl-disc-total">Discount</span>: <strong id="disc-total" style="color:var(--danger)">- BHD 0.000</strong></div>
+        <div id="vat-line" style="display:none"><span id="lbl-vat">VAT</span>: <strong id="vat-total">BHD 0.000</strong></div>
         <div class="total-line"><span id="lbl-total">Total</span>: <span id="grand-total">BHD 0.000</span></div>
         <div id="rem-line" style="margin-top:.4rem"><span id="lbl-remaining">Remaining</span>: <strong id="inv-remaining" style="color:var(--danger)">BHD 0.000</strong></div>
       </div>
@@ -869,6 +954,8 @@ html.locked body>*:not(#gate){display:none !important}
         <div class="form-group"><label id="clf-lbl-iban">IBAN</label><input id="clf-iban" /></div>
         <div class="form-group"><label id="clf-lbl-addr">Address</label><input id="clf-addr" /></div>
         <div class="form-group"><label id="clf-lbl-email">Email</label><input id="clf-email" type="email" /></div>
+        <div class="form-group"><label id="clf-lbl-company">Company</label><input id="clf-company" /></div>
+        <div class="form-group" style="grid-column:1/-1"><label id="clf-lbl-notes">Notes</label><textarea id="clf-notes" rows="2"></textarea></div>
       </div>
       <div style="display:flex;gap:0.75rem;margin-top:0.75rem">
         <button class="btn-gold" onclick="saveClient()" id="clf-save-btn">Save</button>
@@ -929,6 +1016,13 @@ html.locked body>*:not(#gate){display:none !important}
 </div>
 
 
+<!-- QUOTATIONS · EXPENSES · EQUIPMENT · REPORTS · SETTINGS (rendered by BZ) -->
+<div class="page" id="page-quotes"><div id="quotes-root"></div></div>
+<div class="page" id="page-expenses"><div id="expenses-root"></div></div>
+<div class="page" id="page-equipment"><div id="equipment-root"></div></div>
+<div class="page" id="page-reports"><div id="reports-root"></div></div>
+<div class="page" id="page-settings"><div id="settings-root"></div></div>
+
 <div class="app-toast" id="app-toast" role="status" hidden></div>
 <div id="bk-banner" hidden style="position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:300;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;max-width:94vw;padding:.7rem 1rem;border-radius:14px;background:var(--card-g,var(--surface));border:1px solid var(--border);box-shadow:0 12px 34px rgba(0,0,0,.28);font-size:.88rem"></div>
 
@@ -966,7 +1060,7 @@ function save(){
 const T = {
   en:{
     logo:'Shuaib Studio',
-    nav:['Dashboard','Bookings','Invoices & Quotes','Clients','Team','Session Costs','Calendar'],
+    nav:['Dashboard','Bookings','Invoices','Quotations','Clients','Team','Session Costs','Expenses','Equipment','Reports','Settings'],
     langBtn:'عربي',
     heroTag:'Photography & Videography Studio',
     heroTitle:'We Capture <em>Moments</em><br>That Last Forever',
@@ -1000,7 +1094,7 @@ const T = {
   },
   ar:{
     logo:'شعيب استوديو',
-    nav:['لوحة التحكم','الحجوزات','الفواتير والعروض','العملاء','فريق العمل','تكاليف الجلسات','التقويم'],
+    nav:['لوحة التحكم','الحجوزات','الفواتير','عروض الأسعار','العملاء','فريق العمل','تكاليف الجلسات','المصروفات','المعدات','التقارير','الإعدادات'],
     langBtn:'English',
     heroTag:'استوديو تصوير واستوديو فيديوغرافي',
     heroTitle:'نحن نلتقط <em>اللحظات</em><br>التي تدوم للأبد',
@@ -1109,7 +1203,7 @@ function applyLang(){
   Array.from(roleSel.options).forEach((o,i)=>{ o.text = roleOpts[i]||o.text; });
 
   renderHomeFlt(); renderInvFlt(); renderClFlt(); renderStFlt();
-  renderInvoices(); renderStaff(); renderClients(); PR.render(); updateStats();
+  renderInvoices(); renderStaff(); renderClients(); PR.render(); updateStats(); BZ.applyLang();
   // تحديث chips لو الفورم مفتوح
   if(document.getElementById('invoice-form').style.display !== 'none') buildServiceChips();
 }
@@ -1120,17 +1214,11 @@ function toggleLang(){
 }
 
 // ── NAVIGATION ──────────────────────────────────────
-function showPage(p, ev){
-  const e = ev||event;
+function showPage(p){
+  const pg=document.getElementById('page-'+p);if(!pg)return;
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.nav-links button').forEach(x=>x.classList.remove('active'));
-  document.getElementById('page-'+p).classList.add('active');
-  if(e && e.target && e.target.classList.contains('nav-links')=== false) e.target.classList.add('active');
-  // re-activate correct nav button
-  const navBtns = document.querySelectorAll('.nav-links button');
-  const pages=['home','booking','invoices','clients','staff','payroll'];
-  const idx=pages.indexOf(p);
-  if(idx>=0) navBtns[idx].classList.add('active');
+  pg.classList.add('active');
+  document.querySelectorAll('.nav-links button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));
   if(p==='home'){ updateStats(); PR.renderSchedule(); }
   if(p==='invoices') renderInvoices();
   if(p==='clients'){ renderClients(); }
@@ -1140,6 +1228,7 @@ function showPage(p, ev){
     const f=document.getElementById('booking-iframe');
     try{ f.style.height=Math.max(f.contentWindow.document.body.scrollHeight,2000)+'px'; }catch(e){}
   }
+  BZ.renderPage(p);
 }
 window.addEventListener('message',e=>{
   const f=document.getElementById('booking-iframe');
@@ -1176,7 +1265,7 @@ function renderInvFlt(){
   const dirty=IF.q||IF.st!=='all'||IF.per!=='all';
   document.getElementById('inv-flt').innerHTML=
     fSearch('inv-q',IF.q,A_('ابحث باسم العميل أو رقم الفاتورة…','Search client or invoice #…'))+
-    fChips('is',[['all',A_('الكل','All')],['paid',A_('مدفوع','Paid')],['unpaid',A_('غير مدفوع','Unpaid')],['draft',A_('مسودة','Draft')]],IF.st)+
+    fChips('is',[['all',A_('الكل','All')],['paid',A_('مدفوع','Paid')],['unpaid',A_('غير مدفوع','Unpaid')],['overdue',A_('متأخرة','Overdue')],['draft',A_('مسودة','Draft')]],IF.st)+
     fChips('ip',perChips(),IF.per)+fReset('inv-reset',dirty);
 }
 function renderClFlt(){
@@ -1215,7 +1304,7 @@ function updateStats(){
   const ps=PR.periodStats(HP);
   document.getElementById('stat-pr-net').textContent='BHD '+ps.pay.toFixed(3);
   document.getElementById('stat-pr-profit').textContent='BHD '+ps.profit.toFixed(3);
-  renderGreeting(); renderDue(); renderHomePh();
+  renderGreeting(); renderDue(); renderHomePh(); BZ.renderHome();
 }
 
 // ── helpers: dates, payments, toast, files ───────────
@@ -1245,7 +1334,7 @@ function renderDue(){
   if(!list.length){box.innerHTML=`<div class="card-title">${ttl}</div><p class="pr-hint">${A_('كل الفواتير محصّلة 👌','All invoices are collected 👌')}</p>`;return}
   const sum=list.reduce((s,i)=>s+invRem(i),0);
   box.innerHTML=`<div class="card-title" style="display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap"><span>${ttl} (${list.length})</span><span class="due-amt">BHD ${sum.toFixed(3)}</span></div>`+
-    list.slice(0,8).map(i=>{const age=daysSince(i.date);return `<div class="due-row"><div class="grow"><b>${escH(i.client)}</b><small>${escH(i.number)} · ${escH(i.date||'')}${age>0?' · '+A_(`منذ ${age} يوم`,`${age} days ago`):''}${invPaid(i)>0?' · '+A_('مدفوع','paid')+' '+invPaid(i).toFixed(3):''}</small></div><span class="due-amt">${invRem(i).toFixed(3)}</span><button class="btn-sm wa-btn" onclick="waInvoice(${i.id},true)">💬 ${A_('تذكير','Remind')}</button><button class="btn-sm" onclick="markPaid(${i.id})">✓ ${A_('تم الدفع','Paid')}</button></div>`}).join('')+
+    list.slice(0,8).map(i=>{const age=daysSince(i.date);return `<div class="due-row"><div class="grow"><b>${escH(i.client)}</b>${invOverdue(i)?' '+invBadge(i):''}<small>${escH(i.number)} · ${escH(i.date||'')}${age>0?' · '+A_(`منذ ${age} يوم`,`${age} days ago`):''}${invPaid(i)>0?' · '+A_('مدفوع','paid')+' '+invPaid(i).toFixed(3):''}</small></div><span class="due-amt">${invRem(i).toFixed(3)}</span><button class="btn-sm wa-btn" onclick="waInvoice(${i.id},true)">💬 ${A_('تذكير','Remind')}</button><button class="btn-sm" onclick="markPaid(${i.id})">✓ ${A_('تم الدفع','Paid')}</button></div>`}).join('')+
     (list.length>8?`<p class="pr-hint">+${list.length-8} ${A_('أخرى في صفحة الفواتير','more on the Invoices page')}</p>`:'');
 }
 function markPaid(id){
@@ -1272,19 +1361,19 @@ function waInvoice(id,reminder){
 }
 function filteredInvoices(){
   const q=IF.q.trim().toLowerCase();
-  return invoices.filter(inv=>(IF.st==='all'||inv.status===IF.st)&&inPer(inv.date,IF.per)&&(!q||[inv.client,inv.number,inv.phone].some(v=>String(v||'').toLowerCase().includes(q))));
+  return invoices.filter(inv=>(IF.st==='all'||(IF.st==='overdue'?invOverdue(inv):inv.status===IF.st))&&inPer(inv.date,IF.per)&&(!q||[inv.client,inv.number,inv.phone].some(v=>String(v||'').toLowerCase().includes(q))));
 }
 function exportInvoicesCsv(){
   const list=filteredInvoices();if(!list.length){note(A_('لا توجد فواتير للتصدير','No invoices to export'));return}
   const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
-  const head=lang==='ar'?['رقم الفاتورة','التاريخ','العميل','الهاتف','الحالة','المجموع الفرعي','الخصم','الإجمالي','المدفوع','المتبقي','الخدمات']:['Invoice #','Date','Client','Phone','Status','Subtotal','Discount','Total','Paid','Remaining','Services'];
-  const rows=list.map(i=>[i.number,i.date,i.client,i.phone,stLabel(i.status),(i.subtotal||0).toFixed(3),(i.disc||0).toFixed(3),(i.grand||0).toFixed(3),invPaid(i).toFixed(3),invRem(i).toFixed(3),(i.items||[]).map(x=>x.desc).join(' | ')]);
+  const head=lang==='ar'?['رقم الفاتورة','التاريخ','العميل','الهاتف','الحالة','المجموع الفرعي','الخصم','الضريبة','الإجمالي','الاستحقاق','المدفوع','المتبقي','الخدمات']:['Invoice #','Date','Client','Phone','Status','Subtotal','Discount','VAT','Total','Due','Paid','Remaining','Services'];
+  const rows=list.map(i=>[i.number,i.date,i.client,i.phone,stLabel(i.status),(i.subtotal||0).toFixed(3),(i.disc||0).toFixed(3),(+i.vat||0).toFixed(3),(i.grand||0).toFixed(3),i.due||'',invPaid(i).toFixed(3),invRem(i).toFixed(3),(i.items||[]).map(x=>x.desc).join(' | ')]);
   dlFile('invoices-'+todayISO()+'.csv','﻿'+[head,...rows].map(r=>r.map(q).join(',')).join('\r\n'),'text/csv;charset=utf-8');
 }
 function renderBackupBox(){
   const b=document.getElementById('bk-box');if(!b)return;
   let last='';try{last=localStorage.getItem('ss_last_backup')||''}catch(e){}
-  b.innerHTML=`<div class="card-title">🗂 ${A_('نسخة احتياطية كاملة','Full backup')}</div><p class="pr-hint">${A_('ملف واحد فيه كل البيانات (الفواتير، العملاء، الموظفون، الجلسات، الخدمات). يُنصح بتنزيله أسبوعيًا.','One file with all data (invoices, clients, staff, sessions, services). Download it weekly.')} ${last?A_('آخر نسخة: ','Last backup: ')+last:A_('لم تُنزَّل نسخة بعد.','No backup downloaded yet.')}</p><div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn-gold" type="button" onclick="downloadBackup()">⬇ ${A_('تنزيل النسخة','Download backup')}</button><label class="btn-outline" style="cursor:pointer">⬆ ${A_('استعادة من ملف','Restore from file')}<input type="file" accept="application/json,.json" hidden onchange="restoreBackup(this.files[0]);this.value=''"></label></div>`;
+  b.innerHTML=`<div class="card-title">🗂 ${A_('نسخة احتياطية كاملة','Full backup')}</div><p class="pr-hint">${A_('ملف واحد فيه كل البيانات (الفواتير، العروض، العملاء، الموظفون، الجلسات، المصروفات، المعدات، الإعدادات). يُنصح بتنزيله أسبوعيًا.','One file with all data (invoices, clients, staff, sessions, services). Download it weekly.')} ${last?A_('آخر نسخة: ','Last backup: ')+last:A_('لم تُنزَّل نسخة بعد.','No backup downloaded yet.')}</p><div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn-gold" type="button" onclick="downloadBackup()">⬇ ${A_('تنزيل النسخة','Download backup')}</button><label class="btn-outline" style="cursor:pointer">⬆ ${A_('استعادة من ملف','Restore from file')}<input type="file" accept="application/json,.json" hidden onchange="restoreBackup(this.files[0]);this.value=''"></label></div>`;
 }
 function downloadBackup(){
   dlFile('shuaib-studio-backup-'+todayISO()+'.json',JSON.stringify({app:'shuaib-studio',v:1,at:new Date().toISOString(),data:syncSnapshot()}),'application/json');
@@ -1333,7 +1422,7 @@ function updateClientPicker(){
   if(!sel) return;
   const cur = sel.value;
   sel.innerHTML = `<option value="">— ${lang==='ar'?'اختر عميل محفوظ':'Select saved client'} —</option>`
-    + clients.map(c=>`<option value="${c.id}">${c.name}${c.custid?' — '+c.custid:''}</option>`).join('');
+    + clients.map(c=>`<option value="${c.id}">${escH(c.name)}${c.custid?' — '+escH(c.custid):''}</option>`).join('');
   if(cur) sel.value = cur;
 }
 
@@ -1404,7 +1493,7 @@ function showAddClientForm(prefill){
   editingClientId = null;
   document.getElementById('client-form').style.display = 'block';
   document.getElementById('client-form-title').textContent = lang==='ar'?'إضافة عميل':'Add Client';
-  ['clf-name','clf-custid','clf-phone','clf-iban','clf-addr','clf-email'].forEach(id=>{
+  ['clf-name','clf-custid','clf-phone','clf-iban','clf-addr','clf-email','clf-company','clf-notes'].forEach(id=>{
     document.getElementById(id).value = '';
   });
   if(prefill){
@@ -1414,6 +1503,8 @@ function showAddClientForm(prefill){
     document.getElementById('clf-iban').value   = prefill.iban  ||'';
     document.getElementById('clf-addr').value   = prefill.addr  ||'';
     document.getElementById('clf-email').value  = prefill.email ||'';
+    document.getElementById('clf-company').value= prefill.company||'';
+    document.getElementById('clf-notes').value  = prefill.notes ||'';
     editingClientId = prefill.id;
     document.getElementById('client-form-title').textContent = lang==='ar'?'تعديل العميل':'Edit Client';
   }
@@ -1434,6 +1525,8 @@ function saveClient(){
     iban:   document.getElementById('clf-iban').value,
     addr:   document.getElementById('clf-addr').value,
     email:  document.getElementById('clf-email').value,
+    company:document.getElementById('clf-company').value.trim(),
+    notes:  document.getElementById('clf-notes').value.trim(),
   };
   if(editingClientId){
     const c = clients.find(x=>x.id===editingClientId);
@@ -1453,33 +1546,34 @@ function deleteClient(id){
 function renderClients(){
   const c = document.getElementById('clients-container');
   if(!c) return;
-  if(!clients.length){
-    c.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem">${lang==='ar'?'لا يوجد عملاء بعد. أضف عميلاً جديداً.':'No clients yet. Add your first client.'}</div>`;
-    return;
-  }
-  const invCount = id => {const cl=clients.find(x=>x.id===id);return invoices.filter(inv=>inv._clientId===id||(!inv._clientId&&cl&&(inv.client||'').trim()===cl.name.trim())).length};
+  if(!clients.length){ c.innerHTML = noRes(A_('لا يوجد عملاء بعد. أضف عميلاً جديداً.','No clients yet. Add your first client.')); return; }
   const q = CF.q.trim().toLowerCase();
-  const list = clients.filter(cl=>
-    (CF.w==='all'||(CF.w==='with'?invCount(cl.id)>0:invCount(cl.id)===0)) &&
-    (!q||[cl.name,cl.phone,cl.custid,cl.email].some(v=>String(v||'').toLowerCase().includes(q))));
+  const list = clients.filter(cl=>{const n=clientInvs(cl).length;
+    return (CF.w==='all'||(CF.w==='with'?n>0:n===0)) &&
+    (!q||[cl.name,cl.phone,cl.custid,cl.email,cl.company].some(v=>String(v||'').toLowerCase().includes(q)))});
   if(!list.length){ c.innerHTML = noRes(A_('لا يوجد عملاء بهذا الفلتر.','No clients match this filter.')); return; }
-  c.innerHTML = `<div class="clients-grid">`+list.map(cl=>`
-    <div class="client-card">
-      <div class="client-inv-count">${invCount(cl.id)} ${lang==='ar'?'فاتورة':'inv'}</div>
-      <div class="client-avatar">${cl.name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase()}</div>
+  c.innerHTML = `<div class="clients-grid">`+list.map(cl=>{
+    const iv=clientInvs(cl),real=iv.filter(i=>i.status!=='draft'),rev=real.reduce((s,i)=>s+(i.grand||0),0),due=real.reduce((s,i)=>s+invRem(i),0),last=iv.map(i=>i.date||'').sort().pop()||'';
+    return `<div class="client-card">
+      <div class="client-inv-count">${iv.length} ${A_('فاتورة','inv')}</div>
+      <div class="client-avatar">${escH(initials(cl.name))}</div>
       <div class="client-name">${escH(cl.name)}</div>
       <div class="client-meta">
-        ${cl.custid?`<div>🪪 ${cl.custid}</div>`:''}
-        ${cl.phone?`<div>📞 ${cl.phone}</div>`:''}
-        ${cl.email?`<div>✉️ ${cl.email}</div>`:''}
-        ${cl.iban?`<div style="font-size:0.75rem;color:var(--muted);margin-top:0.2rem">IBAN: ${cl.iban}</div>`:''}
+        ${cl.company?`<div>🏢 ${escH(cl.company)}</div>`:''}
+        ${cl.custid?`<div>🪪 ${escH(cl.custid)}</div>`:''}
+        ${cl.phone?`<div>📞 ${escH(cl.phone)}</div>`:''}
+        ${cl.email?`<div>✉️ ${escH(cl.email)}</div>`:''}
+        ${cl.iban?`<div style="font-size:0.75rem;color:var(--muted);margin-top:0.2rem">IBAN: ${escH(cl.iban)}</div>`:''}
+        ${cl.notes?`<div style="font-style:italic;margin-top:.2rem">📝 ${escH(cl.notes)}</div>`:''}
       </div>
-      <div class="client-actions">
-        <button class="btn-sm" onclick="newInvoiceForClient(${cl.id})">${lang==='ar'?'فاتورة جديدة':'New Invoice'}</button>
-        <button class="btn-sm" onclick="showAddClientForm(clients.find(x=>x.id===${cl.id}))">${lang==='ar'?'تعديل':'Edit'}</button>
-        <button class="btn-sm danger" onclick="deleteClient(${cl.id})">${lang==='ar'?'حذف':'Delete'}</button>
+      <div class="pr-sum" style="margin-top:.6rem;font-size:.76rem;gap:.4rem .8rem"><span>${A_('الإيراد','Revenue')} <b>${rev.toFixed(3)}</b></span><span>${A_('المشاريع','Projects')} <b>${real.length}</b></span><span>${A_('آخر حجز','Last booking')} <b>${escH(last||'—')}</b></span>${due>0.0005?`<span>${A_('متبقي','Due')} <b style="color:var(--danger)">${due.toFixed(3)}</b></span>`:''}</div>
+      <div class="client-actions" style="flex-wrap:wrap">
+        <button class="btn-sm" onclick="newInvoiceForClient(${cl.id})">${A_('فاتورة جديدة','New Invoice')}</button>
+        <button class="btn-sm" onclick="BZ.newQuote(${cl.id})">${A_('عرض سعر','Quote')}</button>
+        <button class="btn-sm" onclick="showAddClientForm(clients.find(x=>x.id===${cl.id}))">${A_('تعديل','Edit')}</button>
+        <button class="btn-sm danger" onclick="deleteClient(${cl.id})">${A_('حذف','Delete')}</button>
       </div>
-    </div>`).join('')+`</div>`;
+    </div>`}).join('')+`</div>`;
 }
 
 function newInvoiceForClient(clientId){
@@ -1561,8 +1655,8 @@ function addCustomItem(){
 }
 
 function nextInvNo(){
-  const n=invoices.map(i=>parseInt(String(i.number||'').replace(/\D/g,''),10)||0);
-  return '#'+(Math.max(1000,...n)+1);
+  const n=invoices.map(i=>+((String(i.number||'').match(/(\d+)\D*$/)||[])[1]||0));
+  return BZ.cfg().invPrefix+(Math.max(1000,...n)+1);
 }
 function showNewInvoiceForm(){
   lineItems = [];
@@ -1572,6 +1666,7 @@ function showNewInvoiceForm(){
   document.getElementById('inv-details-title').textContent=t('invDetailsTitle');
   document.getElementById('inv-number').value=nextInvNo();
   document.getElementById('inv-date').value=todayISO();
+  document.getElementById('inv-due').value=BZ.dueFrom(todayISO());
   ['inv-client','inv-custid','inv-phone','inv-iban','inv-addr','inv-email','inv-notes','inv-paid'].forEach(id=>{document.getElementById(id).value=''});
   document.getElementById('inv-status').value='unpaid';
   document.getElementById('client-picker').value='';
@@ -1591,7 +1686,7 @@ function editInvoice(id,dup){
   const set=(k,v)=>{document.getElementById(k).value=v==null?'':v};
   set('inv-client',inv.client);set('inv-custid',inv.custid);set('inv-phone',inv.phone);set('inv-iban',inv.iban);
   set('inv-addr',inv.addr);set('inv-email',inv.email);set('inv-notes',inv.notes);
-  if(!dup){set('inv-number',inv.number);set('inv-date',inv.date);set('inv-status',inv.status);set('inv-paid',+inv.paid?inv.paid:'')}
+  if(!dup){set('inv-number',inv.number);set('inv-date',inv.date);set('inv-status',inv.status);set('inv-paid',+inv.paid?inv.paid:'');set('inv-due',inv.due||BZ.dueFrom(inv.date))}
   if(inv._clientId&&clients.some(c=>c.id===inv._clientId)){document.getElementById('client-picker').value=inv._clientId;document.getElementById('btn-save-client').style.display='none'}
   lineItems=(inv.items||[]).map(x=>({...x}));
   selectedServiceIds=new Set(lineItems.map(x=>x._svcId).filter(Boolean));
@@ -1617,8 +1712,8 @@ function renderLineItems(){
   }
   tb.innerHTML=lineItems.map((it,i)=>`
     <tr>
-      <td><input value="${it.desc}" oninput="lineItems[${i}].desc=this.value" placeholder="Description" style="min-width:120px"></td>
-      <td><input value="${it.type}" style="width:80px" oninput="lineItems[${i}].type=this.value"></td>
+      <td><input value="${escH(it.desc)}" oninput="lineItems[${i}].desc=this.value" placeholder="Description" style="min-width:120px"></td>
+      <td><input value="${escH(it.type)}" style="width:80px" oninput="lineItems[${i}].type=this.value"></td>
       <td><input value="${it.qty}" type="number" min="1" style="width:52px" oninput="lineItems[${i}].qty=+this.value;calcTotals()"></td>
       <td><input value="${it.unit}" type="number" step="0.001" style="width:82px" oninput="lineItems[${i}].unit=+this.value;calcTotals()"></td>
       <td>
@@ -1639,10 +1734,14 @@ function renderLineItems(){
 function calcTotals(){
   const sub   = lineItems.reduce((s,i)=>s+i.qty*i.unit, 0);
   const disc  = lineItems.reduce((s,i)=>s+(i.disc||0), 0);
-  const grand = sub - disc;
+  const vat   = BZ.vatOf(sub-disc);
+  const grand = sub - disc + vat;
   const paid  = +document.getElementById('inv-paid').value||0;
   document.getElementById('subtotal').textContent   = 'BHD '+sub.toFixed(3);
   document.getElementById('disc-total').textContent = '- BHD '+disc.toFixed(3);
+  document.getElementById('vat-line').style.display = BZ.cfg().vatOn ? '' : 'none';
+  document.getElementById('lbl-vat').textContent    = A_('ضريبة القيمة المضافة','VAT')+' '+BZ.cfg().vat+'%';
+  document.getElementById('vat-total').textContent  = 'BHD '+vat.toFixed(3);
   document.getElementById('grand-total').textContent= 'BHD '+grand.toFixed(3);
   document.getElementById('lbl-remaining').textContent = A_('المتبقي على العميل','Balance due');
   document.getElementById('inv-remaining').textContent = 'BHD '+Math.max(0,grand-paid).toFixed(3);
@@ -1652,7 +1751,7 @@ function calcTotals(){
 function saveInvoice(sendWa){
   const sub  = lineItems.reduce((s,i)=>s+i.qty*i.unit,0);
   const disc = lineItems.reduce((s,i)=>s+(i.disc||0),0);
-  const grand= sub-disc;
+  const vat=BZ.vatOf(sub-disc),grand=sub-disc+vat;
   const g=id=>document.getElementById(id).value;
   const client=g('inv-client').trim();
   if(!client){note(A_('أدخل اسم العميل','Enter the client name'));document.getElementById('inv-client').focus();return}
@@ -1665,7 +1764,7 @@ function saveInvoice(sendWa){
   let cl=pick?clients.find(c=>c.id===pick):clients.find(c=>c.name.trim().toLowerCase()===client.toLowerCase());
   if(!cl){cl={id:Date.now()+1,name:client,custid:g('inv-custid'),phone:g('inv-phone'),iban:g('inv-iban'),addr:g('inv-addr'),email:g('inv-email')};clients.push(cl)}
   const data={number:g('inv-number')||nextInvNo(),client,custid:g('inv-custid'),phone:g('inv-phone'),iban:g('inv-iban'),addr:g('inv-addr'),email:g('inv-email'),
-    date:g('inv-date'),status,paid,notes:g('inv-notes'),items:lineItems.map(x=>({...x})),subtotal:sub,disc,grand,_clientId:cl.id};
+    date:g('inv-date'),status,paid,notes:g('inv-notes'),items:lineItems.map(x=>({...x})),subtotal:sub,disc,vat,vatRate:vat?BZ.cfg().vat:0,grand,due:g('inv-due')||BZ.dueFrom(g('inv-date')),_clientId:cl.id,company:cl.company||''};
   let id;
   const old=editingInvId&&invoices.find(i=>i.id===editingInvId);
   if(old){Object.assign(old,data);id=old.id}else{id=Date.now();invoices.unshift({id,...data})}
@@ -1688,7 +1787,7 @@ function renderInvoices(){
         <div class="inv-meta">${escH(inv.number)} · ${escH(inv.date)}${part?` · <span class="inv-rem">${A_('متبقي','Due')} ${r.toFixed(3)}</span>`:''}</div>
       </div>
       <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap">
-        <span class="badge badge-${inv.status}">${part?A_('دفعة جزئية','Partly paid'):stLabel(inv.status)}</span>
+        ${invBadge(inv)}
         <span class="inv-amount">BHD ${(inv.grand||0).toFixed(3)}</span>
         <div class="action-btns" onclick="event.stopPropagation()">
           <button class="btn-sm" onclick="toggleStatus(${inv.id})">${t('togglePaid')}</button>
@@ -1710,67 +1809,6 @@ function toggleStatus(id){
 function deleteInvoice(id){
   if(!confirm(A_('حذف هذه الفاتورة نهائيًا؟','Delete this invoice permanently?')))return;
   invoices=invoices.filter(i=>i.id!==id);save();renderInvoices();updateStats();
-}
-function viewInvoice(id){
-  const inv=invoices.find(i=>i.id===id);if(!inv)return;
-  const rows=inv.items.map(it=>`
-    <tr>
-      <td>${it.desc||''}</td>
-      <td>${it.type||'Package'}</td>
-      <td>${it.qty}</td>
-      <td style="text-align:right">${(+it.unit||0).toFixed(3)} BD</td>
-      <td style="text-align:right">${it.disc&&it.disc>0?'- '+(+it.disc).toFixed(3)+' BD':''}</td>
-      <td style="text-align:right;font-weight:600">${((it.qty*(+it.unit||0))-(it.disc||0)).toFixed(3)} BD</td>
-    </tr>`).join('');
-  const notesHtml = inv.notes ? inv.notes.split('\n').filter(Boolean).map(l=>`<div>${l}</div>`).join('') : '';
-  document.getElementById('inv-doc-content').innerHTML=`
-    <div class="inv-doc-head">
-      <div class="inv-doc-brand">SHUAIB STUDIO</div>
-      <div class="inv-doc-date">${inv.date}</div>
-    </div>
-    <div class="inv-doc-num">${escH(inv.number)}${inv.status==='paid'?'<span class="stamp-paid">PAID</span>':''}</div>
-    <table class="inv-bill-table">
-      <thead><tr><th colspan="2">${t('billTo')}</th></tr></thead>
-      <tbody>
-        <tr><td>${t('customer')}</td><td>${escH(inv.client)}</td></tr>
-        ${inv.custid?`<tr><td>${t('customerId')}</td><td>${inv.custid}</td></tr>`:''}
-        ${inv.addr?`<tr><td>${t('address')}</td><td>${inv.addr}</td></tr>`:''}
-        ${inv.phone?`<tr><td>${t('phone')}</td><td>${inv.phone}</td></tr>`:''}
-        ${inv.iban?`<tr><td>${t('iban')}</td><td>${inv.iban}</td></tr>`:''}
-        ${inv.email?`<tr><td>Email</td><td>${inv.email}</td></tr>`:''}
-      </tbody>
-    </table>
-    <div style="height:1rem"></div>
-    <table class="inv-lines-table">
-      <thead><tr>
-        <th>${t('desc')}</th><th>${t('type')}</th><th>${t('qty')}</th>
-        <th style="text-align:right">${t('unitPrice')}</th>
-        <th style="text-align:right">${t('discount')}</th>
-        <th style="text-align:right">${t('lineTotal')}</th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
-      <tfoot>
-        <tr>
-          <td colspan="4"></td>
-          <td class="total-label" style="text-align:right">${t('total')}</td>
-          <td style="text-align:right">${(inv.grand||0).toFixed(3)} BD</td>
-        </tr>
-        ${inv.status!=='paid'&&invPaid(inv)>0?`<tr><td colspan="4"></td><td class="total-label" style="text-align:right">${A_('المدفوع','Paid')}</td><td style="text-align:right">${invPaid(inv).toFixed(3)} BD</td></tr><tr><td colspan="4"></td><td class="total-label" style="text-align:right">${A_('المتبقي','Balance due')}</td><td style="text-align:right">${invRem(inv).toFixed(3)} BD</td></tr>`:''}
-      </tfoot>
-    </table>
-    ${notesHtml?`
-    <div class="inv-notes-section">
-      <div class="inv-notes-label">${t('note')}</div>
-      <div class="inv-notes-content">${notesHtml}</div>
-    </div>`:''}
-    <div class="inv-print-bar">
-      <button onclick="window.print()" style="background:#2d5da1;color:#fff;border:none;padding:0.6rem 1.5rem;border-radius:5px;font-weight:600;cursor:pointer;font-size:0.88rem">${t('printInv')}</button>
-      <button class="btn-sm" onclick="editInvoice(${inv.id})">✎ ${A_('تعديل','Edit')}</button>
-      <button class="btn-sm" onclick="editInvoice(${inv.id},true)">⧉ ${A_('نسخ كفاتورة جديدة','Duplicate')}</button>
-      <button class="btn-sm wa-btn" onclick="waInvoice(${inv.id},false)">💬 WhatsApp</button>
-      <span style="font-size:0.8rem;color:#999">SHUAIB STUDIO · Manama, Bahrain</span>
-    </div>`;
-  document.getElementById('inv-modal').classList.add('show');
 }
 function closeInvModal(){document.getElementById('inv-modal').classList.remove('show');}
 
@@ -2008,22 +2046,40 @@ function fillHero(o){
 const roleOpts=r=>`<option value="">${tr('role')}</option>`+S.roles.map(x=>`<option value="${x.id}"${x.id==r?' selected':''}>${esc(x.n)}</option>`).join('');
 const persOpts=(p,none)=>`<option value="">${none}</option>`+staffList.filter(t=>isOn(t)||t.id==p).map(t=>`<option value="${t.id}"${t.id==p?' selected':''}>${esc(t.name)}</option>`).join('');
 
+// ── تعارض الحجوزات: نفس المصور أو نفس المعدة في وقت متداخل (المدة الافتراضية ساعتان إن لم يُحدد وقت الانتهاء) ──
+const tmin=x=>{if(!x)return null;const[h,m]=String(x).split(':').map(Number);return h*60+(m||0)};
+function span(s){const a=tmin(s.t);if(a==null)return null;let b=tmin(s.te);if(b==null||b<=a)b=a+120;return[a,b]}
+function conflicts(s){
+  if(!s||!s.d)return[];
+  const out=[],me=span(s),mp=new Set(s.lines.filter(l=>l.p).map(l=>String(l.p))),mq=new Set(s.eq||[]);
+  if(!mp.size&&!mq.size)return out;
+  S.sessions.forEach(o=>{
+    if(o.id===s.id||o.d!==s.d)return;
+    const os=span(o);if(me&&os&&!(me[0]<os[1]&&os[0]<me[1]))return;
+    const ph=[...new Set(o.lines.filter(l=>l.p&&mp.has(String(l.p))).map(l=>pName(l.p)))];
+    const eq=(o.eq||[]).filter(e=>mq.has(e)).map(e=>(S.equip.find(x=>x.id==e)||{}).n).filter(Boolean);
+    if(ph.length||eq.length)out.push({o,ph,eq,sure:!!(me&&os)});
+  });
+  return out;
+}
+const conflictH=s=>{const c=conflicts(s);if(!c.length)return'';return `<div class="bz-warn" role="alert">⚠ ${c.map(x=>`${x.sure?A_('تعارض مع','Conflict with'):A_('تعارض محتمل (نفس اليوم بدون وقت) مع','Possible conflict (same day, no time) with')} «${esc(x.o.n||tr('noName'))}»${x.o.t?' '+esc(x.o.t)+(x.o.te?'–'+esc(x.o.te):''):''}: ${[...x.ph.map(n=>'👤 '+esc(n)),...x.eq.map(n=>'🎒 '+esc(n))].join('، ')}`).join('<br>')}</div>`};
+
 // ── session card (collapsible) ──
 const eqChips=(s,edit)=>S.equip.length?`<div class="pr-eqs">${edit?S.equip.map(e=>{const on=(s.eq||[]).includes(e.id);return`<button type="button" class="eq-chip${on?' on':''}" data-eqt="${s.id}" data-eid="${e.id}" aria-pressed="${on}">${esc(e.n)}<b>${f3(e.f)}</b></button>`}).join(''):(eqList(s).map(e=>`<span class="eq-chip on ro">${esc(e.n)}<b>${f3(e.f)}</b></span>`).join('')||`<span class="pr-hint" style="margin:0">${tr('noEqUsed')}</span>`)}</div>`:`<p class="pr-hint">${tr('noEquip')}</p>`;
 function sessCard(s){
-  const ed=EDIT.has(s.id),open=ed||OPEN.has(s.id),pay=spay(s),eq=eqFee(s),pr=sessPrice(s)-pay-eq,pk=pkgName(s);
+  const ed=EDIT.has(s.id),open=ed||OPEN.has(s.id),pay=spay(s),eq=eqFee(s),pr=sessPrice(s)-pay-eq,pk=pkgName(s),cf=conflictH(s);
   const dd=s.d?{d:+s.d.slice(8),m:MON()[+s.d.slice(5,7)-1]}:{d:'—',m:''};
-  const sub=[s.t||'',pk,s.loc?'📍 '+s.loc:''].filter(Boolean).map(esc).join(' · ');
-  const head=`<button type="button" class="ps-head" data-tg="${s.id}" aria-expanded="${open}"><span class="ps-date"><b>${dd.d}</b><i>${dd.m}</i></span><span class="ps-main"><b class="ps-name">${s.n?esc(s.n):tr('noName')}</b>${sub?`<small>${sub}</small>`:''}</span><span class="ps-price"><span id="prh${s.id}">${f3(sessPrice(s))}</span><small>${tr('cur')}</small></span><span class="ps-chev" aria-hidden="true"></span></button>`;
+  const sub=[s.t?s.t+(s.te?'–'+s.te:''):'',pk,s.loc?'📍 '+s.loc:''].filter(Boolean).map(esc).join(' · ');
+  const head=`<button type="button" class="ps-head" data-tg="${s.id}" aria-expanded="${open}"><span class="ps-date"><b>${dd.d}</b><i>${dd.m}</i></span><span class="ps-main"><b class="ps-name">${cf?'⚠ ':''}${s.n?esc(s.n):tr('noName')}</b>${sub?`<small>${sub}</small>`:''}</span><span class="ps-price"><span id="prh${s.id}">${f3(sessPrice(s))}</span><small>${tr('cur')}</small></span><span class="ps-chev" aria-hidden="true"></span></button>`;
   let body;
   if(!ed){
-    body=(s.lines.length?`<div class="pr-scroll"><table class="pr-t"><thead><tr><th>${tr('role')}</th><th>${tr('photographer')}</th><th>${tr('amount')}</th></tr></thead><tbody>${s.lines.map(l=>`<tr><td>${esc(rName(l.r))}</td><td>${esc(l.p?pName(l.p):'—')}</td><td>${f3(l.a)}</td></tr>`).join('')}</tbody></table></div>`:`<p class="pr-hint">${tr('noLines')}</p>`)+
+    body=cf+(s.lines.length?`<div class="pr-scroll"><table class="pr-t"><thead><tr><th>${tr('role')}</th><th>${tr('photographer')}</th><th>${tr('amount')}</th></tr></thead><tbody>${s.lines.map(l=>`<tr><td>${esc(rName(l.r))}</td><td>${esc(l.p?pName(l.p):'—')}</td><td>${f3(l.a)}</td></tr>`).join('')}</tbody></table></div>`:`<p class="pr-hint">${tr('noLines')}</p>`)+
     ((s.x||[]).length?`<h4 class="ps-h4">${A_('بنود إضافية','Extra items')}</h4><div class="pr-scroll"><table class="pr-t"><tbody>${s.x.map(i=>`<tr><td>${i.k==='ded'?A_('خصم','Discount'):A_('خدمة إضافية','Extra service')}</td><td>${esc(i.n||'—')}</td><td class="${i.k==='ded'?'pr-neg':'pr-b'}">${i.k==='ded'?'−':'+'}${f3(i.a)}</td></tr>`).join('')}</tbody></table></div>`:'')+
     `<h4 class="ps-h4">${tr('equipH')}</h4>${eqChips(s,false)}`+
     `<div class="pr-sum"><span>${tr('price')} <b>${f3(sessPrice(s))}</b></span><span>${tr('phTotal')} <b>${f3(pay)}</b></span><span>${tr('eqTotal')} <b>${f3(eq)}</b></span><span>${tr('sessNet')} <b class="${pr<0?'pr-neg':'pr-b'}">${f3(pr)}</b></span></div>`+
     `<div class="pr-acts"><button class="btn-sm" data-ed="${s.id}">${tr('edit')}</button><button class="btn-sm" data-dup="${s.id}">${tr('dup')}</button><button class="btn-sm danger" data-ds="${s.id}">${tr('del')}</button></div>`;
   }else{
-    body=`<div class="pr-sh"><label>${tr('sessPrice')}<input type="number" step="any" min="0" data-i="${s.id}" data-f="p" value="${s.p}"></label><label>${tr('pkg')}<select data-pk="${s.id}"><option value="">${tr('noPkg')}</option>${S.pkgs.map(k=>`<option value="${k.id}"${k.id==s.k?' selected':''}>${esc(k.n)}</option>`).join('')}</select></label><label>${tr('date')}<input type="date" data-i="${s.id}" data-f="d" value="${s.d}"></label><label>${tr('time')}<input type="time" data-i="${s.id}" data-f="t" value="${s.t||''}"></label><label class="grow">${tr('sessName')}<input class="pr-txt" data-i="${s.id}" data-f="n" value="${esc(s.n)}"></label><label class="grow">${A_('المكان','Location')}<input class="pr-txt" data-i="${s.id}" data-f="loc" value="${esc(s.loc||'')}"></label></div>
+    body=cf+`<div class="pr-sh"><label>${tr('sessPrice')}<input type="number" step="any" min="0" data-i="${s.id}" data-f="p" value="${s.p}"></label><label>${tr('pkg')}<select data-pk="${s.id}"><option value="">${tr('noPkg')}</option>${S.pkgs.map(k=>`<option value="${k.id}"${k.id==s.k?' selected':''}>${esc(k.n)}</option>`).join('')}</select></label><label>${tr('date')}<input type="date" data-i="${s.id}" data-f="d" value="${s.d}"></label><label>${tr('time')}<input type="time" data-i="${s.id}" data-f="t" value="${s.t||''}"></label><label>${A_('وقت الانتهاء','End time')}<input type="time" data-i="${s.id}" data-f="te" value="${s.te||''}"></label><label class="grow">${tr('sessName')}<input class="pr-txt" data-i="${s.id}" data-f="n" value="${esc(s.n)}"></label><label class="grow">${A_('المكان','Location')}<input class="pr-txt" data-i="${s.id}" data-f="loc" value="${esc(s.loc||'')}"></label></div>
 <div class="pr-lines">${s.lines.map(l=>`<div class="pr-ln"><select data-i="${s.id}" data-l="${l.id}" data-lf="r">${roleOpts(l.r)}</select><select data-i="${s.id}" data-l="${l.id}" data-lf="p">${persOpts(l.p,tr('pickPh'))}</select><input type="number" step="any" min="0" data-i="${s.id}" data-l="${l.id}" data-lf="a" value="${l.a}" aria-label="${tr('amount')}"><button class="pr-x" data-dl="${s.id}" data-l="${l.id}" aria-label="${tr('del')}">×</button></div>`).join('')}</div>
 <div class="pr-adds">${S.roles.map(r=>`<button data-al="${s.id}" data-role="${r.id}">+ ${esc(r.n)}<b>${f3(rateOf(s.k,r.id))}</b></button>`).join('')}</div>
 <h4 class="ps-h4">${A_('بنود إضافية (خدمة إضافية / خصم)','Extra items (service / discount)')}</h4>
@@ -2112,7 +2168,7 @@ function render(){applyStatic();renderTop();viewMain();renderSet();renderSchedul
 function sessTxt(s){
   const en=lang==='en',[y,m,d]=s.d.split('-').map(Number),w=WDF[en?'en':'ar'][new Date(y,m-1,d).getDay()];
   const ps=[...new Set(s.lines.filter(l=>l.p).map(l=>l.p))].map(pName),eq=eqList(s).map(e=>e.n);
-  const out=[tr('cDay')+': '+w,tr('cDate')+': '+d+'/'+m+'/'+y,tr('cTime')+': '+(s.t||''),tr('cName')+': '+(s.n||''),tr('cPhs')+': '+ps.join(en?', ':'، '),tr('cCnt')+': '+ps.length];
+  const out=[tr('cDay')+': '+w,tr('cDate')+': '+d+'/'+m+'/'+y,tr('cTime')+': '+(s.t||'')+(s.te?' - '+s.te:''),tr('cName')+': '+(s.n||''),tr('cPhs')+': '+ps.join(en?', ':'، '),tr('cCnt')+': '+ps.length];
   if(eq.length)out.push(tr('cEq')+': '+eq.join(en?', ':'، '));
   return out.join('\n');
 }
@@ -2211,7 +2267,7 @@ const scList=()=>S.sessions.filter(s=>s.d&&(!SC.ph||hasPh(s,SC.ph))&&(!SC.pk||s.
 const phNames=s=>[...new Set(s.lines.filter(l=>l.p).map(l=>l.p))].map(pName);
 function scCard(s){
   const eq=eqList(s),pk=pkgName(s),lines=s.lines.filter(l=>l.p);
-  return `<article class="sc-sess"><div class="sc-top"><span class="sc-time">${s.t?esc(s.t):'—'}</span><b>${s.n?esc(s.n):tr('noName')}</b>${pk?`<em class="pr-nx">${esc(pk)}</em>`:''}</div>`+
+  return `<article class="sc-sess">${conflictH(s)}<div class="sc-top"><span class="sc-time">${s.t?esc(s.t)+(s.te?'–'+esc(s.te):''):'—'}</span><b>${s.n?esc(s.n):tr('noName')}</b>${pk?`<em class="pr-nx">${esc(pk)}</em>`:''}</div>`+
   (lines.length?`<div class="sc-line">👥 ${lines.map(l=>`${esc(pName(l.p))}${l.r?` <small>(${esc(rName(l.r))})</small>`:''}`).join(' · ')}</div>`:'')+
   (eq.length?`<div class="sc-line">🎒 ${eq.map(e=>`<span class="eq-chip on ro">${esc(e.n)}</span>`).join('')}</div>`:'')+
   `<div class="pr-acts"><button class="btn-sm" data-cp="${s.id}">${tr('copy')}</button><button class="btn-sm" data-sopen="${s.id}">${tr('openPay')}</button></div></article>`;
@@ -2266,6 +2322,7 @@ function bind(){
     else if(d.l&&d.lf=='p'){ln(ses(d.i),d.l).p=v;persist();render()}
     else if(d.pk){const s=ses(d.pk),o=s.k,pk=S.pkgs.find(x=>x.id==v);s.lines.forEach(l=>{if((+l.a||0)==rateOf(o,l.r))l.a=rateOf(v,l.r)});s.k=v;if(pk&&pk.price!==''&&pk.price!=null&&s.p==='')s.p=+pk.price;persist();render()}
     else if(d.kn||d.rn||d.eqn||d.sbn){render()}
+    else if(d.i&&(d.f=='t'||d.f=='te')){viewMain();renderSchedule()}
     else if(d.i&&d.f=='d'){ses(d.i).d=v;persist();render()}
     else if(d.ton){const s=stf(d.ton);if(s){s.on=t.checked?1:0;save();render()}}
     else if(d.rp){S.roles.find(x=>x.id==d.rp).p=v;persist()}
@@ -2429,7 +2486,7 @@ function openStaffReport(id){
   showRep(String(id));
 }
 bind();
-return{render,renderSchedule,periodStats,fromInvoice,openStaffReport,closeReport,openSession,newOn,addBooking,scheduleSnapshot,totals,photographerSummary,showStaffReport};
+return{data:()=>S,sessPrice,eqFee,spay,pkgName,conflicts,render,renderSchedule,periodStats,fromInvoice,openStaffReport,closeReport,openSession,newOn,addBooking,scheduleSnapshot,totals,photographerSummary,showStaffReport};
 })();
 
 // ── حجوزات الزبائن (Supabase): تسجيل دخول صاحب الاستوديو ثم تحويل الحجوزات الجديدة إلى جلسات في التكاليف ──
@@ -2526,7 +2583,7 @@ setInterval(()=>{if(!document.hidden)sbSync()},30000);   // حجوزات الز�
 
 // ── مزامنة سحابية: كل بيانات pay.html تُحفظ في Supabase (جدول app_state) فتظهر في أي متصفح/جهاز بعد تسجيل الدخول ──
 // القاعدة: آخر تعديل يفوز (ss_ts = وقت آخر تعديل محلي؛ remote.ts = وقت آخر رفع). قبل استبدال البيانات المحلية تُحفظ نسخة في ss_backup_before_sync
-const SYNC_KEYS=['ss_invoices','ss_staff','ss_worklog','ss_clients','ss_payroll','ss_services'];
+const SYNC_KEYS=['ss_invoices','ss_staff','ss_worklog','ss_clients','ss_payroll','ss_services','ss_biz'];
 var syncTimer=0,syncPushing=false,syncMsg="";
 const lts=()=>+localStorage.getItem('ss_ts')||0;
 var wiping=false;
@@ -2629,8 +2686,613 @@ document.addEventListener('input',e=>{
   else if(t.id==='st-q'){SF.q=t.value;renderStaff();show('st-reset',SF.q||SF.role!=='all');}
 });
 
+
+// ══════════════════════════════════════════════════════════════════════════
+// ── BUSINESS MODULES: quotations · expenses & marketing · equipment ·
+//    reports & smart advisor · forecast · settings · dark mode
+//    البيانات تُحفظ في ss_biz وتتزامن سحابيًا مع بقية البيانات
+// ══════════════════════════════════════════════════════════════════════════
+function clientInvs(cl){return invoices.filter(inv=>inv._clientId===cl.id||(!inv._clientId&&(inv.client||'').trim().toLowerCase()===String(cl.name||'').trim().toLowerCase()))}
+const initials=n=>String(n||'').trim().split(/\s+/).filter(Boolean).map(x=>x[0]).join('').slice(0,2).toUpperCase();
+function invOverdue(i){if(!i||i.status==='paid'||i.status==='draft'||invRem(i)<=0.0005)return false;return (i.due||BZ.dueFrom(i.date))<todayISO()}
+function invBadge(inv){
+  if(invOverdue(inv))return `<span class="badge badge-overdue">${A_('متأخرة','Overdue')}</span>`;
+  if(inv.status!=='paid'&&invPaid(inv)>0)return `<span class="badge badge-unpaid">${A_('دفعة جزئية','Partly paid')}</span>`;
+  return `<span class="badge badge-${inv.status}">${stLabel(inv.status)}</span>`;
+}
+// مستند موحّد للفاتورة وعرض السعر (طباعة / PDF)
+function renderDoc(d,kind){
+  const C=BZ.cfg(),q=kind==='quote',f=x=>(+x||0).toFixed(3)+' BD';
+  const rows=(d.items||[]).map(it=>`<tr><td>${escH(it.desc)}</td><td>${escH(it.type||'')}</td><td>${+it.qty||0}</td><td style="text-align:right">${f(it.unit)}</td><td style="text-align:right">${+it.disc>0?'- '+f(it.disc):''}</td><td style="text-align:right;font-weight:600">${f((+it.qty||0)*(+it.unit||0)-(+it.disc||0))}</td></tr>`).join('');
+  const co=[C.cr?'CR: '+escH(C.cr):'',C.vatNo?'VAT Reg. No: '+escH(C.vatNo):'',escH(C.addr||''),escH(C.phone||''),escH(C.email||'')].filter(Boolean).join(' · ');
+  const title=q?'QUOTATION':((+d.vat>0&&C.vatNo)?'TAX INVOICE':'INVOICE');
+  const tr2=(l,v)=>`<tr><td colspan="4"></td><td class="total-label" style="text-align:right">${l}</td><td style="text-align:right">${v}</td></tr>`;
+  let foot='';
+  if(+d.disc>0||+d.vat>0)foot+=tr2(t('lblSubtotal'),f(d.subtotal))+(+d.disc>0?tr2(t('lblDiscTotal'),'- '+f(d.disc)):'');
+  if(+d.vat>0)foot+=tr2(A_('ضريبة القيمة المضافة','VAT')+' '+(d.vatRate||C.vat)+'%',f(d.vat));
+  foot+=tr2(t('total'),f(d.grand));
+  if(!q&&d.status!=='paid'&&invPaid(d)>0)foot+=tr2(A_('المدفوع','Paid'),f(invPaid(d)))+tr2(A_('المتبقي','Balance due'),f(invRem(d)));
+  const notes=d.notes?String(d.notes).split('\n').filter(Boolean).map(l=>`<div>${escH(l)}</div>`).join(''):'';
+  const stamp=!q&&d.status==='paid'?'<span class="stamp-paid">PAID</span>':(!q&&invOverdue(d)?'<span class="stamp-paid" style="border-color:#c0453b;color:#c0453b">OVERDUE</span>':'');
+  const dates=q?`Valid until ${escH(d.valid||'—')}`:`Due ${escH(d.due||BZ.dueFrom(d.date))}`;
+  const bill=[[t('customer'),d.client],[A_('الشركة','Company'),d.company],[t('customerId'),d.custid],[t('address'),d.addr],[t('phone'),d.phone],[t('iban'),d.iban],['Email',d.email]].filter(x=>x[1]).map(x=>`<tr><td>${x[0]}</td><td>${escH(x[1])}</td></tr>`).join('');
+  const id=String(d.id).replace(/[^\w-]/g,'');
+  const acts=q
+    ?`<button class="btn-sm" onclick="BZ.editQuote('${id}')">✎ ${A_('تعديل','Edit')}</button><button class="btn-sm" onclick="BZ.editQuote('${id}',true)">⧉ ${A_('نسخ','Duplicate')}</button><button class="btn-sm" onclick="BZ.toInvoice('${id}')">→ ${A_('تحويل لفاتورة','Convert to invoice')}</button><button class="btn-sm wa-btn" onclick="BZ.waQuote('${id}')">💬 WhatsApp</button>`
+    :`<button class="btn-sm" onclick="editInvoice(${+d.id})">✎ ${A_('تعديل','Edit')}</button><button class="btn-sm" onclick="editInvoice(${+d.id},true)">⧉ ${A_('نسخ كفاتورة جديدة','Duplicate')}</button><button class="btn-sm wa-btn" onclick="waInvoice(${+d.id},false)">💬 WhatsApp</button>`;
+  return `<div class="inv-doc-head"><div class="inv-doc-brand">${escH(String(C.company||'Shuaib Studio').toUpperCase())}</div><div class="inv-doc-date">${title} · ${escH(d.date||'')} · ${dates}</div>${co?`<div class="inv-co">${co}</div>`:''}</div>
+    <div class="inv-doc-num">${escH(d.number)}${stamp}</div>
+    <table class="inv-bill-table"><thead><tr><th colspan="2">${q?A_('عرض سعر إلى','Quotation for'):t('billTo')}</th></tr></thead><tbody>${bill}</tbody></table>
+    <div style="height:1rem"></div>
+    <table class="inv-lines-table"><thead><tr><th>${t('desc')}</th><th>${t('type')}</th><th>${t('qty')}</th><th style="text-align:right">${t('unitPrice')}</th><th style="text-align:right">${t('discount')}</th><th style="text-align:right">${t('lineTotal')}</th></tr></thead><tbody>${rows}</tbody><tfoot>${foot}</tfoot></table>
+    ${notes?`<div class="inv-notes-section"><div class="inv-notes-label">${t('note')}</div><div class="inv-notes-content">${notes}</div></div>`:''}
+    <div class="inv-print-bar"><button onclick="window.print()" style="background:#2d5da1;color:#fff;border:none;padding:0.6rem 1.5rem;border-radius:5px;font-weight:600;cursor:pointer;font-size:0.88rem">🖨 ${A_('طباعة / PDF','Print / PDF')}</button>${acts}<span style="font-size:0.8rem;color:#999">${escH(C.company||'Shuaib Studio')} · ${escH(C.addr||'')}</span></div>`;
+}
+function viewInvoice(id){
+  const inv=invoices.find(i=>i.id===id);if(!inv)return;
+  document.getElementById('inv-doc-content').innerHTML=renderDoc(inv,'invoice');
+  document.getElementById('inv-modal').classList.add('show');
+}
+
+const BZ=(()=>{
+const KEY='ss_biz';
+const DEF={company:'Shuaib Studio',cr:'',vatNo:'',addr:'Manama, Bahrain',phone:'',email:'',vatOn:false,vat:10,invPrefix:'#',quotePrefix:'Q-',dueDays:7,validDays:14,
+  targetBasis:'profit',monthTarget:600,yearTarget:5400,revSrc:'invoices',workDays:6,theme:'auto'};
+function load(){let o={};try{o=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){}
+  return{cfg:Object.assign({},DEF,o.cfg),quotes:o.quotes||[],expenses:o.expenses||[],campaigns:o.campaigns||[],equipment:o.equipment||[]}}
+let B=load();
+const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(B))}catch(e){}syncTouch()};
+const cfg=()=>B.cfg;
+const G=id=>document.getElementById(id);
+const f3=x=>(+x||0).toFixed(3);
+const sum=(a,f)=>a.reduce((q,x)=>q+(+f(x)||0),0);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const pct=x=>Math.round((+x||0)*100)+'%';
+const inR=(d,P)=>!!d&&d>=P.from&&d<=P.to;
+const addDays=(d,n)=>{const x=new Date((d||todayISO())+'T00:00');x.setDate(x.getDate()+(+n||0));return todayISO(x)};
+const dueFrom=d=>addDays(d||todayISO(),B.cfg.dueDays);
+const vatOf=net=>B.cfg.vatOn?Math.round(net*(+B.cfg.vat||0)*10)/1000:0;
+const days=P=>Math.round((new Date(P.to+'T00:00')-new Date(P.from+'T00:00'))/864e5)+1;
+const curL=()=>A_('د.ب','BHD');
+const kpi=(l,v,s,cls)=>`<div class="bz-kpi"><span>${l}</span><b class="${cls||''}">${v}</b>${s?`<small>${s}</small>`:''}</div>`;
+const card=(title,body,extra)=>`<section class="card"${extra||''}><div class="card-title">${title}</div>${body}</section>`;
+const emptyRow=(n,msg)=>`<tr><td colspan="${n}" style="text-align:center;color:var(--muted);padding:1.2rem">${msg||'—'}</td></tr>`;
+const dl=(name,rows)=>{const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';dlFile(name,'﻿'+rows.map(r=>r.map(q).join(',')).join('\r\n'),'text/csv;charset=utf-8')};
+
+// ── theme ──
+function applyTheme(){
+  const m=B.cfg.theme;let dark=m==='dark';
+  if(m==='auto'){try{dark=matchMedia('(prefers-color-scheme: dark)').matches}catch(e){}}
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  try{localStorage.setItem('ss_theme',m==='auto'?'':m)}catch(e){}
+  const b=G('theme-btn');if(b){b.textContent=dark?'☀️':'🌙';b.title=dark?A_('الوضع الفاتح','Light mode'):A_('الوضع الداكن','Dark mode');b.setAttribute('aria-label',b.title)}
+}
+function toggleTheme(){B.cfg.theme=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';persist();applyTheme();if(G('page-settings').classList.contains('active'))renderSettings()}
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(B.cfg.theme==='auto')applyTheme()})}catch(e){}
+
+// ── periods ──
+let RP={mode:'month',ref:todayISO()};
+function period(mode,ref){
+  const d=new Date(ref+'T00:00');
+  if(mode==='day')return{from:ref,to:ref};
+  if(mode==='week'){const s=new Date(d);s.setDate(d.getDate()-d.getDay());const e=new Date(s);e.setDate(s.getDate()+6);return{from:todayISO(s),to:todayISO(e)}}
+  if(mode==='year'){const y=ref.slice(0,4);return{from:y+'-01-01',to:y+'-12-31'}}
+  return{from:todayISO(new Date(d.getFullYear(),d.getMonth(),1)),to:todayISO(new Date(d.getFullYear(),d.getMonth()+1,0))};
+}
+function shiftRef(dir){const d=new Date(RP.ref+'T00:00');if(RP.mode==='day')d.setDate(d.getDate()+dir);else if(RP.mode==='week')d.setDate(d.getDate()+7*dir);else if(RP.mode==='month'){d.setDate(1);d.setMonth(d.getMonth()+dir)}else d.setFullYear(d.getFullYear()+dir);RP.ref=todayISO(d)}
+const loc=()=>lang==='ar'?'ar-BH':'en-GB';
+const fmtD=d=>d?new Date(d+'T00:00').toLocaleDateString(loc(),{day:'numeric',month:'short',year:'numeric'}):'—';
+function pLabel(P,mode){
+  if(mode==='year')return P.from.slice(0,4);
+  if(mode==='month')return new Date(P.from+'T00:00').toLocaleDateString(loc(),{month:'long',year:'numeric'});
+  if(mode==='day')return fmtD(P.from);
+  return fmtD(P.from)+' → '+fmtD(P.to);
+}
+
+// ── core numbers ──
+function revenueIn(P){
+  const inv=invoices.filter(i=>i.status!=='draft'&&inR(i.date,P)),S=PR.data(),sess=S.sessions.filter(s=>inR(s.d,P));
+  const collected=sum(inv,invPaid);
+  if(B.cfg.revSrc==='sessions')return{rev:sum(sess,PR.sessPrice),count:sess.length,collected,inv,sess};
+  return{rev:sum(inv,i=>(i.grand||0)-(+i.vat||0)),count:inv.length,collected,inv,sess};
+}
+function costsIn(P){
+  const S=PR.data(),sess=S.sessions.filter(s=>inR(s.d,P));
+  const team=sum(sess,PR.spay),eqf=sum(sess,PR.eqFee),subM=sum(S.subs,x=>x.a);
+  let subs=0;
+  if(subM){new Set(sess.map(s=>s.d.slice(0,7))).forEach(ym=>{
+    const mf=ym+'-01',ml=todayISO(new Date(+ym.slice(0,4),+ym.slice(5,7),0)),a=mf>P.from?mf:P.from,b=ml<P.to?ml:P.to;
+    subs+=subM*days({from:a,to:b})/days({from:mf,to:ml});
+  })}
+  const ex=B.expenses.filter(x=>inR(x.date,P)),byCat={};
+  ex.forEach(x=>{byCat[x.cat]=(byCat[x.cat]||0)+(+x.amt||0)});
+  const exp=sum(ex,x=>x.amt);
+  return{team,eqf,subs,exp,byCat,ex,sess,total:team+eqf+subs+exp};
+}
+function occupancy(P,sess){
+  const booked=new Set(sess.map(s=>s.d)).size,cap=Math.max(1,days(P)*(+B.cfg.workDays||6)/7);
+  return{booked,cap,rate:Math.min(1,booked/cap)};
+}
+function summary(P){const r=revenueIn(P),c=costsIn(P),profit=r.rev-c.total;return{...r,c,profit,margin:r.rev?profit/r.rev:0,occ:occupancy(P,c.sess)}}
+
+// ── smart advisor ──
+function advisor(){
+  const td=todayISO(),P=period('month',td),dim=+P.to.slice(8),day=+td.slice(8);
+  const Sm=summary(P),basis=B.cfg.targetBasis,cur=basis==='profit'?Sm.profit:Sm.rev,target=+B.cfg.monthTarget||0;
+  const gap=Math.max(0,target-cur),pc=target?cur/target:1,pace=target?cur/(target*day/dim):1;
+  const P90={from:addDays(td,-90),to:td},s90=summary(P90);
+  const avg=s90.count?(basis==='profit'?s90.profit:s90.rev)/s90.count:0;
+  const daysLeft=dim-day+1,need=gap>0&&avg>0?Math.ceil(gap/avg):0;
+  const expRemain=Math.max(1,Math.round(s90.count/90*daysLeft)),reqAvg=gap/expRemain;
+  let h='good';
+  if(target&&cur<target){h=pace>=0.9?'good':pace>=0.6?'warn':'bad'}
+  if(Sm.profit<0&&Sm.rev>0)h='bad';
+  return{Sm,cur,target,gap,pc,pace,avg,need,reqAvg,expRemain,daysLeft,h,basis};
+}
+const hLbl=h=>({good:A_('ممتاز','Excellent'),warn:A_('تنبيه','Warning'),bad:A_('حرج','Critical')})[h];
+const hPill=h=>`<span class="bz-health h-${h}"><i></i>${A_('صحة العمل','Health')}: ${hLbl(h)}</span>`;
+const basisL=()=>B.cfg.targetBasis==='profit'?A_('الربح','Profit'):A_('الإيراد','Revenue');
+function topServices(P){
+  const M={};
+  if(B.cfg.revSrc==='sessions'){PR.data().sessions.filter(s=>inR(s.d,P)).forEach(s=>{const n=PR.pkgName(s)||A_('بدون باقة','No package');const q=M[n]||(M[n]={n,c:0,a:0});q.c++;q.a+=PR.sessPrice(s)})}
+  else invoices.filter(i=>i.status!=='draft'&&inR(i.date,P)).forEach(i=>(i.items||[]).forEach(it=>{const n=String(it.desc||'—').trim();const q=M[n]||(M[n]={n,c:0,a:0});q.c+=+it.qty||1;q.a+=(+it.qty||0)*(+it.unit||0)-(+it.disc||0)}));
+  return Object.values(M).sort((a,b)=>b.a-a.a);
+}
+function lapsedClients(){
+  const cut=addDays(todayISO(),-90);
+  return clients.map(c=>{const iv=clientInvs(c).filter(i=>i.status!=='draft');if(!iv.length)return null;const last=iv.map(i=>i.date||'').sort().pop();if(last>=cut)return null;return{c,last,rev:sum(iv,i=>i.grand)}}).filter(Boolean).sort((a,b)=>b.rev-a.rev).slice(0,3);
+}
+const roiOf=c=>+c.cost>0?((+c.rev||0)-(+c.cost))/(+c.cost)*100:null;
+function recs(A){
+  const R=[],td=todayISO(),y12={from:addDays(td,-365),to:td};
+  if(A.target&&A.gap>0)R.push({i:'🎯',t:A_(`ينقصك <b>${f3(A.gap)} د.ب</b> لهدف ${basisL()} هذا الشهر: تقريبًا <b>${A.need||'؟'}</b> مشروع بمتوسطك الحالي (${f3(A.avg)})، أو مشاريع بمتوسط <b>${f3(A.reqAvg)}</b> لكل مشروع إذا جاءك ${A.expRemain} مشروع خلال ${A.daysLeft} يوم المتبقية.`,
+    `You are <b>${f3(A.gap)} BHD</b> below this month's ${basisL().toLowerCase()} target: about <b>${A.need||'?'}</b> more project(s) at your current average (${f3(A.avg)}), or an average of <b>${f3(A.reqAvg)}</b> per project if ${A.expRemain} project(s) come in the remaining ${A.daysLeft} days.`)});
+  const due=invoices.filter(i=>i.status!=='draft'&&invRem(i)>0.0005);
+  if(due.length)R.push({i:'💰',t:A_(`حصّل <b>${f3(sum(due,invRem))} د.ب</b> متبقية على ${due.length} فاتورة (منها ${due.filter(invOverdue).length} متأخرة) — أسرع مال متاح.`,`Collect <b>${f3(sum(due,invRem))} BHD</b> outstanding on ${due.length} invoice(s) (${due.filter(invOverdue).length} overdue) — your fastest available cash.`),go:'invoices'});
+  const pend=B.quotes.filter(q=>q.status==='sent');
+  if(pend.length)R.push({i:'📨',t:A_(`تابع ${pend.length} عرض سعر مُرسل بقيمة <b>${f3(sum(pend,q=>qTotals(q.items).grand))} د.ب</b> لم يُرد عليه.`,`Follow up ${pend.length} sent quotation(s) worth <b>${f3(sum(pend,q=>qTotals(q.items).grand))} BHD</b> awaiting reply.`),go:'quotes'});
+  if(A.gap>0){
+    const L=lapsedClients();
+    if(L.length)R.push({i:'📞',t:A_('تواصل مع عملاء سابقين لم يحجزوا منذ أكثر من 90 يومًا: ','Contact previous clients who haven\'t booked in 90+ days: ')+L.map(x=>`<b>${escH(x.c.name)}</b>`).join('، '),wa:L.map(x=>x.c.id)});
+    else if(clients.length)R.push({i:'📞',t:A_('أرسل لعملائك السابقين عرضًا خاصًا بمناسبة قادمة (تخرج، عيد، يوم وطني).','Message previous clients with an offer tied to an upcoming occasion (graduation, Eid, National Day).')});
+    const top=topServices(y12);
+    if(top[0])R.push({i:'⭐',t:A_(`روّج لخدمتك الأكثر مبيعًا «${escH(top[0].n)}» (${f3(top[0].a)} د.ب خلال 12 شهرًا) بريلز من آخر جلسة.`,`Promote your best-selling service “${escH(top[0].n)}” (${f3(top[0].a)} BHD in 12 months) with a reel from your latest shoot.`)});
+    if(top[1])R.push({i:'🎁',t:A_(`أنشئ باقة ترويجية تجمع «${escH(top[0].n)}» + «${escH(top[1].n)}» بسعر خاص لفترة محدودة.`,`Create a promo package combining “${escH(top[0].n)}” + “${escH(top[1].n)}” at a limited-time price.`)});
+    if(A.pace<0.8&&A.daysLeft>5)R.push({i:'⏳',t:A_('قدّم خصمًا لفترة محدودة (10–15%) على جلسات أيام الأسبوع حتى نهاية الشهر لملء الأيام الفارغة.','Offer a limited-time 10–15% discount on weekday sessions until month-end to fill empty days.')});
+    const mk=(A.Sm.c.byCat.marketing||0);
+    if(!mk)R.push({i:'📣',t:A_('لا يوجد صرف تسويقي هذا الشهر — أطلق إعلانًا مدفوعًا صغيرًا وزد نشاطك على إنستغرام.','No marketing spend this month — launch a small paid ad and increase your Instagram activity.')});
+  }
+  const cs=B.campaigns.map(c=>({c,roi:roiOf(c)})).filter(x=>x.roi!=null);
+  const best=cs.filter(x=>x.roi>0).sort((a,b)=>b.roi-a.roi)[0];
+  if(best)R.push({i:'📈',t:A_(`حملة «${escH(best.c.name)}» (${escH(best.c.plat)}) عائدها ${Math.round(best.roi)}% — العائد إيجابي، زد ميزانيتها تدريجيًا.`,`Campaign “${escH(best.c.name)}” (${escH(best.c.plat)}) returns ${Math.round(best.roi)}% — ROI is positive, increase its budget gradually.`),go:'expenses'});
+  const bad=cs.filter(x=>x.roi<0);
+  if(bad.length)R.push({i:'⚠️',t:A_('حملات ضعيفة الأداء: ','Underperforming campaigns: ')+bad.map(x=>`<b>${escH(x.c.name)}</b>`).join('، ')+A_(' — راجع المحتوى أو أوقفها.',' — review the creative or pause them.'),go:'expenses'});
+  eqAdvice().filter(x=>x.k==='buy').slice(0,1).forEach(x=>R.push({i:'🛒',t:x.t,go:'equipment'}));
+  if(A.target&&A.gap===0)R.push({i:'✅',t:A_('أنت فوق هدف الشهر — فكّر برفع الهدف أو ادّخار جزء من الربح للصندوق.','You are above this month\'s target — consider raising it or saving part of the profit to the fund.')});
+  return R;
+}
+const recsH=list=>list.length?`<ul class="bz-recs">${list.map(r=>`<li>${r.i} ${r.t}${r.go?` <button class="pr-lnk" data-bz="go" data-page="${r.go}">${A_('فتح','Open')} ←</button>`:''}${r.wa?`<div style="display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.35rem">${r.wa.map(id=>{const c=clients.find(x=>x.id===id);return c&&c.phone?`<button class="btn-sm wa-btn" data-bz="wa-client" data-id="${id}">💬 ${escH(c.name)}</button>`:''}).join('')}</div>`:''}</li>`).join('')}</ul>`:`<p class="pr-hint">${A_('لا توجد توصيات الآن.','No recommendations right now.')}</p>`;
+
+// ── forecast ──
+function forecast(){
+  const td=todayISO(),y=+td.slice(0,4),basis=B.cfg.targetBasis,target=+B.cfg.yearTarget||0;
+  const val=P=>{const s=summary(P);return basis==='profit'?s.profit:s.rev};
+  const months=[];let ytd=0;
+  for(let m=0;m<12;m++){
+    const P={from:todayISO(new Date(y,m,1)),to:todayISO(new Date(y,m+1,0))},past=P.to<td,cur=P.from<=td&&td<=P.to;
+    let v=0;if(past||cur){v=val(cur?{from:P.from,to:td}:P);ytd+=v}
+    months.push({m,v,cur,future:!past&&!cur,dim:+P.to.slice(8)});
+  }
+  const el=Math.floor((new Date(td+'T00:00')-new Date(y,0,1))/864e5)+1,diy=(y%4===0&&(y%100!==0||y%400===0))?366:365;
+  const rate=ytd/el,proj=rate*diy,dom=+td.slice(8);
+  months.forEach(o=>{o.f=o.future?rate*o.dim:o.cur?rate*(o.dim-dom):0});
+  return{y,ytd,target,proj,pc:target?ytd/target:0,remain:Math.max(0,target-ytd),gap:target-proj,months};
+}
+function forecastH(F){
+  const mx=Math.max(1,...F.months.map(o=>Math.max(0,o.v)+Math.max(0,o.f)),F.target/12);
+  const mn=k=>new Date(2000,k,1).toLocaleDateString(loc(),{month:'short'});
+  const tl=F.target?`<div style="position:absolute;inset-inline:0;bottom:${(F.target/12/mx*100).toFixed(1)}%;border-top:2px dashed var(--rose);opacity:.7" title="${A_('الهدف الشهري','Monthly target')}"></div>`:'';
+  const ok=F.target&&F.proj>=F.target;
+  return `<div class="bz-grid">${kpi(A_('هدف السنة','Annual target'),f3(F.target),basisL())}${kpi(A_('المحقق حتى الآن','Achieved so far'),f3(F.ytd),pct(F.pc))}${kpi(A_('المتبقي','Remaining'),f3(F.remain))}${kpi(A_('المتوقع نهاية السنة','Expected year-end'),f3(F.proj),'',F.target&&!ok?'pr-neg':'')}</div>
+  <div class="bz-prog"><i style="width:${Math.min(100,Math.max(0,F.pc*100))}%"></i></div>
+  ${F.target?`<div class="${ok?'pr-hint':'bz-warn'}" style="${ok?'color:var(--success);font-weight:700':''}">${ok?A_(`على المسار: المتوقع ${f3(F.proj)} د.ب يتجاوز الهدف.`,`On track: projected ${f3(F.proj)} BHD exceeds the target.`):A_(`بناءً على الأداء الحالي، ${basisL()} السنوي المتوقع ${f3(F.proj)} د.ب، أي أقل من الهدف بـ ${f3(F.gap)} د.ب.`,`Based on current performance, projected annual ${basisL().toLowerCase()} is ${f3(F.proj)} BHD, which is ${f3(F.gap)} BHD below target.`)}</div>`:''}
+  <div style="position:relative"><div class="bz-bars">${F.months.map(o=>`<div class="bz-bar" title="${mn(o.m)}: ${f3(o.v)}${o.f?' + '+f3(o.f)+' '+A_('متوقع','forecast'):''}"><i class="fc" style="height:${(Math.max(0,o.f)/mx*100).toFixed(1)}%;${o.f?'':'display:none'}"></i><i style="height:${(Math.max(0,o.v)/mx*100).toFixed(1)}%;${o.cur?'outline:2px solid var(--rose)':''}"></i><small>${mn(o.m)}</small></div>`).join('')}</div>${tl}</div>
+  <p class="pr-hint">${A_('الأعمدة المخططة = متوقع بالمعدل اليومي الحالي · الخط المتقطع = الهدف الشهري. التوقع خطي ولا يحسب الموسمية.','Striped = forecast at the current daily rate · dashed line = monthly target. Linear projection, ignores seasonality.')}</p>`;
+}
+
+// ═════════════ DASHBOARD CARD ═════════════
+function renderHome(){
+  const box=G('home-biz');if(!box)return;
+  const A=advisor(),td=todayISO(),sy=summary(period('year',td)),sm=A.Sm;
+  const openQ=B.quotes.filter(q=>q.status==='draft'||q.status==='sent').length;
+  box.innerHTML=`<div class="card-title" style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap"><span>📈 ${A_('صحة العمل والأهداف','Business health & targets')}</span>${hPill(A.h)}</div>`+
+  (A.target?`<div style="display:flex;justify-content:space-between;gap:.5rem;font-size:.84rem;color:var(--muted);flex-wrap:wrap"><span>${basisL()} ${A_('هذا الشهر','this month')}: <b style="color:var(--white)">${f3(A.cur)}</b> / ${f3(A.target)} ${curL()}</span><span>${pct(A.pc)}</span></div><div class="bz-prog"><i style="width:${Math.min(100,Math.max(0,A.pc*100))}%"></i></div><p class="pr-hint" style="margin:.2rem 0 .9rem">${A.gap>0?A_(`أنت أقل من الهدف بـ ${f3(A.gap)} د.ب — تحتاج تقريبًا ${A.need||'؟'} مشروع خلال ${A.daysLeft} يوم.`,`You are ${f3(A.gap)} BHD below target — about ${A.need||'?'} more project(s) in ${A.daysLeft} days.`):A_('🎉 تم تحقيق هدف الشهر.','🎉 Monthly target reached.')}</p>`:'')+
+  `<div class="bz-grid">${kpi(A_('إيراد الشهر','Monthly revenue'),f3(sm.rev))}${kpi(A_('مصروفات الشهر','Monthly expenses'),f3(sm.c.total))}${kpi(A_('ربح الشهر','Monthly profit'),f3(sm.profit),'',sm.profit<0?'pr-neg':'')}${kpi(A_('إيراد السنة','Annual revenue'),f3(sy.rev))}${kpi(A_('مصروفات السنة','Annual expenses'),f3(sy.c.total))}${kpi(A_('ربح السنة','Annual profit'),f3(sy.profit),'',sy.profit<0?'pr-neg':'')}${kpi(A_('المشاريع (السنة)','Projects (year)'),sy.count)}${kpi(A_('العملاء','Clients'),clients.length)}${kpi(A_('الفواتير','Invoices'),invoices.length)}${kpi(A_('عروض الأسعار','Quotations'),B.quotes.length,openQ+' '+A_('مفتوحة','open'))}${kpi(A_('نسبة الإشغال (الشهر)','Occupancy (month)'),pct(sm.occ.rate),sm.occ.booked+' '+A_('يوم محجوز','booked days'))}</div>`+
+  `<div style="margin-top:.4rem;font-weight:700;font-size:.88rem;color:var(--white)">💡 ${A_('أهم التوصيات','Top recommendations')}</div>${recsH(recs(A).slice(0,3))}<div style="margin-top:.7rem"><button class="btn-sm" data-bz="go" data-page="reports">${A_('المستشار الذكي والتقارير ←','Smart advisor & reports →')}</button></div>`;
+}
+
+// ═════════════ QUOTATIONS ═════════════
+let QE=null,QF={q:'',st:'all'};
+const QST=()=>[['draft',A_('مسودة','Draft')],['sent',A_('مُرسل','Sent')],['approved',A_('مقبول','Approved')],['rejected',A_('مرفوض','Rejected')]];
+const qLabel=st=>(QST().find(x=>x[0]===st)||[0,st])[1];
+const lastNum=s=>+((String(s||'').match(/(\d+)\D*$/)||[])[1]||0);
+function nextQNo(){return B.cfg.quotePrefix+(Math.max(1000,...B.quotes.map(q=>lastNum(q.number)))+1)}
+function qTotals(items){const sub=sum(items,i=>(+i.qty||0)*(+i.unit||0)),disc=sum(items,i=>i.disc),vat=vatOf(sub-disc);return{sub,disc,vat,grand:sub-disc+vat}}
+function newQuote(clientId){
+  const c=clients.find(x=>x.id===clientId);
+  QE={id:null,number:nextQNo(),date:todayISO(),valid:addDays(todayISO(),B.cfg.validDays),clientId:c?c.id:null,client:c?c.name:'',phone:c?c.phone||'':'',company:c?c.company||'':'',items:[],status:'draft',notes:''};
+  showPage('quotes');setTimeout(()=>{const e=G('qf-client');if(e){e.focus();e.scrollIntoView({block:'center'})}},30);
+}
+function editQuote(id,dup){
+  const q=B.quotes.find(x=>x.id===id);if(!q)return;
+  QE=JSON.parse(JSON.stringify(q));
+  if(dup){QE.id=null;QE.number=nextQNo();QE.date=todayISO();QE.valid=addDays(todayISO(),B.cfg.validDays);QE.status='draft';delete QE.invId}
+  closeInvModal();showPage('quotes');setTimeout(()=>{const f=G('q-form');if(f)f.scrollIntoView({block:'start'})},30);
+}
+function qItemsH(){
+  if(!QE.items.length)return emptyRow(6,A_('اختر خدمة أو باقة من القائمة أعلاه أو أضف بندًا مخصصًا','Pick a service or package above, or add a custom item'));
+  return QE.items.map((it,i)=>`<tr><td><input class="bz-in" data-qi="${i}" data-qk="desc" value="${escH(it.desc)}" style="min-width:150px"></td><td><input class="bz-in" type="number" min="0" step="any" data-qi="${i}" data-qk="qty" value="${it.qty}" style="width:64px"></td><td><input class="bz-in" type="number" min="0" step="0.001" data-qi="${i}" data-qk="unit" value="${it.unit}" style="width:92px"></td><td><input class="bz-in" type="number" min="0" step="0.001" data-qi="${i}" data-qk="disc" value="${it.disc||0}" style="width:80px"></td><td class="num" id="qlt${i}">${f3((+it.qty||0)*(+it.unit||0)-(+it.disc||0))}</td><td><button class="remove-row" data-bz="q-rm" data-i="${i}" aria-label="${A_('حذف','Remove')}">✕</button></td></tr>`).join('');
+}
+function qTotH(){const t=qTotals(QE.items);return `<div>${t_('lblSubtotal')}: <strong>BHD ${f3(t.sub)}</strong></div>${t.disc?`<div>${t_('lblDiscTotal')}: <strong style="color:var(--danger)">- BHD ${f3(t.disc)}</strong></div>`:''}${B.cfg.vatOn?`<div>${A_('ضريبة القيمة المضافة','VAT')} ${B.cfg.vat}%: <strong>BHD ${f3(t.vat)}</strong></div>`:''}<div class="total-line">${t_('lblTotal')}: BHD ${f3(t.grand)}</div>`}
+const t_=k=>t(k);
+function refreshQ(){const a=G('qf-items');if(a)a.innerHTML=qItemsH();const b=G('qf-tot');if(b)b.innerHTML=qTotH()}
+function quoteForm(){
+  const q=QE,pk=PR.data().pkgs.filter(k=>k.price!==''&&k.price!=null);
+  return `<div class="card" id="q-form"><div class="card-title">${q.id?A_('تعديل عرض السعر ','Edit quotation ')+escH(q.number):A_('عرض سعر جديد','New quotation')}</div>
+  <div class="bz-form">
+   <label>${A_('عميل محفوظ','Saved client')}<select class="bz-in" data-qf="clientId"><option value="">—</option>${clients.map(c=>`<option value="${c.id}"${c.id===q.clientId?' selected':''}>${escH(c.name)}</option>`).join('')}</select></label>
+   <label>${A_('اسم العميل','Client name')}<input class="bz-in" id="qf-client" data-qf="client" value="${escH(q.client)}"></label>
+   <label>${A_('الهاتف','Phone')}<input class="bz-in" data-qf="phone" value="${escH(q.phone)}" inputmode="tel"></label>
+   <label>${A_('الشركة','Company')}<input class="bz-in" data-qf="company" value="${escH(q.company||'')}"></label>
+   <label>${A_('رقم العرض','Quotation #')}<input class="bz-in" data-qf="number" value="${escH(q.number)}"></label>
+   <label>${A_('التاريخ','Date')}<input class="bz-in" type="date" data-qf="date" value="${escH(q.date)}"></label>
+   <label>${A_('صالح حتى','Valid until')}<input class="bz-in" type="date" data-qf="valid" value="${escH(q.valid||'')}"></label>
+   <label>${A_('الحالة','Status')}<select class="bz-in" data-qf="status">${QST().map(([v,l])=>`<option value="${v}"${v===q.status?' selected':''}>${l}</option>`).join('')}</select></label>
+  </div>
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin:.3rem 0 .8rem"><select class="bz-in" id="qf-add" style="max-width:340px"><option value="">+ ${A_('أضف خدمة أو باقة','Add a service or package')}</option><optgroup label="${A_('الخدمات','Services')}">${SERVICES.map((s,i)=>`<option value="s${i}">${escH(lang==='ar'?s.ar:(s.en||s.ar))} — ${f3(s.unit)}</option>`).join('')}</optgroup>${pk.length?`<optgroup label="${A_('الباقات','Packages')}">${pk.map(k=>`<option value="k${escH(k.id)}">${escH(k.n)} — ${f3(k.price)}</option>`).join('')}</optgroup>`:''}</select><button class="btn-sm" data-bz="q-addc">+ ${A_('بند مخصص','Custom item')}</button></div>
+  <div style="overflow-x:auto"><table class="bz-table" style="min-width:540px"><thead><tr><th>${A_('الوصف','Description')}</th><th>${A_('الكمية','Qty')}</th><th>${A_('السعر','Unit price')}</th><th>${A_('الخصم','Discount')}</th><th class="num">${A_('المجموع','Line total')}</th><th></th></tr></thead><tbody id="qf-items">${qItemsH()}</tbody></table></div>
+  <div class="inv-totals" id="qf-tot" style="margin-top:1rem">${qTotH()}</div>
+  <label style="display:flex;flex-direction:column;gap:.3rem;font-size:.74rem;color:var(--muted);margin-top:.8rem;font-weight:600">${A_('ملاحظات وشروط (مثال: العربون 30%، التسليم خلال 14 يوم)','Notes & terms (e.g. 30% deposit, delivery in 14 days)')}<textarea class="bz-in" data-qf="notes">${escH(q.notes||'')}</textarea></label>
+  <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem"><button class="btn-gold" data-bz="q-save">${A_('حفظ','Save')}</button><button class="btn-outline" data-bz="q-saveview">${A_('حفظ وعرض / PDF','Save & preview / PDF')}</button><button class="btn-outline" data-bz="q-cancel">${A_('إلغاء','Cancel')}</button></div></div>`;
+}
+function renderQuotes(){
+  const R=G('quotes-root');if(!R)return;
+  const sent=B.quotes.filter(q=>q.status==='sent'),appr=B.quotes.filter(q=>q.status==='approved'),dec=B.quotes.filter(q=>q.status==='approved'||q.status==='rejected');
+  R.innerHTML=`<div class="section-header"><h2>${A_('عروض الأسعار','Quotations')}</h2><button class="btn-gold" data-bz="q-new">+ ${A_('عرض سعر جديد','New quotation')}</button></div>`+
+  `<div class="bz-grid">${kpi(A_('عروض مُرسلة بانتظار الرد','Sent, awaiting reply'),sent.length,f3(sum(sent,q=>qTotals(q.items).grand))+' '+curL())}${kpi(A_('مقبولة','Approved'),appr.length,f3(sum(appr,q=>qTotals(q.items).grand))+' '+curL())}${kpi(A_('نسبة القبول','Win rate'),dec.length?pct(appr.length/dec.length):'—')}</div>`+
+  (QE?quoteForm():'')+
+  `<div class="flt" id="q-flt">${fSearch('q-q',QF.q,A_('ابحث بالعميل أو الرقم…','Search client or number…'))}${fChips('qst',[['all',A_('الكل','All')],...QST()],QF.st)}</div><div class="invoices-list" id="q-list"></div>`;
+  renderQList();
+}
+function renderQList(){
+  const c=G('q-list');if(!c)return;
+  if(!B.quotes.length){c.innerHTML=noRes(A_('لا توجد عروض أسعار بعد.','No quotations yet.'));return}
+  const q=QF.q.trim().toLowerCase(),td=todayISO();
+  const list=B.quotes.filter(x=>(QF.st==='all'||x.status===QF.st)&&(!q||[x.client,x.number,x.phone].some(v=>String(v||'').toLowerCase().includes(q)))).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  if(!list.length){c.innerHTML=noRes(A_('لا توجد عروض بهذا الفلتر.','No quotations match this filter.'));return}
+  c.innerHTML=list.map(x=>{const exp=x.status==='sent'&&x.valid&&x.valid<td;return `<div class="invoice-row" data-bz="q-view" data-id="${escH(x.id)}"><div><div style="font-weight:600;color:var(--white);margin-bottom:.2rem">${escH(x.client||'—')}</div><div class="inv-meta">${escH(x.number)} · ${escH(x.date)}${exp?` · <span class="inv-rem">${A_('انتهت صلاحيته','Expired')}</span>`:''}</div></div>
+  <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap"><span class="badge badge-${escH(x.status)}">${qLabel(x.status)}</span><span class="inv-amount">BHD ${f3(qTotals(x.items).grand)}</span><div class="action-btns">
+  ${x.invId&&invoices.some(i=>i.id===x.invId)?`<button class="btn-sm" data-bz="q-inv" data-id="${escH(x.id)}">🧾 ${A_('الفاتورة','Invoice')}</button>`:`<button class="btn-sm" data-bz="q-conv" data-id="${escH(x.id)}">→ ${A_('فاتورة','Invoice')}</button>`}
+  <button class="btn-sm" data-bz="q-edit" data-id="${escH(x.id)}" aria-label="${A_('تعديل','Edit')}">✎</button><button class="btn-sm wa-btn" data-bz="q-wa" data-id="${escH(x.id)}" aria-label="WhatsApp">💬</button><button class="btn-sm danger" data-bz="q-del" data-id="${escH(x.id)}">${A_('حذف','Delete')}</button></div></div></div>`}).join('');
+}
+function saveQuote(view){
+  const q=QE;if(!q)return;
+  q.client=String(q.client||'').trim();
+  if(!q.client){note(A_('أدخل اسم العميل','Enter the client name'));const e=G('qf-client');if(e)e.focus();return}
+  q.items=q.items.filter(i=>String(i.desc||'').trim()||+i.unit);
+  if(!q.items.length){note(A_('أضف بندًا واحدًا على الأقل','Add at least one item'));refreshQ();return}
+  const t=qTotals(q.items);Object.assign(q,{subtotal:t.sub,disc:t.disc,vat:t.vat,vatRate:t.vat?B.cfg.vat:0,grand:t.grand});
+  if(q.id){const i=B.quotes.findIndex(x=>x.id===q.id);if(i>=0)B.quotes[i]={...B.quotes[i],...q}}else{q.id=uid();B.quotes.unshift({...q})}
+  const id=q.id;QE=null;persist();renderQuotes();note(A_('✓ تم حفظ عرض السعر','✓ Quotation saved'));
+  if(view)viewQuote(id);
+}
+function viewQuote(id){const q=B.quotes.find(x=>x.id===id);if(!q)return;const t=qTotals(q.items);G('inv-doc-content').innerHTML=renderDoc({...q,subtotal:t.sub,disc:t.disc,vat:t.vat,grand:t.grand,vatRate:q.vatRate||B.cfg.vat},'quote');G('inv-modal').classList.add('show')}
+function waQuote(id){
+  const q=B.quotes.find(x=>x.id===id);if(!q)return;
+  const t=qTotals(q.items),lines=q.items.map(it=>`• ${it.desc} — ${f3((+it.qty||0)*(+it.unit||0)-(+it.disc||0))} BD`).join('\n'),co=B.cfg.company||'Shuaib Studio';
+  const m=lang==='ar'
+    ?`مرحبًا ${q.client} 🌷\nعرض سعر ${q.number} من ${co}:\n${lines}\n\nالإجمالي: ${f3(t.grand)} د.ب${t.vat?` (شامل ضريبة ${B.cfg.vat}%)`:''}${q.valid?`\nالعرض صالح حتى ${q.valid}`:''}\n\nيسعدنا تأكيد الحجز 📸`
+    :`Hi ${q.client} 🌷\nQuotation ${q.number} from ${co}:\n${lines}\n\nTotal: ${f3(t.grand)} BHD${t.vat?` (incl. ${B.cfg.vat}% VAT)`:''}${q.valid?`\nValid until ${q.valid}`:''}\n\nWe'd love to confirm your booking 📸`;
+  const ph=q.phone||((clients.find(c=>c.id===q.clientId)||{}).phone)||'';
+  window.open('https://wa.me/'+waPhone(ph)+'?text='+encodeURIComponent(m),'_blank');
+  if(q.status==='draft'){q.status='sent';persist();renderQList()}
+}
+function toInvoice(id){
+  const q=B.quotes.find(x=>x.id===id);if(!q)return;
+  if(q.invId&&invoices.some(i=>i.id===q.invId)){closeInvModal();showPage('invoices');viewInvoice(q.invId);return}
+  const t=qTotals(q.items);
+  let cl=clients.find(c=>c.id===q.clientId)||clients.find(c=>c.name.trim().toLowerCase()===String(q.client||'').trim().toLowerCase());
+  if(!cl){cl={id:Date.now()+1,name:q.client,phone:q.phone||'',custid:'',iban:'',addr:'',email:'',company:q.company||''};clients.push(cl)}
+  const iid=Date.now(),date=todayISO();
+  invoices.unshift({id:iid,number:nextInvNo(),client:q.client,custid:cl.custid||'',phone:q.phone||cl.phone||'',iban:cl.iban||'',addr:cl.addr||'',email:cl.email||'',company:q.company||cl.company||'',
+    date,due:dueFrom(date),status:'unpaid',paid:0,notes:q.notes||'',items:q.items.map((x,i)=>({_svcId:x._svcId||null,qty:+x.qty||1,type:x.type||'Package',itemNo:String(i+1),desc:x.desc,unit:+x.unit||0,disc:+x.disc||0})),
+    subtotal:t.sub,disc:t.disc,vat:t.vat,vatRate:t.vat?B.cfg.vat:0,grand:t.grand,_clientId:cl.id,quoteId:q.id});
+  q.status='approved';q.invId=iid;persist();save();
+  closeInvModal();showPage('invoices');renderInvoices();updateStats();viewInvoice(iid);
+  note(A_('✓ تم إنشاء فاتورة من عرض السعر','✓ Invoice created from the quotation'));
+}
+
+// ═════════════ EXPENSES & MARKETING ═════════════
+const EXC={
+  marketing:['التسويق','Marketing',[['Instagram Ads','إعلانات إنستغرام'],['TikTok Ads','إعلانات تيك توك'],['Snapchat Ads','إعلانات سناب شات'],['Google Ads','إعلانات قوقل'],['Printing','طباعة ومطبوعات'],['Other','أخرى']]],
+  operations:['التشغيل','Operations',[['Internet','الإنترنت'],['Transportation','المواصلات'],['Fuel','الوقود'],['Rent','الإيجار'],['Software Subscriptions','اشتراكات البرامج'],['Other','أخرى']]],
+  equipment:['المعدات','Equipment',[['Purchases','شراء معدات'],['Repairs','تصليح'],['Maintenance','صيانة'],['Accessories','إكسسوارات'],['Other','أخرى']]],
+  other:['أخرى','Other',[['Other','أخرى']]]};
+const catL=k=>{const c=EXC[k];return c?A_(c[0],c[1]):k};
+const subL=(k,s)=>{const c=EXC[k],x=c&&c[2].find(y=>y[0]===s);return x?A_(x[1],x[0]):s};
+const subOpts=(k,v)=>(EXC[k]||EXC.other)[2].map(([e,a])=>`<option value="${e}"${e===v?' selected':''}>${A_(a,e)}</option>`).join('');
+let EF={per:'month',cat:'all',q:''},EE=null,CE=null;
+const PLAT=['Instagram','TikTok','Snapchat','Google','Facebook','WhatsApp','Other'];
+function exFiltered(){
+  const td=todayISO(),q=EF.q.trim().toLowerCase();
+  return B.expenses.filter(x=>(EF.cat==='all'||x.cat===EF.cat)&&(EF.per==='all'||(EF.per==='month'?(x.date||'').slice(0,7)===td.slice(0,7):(x.date||'').slice(0,4)===td.slice(0,4)))&&(!q||[x.note,x.sub,catL(x.cat),subL(x.cat,x.sub)].some(v=>String(v||'').toLowerCase().includes(q)))).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+}
+function exFltH(){return fSearch('ex-q',EF.q,A_('ابحث في المصروفات…','Search expenses…'))+fChips('exper',[['month',A_('هذا الشهر','This month')],['year',A_('هذه السنة','This year')],['all',A_('الكل','All')]],EF.per)+fChips('excat',[['all',A_('كل الفئات','All categories')],...Object.keys(EXC).map(k=>[k,catL(k)])],EF.cat)}
+function renderExpenses(){
+  const R=G('expenses-root');if(!R)return;
+  const td=todayISO(),Pm=period('month',td),Py=period('year',td),cm=costsIn(Pm),cy=costsIn(Py),mOn=new Set(B.expenses.filter(x=>inR(x.date,Py)).map(x=>x.date.slice(0,7))).size||1;
+  const e=EE||{date:td,cat:'operations',sub:'Internet',amt:'',note:''};
+  R.innerHTML=`<div class="section-header"><h2>${A_('المصروفات والتسويق','Expenses & Marketing')}</h2><button class="btn-outline" data-bz="ex-csv">⬇ ${A_('تصدير Excel','Export CSV')}</button></div>
+  <div class="bz-grid">${kpi(A_('مصروفات الشهر (مسجلة)','Logged expenses — month'),f3(cm.exp),A_('كل التكاليف: ','All costs: ')+f3(cm.total))}${kpi(A_('مصروفات السنة (مسجلة)','Logged expenses — year'),f3(cy.exp),A_('كل التكاليف: ','All costs: ')+f3(cy.total))}${kpi(A_('متوسط شهري','Monthly average'),f3(cy.exp/mOn))}${kpi(A_('التسويق هذه السنة','Marketing this year'),f3(cy.byCat.marketing||0),cy.exp?pct((cy.byCat.marketing||0)/cy.exp)+A_(' من المصروفات',' of expenses'):'')}</div>
+  <p class="pr-hint">${A_('«كل التكاليف» = المصروفات المسجلة هنا + أجور المصورين + رسوم المعدات + الاشتراكات من صفحة تكاليف الجلسات. لا تسجّل الاشتراكات هنا مرة ثانية.','“All costs” = expenses logged here + photographer pay + equipment fees + subscriptions from Session Costs. Don\'t log those subscriptions here again.')}</p>
+  <div class="card" id="ex-form"><div class="card-title">${EE&&EE.id?A_('تعديل مصروف','Edit expense'):A_('إضافة مصروف','Add expense')}</div>
+   <div class="bz-form"><label>${A_('التاريخ','Date')}<input class="bz-in" type="date" id="ef-date" value="${escH(e.date)}"></label>
+   <label>${A_('الفئة','Category')}<select class="bz-in" id="ef-cat">${Object.keys(EXC).map(k=>`<option value="${k}"${k===e.cat?' selected':''}>${catL(k)}</option>`).join('')}</select></label>
+   <label>${A_('البند','Item')}<select class="bz-in" id="ef-sub">${subOpts(e.cat,e.sub)}</select></label>
+   <label>${A_('المبلغ (د.ب)','Amount (BHD)')}<input class="bz-in" type="number" step="0.001" min="0" id="ef-amt" value="${escH(e.amt)}" inputmode="decimal"></label>
+   <label style="grid-column:span 2">${A_('ملاحظة','Note')}<input class="bz-in" id="ef-note" value="${escH(e.note||'')}"></label></div>
+   <div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn-gold" data-bz="ex-save">${EE&&EE.id?A_('حفظ التعديل','Save changes'):A_('+ إضافة','+ Add')}</button>${EE&&EE.id?`<button class="btn-outline" data-bz="ex-cancel">${A_('إلغاء','Cancel')}</button>`:''}</div></div>
+  <div class="flt" id="ex-flt">${exFltH()}</div><div id="ex-list"></div>
+  <div id="cmp-root"></div>`;
+  renderExList();renderCampaigns();
+}
+function renderExList(){
+  const c=G('ex-list');if(!c)return;
+  const list=exFiltered(),tot=sum(list,x=>x.amt),by={};
+  list.forEach(x=>{const k=catL(x.cat)+' · '+subL(x.cat,x.sub);by[k]=(by[k]||0)+(+x.amt||0)});
+  const bars=Object.entries(by).sort((a,b)=>b[1]-a[1]),mx=bars.length?bars[0][1]:1;
+  c.innerHTML=`<div class="bz-two"><section class="card"><div class="card-title">${A_('السجل','Log')} <small style="color:var(--muted);font-weight:400">· ${list.length}</small></div><div style="overflow-x:auto"><table class="bz-table"><thead><tr><th>${A_('التاريخ','Date')}</th><th>${A_('الفئة / البند','Category / item')}</th><th>${A_('ملاحظة','Note')}</th><th class="num">${A_('المبلغ','Amount')}</th><th></th></tr></thead><tbody>${list.map(x=>`<tr><td style="white-space:nowrap">${escH(x.date)}</td><td>${catL(x.cat)} · ${escH(subL(x.cat,x.sub))}</td><td>${x.campId?'📣 ':''}${escH(x.note||'')}</td><td class="num">${f3(x.amt)}</td><td style="white-space:nowrap">${x.campId?`<small class="pr-hint">${A_('من الحملة','via campaign')}</small>`:`<button class="btn-sm" data-bz="ex-edit" data-id="${escH(x.id)}" aria-label="${A_('تعديل','Edit')}">✎</button> <button class="btn-sm danger" data-bz="ex-del" data-id="${escH(x.id)}" aria-label="${A_('حذف','Delete')}">✕</button>`}</td></tr>`).join('')||emptyRow(5,A_('لا توجد مصروفات بهذا الفلتر.','No expenses match this filter.'))}</tbody><tfoot><tr><td colspan="3">${A_('المجموع','Total')}</td><td class="num">${f3(tot)}</td><td></td></tr></tfoot></table></div></section>
+  <section class="card"><div class="card-title">${A_('توزيع المصروفات','Expense breakdown')}</div>${bars.map(([k,v])=>`<div class="bz-hbar"><span>${escH(k)}</span><div><i style="width:${(v/mx*100).toFixed(1)}%"></i></div><b>${f3(v)}</b></div>`).join('')||`<p class="pr-hint">—</p>`}</section></div>`;
+}
+function saveExpense(){
+  const amt=+G('ef-amt').value||0;if(amt<=0){note(A_('أدخل مبلغًا','Enter an amount'));G('ef-amt').focus();return}
+  const d={date:G('ef-date').value||todayISO(),cat:G('ef-cat').value,sub:G('ef-sub').value,amt,note:G('ef-note').value.trim()};
+  if(EE&&EE.id){const x=B.expenses.find(y=>y.id===EE.id);if(x)Object.assign(x,d)}else B.expenses.push({id:uid(),...d});
+  EE=null;persist();renderExpenses();updateStats();note(A_('✓ تم حفظ المصروف','✓ Expense saved'));
+}
+function syncCampExpense(c){
+  let x=B.expenses.find(e=>e.campId===c.id);
+  if(!(+c.cost>0)){if(x)B.expenses=B.expenses.filter(e=>e!==x);return}
+  const sub=(EXC.marketing[2].find(s=>s[0]===c.plat+' Ads')||['Other'])[0];
+  const d={date:c.start||todayISO(),cat:'marketing',sub,amt:+c.cost,note:c.name,campId:c.id};
+  if(x)Object.assign(x,d);else B.expenses.push({id:uid(),...d});
+}
+function verdict(roi){if(roi==null)return `<span class="pr-hint">—</span>`;if(roi>=100)return `<span class="bz-health h-good"><i></i>${A_('أداء ممتاز','Performing well')}</span>`;if(roi>=0)return `<span class="bz-health h-warn"><i></i>${A_('مقبول','Break-even')}</span>`;return `<span class="bz-health h-bad"><i></i>${A_('أداء ضعيف','Underperforming')}</span>`}
+function renderCampaigns(){
+  const R=G('cmp-root');if(!R)return;
+  const c=CE||{name:'',plat:'Instagram',start:todayISO(),end:'',cost:'',leads:'',cl:'',rev:''};
+  const T={cost:sum(B.campaigns,x=>x.cost),rev:sum(B.campaigns,x=>x.rev),leads:sum(B.campaigns,x=>x.leads),cl:sum(B.campaigns,x=>x.cl)};
+  R.innerHTML=`<section class="card"><div class="card-title">📣 ${A_('تحليلات التسويق والحملات','Marketing analytics & campaigns')}</div>
+  <div class="bz-grid">${kpi(A_('تكلفة الإعلانات','Ad cost'),f3(T.cost))}${kpi(A_('العملاء المحتملون','Leads'),T.leads,T.leads&&T.cost?A_('تكلفة العميل المحتمل ','Cost/lead ')+f3(T.cost/T.leads):'')}${kpi(A_('عملاء جدد','New clients'),T.cl,T.leads?A_('تحويل ','Conversion ')+pct(T.cl/T.leads):'')}${kpi(A_('إيراد من الإعلانات','Revenue generated'),f3(T.rev),T.cost?'ROI '+Math.round((T.rev-T.cost)/T.cost*100)+'%':'')}</div>
+  <div class="bz-form"><label>${A_('اسم الحملة','Campaign name')}<input class="bz-in" id="cf-name" value="${escH(c.name)}" placeholder="${A_('مثال: عروض الأعراس ديسمبر','e.g. December wedding offer')}"></label>
+  <label>${A_('المنصة','Platform')}<select class="bz-in" id="cf-plat">${PLAT.map(p=>`<option${p===c.plat?' selected':''}>${p}</option>`).join('')}</select></label>
+  <label>${A_('البداية','Start')}<input class="bz-in" type="date" id="cf-start" value="${escH(c.start||'')}"></label><label>${A_('النهاية','End')}<input class="bz-in" type="date" id="cf-end" value="${escH(c.end||'')}"></label>
+  <label>${A_('التكلفة (د.ب)','Cost (BHD)')}<input class="bz-in" type="number" step="0.001" min="0" id="cf-cost" value="${escH(c.cost)}"></label><label>${A_('عملاء محتملون','Leads')}<input class="bz-in" type="number" min="0" id="cf-leads" value="${escH(c.leads)}"></label>
+  <label>${A_('عملاء جدد','New clients')}<input class="bz-in" type="number" min="0" id="cf-cl" value="${escH(c.cl)}"></label><label>${A_('الإيراد الناتج (د.ب)','Revenue generated (BHD)')}<input class="bz-in" type="number" step="0.001" min="0" id="cf-rev" value="${escH(c.rev)}"></label></div>
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.9rem"><button class="btn-gold" data-bz="cmp-save">${CE&&CE.id?A_('حفظ التعديل','Save changes'):A_('+ إضافة حملة','+ Add campaign')}</button>${CE&&CE.id?`<button class="btn-outline" data-bz="cmp-cancel">${A_('إلغاء','Cancel')}</button>`:''}</div>
+  <p class="pr-hint">${A_('تكلفة الحملة تُسجَّل تلقائيًا كمصروف تسويق (لا تُدخلها مرتين).','The campaign cost is logged automatically as a marketing expense (don\'t enter it twice).')}</p>
+  <div style="overflow-x:auto"><table class="bz-table" style="min-width:680px"><thead><tr><th>${A_('الحملة','Campaign')}</th><th>${A_('المنصة','Platform')}</th><th class="num">${A_('التكلفة','Cost')}</th><th class="num">${A_('محتملون','Leads')}</th><th class="num">${A_('جدد','Clients')}</th><th class="num">${A_('الإيراد','Revenue')}</th><th class="num">ROI</th><th>${A_('التقييم','Verdict')}</th><th></th></tr></thead><tbody>${B.campaigns.slice().sort((a,b)=>(b.start||'').localeCompare(a.start||'')).map(x=>{const r=roiOf(x);return `<tr><td><b>${escH(x.name)}</b><br><small class="pr-hint">${escH(x.start||'')}${x.end?' → '+escH(x.end):''}</small></td><td>${escH(x.plat)}</td><td class="num">${f3(x.cost)}</td><td class="num">${+x.leads||0}</td><td class="num">${+x.cl||0}</td><td class="num">${f3(x.rev)}</td><td class="num ${r!=null&&r<0?'pr-neg':''}">${r==null?'—':Math.round(r)+'%'}</td><td>${verdict(r)}</td><td style="white-space:nowrap"><button class="btn-sm" data-bz="cmp-edit" data-id="${escH(x.id)}">✎</button> <button class="btn-sm danger" data-bz="cmp-del" data-id="${escH(x.id)}">✕</button></td></tr>`}).join('')||emptyRow(9,A_('لا توجد حملات بعد.','No campaigns yet.'))}</tbody></table></div></section>`;
+}
+function saveCampaign(){
+  const name=G('cf-name').value.trim();if(!name){note(A_('أدخل اسم الحملة','Enter the campaign name'));G('cf-name').focus();return}
+  const d={name,plat:G('cf-plat').value,start:G('cf-start').value,end:G('cf-end').value,cost:+G('cf-cost').value||0,leads:+G('cf-leads').value||0,cl:+G('cf-cl').value||0,rev:+G('cf-rev').value||0};
+  let c=CE&&CE.id&&B.campaigns.find(x=>x.id===CE.id);
+  if(c)Object.assign(c,d);else{c={id:uid(),...d};B.campaigns.push(c)}
+  syncCampExpense(c);CE=null;persist();renderExpenses();updateStats();note(A_('✓ تم حفظ الحملة','✓ Campaign saved'));
+}
+
+// ═════════════ EQUIPMENT ═════════════
+const EQC=[['camera','كاميرا','Camera'],['lens','عدسة','Lens'],['drone','درون','Drone'],['light','إضاءة','Lighting'],['audio','صوت','Audio'],['gimbal','جيمبال','Gimbal'],['other','أخرى','Other']];
+const EQS=[['active','نشطة','Active'],['repair','في الصيانة','In repair'],['retired','مباعة / خارج الخدمة','Sold / retired']];
+const lk=(arr,k)=>{const x=arr.find(y=>y[0]===k);return x?A_(x[1],x[2]):k};
+let EQE=null;
+function eqLink(item){if(item.link)return item.link;const e=PR.data().equip.find(x=>String(x.n).trim().toLowerCase()===String(item.name).trim().toLowerCase());return e?e.id:''}
+function eqStats(item){
+  const S=PR.data(),td=todayISO(),link=eqLink(item),all=S.sessions.filter(s=>s.d&&s.d<=td);
+  const used=link?all.filter(s=>(s.eq||[]).includes(link)):[],fee=+((S.equip.find(e=>e.id==link)||{}).f)||0;
+  const y={from:addDays(td,-365),to:td},a12=all.filter(s=>inR(s.d,y)),u12=used.filter(s=>inR(s.d,y));
+  const income=used.length*fee,price=+item.price||0,rev=sum(used,PR.sessPrice);
+  const months=item.date?Math.max(1,(new Date(td)-new Date(item.date))/(864e5*30.44)):Math.max(1,used.length?(new Date(td)-new Date(used.map(s=>s.d).sort()[0]))/(864e5*30.44):1);
+  const remain=Math.max(0,price-income),rate=income/months;
+  return{link,fee,used:used.length,u12:u12.length,usePct:a12.length?u12.length/a12.length:0,income,rev,last:used.map(s=>s.d).sort().pop()||'',roi:price?income/price:0,remain,eta:remain>0&&rate>0?Math.ceil(remain/rate):null};
+}
+function eqAdvice(){
+  const out=[],td=todayISO();
+  B.equipment.filter(x=>x.status!=='retired').forEach(x=>{const s=eqStats(x);
+    if(s.u12>=5&&s.usePct>=0.7)out.push({k:'buy',t:A_(`«${escH(x.name)}» استُخدمت في ${pct(s.usePct)} من المشاريع خلال 12 شهرًا — فكّر بشراء وحدة إضافية.`,`“${escH(x.name)}” was used in ${pct(s.usePct)} of projects in the last 12 months. Consider purchasing another unit.`)});
+    else if(s.link&&(!s.last||s.last<addDays(td,-180))&&(!x.date||x.date<addDays(td,-180)))out.push({k:'sell',t:A_(`«${escH(x.name)}» لم تُستخدم منذ 6 أشهر — فكّر ببيعها أو تأجيرها (مثلًا عبر Shuaib Gear).`,`“${escH(x.name)}” hasn't been used in 6 months — consider selling or renting it out (e.g. via Shuaib Gear).`)});
+    if(s.eta!=null&&s.eta>36)out.push({k:'slow',t:A_(`استرداد قيمة «${escH(x.name)}» يحتاج ~${s.eta} شهرًا بالمعدل الحالي — ارفع رسم الاستخدام في تكاليف الجلسات.`,`Recovering “${escH(x.name)}” will take ~${s.eta} months at the current rate — raise its per-use fee in Session Costs.`)});
+  });
+  return out;
+}
+function renderEquipment(){
+  const R=G('equipment-root');if(!R)return;
+  const S=PR.data(),list=B.equipment.map(x=>({x,s:eqStats(x)})).sort((a,b)=>b.s.used-a.s.used);
+  const val=sum(B.equipment.filter(x=>x.status!=='retired'),x=>x.price),inc=sum(list,o=>o.s.income);
+  const e=EQE||{name:'',cat:'camera',serial:'',date:'',price:'',status:'active',link:'',notes:''};
+  const unlinked=S.equip.filter(pe=>!B.equipment.some(x=>eqLink(x)===pe.id));
+  const adv=eqAdvice();
+  R.innerHTML=`<div class="section-header"><h2>${A_('إدارة المعدات','Equipment management')}</h2>${unlinked.length?`<button class="btn-outline" data-bz="eq-import">⬇ ${A_(`استيراد ${unlinked.length} من قائمة معدات الجلسات`,`Import ${unlinked.length} from session equipment`)}</button>`:''}</div>
+  <div class="bz-grid">${kpi(A_('عدد المعدات','Items'),B.equipment.length)}${kpi(A_('قيمة الشراء (النشطة)','Purchase value (active)'),f3(val))}${kpi(A_('المسترد من رسوم الاستخدام','Recovered via usage fees'),f3(inc),val?pct(inc/val):'')}${kpi(A_('المتبقي للاسترداد','Left to recover'),f3(sum(list.filter(o=>o.x.status!=='retired'),o=>o.s.remain)))}</div>
+  ${adv.length?card('💡 '+A_('اقتراحات الشراء والبيع','Purchase & sale suggestions'),`<ul class="bz-recs">${adv.map(a=>`<li>${a.k==='buy'?'🛒':a.k==='sell'?'🏷':'⏱'} ${a.t}</li>`).join('')}</ul>`):''}
+  <div class="card" id="eq-form"><div class="card-title">${EQE&&EQE.id?A_('تعديل معدة','Edit item'):A_('إضافة معدة','Add equipment')}</div><div class="bz-form">
+   <label>${A_('الاسم','Name')}<input class="bz-in" id="eqf-name" value="${escH(e.name)}" placeholder="Sony A7 IV"></label>
+   <label>${A_('الفئة','Category')}<select class="bz-in" id="eqf-cat">${EQC.map(c=>`<option value="${c[0]}"${c[0]===e.cat?' selected':''}>${A_(c[1],c[2])}</option>`).join('')}</select></label>
+   <label>${A_('الرقم التسلسلي','Serial number')}<input class="bz-in" id="eqf-serial" value="${escH(e.serial)}"></label>
+   <label>${A_('تاريخ الشراء','Purchase date')}<input class="bz-in" type="date" id="eqf-date" value="${escH(e.date)}"></label>
+   <label>${A_('سعر الشراء (د.ب)','Purchase price (BHD)')}<input class="bz-in" type="number" step="0.001" min="0" id="eqf-price" value="${escH(e.price)}"></label>
+   <label>${A_('الحالة','Status')}<select class="bz-in" id="eqf-status">${EQS.map(c=>`<option value="${c[0]}"${c[0]===e.status?' selected':''}>${A_(c[1],c[2])}</option>`).join('')}</select></label>
+   <label>${A_('مرتبطة بمعدة الجلسات','Linked session equipment')}<select class="bz-in" id="eqf-link"><option value="">${A_('تلقائي (بنفس الاسم)','Auto (same name)')}</option>${S.equip.map(pe=>`<option value="${escH(pe.id)}"${pe.id===e.link?' selected':''}>${escH(pe.n)} — ${f3(pe.f)}</option>`).join('')}</select></label>
+   <label>${A_('ملاحظات','Notes')}<input class="bz-in" id="eqf-notes" value="${escH(e.notes||'')}"></label></div>
+   <div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn-gold" data-bz="eq-save">${EQE&&EQE.id?A_('حفظ التعديل','Save changes'):A_('+ إضافة','+ Add')}</button>${EQE&&EQE.id?`<button class="btn-outline" data-bz="eq-cancel">${A_('إلغاء','Cancel')}</button>`:''}</div>
+   <p class="pr-hint">${A_('الاستخدام والاسترداد يُحسبان من المعدات التي تختارها داخل كل جلسة في «تكاليف الجلسات» (رسم الاستخدام × عدد الجلسات).','Usage and recovery come from the equipment you pick inside each session in Session Costs (per-use fee × sessions).')}</p></div>
+  ${card(A_('تقرير المعدات (الأكثر استخدامًا أولًا)','Equipment report (most used first)'),`<div style="overflow-x:auto"><table class="bz-table" style="min-width:760px"><thead><tr><th>${A_('المعدة','Item')}</th><th>${A_('الحالة','Status')}</th><th class="num">${A_('الاستخدام','Uses')}</th><th class="num">${A_('من المشاريع (12ش)','Of projects (12m)')}</th><th>${A_('آخر استخدام','Last used')}</th><th class="num">${A_('إيراد المشاريع','Project revenue')}</th><th class="num">${A_('المسترد','Recovered')}</th><th>${A_('العائد على الشراء','ROI')}</th><th class="num">${A_('المتبقي','Remaining')}</th><th></th></tr></thead><tbody>${list.map(({x,s},i)=>`<tr><td><b>${escH(x.name)}</b>${i===0&&s.used?' <small class="pr-pill">'+A_('الأكثر','Top')+'</small>':''}${i===list.length-1&&list.length>2?' <small class="pr-hint">'+A_('الأقل','Least')+'</small>':''}<br><small class="pr-hint">${lk(EQC,x.cat)}${x.serial?' · SN '+escH(x.serial):''}${s.link?'':' · ⚠ '+A_('غير مرتبطة','not linked')}</small></td><td>${lk(EQS,x.status)}</td><td class="num">${s.used}</td><td class="num">${pct(s.usePct)}</td><td style="white-space:nowrap">${s.last?escH(s.last):'—'}</td><td class="num">${f3(s.rev)}</td><td class="num">${f3(s.income)}</td><td style="min-width:110px"><div class="bz-hbar" style="grid-template-columns:1fr auto;margin:0"><div><i style="width:${Math.min(100,s.roi*100).toFixed(1)}%"></i></div><b>${pct(s.roi)}</b></div></td><td class="num">${s.remain?f3(s.remain)+(s.eta?`<br><small class="pr-hint">~${s.eta} ${A_('شهر','mo')}</small>`:''):'✓'}</td><td style="white-space:nowrap"><button class="btn-sm" data-bz="eq-edit" data-id="${escH(x.id)}">✎</button> <button class="btn-sm danger" data-bz="eq-del" data-id="${escH(x.id)}">✕</button></td></tr>`).join('')||emptyRow(10,A_('لا توجد معدات بعد — أضفها أو استوردها من قائمة معدات الجلسات.','No equipment yet — add it or import it from the session equipment list.'))}</tbody></table></div>`)}`;
+}
+function saveEquip(){
+  const name=G('eqf-name').value.trim();if(!name){note(A_('أدخل اسم المعدة','Enter the equipment name'));G('eqf-name').focus();return}
+  const d={name,cat:G('eqf-cat').value,serial:G('eqf-serial').value.trim(),date:G('eqf-date').value,price:+G('eqf-price').value||0,status:G('eqf-status').value,link:G('eqf-link').value,notes:G('eqf-notes').value.trim()};
+  const x=EQE&&EQE.id&&B.equipment.find(y=>y.id===EQE.id);if(x)Object.assign(x,d);else B.equipment.push({id:uid(),...d});
+  EQE=null;persist();renderEquipment();note(A_('✓ تم الحفظ','✓ Saved'));
+}
+
+// ═════════════ REPORTS & ADVISOR ═════════════
+function repSections(P){
+  const Sm=summary(P),c=Sm.c,S=PR.data(),out=[];
+  const row=(l,v,cls)=>`<tr><td>${l}</td><td class="num ${cls||''}">${v}</td></tr>`;
+  out.push({t:A_('الأرباح والخسائر','Profit & Loss'),h:`<table class="bz-table"><tbody>${row('<b>'+A_('الإيرادات','Revenue')+'</b>'+(B.cfg.revSrc==='sessions'?' <small class="pr-hint">('+A_('من الجلسات','from sessions')+')</small>':' <small class="pr-hint">('+A_('من الفواتير بدون الضريبة','from invoices, excl. VAT')+')</small>'),'<b>'+f3(Sm.rev)+'</b>')}${row(A_('المحصّل فعليًا','Collected'),f3(Sm.collected))}${row(A_('أجور المصورين والفريق','Team pay'),'− '+f3(c.team))}${row(A_('رسوم المعدات','Equipment fees'),'− '+f3(c.eqf))}${row(A_('الاشتراكات','Subscriptions'),'− '+f3(c.subs))}${Object.keys(EXC).filter(k=>c.byCat[k]).map(k=>row(A_('مصروفات: ','Expenses: ')+catL(k),'− '+f3(c.byCat[k]))).join('')}${row('<b>'+A_('إجمالي التكاليف','Total costs')+'</b>','<b>− '+f3(c.total)+'</b>')}</tbody><tfoot>${row(A_('صافي الربح','Net profit'),f3(Sm.profit),Sm.profit<0?'pr-neg':'')}${row(A_('هامش الربح','Margin'),pct(Sm.margin))}</tfoot></table>`});
+  const ts=topServices(P),tsT=sum(ts,x=>x.a);
+  out.push({t:A_('الإيراد حسب الخدمة','Revenue by service'),h:`<table class="bz-table"><thead><tr><th>${A_('الخدمة','Service')}</th><th class="num">${A_('العدد','Count')}</th><th class="num">${A_('المبلغ','Amount')}</th><th class="num">%</th></tr></thead><tbody>${ts.slice(0,12).map(x=>`<tr><td>${escH(x.n)}</td><td class="num">${x.c}</td><td class="num">${f3(x.a)}</td><td class="num">${tsT?pct(x.a/tsT):'—'}</td></tr>`).join('')||emptyRow(4)}</tbody></table>`});
+  const by={};c.ex.forEach(x=>{const k=catL(x.cat)+' · '+subL(x.cat,x.sub);by[k]=(by[k]||0)+(+x.amt||0)});
+  out.push({t:A_('تقرير المصروفات','Expense report'),h:`<table class="bz-table"><thead><tr><th>${A_('البند','Item')}</th><th class="num">${A_('المبلغ','Amount')}</th></tr></thead><tbody>${Object.entries(by).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td>${escH(k)}</td><td class="num">${f3(v)}</td></tr>`).join('')||emptyRow(2)}</tbody><tfoot><tr><td>${A_('المجموع','Total')}</td><td class="num">${f3(c.exp)}</td></tr></tfoot></table>`});
+  const CM={};Sm.inv.forEach(i=>{const k=(i.client||'—').trim();const q=CM[k]||(CM[k]={n:k,c:0,a:0,d:0,last:''});q.c++;q.a+=i.grand||0;q.d+=invRem(i);if((i.date||'')>q.last)q.last=i.date});
+  out.push({t:A_('تقرير العملاء','Client report'),h:`<table class="bz-table"><thead><tr><th>${A_('العميل','Client')}</th><th class="num">${A_('الفواتير','Invoices')}</th><th class="num">${A_('الإجمالي','Total')}</th><th class="num">${A_('المتبقي','Outstanding')}</th><th>${A_('آخر فاتورة','Last invoice')}</th></tr></thead><tbody>${Object.values(CM).sort((a,b)=>b.a-a.a).slice(0,15).map(x=>`<tr><td>${escH(x.n)}</td><td class="num">${x.c}</td><td class="num">${f3(x.a)}</td><td class="num ${x.d>0.0005?'pr-neg':''}">${f3(x.d)}</td><td>${escH(x.last)}</td></tr>`).join('')||emptyRow(5)}</tbody></table>`});
+  const TM={};c.sess.forEach(s=>{const seen=new Set();s.lines.forEach(l=>{if(!l.p)return;const n=(staffList.find(x=>x.id==l.p)||{}).name||'—';const q=TM[n]||(TM[n]={n,c:0,a:0});q.a+=+l.a||0;if(!seen.has(n)){seen.add(n);q.c++}})});
+  out.push({t:A_('أداء الفريق','Team performance'),h:`<table class="bz-table"><thead><tr><th>${A_('المصور','Photographer')}</th><th class="num">${A_('الجلسات','Sessions')}</th><th class="num">${A_('المستحق','Earned')}</th><th class="num">${A_('من الجلسات','Of sessions')}</th></tr></thead><tbody>${Object.values(TM).sort((a,b)=>b.c-a.c).map(x=>`<tr><td>${escH(x.n)}</td><td class="num">${x.c}</td><td class="num">${f3(x.a)}</td><td class="num">${c.sess.length?pct(x.c/c.sess.length):'—'}</td></tr>`).join('')||emptyRow(4)}</tbody></table>`});
+  const EU={};c.sess.forEach(s=>(s.eq||[]).forEach(id=>{const e=S.equip.find(x=>x.id==id);if(!e)return;const q=EU[id]||(EU[id]={n:e.n,c:0,a:0});q.c++;q.a+=+e.f||0}));
+  const eu=Object.values(EU).sort((a,b)=>b.c-a.c);
+  out.push({t:A_('تقرير المعدات','Equipment report'),h:`<table class="bz-table"><thead><tr><th>${A_('المعدة','Item')}</th><th class="num">${A_('الاستخدام','Uses')}</th><th class="num">${A_('من الجلسات','Of sessions')}</th><th class="num">${A_('الرسوم','Fees')}</th></tr></thead><tbody>${eu.map(x=>`<tr><td>${escH(x.n)}</td><td class="num">${x.c}</td><td class="num">${c.sess.length?pct(x.c/c.sess.length):'—'}</td><td class="num">${f3(x.a)}</td></tr>`).join('')||emptyRow(4)}</tbody></table>`});
+  const cps=B.campaigns.filter(x=>(x.start||'0000')<=P.to&&(x.end||x.start||'9999')>=P.from);
+  out.push({t:A_('تقرير التسويق','Marketing report'),h:`<table class="bz-table"><thead><tr><th>${A_('الحملة','Campaign')}</th><th class="num">${A_('التكلفة','Cost')}</th><th class="num">${A_('محتملون','Leads')}</th><th class="num">${A_('جدد','Clients')}</th><th class="num">${A_('الإيراد','Revenue')}</th><th class="num">ROI</th></tr></thead><tbody>${cps.map(x=>{const r=roiOf(x);return `<tr><td>${escH(x.name)} <small class="pr-hint">${escH(x.plat)}</small></td><td class="num">${f3(x.cost)}</td><td class="num">${+x.leads||0}</td><td class="num">${+x.cl||0}</td><td class="num">${f3(x.rev)}</td><td class="num ${r!=null&&r<0?'pr-neg':''}">${r==null?'—':Math.round(r)+'%'}</td></tr>`}).join('')||emptyRow(6)}</tbody></table>`});
+  const wd=[0,0,0,0,0,0,0];c.sess.forEach(s=>wd[new Date(s.d+'T00:00').getDay()]++);const wmx=Math.max(1,...wd);
+  const wn=i=>new Date(2023,0,1+i).toLocaleDateString(loc(),{weekday:'short'});
+  out.push({t:A_('تقرير الإشغال','Occupancy report'),h:`<div class="bz-grid">${kpi(A_('نسبة الإشغال','Occupancy'),pct(Sm.occ.rate))}${kpi(A_('أيام محجوزة','Booked days'),Sm.occ.booked,A_('من ','of ')+Math.round(Sm.occ.cap)+A_(' يوم عمل',' working days'))}${kpi(A_('الجلسات','Sessions'),c.sess.length)}</div>${wd.map((v,i)=>`<div class="bz-hbar"><span>${wn(i)}</span><div><i style="width:${(v/wmx*100).toFixed(1)}%"></i></div><b>${v}</b></div>`).join('')}`});
+  return{Sm,out};
+}
+function renderReports(){
+  const R=G('reports-root');if(!R)return;
+  const P=period(RP.mode,RP.ref),{Sm,out}=repSections(P),A=advisor(),F=forecast();
+  R.innerHTML=`<div class="section-header"><h2>${A_('المستشار الذكي والتقارير','Smart advisor & reports')}</h2></div>
+  ${card(`<span style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap"><span>🧠 ${A_('المستشار الذكي — هذا الشهر','Smart business advisor — this month')}</span>${hPill(A.h)}</span>`,
+    (A.target?`<div class="bz-grid">${kpi(A_('هدف الشهر','Monthly target'),f3(A.target),basisL())}${kpi(basisL()+A_(' الحالي',' so far'),f3(A.cur),pct(A.pc),A.cur<0?'pr-neg':'')}${kpi(A_('المبلغ المتبقي','Remaining amount'),f3(A.gap))}${kpi(A_('مشاريع مطلوبة تقريبًا','Projects needed (est.)'),A.gap?(A.need||'—'):0,A_('متوسط المشروع ','Avg project ')+f3(A.avg))}${kpi(A_('متوسط مطلوب لكل مشروع','Required avg per project'),A.gap?f3(A.reqAvg):'—',A.gap?A.expRemain+A_(' مشروع متوقع',' expected project(s)'):'')}</div><div class="bz-prog"><i style="width:${Math.min(100,Math.max(0,A.pc*100))}%"></i></div>
+    <p style="font-weight:700;margin:.3rem 0 .6rem">${A.gap>0?A_(`أنت أقل من الهدف بـ ${f3(A.gap)} د.ب.`,`You are ${f3(A.gap)} BHD below target.`):A_('🎉 تجاوزت هدف الشهر.','🎉 You are above this month\'s target.')}</p>`:`<p class="pr-hint">${A_('حدّد هدفًا شهريًا من الإعدادات.','Set a monthly target in Settings.')}</p>`)+recsH(recs(A)))}
+  ${card('🔮 '+A_('توقعات السنة ','Business forecast ')+F.y,forecastH(F))}
+  <div class="flt" id="rp-flt"><div class="sc-nav"><button class="sc-arrow" data-bz="rp-prev" aria-label="prev">‹</button><b class="sc-month" style="min-width:150px">${escH(pLabel(P,RP.mode))}</b><button class="sc-arrow" data-bz="rp-next" aria-label="next">›</button><button class="f-chip" data-bz="rp-today">${A_('الحالي','Current')}</button></div>${fChips('rpm',[['day',A_('يومي','Daily')],['week',A_('أسبوعي','Weekly')],['month',A_('شهري','Monthly')],['year',A_('سنوي','Annual')]],RP.mode)}<span style="display:flex;gap:.4rem;margin-inline-start:auto"><button class="btn-outline" data-bz="rp-csv">⬇ CSV</button><button class="btn-gold" data-bz="rp-print">🖨 ${A_('طباعة / PDF','Print / PDF')}</button></span></div>
+  <div class="bz-grid">${kpi(A_('الإيرادات','Revenue'),f3(Sm.rev),Sm.count+' '+A_('مشروع','project(s)'))}${kpi(A_('المحصّل','Collected'),f3(Sm.collected))}${kpi(A_('التكاليف','Costs'),f3(Sm.c.total))}${kpi(A_('صافي الربح','Net profit'),f3(Sm.profit),pct(Sm.margin)+A_(' هامش',' margin'),Sm.profit<0?'pr-neg':'')}${kpi(A_('الإشغال','Occupancy'),pct(Sm.occ.rate))}</div>
+  <div class="bz-two">${out.map(s=>card(s.t,`<div style="overflow-x:auto">${s.h}</div>`)).join('')}</div>`;
+}
+function printReport(){
+  const P=period(RP.mode,RP.ref),{out}=repSections(P);
+  G('pr-rep').innerHTML=`<div class="pr-rep-bar pr-noprint"><span></span><button class="btn-gold" onclick="window.print()">🖨 ${A_('طباعة / PDF','Print / PDF')}</button></div><article class="pr-sheet"><div class="pr-sheet-head"><div class="pr-sheet-brand">${escH(B.cfg.company||'Shuaib Studio')}</div><div class="pr-sheet-ttl">${A_('تقرير الأعمال','Business report')}<br>${escH(pLabel(P,RP.mode))}</div></div><div class="pr-sheet-body">${out.map(s=>`<section><h3>${s.t}</h3>${s.h}</section>`).join('')}</div></article>`;
+  G('pr-rep-modal').classList.add('show');G('pr-rep-modal').scrollTop=0;
+}
+function csvReport(){
+  const P=period(RP.mode,RP.ref),Sm=summary(P),c=Sm.c;
+  const rows=[[A_('تقرير الأرباح والخسائر','Profit & Loss'),P.from+' → '+P.to],[A_('الإيرادات','Revenue'),f3(Sm.rev)],[A_('المحصّل','Collected'),f3(Sm.collected)],[A_('أجور الفريق','Team pay'),f3(c.team)],[A_('رسوم المعدات','Equipment fees'),f3(c.eqf)],[A_('الاشتراكات','Subscriptions'),f3(c.subs)],...Object.keys(EXC).map(k=>[A_('مصروفات: ','Expenses: ')+catL(k),f3(c.byCat[k]||0)]),[A_('إجمالي التكاليف','Total costs'),f3(c.total)],[A_('صافي الربح','Net profit'),f3(Sm.profit)],[A_('الإشغال','Occupancy'),pct(Sm.occ.rate)],[],[A_('التاريخ','Date'),A_('الفئة','Category'),A_('البند','Item'),A_('ملاحظة','Note'),A_('المبلغ','Amount')],...c.ex.map(x=>[x.date,catL(x.cat),subL(x.cat,x.sub),x.note,f3(x.amt)])];
+  dl('report-'+P.from+'.csv',rows);
+}
+
+// ═════════════ SETTINGS ═════════════
+function renderSettings(){
+  const R=G('settings-root');if(!R)return;const C=B.cfg;
+  const inp=(k,l,type,extra)=>`<label>${l}<input class="bz-in" data-bc="${k}" type="${type||'text'}" value="${escH(C[k])}"${extra||''}></label>`;
+  const sel=(k,l,opts)=>`<label>${l}<select class="bz-in" data-bc="${k}">${opts.map(([v,t2])=>`<option value="${v}"${String(C[k])===String(v)?' selected':''}>${t2}</option>`).join('')}</select></label>`;
+  R.innerHTML=`<div class="section-header"><h2>${A_('الإعدادات','Settings')}</h2></div>
+  ${card('🏢 '+A_('بيانات الشركة (تظهر على الفواتير وعروض الأسعار)','Company details (shown on invoices & quotations)'),`<div class="bz-form">${inp('company',A_('اسم الشركة','Company name'))}${inp('cr',A_('رقم السجل التجاري (CR)','CR number'))}${inp('vatNo',A_('رقم التسجيل الضريبي','VAT registration no.'))}${inp('addr',A_('العنوان','Address'))}${inp('phone',A_('الهاتف','Phone'),'tel')}${inp('email',A_('البريد الإلكتروني','Email'),'email')}</div>`)}
+  ${card('🧾 '+A_('الضريبة والترقيم','Tax & numbering'),`<label class="ck" style="display:flex;gap:.5rem;align-items:center;margin-bottom:.8rem;font-weight:600"><input type="checkbox" data-bc="vatOn"${C.vatOn?' checked':''}> ${A_('تفعيل ضريبة القيمة المضافة على الفواتير وعروض الأسعار','Charge VAT on invoices & quotations')}</label><div class="bz-form">${inp('vat',A_('نسبة الضريبة %','VAT rate %'),'number',' min="0" step="0.1"')}<label>${A_('العملة','Currency')}<input class="bz-in" value="BHD" disabled></label>${inp('invPrefix',A_('بادئة رقم الفاتورة','Invoice prefix'))}${inp('quotePrefix',A_('بادئة رقم عرض السعر','Quotation prefix'))}${inp('dueDays',A_('مهلة السداد (أيام)','Payment terms (days)'),'number',' min="0"')}${inp('validDays',A_('صلاحية عرض السعر (أيام)','Quotation validity (days)'),'number',' min="0"')}</div><p class="pr-hint">${A_('في البحرين التسجيل في الضريبة إلزامي عند تجاوز الإيرادات السنوية 37,500 د.ب. فعّلها فقط إذا كنت مسجّلًا، وأدخل رقم التسجيل ليظهر «TAX INVOICE».','In Bahrain VAT registration is mandatory above BHD 37,500 annual revenue. Enable it only if you are registered, and enter the registration number so invoices show “TAX INVOICE”.')}</p>`)}
+  ${card('🎯 '+A_('الأهداف والحساب','Targets & calculations'),`<div class="bz-form">${sel('targetBasis',A_('الهدف مبني على','Target is based on'),[['profit',A_('الربح','Profit')],['revenue',A_('الإيراد','Revenue')]])}${inp('monthTarget',A_('الهدف الشهري (د.ب)','Monthly target (BHD)'),'number',' min="0" step="any"')}${inp('yearTarget',A_('الهدف السنوي (د.ب)','Annual target (BHD)'),'number',' min="0" step="any"')}${sel('revSrc',A_('مصدر الإيرادات في التقارير','Revenue source for reports'),[['invoices',A_('الفواتير','Invoices')],['sessions',A_('أسعار الجلسات','Session prices')]])}${inp('workDays',A_('أيام العمل في الأسبوع (للإشغال)','Working days / week (occupancy)'),'number',' min="1" max="7"')}</div><p class="pr-hint">${A_('اختر مصدرًا واحدًا للإيرادات حتى لا تُحسب الجلسة مرتين (مرة كفاتورة ومرة كجلسة).','Pick one revenue source so a job isn\'t counted twice (as an invoice and as a session).')}</p>`)}
+  ${card('🎨 '+A_('المظهر واللغة','Appearance & language'),`<div class="bz-form">${sel('theme',A_('المظهر','Theme'),[['auto',A_('تلقائي (حسب الجهاز)','Auto (device)')],['light',A_('فاتح','Light')],['dark',A_('داكن','Dark')]])}<label>${A_('اللغة','Language')}<select class="bz-in" data-act="lang"><option value="ar"${lang==='ar'?' selected':''}>العربية</option><option value="en"${lang==='en'?' selected':''}>English</option></select></label></div>`)}
+  ${card('🛍 '+A_('الخدمات والأسعار','Services & prices'),`<p class="pr-hint">${A_('هذه القائمة تظهر في الفواتير وعروض الأسعار. الباقات وأسعار أدوار الفريق في «تكاليف الجلسات ← الفريق والإعدادات».','This list is used by invoices and quotations. Packages and team role rates live in Session Costs → Team & settings.')}</p>${SERVICES.map((s,i)=>`<div class="svc-ed"><input value="${escH(s.icon||'')}" data-sv="${i}" data-k="icon" aria-label="icon" style="text-align:center"><input value="${escH(s.ar)}" data-sv="${i}" data-k="ar" placeholder="الاسم بالعربي"><input class="hide-sm" value="${escH(s.en)}" data-sv="${i}" data-k="en" placeholder="English name"><input class="hide-sm" value="${escH(s.type)}" data-sv="${i}" data-k="type" placeholder="Type"><input type="number" step="0.001" min="0" value="${+s.unit||0}" data-sv="${i}" data-k="unit" aria-label="${A_('السعر','Price')}"><button type="button" class="remove-row" data-bz="st-svcdel" data-i="${i}" aria-label="${A_('حذف','Delete')}">✕</button></div>`).join('')}<button type="button" class="btn-sm" data-bz="st-svcadd">+ ${A_('خدمة جديدة','New service')}</button>`)}
+  ${card('🔐 '+A_('الحسابات والصلاحيات','Accounts & roles'),`<p class="pr-hint">${A_('لوحة التحكم هذه لحساب صاحب الاستوديو فقط، والمصورون يدخلون صفحة الموظفين (staff.html) ويرون جدولهم ومهامهم بدون الأسعار. كل البيانات تُحفظ سحابيًا تلقائيًا، ويمكنك تنزيل نسخة احتياطية من لوحة التحكم.','This dashboard is for the studio owner account only; photographers sign in to the staff page (staff.html) and see their schedule and tasks without prices. All data syncs to the cloud automatically, and you can download a backup from the dashboard.')}</p>`)}`;
+}
+
+// ═════════════ i18n + router ═════════════
+const LBL={'clf-lbl-name':['اسم العميل','Client Name'],'clf-lbl-custid':['رقم الهوية','Customer ID#'],'clf-lbl-phone':['الهاتف','Phone'],'clf-lbl-iban':['IBAN','IBAN'],'clf-lbl-addr':['العنوان','Address'],'clf-lbl-email':['البريد الإلكتروني','Email'],'clf-lbl-company':['الشركة','Company'],'clf-lbl-notes':['ملاحظات','Notes'],'clf-save-btn':['حفظ','Save'],'clf-cancel-btn':['إلغاء','Cancel'],'lbl-due':['تاريخ الاستحقاق','Due date']};
+function applyLang(){
+  Object.entries(LBL).forEach(([id,[a,e]])=>{const el=G(id);if(el)el.textContent=A_(a,e)});
+  applyTheme();
+  const act=document.querySelector('.page.active');if(act)renderPage(act.id.replace('page-',''));
+}
+function renderPage(p){({quotes:renderQuotes,expenses:renderExpenses,equipment:renderEquipment,reports:renderReports,settings:renderSettings})[p]?.()}
+
+// ═════════════ events ═════════════
+document.addEventListener('click',e=>{
+  const fc=e.target.closest('[data-fg]');
+  if(fc){const g=fc.dataset.fg,v=fc.dataset.fv;
+    if(g==='qst'){QF.st=v;G('q-flt').innerHTML=fSearch('q-q',QF.q,A_('ابحث بالعميل أو الرقم…','Search client or number…'))+fChips('qst',[['all',A_('الكل','All')],...QST()],QF.st);renderQList()}
+    else if(g==='exper'||g==='excat'){EF[g==='exper'?'per':'cat']=v;G('ex-flt').innerHTML=exFltH();renderExList()}
+    else if(g==='rpm'){RP.mode=v;renderReports()}
+    return}
+  const b=e.target.closest('[data-bz]');if(!b)return;
+  const a=b.dataset.bz,id=b.dataset.id,i=+b.dataset.i;
+  const find=arr=>arr.find(x=>x.id===id);
+  switch(a){
+    case 'go':showPage(b.dataset.page);break;
+    case 'q-new':newQuote();break;
+    case 'q-cancel':QE=null;renderQuotes();break;
+    case 'q-save':saveQuote(false);break;
+    case 'q-saveview':saveQuote(true);break;
+    case 'q-addc':QE.items.push({desc:'',type:'Package',qty:1,unit:0,disc:0});refreshQ();{const ins=document.querySelectorAll('#qf-items [data-qk="desc"]');if(ins.length)ins[ins.length-1].focus()}break;
+    case 'q-rm':QE.items.splice(i,1);refreshQ();break;
+    case 'q-view':viewQuote(id);break;
+    case 'q-edit':editQuote(id);break;
+    case 'q-conv':toInvoice(id);break;
+    case 'q-inv':{const q=find(B.quotes);if(q){showPage('invoices');viewInvoice(q.invId)}}break;
+    case 'q-wa':waQuote(id);break;
+    case 'q-del':if(confirm(A_('حذف عرض السعر نهائيًا؟','Delete this quotation permanently?'))){B.quotes=B.quotes.filter(x=>x.id!==id);persist();renderQuotes()}break;
+    case 'ex-save':saveExpense();break;
+    case 'ex-cancel':EE=null;renderExpenses();break;
+    case 'ex-edit':EE={...find(B.expenses)};renderExpenses();G('ex-form').scrollIntoView({block:'center'});break;
+    case 'ex-del':if(confirm(A_('حذف هذا المصروف؟','Delete this expense?'))){B.expenses=B.expenses.filter(x=>x.id!==id);persist();renderExpenses();updateStats()}break;
+    case 'ex-csv':dl('expenses-'+todayISO()+'.csv',[[A_('التاريخ','Date'),A_('الفئة','Category'),A_('البند','Item'),A_('ملاحظة','Note'),A_('المبلغ','Amount')],...exFiltered().map(x=>[x.date,catL(x.cat),subL(x.cat,x.sub),x.note,f3(x.amt)])]);break;
+    case 'cmp-save':saveCampaign();break;
+    case 'cmp-cancel':CE=null;renderCampaigns();break;
+    case 'cmp-edit':CE={...find(B.campaigns)};renderCampaigns();G('cmp-root').scrollIntoView({block:'start'});break;
+    case 'cmp-del':if(confirm(A_('حذف الحملة ومصروفها المرتبط؟','Delete the campaign and its linked expense?'))){B.campaigns=B.campaigns.filter(x=>x.id!==id);B.expenses=B.expenses.filter(x=>x.campId!==id);persist();renderExpenses();updateStats()}break;
+    case 'eq-save':saveEquip();break;
+    case 'eq-cancel':EQE=null;renderEquipment();break;
+    case 'eq-edit':EQE={...find(B.equipment)};renderEquipment();G('eq-form').scrollIntoView({block:'center'});break;
+    case 'eq-del':if(confirm(A_('حذف هذه المعدة من السجل؟','Remove this item from the register?'))){B.equipment=B.equipment.filter(x=>x.id!==id);persist();renderEquipment()}break;
+    case 'eq-import':{const S=PR.data();S.equip.filter(pe=>!B.equipment.some(x=>eqLink(x)===pe.id)).forEach(pe=>B.equipment.push({id:uid(),name:pe.n,cat:'other',serial:'',date:'',price:0,status:'active',link:pe.id,notes:''}));persist();renderEquipment();note(A_('✓ تم الاستيراد — أكمل سعر وتاريخ الشراء لكل معدة','✓ Imported — fill in each item\'s purchase price and date'))}break;
+    case 'rp-prev':shiftRef(-1);renderReports();break;
+    case 'rp-next':shiftRef(1);renderReports();break;
+    case 'rp-today':RP.ref=todayISO();renderReports();break;
+    case 'rp-print':printReport();break;
+    case 'rp-csv':csvReport();break;
+    case 'st-svcadd':addSvc();renderSettings();break;
+    case 'st-svcdel':delSvc(i);renderSettings();break;
+    case 'wa-client':{const c=clients.find(x=>String(x.id)===id);if(!c)break;const m=A_(`مرحبًا ${c.name} 🌷\nاشتقنا لكم في ${B.cfg.company||'شعيب استوديو'}! عندنا عرض خاص هذا الشهر لعملائنا السابقين — هل تحب نحجز لك موعدًا؟ 📸`,`Hi ${c.name} 🌷\nWe miss you at ${B.cfg.company||'Shuaib Studio'}! We have a special offer this month for returning clients — shall we book you a slot? 📸`);window.open('https://wa.me/'+waPhone(c.phone)+'?text='+encodeURIComponent(m),'_blank')}break;
+  }
+});
+document.addEventListener('input',e=>{
+  const tg=e.target,d=tg.dataset;
+  if(tg.id==='q-q'){QF.q=tg.value;renderQList();return}
+  if(tg.id==='ex-q'){EF.q=tg.value;renderExList();return}
+  if(d.qi!==undefined&&QE){const it=QE.items[+d.qi];if(!it)return;it[d.qk]=d.qk==='desc'?tg.value:(+tg.value||0);const c=G('qlt'+d.qi);if(c)c.textContent=f3((+it.qty||0)*(+it.unit||0)-(+it.disc||0));G('qf-tot').innerHTML=qTotH();return}
+  if(d.qf&&QE&&d.qf!=='clientId'&&d.qf!=='status'){QE[d.qf]=tg.value;return}
+  if(d.bc){const k=d.bc;B.cfg[k]=tg.type==='checkbox'?tg.checked:(tg.type==='number'?(+tg.value||0):tg.value);persist();
+    if(k==='theme')applyTheme();
+    if((k==='vatOn'||k==='vat')&&G('invoice-form').style.display!=='none')calcTotals();
+    if(k==='targetBasis'||k==='revSrc'||k==='monthTarget')updateStats();}
+});
+document.addEventListener('change',e=>{
+  const tg=e.target,d=tg.dataset;
+  if(d.qf==='clientId'&&QE){const c=clients.find(x=>x.id===+tg.value);QE.clientId=c?c.id:null;if(c){QE.client=c.name;QE.phone=c.phone||'';QE.company=c.company||''}renderQuotes();return}
+  if(d.qf==='status'&&QE){QE.status=tg.value;return}
+  if(tg.id==='qf-add'&&QE){const v=tg.value;if(!v)return;
+    if(v[0]==='s'){const s=SERVICES[+v.slice(1)];if(s)QE.items.push({_svcId:s.id,desc:lang==='ar'?s.ar:(s.en||s.ar),type:s.type||'Package',qty:+s.qty||1,unit:+s.unit||0,disc:0})}
+    else{const k=PR.data().pkgs.find(x=>x.id===v.slice(1));if(k)QE.items.push({desc:k.n,type:'Package',qty:1,unit:+k.price||0,disc:0})}
+    tg.value='';refreshQ();return}
+  if(tg.id==='ef-cat'){G('ef-sub').innerHTML=subOpts(tg.value);return}
+  if(d.act==='lang'&&tg.value!==lang){toggleLang();return}
+  if(d.bc==='theme')applyTheme();
+});
+
+return{cfg,vatOf,dueFrom,applyTheme,toggleTheme,applyLang,renderPage,renderHome,newQuote,editQuote,viewQuote,waQuote,toInvoice,advisor};
+})();
+
 // ── INIT ─────────────────────────────────────────────
 document.getElementById('inv-date').value=new Date().toISOString().split('T')[0];
+BZ.applyTheme();
 applyLang();
 sbRender();sbSync();syncPull();
 </script>
