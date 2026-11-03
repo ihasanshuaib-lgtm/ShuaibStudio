@@ -2,6 +2,7 @@
 --  بوابة العميل — شعيب استوديو   (Client portal setup)
 --  الخطوات: Supabase ← SQL Editor ← New query ← الصق هذا الملف كاملًا ← Run
 --  يكفي تشغيله مرة واحدة. تشغيله مرة ثانية آمن ولا يحذف البيانات.
+--  (إذا شغّلت النسخة السابقة: شغّل هذه النسخة مرة أخرى لإضافة صورة العميل)
 -- ═══════════════════════════════════════════════════════════════
 
 -- 1) صف لكل عميل: البيانات المسموح بها فقط (بدون أجور أو تكاليف أو أرباح)
@@ -15,6 +16,7 @@ create table if not exists public.client_portal (
   last_seen    timestamptz,               -- آخر مرة فتح العميل الرابط
   updated_at   timestamptz default now()
 );
+alter table public.client_portal add column if not exists photo text;   -- صورة العميل (تظهر أعلى صفحته)
 
 -- 2) ردود العملاء (الموافقة على عرض السعر أو رفضه) — تصل للوحة التحكم
 create table if not exists public.portal_actions (
@@ -60,7 +62,7 @@ begin
     return jsonb_build_object('error','pin','name', r.data->>'first');
   end if;
   update public.client_portal set fails = 0, locked_until = null, last_seen = now() where token = t;
-  return r.data;
+  return r.data || jsonb_build_object('photo', coalesce(r.photo, ''));
 end $$;
 
 -- 5) العميل يوافق على عرض سعر مُرسل له أو يرفضه
