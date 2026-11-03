@@ -478,4 +478,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-11-03** — سعر الساعة لكل مصوّر في باقة «مخصص» صار **36 د.ب** بدل 29 (`CATEGORIES.custom.custom.perHour = 36`)، فالسعر = الساعات × (مصوّرو الفوتو + مصوّرو الفيديو) × 36 (مثال: ساعتان × مصوّر = 72).
 
+- **2026-11-03** — **تبويب «حجز» في `pay.html` صار رابطًا مباشرًا لـ`index.html`**: كان يُضمِّن صفحة الحجز في `<iframe id="booking-iframe">` فتظهر مقصوصة/غير كاملة. الآن `showPage('booking')` يفتح `index.html` في **تبويب جديد** (`window.open(...,'_blank','noopener')`) ولا يغيّر الصفحة الحالية؛ وحُذف الـiframe ودوال ضبط ارتفاعه (`page-booking` فارغ). الحجز يصل للتكاليف عبر Supabase (المزامنة كل 30 ثانية) بنفس طريقة حجوزات الزبائن، فلا حاجة لـ`postMessage` من الإطار (معالج الرسالة ما زال موجودًا لكنه لا يعمل بلا إطار).
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.

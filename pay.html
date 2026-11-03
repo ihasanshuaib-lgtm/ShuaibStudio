@@ -932,9 +932,7 @@ html.locked body>*:not(#gate){display:none !important}
 </div>
 
 <!-- BOOKING -->
-<div class="page" id="page-booking">
-  <iframe id="booking-iframe" src="index.html" title="Booking"></iframe>
-</div>
+<div class="page" id="page-booking"></div>
 
 <!-- CLIENTS -->
 <div class="page" id="page-clients">
@@ -1215,6 +1213,8 @@ function toggleLang(){
 
 // ── NAVIGATION ──────────────────────────────────────
 function showPage(p){
+  // «حجز» رابط مباشر لصفحة الحجز index.html (تفتح في تبويب جديد) بدل تضمينها في إطار كان يظهر مقصوصًا
+  if(p==='booking'){ window.open('index.html','_blank','noopener'); return; }
   const pg=document.getElementById('page-'+p);if(!pg)return;
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   pg.classList.add('active');
@@ -1224,10 +1224,6 @@ function showPage(p){
   if(p==='clients'){ renderClients(); }
   if(p==='staff'){ renderStFlt(); renderStaff(); }
   if(p==='payroll') PR.render();
-  if(p==='booking'){
-    const f=document.getElementById('booking-iframe');
-    try{ f.style.height=Math.max(f.contentWindow.document.body.scrollHeight,2000)+'px'; }catch(e){}
-  }
   BZ.renderPage(p);
 }
 window.addEventListener('message',e=>{
