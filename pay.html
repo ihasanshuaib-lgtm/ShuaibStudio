@@ -3227,7 +3227,7 @@ const STG=['booked','shot','editing','ready','delivered'];
 const stL=k=>({booked:A_('محجوز','Booked'),shot:A_('تم التصوير','Shot'),editing:A_('التعديل والمونتاج','Editing'),ready:A_('جاهز للتسليم','Ready'),delivered:A_('تم التسليم','Delivered')})[k]||k;
 const dvStage=s=>STG.includes(s.dv)?s.dv:((s.d||'')>todayISO()?'booked':'shot');
 const safeUrl=u=>/^https:\/\/[^\s"'<>]+$/i.test(String(u||'').trim())?String(u).trim():'';
-const pinOf=c=>{const d=String(c&&c.phone||'').replace(/\D/g,'');return d.length>=4?d.slice(-4):''};
+const pinOf=c=>'';   // رمز الدخول (آخر 4 أرقام من الهاتف) مُعطَّل بطلب المالك: الرابط وحده يكفي؛ الصفوف القديمة يُمسح رمزها عند أول مزامنة (pin=null)
 const newToken=()=>{const a=new Uint8Array(18);crypto.getRandomValues(a);return btoa(String.fromCharCode(...a)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
 const portalUrl=t=>{const u=new URL('portal.html',location.href);u.search='';u.hash='c='+t;return u.href};
 function clientOpts(s){const a=sessClient({...s,cid:''});return `<option value="">${A_('تلقائي','Auto')}${a?': '+escH(a.name):' —'}</option>`+clients.map(c=>`<option value="${c.id}"${String(c.id)===String(s.cid||'')?' selected':''}>${escH(c.name)}</option>`).join('')}
@@ -3289,14 +3289,13 @@ function portalPanel(id){
   }else{
     h+=`<label style="display:flex;flex-direction:column;gap:.3rem;font-size:.78rem;color:#666">${A_('الرابط','Link')}<input class="bz-in" readonly value="${escH(url)}" onclick="this.select()" style="direction:ltr;background:#f6f3ee;color:#222;box-shadow:none"></label>
     <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.7rem 0"><button class="btn-sm" data-bz="pt-copy" data-id="${c.id}">⧉ ${A_('نسخ','Copy')}</button><button class="btn-sm wa-btn" data-bz="pt-wa" data-id="${c.id}">💬 ${A_('إرسال واتساب','Send on WhatsApp')}</button><button class="btn-sm" data-bz="pt-open" data-id="${c.id}">👁 ${A_('معاينة','Preview')}</button></div>
-    <label style="display:flex;gap:.5rem;align-items:center;font-size:.86rem;margin:.4rem 0"><input type="checkbox" data-bz="pt-pin" data-id="${c.id}"${P.pin&&pin?' checked':''}${pin?'':' disabled'}> ${A_('طلب رمز دخول: آخر 4 أرقام من هاتف العميل','Ask for a PIN: last 4 digits of the client\'s phone')} ${pin?`<b>(${pin})</b>`:`<small style="color:#999">${A_('— أضف رقم هاتف للعميل أولًا','— add a phone number first')}</small>`}</label>
     <div class="pr-meta" style="margin-top:.6rem"><span>${A_('الحجوزات','Bookings')} <b>${d.sessions.length}</b></span><span>${A_('الفواتير','Invoices')} <b>${d.invoices.length}</b></span><span>${A_('عروض الأسعار','Quotations')} <b>${d.quotes.length}</b></span><span id="pt-seen">${A_('آخر فتح','Last opened')}: …</span></div>
     ${!d.sessions.length?`<p class="pr-hint" style="color:#8a6414">${A_('لا توجد جلسات مربوطة بهذا العميل. افتح الجلسة في «تكاليف الجلسات» ← تعديل ← اختر العميل.','No sessions are linked to this client. Open the session in Session Costs → Edit → pick the client.')}</p>`:''}
     ${B.quotes.some(q=>q.status==='draft'&&q.clientId===c.id)?`<p class="pr-hint">${A_('عروض الأسعار «المسودة» لا تظهر للعميل حتى ترسلها (واتساب أو غيّر حالتها إلى مُرسل).','Draft quotations stay hidden until you send them (WhatsApp, or set status to Sent).')}</p>`:''}
     <p class="pr-hint" style="color:#555">${sync}</p>
     <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem;padding-top:.8rem;border-top:1px solid #eee"><button class="btn-sm" data-bz="pt-regen" data-id="${c.id}">↻ ${A_('رابط جديد (يلغي القديم)','New link (revokes old)')}</button><button class="btn-sm danger" data-bz="pt-off" data-id="${c.id}">⏻ ${A_('إيقاف البوابة','Turn off portal')}</button></div>`;
   }
-  h+=`<p class="pr-hint" style="margin-top:1rem;color:#888">🔒 ${A_('لا يظهر للعميل: أجور المصورين، التكاليف، الأرباح، المسودات، أو بيانات أي عميل آخر. أي شخص لديه الرابط يرى صفحة هذا العميل — لذلك يُفضّل تفعيل الرمز.','Hidden from the client: team pay, costs, profit, drafts and other clients. Anyone with the link sees this client\'s page — so the PIN is recommended.')}</p></div></article>`;
+  h+=`<p class="pr-hint" style="margin-top:1rem;color:#888">🔒 ${A_('لا يظهر للعميل: أجور المصورين، التكاليف، الأرباح، المسودات، أو بيانات أي عميل آخر. أي شخص لديه الرابط يرى صفحة هذا العميل — فلا تشاركه علنًا.','Hidden from the client: team pay, costs, profit, drafts and other clients. Anyone with the link sees this client\'s page — so don\'t share it publicly.')}</p></div></article>`;
   G('pr-rep').innerHTML=h;G('pr-rep-modal').classList.add('show');
   if(on&&logged)sbReq('client_portal?token=eq.'+encodeURIComponent(P.token)+'&select=last_seen').then(r=>r.json()).then(r=>{const e=G('pt-seen');if(e)e.innerHTML=A_('آخر فتح','Last opened')+': <b>'+(r[0]&&r[0].last_seen?escH(new Date(r[0].last_seen).toLocaleString(loc(),{dateStyle:'medium',timeStyle:'short'})):A_('لم يُفتح بعد','not yet'))+'</b>'}).catch(()=>{});
 }
