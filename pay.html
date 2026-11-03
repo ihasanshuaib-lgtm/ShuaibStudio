@@ -932,7 +932,9 @@ html.locked body>*:not(#gate){display:none !important}
 </div>
 
 <!-- BOOKING -->
-<div class="page" id="page-booking"></div>
+<div class="page" id="page-booking">
+  <iframe id="booking-iframe" src="index.html" title="Booking"></iframe>
+</div>
 
 <!-- CLIENTS -->
 <div class="page" id="page-clients">
@@ -1213,8 +1215,6 @@ function toggleLang(){
 
 // ── NAVIGATION ──────────────────────────────────────
 function showPage(p){
-  // «حجز» رابط مباشر لصفحة الحجز index.html (تفتح في تبويب جديد) بدل تضمينها في إطار كان يظهر مقصوصًا
-  if(p==='booking'){ window.open('index.html','_blank','noopener'); return; }
   const pg=document.getElementById('page-'+p);if(!pg)return;
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   pg.classList.add('active');
@@ -1224,6 +1224,10 @@ function showPage(p){
   if(p==='clients'){ renderClients(); }
   if(p==='staff'){ renderStFlt(); renderStaff(); }
   if(p==='payroll') PR.render();
+  if(p==='booking'){
+    const f=document.getElementById('booking-iframe');
+    try{ f.style.height=Math.max(f.contentWindow.document.body.scrollHeight,2000)+'px'; }catch(e){}
+  }
   BZ.renderPage(p);
 }
 window.addEventListener('message',e=>{
@@ -1535,6 +1539,7 @@ function saveClient(){
 
 function deleteClient(id){
   if(!confirm(lang==='ar'?'حذف هذا العميل؟':'Delete this client?')) return;
+  BZ.portalDrop(clients.find(c=>c.id===id));
   clients = clients.filter(c=>c.id!==id);
   save(); renderClients(); updateClientPicker();
 }
@@ -1566,6 +1571,7 @@ function renderClients(){
       <div class="client-actions" style="flex-wrap:wrap">
         <button class="btn-sm" onclick="newInvoiceForClient(${cl.id})">${A_('فاتورة جديدة','New Invoice')}</button>
         <button class="btn-sm" onclick="BZ.newQuote(${cl.id})">${A_('عرض سعر','Quote')}</button>
+        <button class="btn-sm" onclick="BZ.portalPanel(${cl.id})">${cl.portal&&cl.portal.on?'🟢 ':''}🔗 ${A_('البوابة','Portal')}</button>
         <button class="btn-sm" onclick="showAddClientForm(clients.find(x=>x.id===${cl.id}))">${A_('تعديل','Edit')}</button>
         <button class="btn-sm danger" onclick="deleteClient(${cl.id})">${A_('حذف','Delete')}</button>
       </div>
@@ -2071,11 +2077,12 @@ function sessCard(s){
   if(!ed){
     body=cf+(s.lines.length?`<div class="pr-scroll"><table class="pr-t"><thead><tr><th>${tr('role')}</th><th>${tr('photographer')}</th><th>${tr('amount')}</th></tr></thead><tbody>${s.lines.map(l=>`<tr><td>${esc(rName(l.r))}</td><td>${esc(l.p?pName(l.p):'—')}</td><td>${f3(l.a)}</td></tr>`).join('')}</tbody></table></div>`:`<p class="pr-hint">${tr('noLines')}</p>`)+
     ((s.x||[]).length?`<h4 class="ps-h4">${A_('بنود إضافية','Extra items')}</h4><div class="pr-scroll"><table class="pr-t"><tbody>${s.x.map(i=>`<tr><td>${i.k==='ded'?A_('خصم','Discount'):A_('خدمة إضافية','Extra service')}</td><td>${esc(i.n||'—')}</td><td class="${i.k==='ded'?'pr-neg':'pr-b'}">${i.k==='ded'?'−':'+'}${f3(i.a)}</td></tr>`).join('')}</tbody></table></div>`:'')+
-    `<h4 class="ps-h4">${tr('equipH')}</h4>${eqChips(s,false)}`+
+    `<h4 class="ps-h4">${tr('equipH')}</h4>${eqChips(s,false)}`+BZ.dvLine(s)+
     `<div class="pr-sum"><span>${tr('price')} <b>${f3(sessPrice(s))}</b></span><span>${tr('phTotal')} <b>${f3(pay)}</b></span><span>${tr('eqTotal')} <b>${f3(eq)}</b></span><span>${tr('sessNet')} <b class="${pr<0?'pr-neg':'pr-b'}">${f3(pr)}</b></span></div>`+
     `<div class="pr-acts"><button class="btn-sm" data-ed="${s.id}">${tr('edit')}</button><button class="btn-sm" data-dup="${s.id}">${tr('dup')}</button><button class="btn-sm danger" data-ds="${s.id}">${tr('del')}</button></div>`;
   }else{
     body=cf+`<div class="pr-sh"><label>${tr('sessPrice')}<input type="number" step="any" min="0" data-i="${s.id}" data-f="p" value="${s.p}"></label><label>${tr('pkg')}<select data-pk="${s.id}"><option value="">${tr('noPkg')}</option>${S.pkgs.map(k=>`<option value="${k.id}"${k.id==s.k?' selected':''}>${esc(k.n)}</option>`).join('')}</select></label><label>${tr('date')}<input type="date" data-i="${s.id}" data-f="d" value="${s.d}"></label><label>${tr('time')}<input type="time" data-i="${s.id}" data-f="t" value="${s.t||''}"></label><label>${A_('وقت الانتهاء','End time')}<input type="time" data-i="${s.id}" data-f="te" value="${s.te||''}"></label><label class="grow">${tr('sessName')}<input class="pr-txt" data-i="${s.id}" data-f="n" value="${esc(s.n)}"></label><label class="grow">${A_('المكان','Location')}<input class="pr-txt" data-i="${s.id}" data-f="loc" value="${esc(s.loc||'')}"></label></div>
+<h4 class="ps-h4">🎬 ${A_('العميل والتسليم (يظهر في بوابة العميل)','Client & delivery (shown in the client portal)')}</h4><div class="pr-sh"><label class="grow">${A_('العميل','Client')}<select data-i="${s.id}" data-f="cid">${BZ.clientOpts(s)}</select></label><label>${A_('مرحلة التسليم','Delivery stage')}<select data-i="${s.id}" data-f="dv">${BZ.stageOpts(s)}</select></label><label>${A_('موعد التسليم','Delivery date')}<input type="date" data-i="${s.id}" data-f="dvd" value="${esc(s.dvd||'')}"></label><label class="grow">${A_('رابط الصور (https://…)','Gallery link (https://…)')}<input class="pr-txt" type="url" inputmode="url" placeholder="https://" data-i="${s.id}" data-f="gal" value="${esc(s.gal||'')}"></label></div>
 <div class="pr-lines">${s.lines.map(l=>`<div class="pr-ln"><select data-i="${s.id}" data-l="${l.id}" data-lf="r">${roleOpts(l.r)}</select><select data-i="${s.id}" data-l="${l.id}" data-lf="p">${persOpts(l.p,tr('pickPh'))}</select><input type="number" step="any" min="0" data-i="${s.id}" data-l="${l.id}" data-lf="a" value="${l.a}" aria-label="${tr('amount')}"><button class="pr-x" data-dl="${s.id}" data-l="${l.id}" aria-label="${tr('del')}">×</button></div>`).join('')}</div>
 <div class="pr-adds">${S.roles.map(r=>`<button data-al="${s.id}" data-role="${r.id}">+ ${esc(r.n)}<b>${f3(rateOf(s.k,r.id))}</b></button>`).join('')}</div>
 <h4 class="ps-h4">${A_('بنود إضافية (خدمة إضافية / خصم)','Extra items (service / discount)')}</h4>
@@ -2533,6 +2540,7 @@ async function sbSync(manual){
       document.getElementById('bk-x').onclick=()=>{bar.hidden=true};
     }
   }catch(e){sbMsg=A_('تعذّرت المزامنة: ','Sync failed: ')+String(e.message||e).slice(0,160)}
+  await BZ.pullPortal();
   sbBusy=false;sbRender();
 }
 function gateRefresh(){
@@ -2597,6 +2605,7 @@ async function syncPush(){
     await sbReq('app_state?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'pay',value:{ts,data:syncSnapshot()},updated_at:new Date().toISOString()})});
     syncMsg=A_('☁ تم الحفظ سحابيًا ','☁ Saved to cloud ')+new Date().toLocaleTimeString();
     await pushSchedule();
+    await BZ.pushPortals();
   }catch(e){syncMsg=A_('تعذّر الحفظ السحابي (البيانات محفوظة في هذا المتصفح): ','Cloud save failed (data is kept in this browser): ')+String(e.message||e).slice(0,140)}
   syncPushing=false;sbRender();
 }
@@ -2624,6 +2633,7 @@ async function wipeAll(){
     const ts=Date.now(),empty={};SYNC_KEYS.forEach(k=>empty[k]=null);
     await sbReq('app_state?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'pay',value:{ts,data:empty},updated_at:new Date().toISOString()})});
     await sbReq('staff_schedule?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'sched',value:{ts,team:[],sessions:[],tasks:{}},updated_at:new Date().toISOString()})});
+    try{await sbReq('client_portal?token=not.is.null',{method:'DELETE',headers:{Prefer:'return=minimal'}})}catch(e){}
     await sbReq('bookings?imported=eq.false',{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({imported:true})});
     // 3) مسح المتصفح (ss_ts = وقت التفريغ حتى لا تُستعاد بيانات قديمة)
     SYNC_KEYS.forEach(k=>localStorage.removeItem(k));
@@ -2647,7 +2657,7 @@ async function syncPull(){
       localStorage.setItem('ss_ts',String(r.ts));
       location.reload();
     }else if(r.ts<lts()){ await syncPush(); }
-    else{syncMsg=A_('☁ البيانات متزامنة ','☁ In sync ')+new Date().toLocaleTimeString();await pushSchedule();sbRender()}
+    else{syncMsg=A_('☁ البيانات متزامنة ','☁ In sync ')+new Date().toLocaleTimeString();await pushSchedule();await BZ.pushPortals();sbRender()}
   }catch(e){syncMsg=A_('تعذّرت المزامنة السحابية: ','Cloud sync failed: ')+String(e.message||e).slice(0,140);sbRender()}
 }
 window.addEventListener('focus',()=>syncPull());
@@ -2689,6 +2699,14 @@ document.addEventListener('input',e=>{
 //    البيانات تُحفظ في ss_biz وتتزامن سحابيًا مع بقية البيانات
 // ══════════════════════════════════════════════════════════════════════════
 function clientInvs(cl){return invoices.filter(inv=>inv._clientId===cl.id||(!inv._clientId&&(inv.client||'').trim().toLowerCase()===String(cl.name||'').trim().toLowerCase()))}
+// الجلسة تخص أي عميل؟ (اختيار يدوي ← فاتورة مرتبطة ← الاسم قبل « — »)
+function sessClient(s){
+  if(!s)return null;
+  if(s.cid)return clients.find(c=>String(c.id)===String(s.cid))||null;
+  if(s.inv){const i=invoices.find(x=>x.id===s.inv);if(i&&i._clientId){const c=clients.find(x=>x.id===i._clientId);if(c)return c}}
+  const nm=String(s.n||'').split(' — ')[0].trim().toLowerCase();
+  return nm?clients.find(c=>String(c.name||'').trim().toLowerCase()===nm)||null:null;
+}
 const initials=n=>String(n||'').trim().split(/\s+/).filter(Boolean).map(x=>x[0]).join('').slice(0,2).toUpperCase();
 function invOverdue(i){if(!i||i.status==='paid'||i.status==='draft'||invRem(i)<=0.0005)return false;return (i.due||BZ.dueFrom(i.date))<todayISO()}
 function invBadge(inv){
@@ -2733,7 +2751,7 @@ function viewInvoice(id){
 const BZ=(()=>{
 const KEY='ss_biz';
 const DEF={company:'Shuaib Studio',cr:'',vatNo:'',addr:'Manama, Bahrain',phone:'',email:'',vatOn:false,vat:10,invPrefix:'#',quotePrefix:'Q-',dueDays:7,validDays:14,
-  targetBasis:'profit',monthTarget:600,yearTarget:5400,revSrc:'invoices',workDays:6,theme:'auto'};
+  wa:'97336659456',insta:'shuaib_studio',targetBasis:'profit',monthTarget:600,yearTarget:5400,revSrc:'invoices',workDays:6,theme:'auto'};
 function load(){let o={};try{o=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){}
   return{cfg:Object.assign({},DEF,o.cfg),quotes:o.quotes||[],expenses:o.expenses||[],campaigns:o.campaigns||[],equipment:o.equipment||[]}}
 let B=load();
@@ -2863,6 +2881,8 @@ function recs(A){
   if(best)R.push({i:'📈',t:A_(`حملة «${escH(best.c.name)}» (${escH(best.c.plat)}) عائدها ${Math.round(best.roi)}% — العائد إيجابي، زد ميزانيتها تدريجيًا.`,`Campaign “${escH(best.c.name)}” (${escH(best.c.plat)}) returns ${Math.round(best.roi)}% — ROI is positive, increase its budget gradually.`),go:'expenses'});
   const bad=cs.filter(x=>x.roi<0);
   if(bad.length)R.push({i:'⚠️',t:A_('حملات ضعيفة الأداء: ','Underperforming campaigns: ')+bad.map(x=>`<b>${escH(x.c.name)}</b>`).join('، ')+A_(' — راجع المحتوى أو أوقفها.',' — review the creative or pause them.'),go:'expenses'});
+  const late=PR.data().sessions.filter(s=>s.dvd&&s.dvd<td&&!['ready','delivered'].includes(dvStage(s)));
+  if(late.length)R.push({i:'⏰',t:A_(`${late.length} تسليم متأخر عن موعده: `,`${late.length} delivery(ies) past their date: `)+late.slice(0,3).map(s=>`<b>${escH(s.n||'—')}</b>`).join('، '),go:'payroll'});
   eqAdvice().filter(x=>x.k==='buy').slice(0,1).forEach(x=>R.push({i:'🛒',t:x.t,go:'equipment'}));
   if(A.target&&A.gap===0)R.push({i:'✅',t:A_('أنت فوق هدف الشهر — فكّر برفع الهدف أو ادّخار جزء من الربح للصندوق.','You are above this month\'s target — consider raising it or saving part of the profit to the fund.')});
   return R;
@@ -2966,7 +2986,7 @@ function renderQList(){
   const q=QF.q.trim().toLowerCase(),td=todayISO();
   const list=B.quotes.filter(x=>(QF.st==='all'||x.status===QF.st)&&(!q||[x.client,x.number,x.phone].some(v=>String(v||'').toLowerCase().includes(q)))).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   if(!list.length){c.innerHTML=noRes(A_('لا توجد عروض بهذا الفلتر.','No quotations match this filter.'));return}
-  c.innerHTML=list.map(x=>{const exp=x.status==='sent'&&x.valid&&x.valid<td;return `<div class="invoice-row" data-bz="q-view" data-id="${escH(x.id)}"><div><div style="font-weight:600;color:var(--white);margin-bottom:.2rem">${escH(x.client||'—')}</div><div class="inv-meta">${escH(x.number)} · ${escH(x.date)}${exp?` · <span class="inv-rem">${A_('انتهت صلاحيته','Expired')}</span>`:''}</div></div>
+  c.innerHTML=list.map(x=>{const exp=x.status==='sent'&&x.valid&&x.valid<td;return `<div class="invoice-row" data-bz="q-view" data-id="${escH(x.id)}"><div><div style="font-weight:600;color:var(--white);margin-bottom:.2rem">${escH(x.client||'—')}</div><div class="inv-meta">${escH(x.number)} · ${escH(x.date)}${exp?` · <span class="inv-rem">${A_('انتهت صلاحيته','Expired')}</span>`:''}${x.clientAction?' · '+(x.clientAction.kind==='approve_quote'?'✅ '+A_('وافق عبر البوابة','accepted via portal'):'❌ '+A_('رفض عبر البوابة','declined via portal'))+(x.clientAction.note?': '+escH(x.clientAction.note):''):''}</div></div>
   <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap"><span class="badge badge-${escH(x.status)}">${qLabel(x.status)}</span><span class="inv-amount">BHD ${f3(qTotals(x.items).grand)}</span><div class="action-btns">
   ${x.invId&&invoices.some(i=>i.id===x.invId)?`<button class="btn-sm" data-bz="q-inv" data-id="${escH(x.id)}">🧾 ${A_('الفاتورة','Invoice')}</button>`:`<button class="btn-sm" data-bz="q-conv" data-id="${escH(x.id)}">→ ${A_('فاتورة','Invoice')}</button>`}
   <button class="btn-sm" data-bz="q-edit" data-id="${escH(x.id)}" aria-label="${A_('تعديل','Edit')}">✎</button><button class="btn-sm wa-btn" data-bz="q-wa" data-id="${escH(x.id)}" aria-label="WhatsApp">💬</button><button class="btn-sm danger" data-bz="q-del" data-id="${escH(x.id)}">${A_('حذف','Delete')}</button></div></div></div>`}).join('');
@@ -3193,13 +3213,109 @@ function renderSettings(){
   const inp=(k,l,type,extra)=>`<label>${l}<input class="bz-in" data-bc="${k}" type="${type||'text'}" value="${escH(C[k])}"${extra||''}></label>`;
   const sel=(k,l,opts)=>`<label>${l}<select class="bz-in" data-bc="${k}">${opts.map(([v,t2])=>`<option value="${v}"${String(C[k])===String(v)?' selected':''}>${t2}</option>`).join('')}</select></label>`;
   R.innerHTML=`<div class="section-header"><h2>${A_('الإعدادات','Settings')}</h2></div>
-  ${card('🏢 '+A_('بيانات الشركة (تظهر على الفواتير وعروض الأسعار)','Company details (shown on invoices & quotations)'),`<div class="bz-form">${inp('company',A_('اسم الشركة','Company name'))}${inp('cr',A_('رقم السجل التجاري (CR)','CR number'))}${inp('vatNo',A_('رقم التسجيل الضريبي','VAT registration no.'))}${inp('addr',A_('العنوان','Address'))}${inp('phone',A_('الهاتف','Phone'),'tel')}${inp('email',A_('البريد الإلكتروني','Email'),'email')}</div>`)}
+  ${card('🏢 '+A_('بيانات الشركة (تظهر على الفواتير وعروض الأسعار)','Company details (shown on invoices & quotations)'),`<div class="bz-form">${inp('company',A_('اسم الشركة','Company name'))}${inp('cr',A_('رقم السجل التجاري (CR)','CR number'))}${inp('vatNo',A_('رقم التسجيل الضريبي','VAT registration no.'))}${inp('addr',A_('العنوان','Address'))}${inp('phone',A_('الهاتف','Phone'),'tel')}${inp('email',A_('البريد الإلكتروني','Email'),'email')}${inp('wa',A_('واتساب الاستوديو (لبوابة العميل)','Studio WhatsApp (client portal)'),'tel')}${inp('insta',A_('حساب إنستغرام','Instagram handle'))}</div>`)}
   ${card('🧾 '+A_('الضريبة والترقيم','Tax & numbering'),`<label class="ck" style="display:flex;gap:.5rem;align-items:center;margin-bottom:.8rem;font-weight:600"><input type="checkbox" data-bc="vatOn"${C.vatOn?' checked':''}> ${A_('تفعيل ضريبة القيمة المضافة على الفواتير وعروض الأسعار','Charge VAT on invoices & quotations')}</label><div class="bz-form">${inp('vat',A_('نسبة الضريبة %','VAT rate %'),'number',' min="0" step="0.1"')}<label>${A_('العملة','Currency')}<input class="bz-in" value="BHD" disabled></label>${inp('invPrefix',A_('بادئة رقم الفاتورة','Invoice prefix'))}${inp('quotePrefix',A_('بادئة رقم عرض السعر','Quotation prefix'))}${inp('dueDays',A_('مهلة السداد (أيام)','Payment terms (days)'),'number',' min="0"')}${inp('validDays',A_('صلاحية عرض السعر (أيام)','Quotation validity (days)'),'number',' min="0"')}</div><p class="pr-hint">${A_('في البحرين التسجيل في الضريبة إلزامي عند تجاوز الإيرادات السنوية 37,500 د.ب. فعّلها فقط إذا كنت مسجّلًا، وأدخل رقم التسجيل ليظهر «TAX INVOICE».','In Bahrain VAT registration is mandatory above BHD 37,500 annual revenue. Enable it only if you are registered, and enter the registration number so invoices show “TAX INVOICE”.')}</p>`)}
   ${card('🎯 '+A_('الأهداف والحساب','Targets & calculations'),`<div class="bz-form">${sel('targetBasis',A_('الهدف مبني على','Target is based on'),[['profit',A_('الربح','Profit')],['revenue',A_('الإيراد','Revenue')]])}${inp('monthTarget',A_('الهدف الشهري (د.ب)','Monthly target (BHD)'),'number',' min="0" step="any"')}${inp('yearTarget',A_('الهدف السنوي (د.ب)','Annual target (BHD)'),'number',' min="0" step="any"')}${sel('revSrc',A_('مصدر الإيرادات في التقارير','Revenue source for reports'),[['invoices',A_('الفواتير','Invoices')],['sessions',A_('أسعار الجلسات','Session prices')]])}${inp('workDays',A_('أيام العمل في الأسبوع (للإشغال)','Working days / week (occupancy)'),'number',' min="1" max="7"')}</div><p class="pr-hint">${A_('اختر مصدرًا واحدًا للإيرادات حتى لا تُحسب الجلسة مرتين (مرة كفاتورة ومرة كجلسة).','Pick one revenue source so a job isn\'t counted twice (as an invoice and as a session).')}</p>`)}
   ${card('🎨 '+A_('المظهر واللغة','Appearance & language'),`<div class="bz-form">${sel('theme',A_('المظهر','Theme'),[['auto',A_('تلقائي (حسب الجهاز)','Auto (device)')],['light',A_('فاتح','Light')],['dark',A_('داكن','Dark')]])}<label>${A_('اللغة','Language')}<select class="bz-in" data-act="lang"><option value="ar"${lang==='ar'?' selected':''}>العربية</option><option value="en"${lang==='en'?' selected':''}>English</option></select></label></div>`)}
   ${card('🛍 '+A_('الخدمات والأسعار','Services & prices'),`<p class="pr-hint">${A_('هذه القائمة تظهر في الفواتير وعروض الأسعار. الباقات وأسعار أدوار الفريق في «تكاليف الجلسات ← الفريق والإعدادات».','This list is used by invoices and quotations. Packages and team role rates live in Session Costs → Team & settings.')}</p>${SERVICES.map((s,i)=>`<div class="svc-ed"><input value="${escH(s.icon||'')}" data-sv="${i}" data-k="icon" aria-label="icon" style="text-align:center"><input value="${escH(s.ar)}" data-sv="${i}" data-k="ar" placeholder="الاسم بالعربي"><input class="hide-sm" value="${escH(s.en)}" data-sv="${i}" data-k="en" placeholder="English name"><input class="hide-sm" value="${escH(s.type)}" data-sv="${i}" data-k="type" placeholder="Type"><input type="number" step="0.001" min="0" value="${+s.unit||0}" data-sv="${i}" data-k="unit" aria-label="${A_('السعر','Price')}"><button type="button" class="remove-row" data-bz="st-svcdel" data-i="${i}" aria-label="${A_('حذف','Delete')}">✕</button></div>`).join('')}<button type="button" class="btn-sm" data-bz="st-svcadd">+ ${A_('خدمة جديدة','New service')}</button>`)}
   ${card('🔐 '+A_('الحسابات والصلاحيات','Accounts & roles'),`<p class="pr-hint">${A_('لوحة التحكم هذه لحساب صاحب الاستوديو فقط، والمصورون يدخلون صفحة الموظفين (staff.html) ويرون جدولهم ومهامهم بدون الأسعار. كل البيانات تُحفظ سحابيًا تلقائيًا، ويمكنك تنزيل نسخة احتياطية من لوحة التحكم.','This dashboard is for the studio owner account only; photographers sign in to the staff page (staff.html) and see their schedule and tasks without prices. All data syncs to the cloud automatically, and you can download a backup from the dashboard.')}</p>`)}`;
 }
+
+
+// ═════════════ CLIENT PORTAL (owner side) ═════════════
+const STG=['booked','shot','editing','ready','delivered'];
+const stL=k=>({booked:A_('محجوز','Booked'),shot:A_('تم التصوير','Shot'),editing:A_('التعديل والمونتاج','Editing'),ready:A_('جاهز للتسليم','Ready'),delivered:A_('تم التسليم','Delivered')})[k]||k;
+const dvStage=s=>STG.includes(s.dv)?s.dv:((s.d||'')>todayISO()?'booked':'shot');
+const safeUrl=u=>/^https:\/\/[^\s"'<>]+$/i.test(String(u||'').trim())?String(u).trim():'';
+const pinOf=c=>{const d=String(c&&c.phone||'').replace(/\D/g,'');return d.length>=4?d.slice(-4):''};
+const newToken=()=>{const a=new Uint8Array(18);crypto.getRandomValues(a);return btoa(String.fromCharCode(...a)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
+const portalUrl=t=>{const u=new URL('portal.html',location.href);u.search='';u.hash='c='+t;return u.href};
+function clientOpts(s){const a=sessClient({...s,cid:''});return `<option value="">${A_('تلقائي','Auto')}${a?': '+escH(a.name):' —'}</option>`+clients.map(c=>`<option value="${c.id}"${String(c.id)===String(s.cid||'')?' selected':''}>${escH(c.name)}</option>`).join('')}
+function stageOpts(s){const cur=dvStage(s);return STG.map(k=>`<option value="${k}"${k===cur?' selected':''}>${stL(k)}</option>`).join('')}
+function dvLine(s){
+  const c=sessClient(s),g=safeUrl(s.gal),late=s.dvd&&s.dvd<todayISO()&&!['ready','delivered'].includes(dvStage(s));
+  return `<div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.7rem;font-size:.8rem;color:var(--muted)">🎬 <span class="pr-dt">${stL(dvStage(s))}</span>${s.dvd?`<span${late?' style="color:var(--danger);font-weight:700"':''}>${late?'⏰ ':''}${A_('التسليم','Delivery')}: ${escH(s.dvd)}</span>`:''}<span>👤 ${c?escH(c.name)+(c.portal&&c.portal.on?' 🔗':''):A_('غير مربوط بعميل','no client linked')}</span>${g?`<a href="${escH(g)}" target="_blank" rel="noopener" style="color:var(--sage-dd);font-weight:700">🖼 ${A_('الصور','Gallery')}</a>`:''}</div>`;
+}
+function portalData(c){
+  const C=B.cfg,nm=String(c.name||'').trim(),low=nm.toLowerCase();
+  const strip=n=>{const p=String(n||'').split(' — ');return p.length>1&&p[0].trim().toLowerCase()===low?p.slice(1).join(' — '):String(n||'')};
+  const items=a=>(a||[]).map(x=>({desc:String(x.desc||''),qty:+x.qty||0,unit:+x.unit||0,disc:+x.disc||0}));
+  return{first:nm.split(/\s+/)[0]||nm,name:nm,
+    studio:{name:C.company||'',cr:C.cr||'',vatNo:C.vatNo||'',addr:C.addr||'',phone:C.phone||'',email:C.email||'',wa:String(C.wa||'').replace(/\D/g,''),insta:String(C.insta||'').replace(/^@/,'')},
+    sessions:PR.data().sessions.filter(s=>s.d&&(sessClient(s)||{}).id===c.id).sort((a,b)=>(a.d+(a.t||'')).localeCompare(b.d+(b.t||''))).map(s=>({id:s.id,d:s.d,t:s.t||'',te:s.te||'',n:strip(s.n),loc:s.loc||'',pk:PR.pkgName(s)||'',stage:dvStage(s),due:s.dvd||'',gal:safeUrl(s.gal)})),
+    invoices:clientInvs(c).filter(i=>i.status!=='draft').sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(i=>({id:i.id,number:i.number,date:i.date||'',due:i.due||dueFrom(i.date),status:i.status,overdue:invOverdue(i),items:items(i.items),subtotal:+i.subtotal||0,disc:+i.disc||0,vat:+i.vat||0,vatRate:+i.vatRate||0,grand:+i.grand||0,paid:invPaid(i),rem:invRem(i),notes:i.notes||''})),
+    quotes:B.quotes.filter(q=>q.status!=='draft'&&(q.clientId===c.id||(!q.clientId&&String(q.client||'').trim().toLowerCase()===low))).sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(q=>{const t=qTotals(q.items);return{id:q.id,number:q.number,date:q.date||'',valid:q.valid||'',status:q.status,items:items(q.items),subtotal:t.sub,disc:t.disc,vat:t.vat,vatRate:t.vat?(+q.vatRate||+C.vat):0,grand:t.grand,notes:q.notes||''}})};
+}
+let PSENT={},PERR='',PBUSY=false;
+async function pushPortals(){
+  if(typeof sbAuth==='undefined'||!sbAuth||!sbCfg().key||PBUSY)return;
+  const now=new Date().toISOString(),rows=[];
+  clients.forEach(c=>{const P=c.portal;if(!P||!P.on||!P.token)return;const d=portalData(c),pin=P.pin?pinOf(c)||null:null,j=JSON.stringify([d,pin]);if(PSENT[P.token]===j)return;rows.push({r:{token:P.token,client_id:String(c.id),pin,data:{...d,updated:now},updated_at:now},j})});
+  if(!rows.length)return;
+  PBUSY=true;
+  try{await sbReq('client_portal?on_conflict=token',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(rows.map(x=>x.r))});rows.forEach(x=>PSENT[x.r.token]=x.j);PERR=''}
+  catch(e){PERR=String(e.message||e).slice(0,200)}
+  PBUSY=false;
+}
+const dropRow=t=>(typeof sbAuth!=='undefined'&&sbAuth&&t)?sbReq('client_portal?token=eq.'+encodeURIComponent(t),{method:'DELETE',headers:{Prefer:'return=minimal'}}).catch(()=>{}):Promise.resolve();
+function portalDrop(c){if(c&&c.portal&&c.portal.token){dropRow(c.portal.token);delete PSENT[c.portal.token]}}
+async function pullPortal(){
+  if(typeof sbAuth==='undefined'||!sbAuth||!sbCfg().key)return;
+  let acts;try{acts=await (await sbReq('portal_actions?imported=eq.false&select=id,token,kind,ref,note,created_at&order=id.asc')).json()}catch(e){return}
+  if(!Array.isArray(acts)||!acts.length)return;
+  let n=0,last=null;
+  acts.forEach(a=>{const q=B.quotes.find(x=>x.id===a.ref);if(!q||q.clientAction)return;
+    q.status=a.kind==='approve_quote'?'approved':'rejected';q.clientAction={kind:a.kind,at:a.created_at,note:a.note||''};n++;last=q});
+  try{await sbReq('portal_actions?id=in.('+acts.map(a=>+a.id).join(',')+')',{method:'PATCH',body:JSON.stringify({imported:true}),headers:{Prefer:'return=minimal'}})}catch(e){}
+  if(!n)return;
+  persist();renderHome();if(G('page-quotes').classList.contains('active'))renderQuotes();
+  const ok=last.status==='approved',bar=G('bk-banner');
+  bar.innerHTML=`<span>${ok?'✅':'❌'} ${escH(last.client||'')} ${ok?A_('وافق على عرض السعر','accepted quotation'):A_('رفض عرض السعر','declined quotation')} ${escH(last.number)}${last.clientAction.note?' — «'+escH(last.clientAction.note)+'»':''}${n>1?' (+'+(n-1)+')':''}</span>${ok&&!last.invId?`<button class="btn-gold" id="pa-inv">${A_('تحويل لفاتورة','Convert to invoice')}</button>`:''}<button class="btn-outline" id="pa-open">${A_('فتح العرض','Open')}</button><button class="btn-outline" id="pa-x" aria-label="close">✕</button>`;
+  bar.hidden=false;
+  const id=last.id,inv=G('pa-inv');if(inv)inv.onclick=()=>{bar.hidden=true;toInvoice(id)};
+  G('pa-open').onclick=()=>{bar.hidden=true;showPage('quotes');viewQuote(id)};G('pa-x').onclick=()=>{bar.hidden=true};
+}
+function portalPanel(id){
+  const c=clients.find(x=>x.id===id);if(!c)return;
+  const P=c.portal||{},on=!!(P.on&&P.token),pin=pinOf(c),d=on?portalData(c):null,url=on?portalUrl(P.token):'';
+  const logged=typeof sbAuth!=='undefined'&&sbAuth;
+  const sync=!logged?'⚠ '+A_('سجّل الدخول للحساب السحابي حتى يعمل الرابط.','Sign in to the cloud account for the link to work.')
+    :PERR?'⚠ '+A_('تعذّر تحديث البوابة. تأكد أنك شغّلت ملف portal-setup.sql في Supabase مرة واحدة. ','Couldn\'t update the portal. Make sure you ran portal-setup.sql in Supabase once. ')+'<small>('+escH(PERR.slice(0,90))+')</small>'
+    :'☁ '+A_('تتحدث صفحة العميل تلقائيًا مع كل حفظ.','The client page updates automatically on every save.');
+  let h=`<div class="pr-rep-bar pr-noprint"><span></span></div><article class="pr-sheet" style="max-width:620px"><div class="pr-sheet-head"><div class="pr-sheet-brand">🔗 ${A_('بوابة العميل','Client portal')}</div><div class="pr-sheet-ttl">${escH(c.name)}</div></div><div class="pr-sheet-body">`;
+  if(!on){
+    h+=`<p style="line-height:1.8;margin:0 0 .8rem">${A_('رابط خاص لهذا العميل يتابع فيه <b>حجوزاته وحالة تسليم صوره وفواتيره وعروض الأسعار</b>، ويوافق على العرض بضغطة. لا يرى أجور المصورين أو التكاليف أو أي عميل آخر.','A private link where this client follows <b>bookings, delivery progress, invoices and quotations</b>, and accepts quotes in one tap. They never see team pay, costs or other clients.')}</p>
+    <button class="btn-gold" data-bz="pt-create" data-id="${c.id}">${A_('إنشاء رابط البوابة','Create portal link')}</button>`;
+  }else{
+    h+=`<label style="display:flex;flex-direction:column;gap:.3rem;font-size:.78rem;color:#666">${A_('الرابط','Link')}<input class="bz-in" readonly value="${escH(url)}" onclick="this.select()" style="direction:ltr;background:#f6f3ee;color:#222;box-shadow:none"></label>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.7rem 0"><button class="btn-sm" data-bz="pt-copy" data-id="${c.id}">⧉ ${A_('نسخ','Copy')}</button><button class="btn-sm wa-btn" data-bz="pt-wa" data-id="${c.id}">💬 ${A_('إرسال واتساب','Send on WhatsApp')}</button><button class="btn-sm" data-bz="pt-open" data-id="${c.id}">👁 ${A_('معاينة','Preview')}</button></div>
+    <label style="display:flex;gap:.5rem;align-items:center;font-size:.86rem;margin:.4rem 0"><input type="checkbox" data-bz="pt-pin" data-id="${c.id}"${P.pin&&pin?' checked':''}${pin?'':' disabled'}> ${A_('طلب رمز دخول: آخر 4 أرقام من هاتف العميل','Ask for a PIN: last 4 digits of the client\'s phone')} ${pin?`<b>(${pin})</b>`:`<small style="color:#999">${A_('— أضف رقم هاتف للعميل أولًا','— add a phone number first')}</small>`}</label>
+    <div class="pr-meta" style="margin-top:.6rem"><span>${A_('الحجوزات','Bookings')} <b>${d.sessions.length}</b></span><span>${A_('الفواتير','Invoices')} <b>${d.invoices.length}</b></span><span>${A_('عروض الأسعار','Quotations')} <b>${d.quotes.length}</b></span><span id="pt-seen">${A_('آخر فتح','Last opened')}: …</span></div>
+    ${!d.sessions.length?`<p class="pr-hint" style="color:#8a6414">${A_('لا توجد جلسات مربوطة بهذا العميل. افتح الجلسة في «تكاليف الجلسات» ← تعديل ← اختر العميل.','No sessions are linked to this client. Open the session in Session Costs → Edit → pick the client.')}</p>`:''}
+    ${B.quotes.some(q=>q.status==='draft'&&q.clientId===c.id)?`<p class="pr-hint">${A_('عروض الأسعار «المسودة» لا تظهر للعميل حتى ترسلها (واتساب أو غيّر حالتها إلى مُرسل).','Draft quotations stay hidden until you send them (WhatsApp, or set status to Sent).')}</p>`:''}
+    <p class="pr-hint" style="color:#555">${sync}</p>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem;padding-top:.8rem;border-top:1px solid #eee"><button class="btn-sm" data-bz="pt-regen" data-id="${c.id}">↻ ${A_('رابط جديد (يلغي القديم)','New link (revokes old)')}</button><button class="btn-sm danger" data-bz="pt-off" data-id="${c.id}">⏻ ${A_('إيقاف البوابة','Turn off portal')}</button></div>`;
+  }
+  h+=`<p class="pr-hint" style="margin-top:1rem;color:#888">🔒 ${A_('لا يظهر للعميل: أجور المصورين، التكاليف، الأرباح، المسودات، أو بيانات أي عميل آخر. أي شخص لديه الرابط يرى صفحة هذا العميل — لذلك يُفضّل تفعيل الرمز.','Hidden from the client: team pay, costs, profit, drafts and other clients. Anyone with the link sees this client\'s page — so the PIN is recommended.')}</p></div></article>`;
+  G('pr-rep').innerHTML=h;G('pr-rep-modal').classList.add('show');
+  if(on&&logged)sbReq('client_portal?token=eq.'+encodeURIComponent(P.token)+'&select=last_seen').then(r=>r.json()).then(r=>{const e=G('pt-seen');if(e)e.innerHTML=A_('آخر فتح','Last opened')+': <b>'+(r[0]&&r[0].last_seen?escH(new Date(r[0].last_seen).toLocaleString(loc(),{dateStyle:'medium',timeStyle:'short'})):A_('لم يُفتح بعد','not yet'))+'</b>'}).catch(()=>{});
+}
+async function ptRefresh(id){save();await pushPortals();portalPanel(id);renderClients()}
+function portalAct(a,id,el){
+  const c=clients.find(x=>x.id===+id);if(!c)return;
+  const P=c.portal||(c.portal={});
+  if(a==='pt-create'){Object.assign(P,{on:true,token:newToken(),pin:!!pinOf(c),created:todayISO()});ptRefresh(c.id);note(A_('✓ تم إنشاء الرابط','✓ Link created'))}
+  else if(a==='pt-copy'){const u=portalUrl(P.token);(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>note(A_('✓ تم نسخ الرابط','✓ Link copied')),()=>prompt(A_('انسخ الرابط:','Copy the link:'),u))}
+  else if(a==='pt-open')window.open(portalUrl(P.token),'_blank','noopener');
+  else if(a==='pt-wa'){const u=portalUrl(P.token),co=B.cfg.company||'Shuaib Studio',pin=P.pin&&pinOf(c);
+    const m=lang==='ar'?`مرحبًا ${c.name} 🌷\nهذا رابط صفحتك الخاصة في ${co==='Shuaib Studio'?'شعيب استوديو':co}، تتابع فيها حجوزاتك وحالة تسليم صورك وفواتيرك:\n${u}${pin?'\n\nرمز الدخول: آخر 4 أرقام من رقم هاتفك.':''}\n\nنسعد بخدمتك 📸`
+      :`Hi ${c.name} 🌷\nHere's your private page at ${co} to follow your bookings, photo delivery and invoices:\n${u}${pin?'\n\nAccess code: the last 4 digits of your phone number.':''}\n\nThank you 📸`;
+    window.open('https://wa.me/'+waPhone(c.phone)+'?text='+encodeURIComponent(m),'_blank')}
+  else if(a==='pt-pin'){P.pin=!!el.checked;ptRefresh(c.id)}
+  else if(a==='pt-regen'){if(!confirm(A_('سيتوقف الرابط القديم فورًا. متابعة؟','The old link will stop working immediately. Continue?')))return;portalDrop(c);P.token=newToken();P.on=true;ptRefresh(c.id)}
+  else if(a==='pt-off'){if(!confirm(A_('إيقاف البوابة؟ الرابط الحالي سيتوقف.','Turn off the portal? The current link will stop working.')))return;portalDrop(c);P.on=false;delete P.token;ptRefresh(c.id)}
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-bz^="pt-"]');if(b)portalAct(b.dataset.bz,b.dataset.id,b)});
 
 // ═════════════ i18n + router ═════════════
 const LBL={'clf-lbl-name':['اسم العميل','Client Name'],'clf-lbl-custid':['رقم الهوية','Customer ID#'],'clf-lbl-phone':['الهاتف','Phone'],'clf-lbl-iban':['IBAN','IBAN'],'clf-lbl-addr':['العنوان','Address'],'clf-lbl-email':['البريد الإلكتروني','Email'],'clf-lbl-company':['الشركة','Company'],'clf-lbl-notes':['ملاحظات','Notes'],'clf-save-btn':['حفظ','Save'],'clf-cancel-btn':['إلغاء','Cancel'],'lbl-due':['تاريخ الاستحقاق','Due date']};
@@ -3283,7 +3399,7 @@ document.addEventListener('change',e=>{
   if(d.bc==='theme')applyTheme();
 });
 
-return{cfg,vatOf,dueFrom,applyTheme,toggleTheme,applyLang,renderPage,renderHome,newQuote,editQuote,viewQuote,waQuote,toInvoice,advisor};
+return{pushPortals,pullPortal,portalPanel,portalDrop,clientOpts,stageOpts,dvLine,cfg,vatOf,dueFrom,applyTheme,toggleTheme,applyLang,renderPage,renderHome,newQuote,editQuote,viewQuote,waQuote,toInvoice,advisor};
 })();
 
 // ── INIT ─────────────────────────────────────────────
