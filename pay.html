@@ -222,7 +222,6 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,12,10,0.96);backdrop-fi
 .pr-seg button{border:0;background:var(--surface);color:var(--muted);padding:0.45rem 1rem;font-family:inherit;font-size:0.82rem;cursor:pointer}
 .pr-seg button.on{background:var(--gold);color:#000;font-weight:700}
 .pr-newbtn{width:100%;margin-bottom:1rem;padding:0.8rem;font-size:0.95rem}
-.ps-cl,.ps-ncl{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}.ps-ncl .pr-txt{flex:1 1 140px}
 .pr-sh2{display:flex;flex-wrap:wrap;align-items:center;gap:0.6rem;margin-bottom:0.75rem}
 .pr-dt{background:rgba(201,164,99,0.12);color:var(--gold);border-radius:8px;padding:0.15rem 0.65rem;font-weight:600;font-size:0.78rem}
 .pr-nm{flex:1 1 140px;font-size:1rem;color:var(--white)}
@@ -739,6 +738,18 @@ textarea.bz-in{min-height:70px;resize:vertical}
 .hub-s .bz-form{margin-bottom:.5rem}
 html[data-theme="dark"] .hub-av,html[data-theme="dark"] .hub-n{border-color:#3a322b}
 
+/* ===== 24h preview ===== */
+.pv-box{margin-top:.9rem;padding:.9rem;border-radius:14px;border:1px dashed var(--border);background:rgba(255,255,255,.25)}
+.pv-box.live{border:1.5px solid rgba(95,138,108,.55);background:rgba(95,138,108,.07)}
+.pv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:.45rem;margin:.7rem 0}
+.pv-grid figure{position:relative;margin:0;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--off);box-shadow:var(--lift-sm)}
+.pv-grid img{width:100%;height:100%;object-fit:cover;display:block}
+.pv-grid button{position:absolute;top:4px;inset-inline-end:4px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:.75rem;cursor:pointer;line-height:1}
+.pv-prog{height:6px;border-radius:4px;background:#e3ddd5;overflow:hidden;margin:.5rem 0}
+.pv-prog i{display:block;height:100%;width:0;background:var(--btn-sage);transition:width .3s}
+html[data-theme="dark"] .pv-box{background:rgba(0,0,0,.12)}
+html[data-theme="dark"] .pv-prog{background:#2a2521}
+
 /* ===== dark mode ===== */
 html[data-theme="dark"]{color-scheme:dark;
   --gold:#d8b27a;--rose:#c99486;--rose-d:#e3a998;--sage:#8fb09a;--sage-d:#7aa086;--sage-dd:#a9cdb3;
@@ -1027,7 +1038,7 @@ html.locked body>*:not(#gate){display:none !important}
 <!-- PAYROLL -->
 <div class="page" id="page-payroll">
   <div class="section-header">
-    <h2 id="pr-title">Photo Sessions & Team Payments</h2>
+    <h2 id="pr-title">Session Costs & Team Payments</h2>
     <div class="pr-head"><button class="btn-gold" id="pr-repbtn">Report</button></div>
   </div>
   <div class="flt" id="pr-flt"></div>
@@ -1082,7 +1093,7 @@ function save(){
 const T = {
   en:{
     logo:'Shuaib Studio',
-    nav:['Dashboard','Bookings','Invoices','Quotations','Clients','Team','Photo Sessions','Expenses','Equipment','Reports','Settings'],
+    nav:['Dashboard','Bookings','Invoices','Quotations','Clients','Team','Session Costs','Expenses','Equipment','Reports','Settings'],
     langBtn:'عربي',
     heroTag:'Photography & Videography Studio',
     heroTitle:'We Capture <em>Moments</em><br>That Last Forever',
@@ -1116,7 +1127,7 @@ const T = {
   },
   ar:{
     logo:'شعيب استوديو',
-    nav:['لوحة التحكم','الحجوزات','الفواتير','عروض الأسعار','العملاء','فريق العمل','جلسات التصوير','المصروفات','المعدات','التقارير','الإعدادات'],
+    nav:['لوحة التحكم','الحجوزات','الفواتير','عروض الأسعار','العملاء','فريق العمل','تكاليف الجلسات','المصروفات','المعدات','التقارير','الإعدادات'],
     langBtn:'English',
     heroTag:'استوديو تصوير واستوديو فيديوغرافي',
     heroTitle:'نحن نلتقط <em>اللحظات</em><br>التي تدوم للأبد',
@@ -1931,7 +1942,7 @@ const WDEN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const WDF={ar:WDAR,en:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']};
 const L={
 ar:{
- title:'جلسات التصوير',report:'📄 التقرير',cur:'د.ب',
+ title:'حساب رواتب المصورين',report:'📄 التقرير',cur:'د.ب',
  profit:'الربح',yearProfit:'ربح سنة',sProjects:'إجمالي المشاريع',sPay:'قيمة المصورين',sEq:'رسوم المعدات',sSubs:'رسوم الاشتراكات',sFund:'الصندوق الاحتياطي',
  fundNote:'خصم المصورين % يذهب للصندوق من أجورهم ولا يؤثر على الربح.',
  newS:'+ جلسة جديدة',noSess:'لا توجد جلسات بهذا الفلتر.',noName:'جلسة بدون اسم',
@@ -1964,7 +1975,7 @@ ar:{
  calHint:'اضغط على يوم لعرض جلساته.',newDay:'+ جلسة في هذا اليوم',dayEmpty:'لا توجد جلسات في هذا اليوم.',openPay:'فتح في الرواتب',todayBtn:'اليوم',copy:'⧉ نسخ',goCal:'عرض في التقويم'
 },
 en:{
- title:'Photo Sessions',report:'📄 Report',cur:'BHD',
+ title:'Photographer Payroll',report:'📄 Report',cur:'BHD',
  profit:'Profit',yearProfit:'Year profit',sProjects:'Total projects',sPay:'Photographers',sEq:'Equipment fees',sSubs:'Subscription fees',sFund:'Reserve fund',
  fundNote:'The photographer deduction % goes to the fund from their pay and does not affect profit.',
  newS:'+ New session',noSess:'No sessions match this filter.',noName:'Untitled session',
@@ -2021,7 +2032,7 @@ function norm(o){
 let S;try{S=norm(JSON.parse(localStorage.getItem(KEY)))}catch(e){S=norm()}
 const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}syncTouch()};
 let V={y:now.getFullYear(),m:now.getMonth()+1},F={ph:'',pk:'',q:''},REP=null;
-const OPEN=new Set(),EDIT=new Set();let NCL=null;   // الجلسة التي يُضاف لها عميل جديد الآن
+const OPEN=new Set(),EDIT=new Set();
 const SC={y:now.getFullYear(),m:now.getMonth()+1,sel:TD,ph:'',pk:''};
 const ymK=()=>V.y+'-'+pad(V.m);
 const isOn=t=>t.on!==0&&t.on!==false;
@@ -2106,7 +2117,7 @@ function sessCard(s){
     `<div class="pr-sum"><span>${tr('price')} <b>${f3(sessPrice(s))}</b></span><span>${tr('phTotal')} <b>${f3(pay)}</b></span><span>${tr('eqTotal')} <b>${f3(eq)}</b></span><span>${tr('sessNet')} <b class="${pr<0?'pr-neg':'pr-b'}">${f3(pr)}</b></span></div>`+
     `<div class="pr-acts"><button class="btn-sm" data-ed="${s.id}">${tr('edit')}</button><button class="btn-sm" data-dup="${s.id}">${tr('dup')}</button><button class="btn-sm danger" data-ds="${s.id}">${tr('del')}</button></div>`;
   }else{
-    body=cf+`<div class="pr-sh"><label>${tr('sessPrice')}<input type="number" step="any" min="0" data-i="${s.id}" data-f="p" value="${s.p}"></label><label>${tr('pkg')}<select data-pk="${s.id}"><option value="">${tr('noPkg')}</option>${S.pkgs.map(k=>`<option value="${k.id}"${k.id==s.k?' selected':''}>${esc(k.n)}</option>`).join('')}</select></label><label>${tr('date')}<input type="date" data-i="${s.id}" data-f="d" value="${s.d}"></label><label>${tr('time')}<input type="time" data-i="${s.id}" data-f="t" value="${s.t||''}"></label><label>${A_('وقت الانتهاء','End time')}<input type="time" data-i="${s.id}" data-f="te" value="${s.te||''}"></label><label class="grow">${tr('sessName')}<input class="pr-txt" data-i="${s.id}" data-f="n" value="${esc(s.n)}"></label><div class="grow ps-cl">${typeof clients!=='undefined'&&clients.length?`<select data-cpick="${s.id}"><option value="">— ${A_('اختر عميلًا محفوظًا','Pick a saved client')} —</option>${clients.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select>`:''}<button type="button" class="btn-sm" data-ncl="${s.id}">${A_('+ إضافة عميل جديد','+ Add new client')}</button></div>${NCL===s.id?`<div class="grow ps-ncl"><input class="pr-txt" id="ncl-name" placeholder="${A_('اسم العميل','Client name')}"><input class="pr-txt" id="ncl-phone" type="tel" placeholder="${A_('رقم الهاتف (اختياري)','Phone (optional)')}"><button type="button" class="btn-sm" data-nclsave="${s.id}">${A_('حفظ العميل','Save client')}</button><button type="button" class="btn-sm" data-nclx="1">${A_('إلغاء','Cancel')}</button></div>`:''}<label class="grow">${A_('المكان','Location')}<input class="pr-txt" data-i="${s.id}" data-f="loc" value="${esc(s.loc||'')}"></label></div>
+    body=cf+`<div class="pr-sh"><label>${tr('sessPrice')}<input type="number" step="any" min="0" data-i="${s.id}" data-f="p" value="${s.p}"></label><label>${tr('pkg')}<select data-pk="${s.id}"><option value="">${tr('noPkg')}</option>${S.pkgs.map(k=>`<option value="${k.id}"${k.id==s.k?' selected':''}>${esc(k.n)}</option>`).join('')}</select></label><label>${tr('date')}<input type="date" data-i="${s.id}" data-f="d" value="${s.d}"></label><label>${tr('time')}<input type="time" data-i="${s.id}" data-f="t" value="${s.t||''}"></label><label>${A_('وقت الانتهاء','End time')}<input type="time" data-i="${s.id}" data-f="te" value="${s.te||''}"></label><label class="grow">${tr('sessName')}<input class="pr-txt" data-i="${s.id}" data-f="n" value="${esc(s.n)}"></label><label class="grow">${A_('المكان','Location')}<input class="pr-txt" data-i="${s.id}" data-f="loc" value="${esc(s.loc||'')}"></label></div>
 <h4 class="ps-h4">🎬 ${A_('العميل والتسليم (يظهر في بوابة العميل)','Client & delivery (shown in the client portal)')}</h4><div class="pr-sh"><label class="grow">${A_('العميل','Client')}<select data-i="${s.id}" data-f="cid">${BZ.clientOpts(s)}</select></label><label>${A_('مرحلة التسليم','Delivery stage')}<select data-i="${s.id}" data-f="dv">${BZ.stageOpts(s)}</select></label><label>${A_('موعد التسليم','Delivery date')}<input type="date" data-i="${s.id}" data-f="dvd" value="${esc(s.dvd||'')}"></label><label class="grow">${A_('رابط الصور والفيديوهات (https://…)','Photos & videos link (https://…)')}<input class="pr-txt" type="url" inputmode="url" placeholder="https://" data-i="${s.id}" data-f="gal" value="${esc(s.gal||'')}"></label></div>
 <div class="pr-lines">${s.lines.map(l=>`<div class="pr-ln"><select data-i="${s.id}" data-l="${l.id}" data-lf="r">${roleOpts(l.r)}</select><select data-i="${s.id}" data-l="${l.id}" data-lf="p">${persOpts(l.p,tr('pickPh'))}</select><input type="number" step="any" min="0" data-i="${s.id}" data-l="${l.id}" data-lf="a" value="${l.a}" aria-label="${tr('amount')}"><button class="pr-x" data-dl="${s.id}" data-l="${l.id}" aria-label="${tr('del')}">×</button></div>`).join('')}</div>
 <div class="pr-adds">${S.roles.map(r=>`<button data-al="${s.id}" data-role="${r.id}">+ ${esc(r.n)}<b>${f3(rateOf(s.k,r.id))}</b></button>`).join('')}</div>
@@ -2348,7 +2359,6 @@ function bind(){
     else if(d.xi){const x=(ses(d.i).x||[]).find(q=>q.id==d.xi);if(x){x[d.xf]=d.xf==='a'?(v===''?'':+v):v;persist();viewMain()}}
     else if(d.l&&d.lf=='r'){const l=ln(ses(d.i),d.l),r=S.roles.find(x=>x.id==v);l.r=v;if(r){l.a=rateOf(ses(d.i).k,v);if(r.p)l.p=r.p}persist();render()}
     else if(d.l&&d.lf=='p'){ln(ses(d.i),d.l).p=v;persist();render()}
-    else if(d.cpick){const c=clients.find(x=>String(x.id)===v),s=ses(d.cpick);if(c&&s){s.n=c.name;persist();render()}}
     else if(d.pk){const s=ses(d.pk),o=s.k,pk=S.pkgs.find(x=>x.id==v);s.lines.forEach(l=>{if((+l.a||0)==rateOf(o,l.r))l.a=rateOf(v,l.r)});s.k=v;if(pk&&pk.price!==''&&pk.price!=null&&s.p==='')s.p=+pk.price;persist();render()}
     else if(d.kn||d.rn||d.eqn||d.sbn){render()}
     else if(d.i&&(d.f=='t'||d.f=='te')){viewMain();renderSchedule()}
@@ -2362,14 +2372,6 @@ function bind(){
     else if(b.id=='pr-freset'){F={ph:'',pk:'',q:''};render()}
     else if(b.id=='pr-repbtn')showRep();
     else if(b.id=='pr-tclose'){G('pr-toast').hidden=true}
-    else if(d.ncl){NCL=NCL===d.ncl?null:d.ncl;viewMain();const i=G('ncl-name');if(i)i.focus()}
-    else if(d.nclx){NCL=null;viewMain()}
-    else if(d.nclsave){
-      const nm=(G('ncl-name').value||'').trim();if(!nm){G('ncl-name').focus();return}
-      const ph=(G('ncl-phone').value||'').trim(),s=ses(d.nclsave);
-      let c=clients.find(x=>x.name.trim().toLowerCase()===nm.toLowerCase());
-      if(!c){c={id:Date.now(),name:nm,custid:'',phone:ph,iban:'',addr:'',email:'',company:'',notes:''};clients.push(c);save();try{renderClients();updateClientPicker()}catch(_){}}
-      if(s)s.n=c.name;NCL=null;persist();render()}
     else if(d.tg){const id=d.tg;if(EDIT.has(id)){EDIT.delete(id);OPEN.delete(id)}else OPEN.has(id)?OPEN.delete(id):OPEN.add(id);viewMain()}
     else if(d.ps){const Ls=shown(agg(ymK()).L);Ls.forEach(s=>d.ps=='open'?OPEN.add(s.id):(OPEN.delete(s.id),EDIT.delete(s.id)));viewMain()}
     else if(d.eqt){const s=ses(d.eqt);s.eq=s.eq||[];const i=s.eq.indexOf(d.eid);i<0?s.eq.push(d.eid):s.eq.splice(i,1);persist();viewMain()}
@@ -2546,7 +2548,7 @@ async function sbToken(body,grant){
 }
 async function sbReq(path,opt={},retry=true){
   const c=sbCfg();
-  const r=await fetch(c.url+'/rest/v1/'+path,{...opt,headers:{apikey:c.key,Authorization:'Bearer '+sbAuth.access,'Content-Type':'application/json',...(opt.headers||{})}});
+  const r=await fetch(c.url+(path[0]==='/'?path:'/rest/v1/'+path),{...opt,headers:{apikey:c.key,Authorization:'Bearer '+sbAuth.access,'Content-Type':'application/json',...(opt.headers||{})}});
   if(r.status===401&&retry&&sbAuth.refresh){
     try{sbSave(await sbToken({refresh_token:sbAuth.refresh},'refresh_token'))}catch(e){sbSave(null);sbRender();throw e}
     return sbReq(path,opt,false);
@@ -2569,6 +2571,7 @@ async function sbSync(manual){
     if(n){renderClients();updateStats();BZ.bookingBanner(n,firstC,first)}
   }catch(e){sbMsg=A_('تعذّرت المزامنة: ','Sync failed: ')+String(e.message||e).slice(0,160)}
   await BZ.pullPortal();
+  await BZ.pvCleanup();
   sbBusy=false;sbRender();
 }
 function gateRefresh(){
@@ -2952,7 +2955,7 @@ function renderHome(){
   box.innerHTML=`<div class="card-title" style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap"><span>📈 ${A_('صحة العمل والأهداف','Business health & targets')}</span>${hPill(A.h)}</div>`+
   (A.target?`<div style="display:flex;justify-content:space-between;gap:.5rem;font-size:.84rem;color:var(--muted);flex-wrap:wrap"><span>${basisL()} ${A_('هذا الشهر','this month')}: <b style="color:var(--white)">${f3(A.cur)}</b> / ${f3(A.target)} ${curL()}</span><span>${pct(A.pc)}</span></div><div class="bz-prog"><i style="width:${Math.min(100,Math.max(0,A.pc*100))}%"></i></div><p class="pr-hint" style="margin:.2rem 0 .9rem">${A.gap>0?A_(`أنت أقل من الهدف بـ ${f3(A.gap)} د.ب — تحتاج تقريبًا ${A.need||'؟'} مشروع خلال ${A.daysLeft} يوم.`,`You are ${f3(A.gap)} BHD below target — about ${A.need||'?'} more project(s) in ${A.daysLeft} days.`):A_('🎉 تم تحقيق هدف الشهر.','🎉 Monthly target reached.')}</p>`:'')+
   `<div class="bz-grid">${kpi(A_('إيراد الشهر','Monthly revenue'),f3(sm.rev))}${kpi(A_('مصروفات الشهر','Monthly expenses'),f3(sm.c.total))}${kpi(A_('ربح الشهر','Monthly profit'),f3(sm.profit),'',sm.profit<0?'pr-neg':'')}${kpi(A_('إيراد السنة','Annual revenue'),f3(sy.rev))}${kpi(A_('مصروفات السنة','Annual expenses'),f3(sy.c.total))}${kpi(A_('ربح السنة','Annual profit'),f3(sy.profit),'',sy.profit<0?'pr-neg':'')}${kpi(A_('المشاريع (السنة)','Projects (year)'),sy.count)}${kpi(A_('العملاء','Clients'),clients.length)}${kpi(A_('الفواتير','Invoices'),invoices.length)}${kpi(A_('عروض الأسعار','Quotations'),B.quotes.length,openQ+' '+A_('مفتوحة','open'))}${kpi(A_('نسبة الإشغال (الشهر)','Occupancy (month)'),pct(sm.occ.rate),sm.occ.booked+' '+A_('يوم محجوز','booked days'))}</div>`+
-  `<div style="margin-top:.4rem;font-weight:700;font-size:.88rem;color:var(--white)">💡 ${A_('أهم التوصيات','Top recommendations')}</div>${recsH(recs(A).slice(0,3))}<div style="margin-top:.7rem"><button class="btn-sm" data-bz="go" data-page="reports">${A_('المستشار الذكي والتقارير ←','Smart advisor & reports →')}</button></div>`;
+  (()=>{const D=pvDue();return D.length?`<div class="bz-warn" style="margin:.2rem 0 .8rem">⚡ ${A_('معاينات مستحقة (خلال 24 ساعة من التصوير):','Sneak peeks due (within 24h of the shoot):')}<div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.45rem">${D.map(s=>{const c=sessClient(s);return `<button class="btn-sm" onclick="BZ.openClient(${c.id})">📸 ${escH(c.name)} · ${escH(s.d)}</button>`}).join('')}</div></div>`:''})()+`<div style="margin-top:.4rem;font-weight:700;font-size:.88rem;color:var(--white)">💡 ${A_('أهم التوصيات','Top recommendations')}</div>${recsH(recs(A).slice(0,3))}<div style="margin-top:.7rem"><button class="btn-sm" data-bz="go" data-page="reports">${A_('المستشار الذكي والتقارير ←','Smart advisor & reports →')}</button></div>`;
 }
 
 // ═════════════ QUOTATIONS ═════════════
@@ -3080,7 +3083,7 @@ function renderExpenses(){
   const e=EE||{date:td,cat:'operations',sub:'Internet',amt:'',note:''};
   R.innerHTML=`<div class="section-header"><h2>${A_('المصروفات والتسويق','Expenses & Marketing')}</h2><button class="btn-outline" data-bz="ex-csv">⬇ ${A_('تصدير Excel','Export CSV')}</button></div>
   <div class="bz-grid">${kpi(A_('مصروفات الشهر (مسجلة)','Logged expenses — month'),f3(cm.exp),A_('كل التكاليف: ','All costs: ')+f3(cm.total))}${kpi(A_('مصروفات السنة (مسجلة)','Logged expenses — year'),f3(cy.exp),A_('كل التكاليف: ','All costs: ')+f3(cy.total))}${kpi(A_('متوسط شهري','Monthly average'),f3(cy.exp/mOn))}${kpi(A_('التسويق هذه السنة','Marketing this year'),f3(cy.byCat.marketing||0),cy.exp?pct((cy.byCat.marketing||0)/cy.exp)+A_(' من المصروفات',' of expenses'):'')}</div>
-  <p class="pr-hint">${A_('«كل التكاليف» = المصروفات المسجلة هنا + أجور المصورين + رسوم المعدات + الاشتراكات من صفحة جلسات التصوير. لا تسجّل الاشتراكات هنا مرة ثانية.','“All costs” = expenses logged here + photographer pay + equipment fees + subscriptions from Session Costs. Don\'t log those subscriptions here again.')}</p>
+  <p class="pr-hint">${A_('«كل التكاليف» = المصروفات المسجلة هنا + أجور المصورين + رسوم المعدات + الاشتراكات من صفحة تكاليف الجلسات. لا تسجّل الاشتراكات هنا مرة ثانية.','“All costs” = expenses logged here + photographer pay + equipment fees + subscriptions from Session Costs. Don\'t log those subscriptions here again.')}</p>
   <div class="card" id="ex-form"><div class="card-title">${EE&&EE.id?A_('تعديل مصروف','Edit expense'):A_('إضافة مصروف','Add expense')}</div>
    <div class="bz-form"><label>${A_('التاريخ','Date')}<input class="bz-in" type="date" id="ef-date" value="${escH(e.date)}"></label>
    <label>${A_('الفئة','Category')}<select class="bz-in" id="ef-cat">${Object.keys(EXC).map(k=>`<option value="${k}"${k===e.cat?' selected':''}>${catL(k)}</option>`).join('')}</select></label>
@@ -3157,7 +3160,7 @@ function eqAdvice(){
   B.equipment.filter(x=>x.status!=='retired').forEach(x=>{const s=eqStats(x);
     if(s.u12>=5&&s.usePct>=0.7)out.push({k:'buy',t:A_(`«${escH(x.name)}» استُخدمت في ${pct(s.usePct)} من المشاريع خلال 12 شهرًا — فكّر بشراء وحدة إضافية.`,`“${escH(x.name)}” was used in ${pct(s.usePct)} of projects in the last 12 months. Consider purchasing another unit.`)});
     else if(s.link&&(!s.last||s.last<addDays(td,-180))&&(!x.date||x.date<addDays(td,-180)))out.push({k:'sell',t:A_(`«${escH(x.name)}» لم تُستخدم منذ 6 أشهر — فكّر ببيعها أو تأجيرها (مثلًا عبر Shuaib Gear).`,`“${escH(x.name)}” hasn't been used in 6 months — consider selling or renting it out (e.g. via Shuaib Gear).`)});
-    if(s.eta!=null&&s.eta>36)out.push({k:'slow',t:A_(`استرداد قيمة «${escH(x.name)}» يحتاج ~${s.eta} شهرًا بالمعدل الحالي — ارفع رسم الاستخدام في جلسات التصوير.`,`Recovering “${escH(x.name)}” will take ~${s.eta} months at the current rate — raise its per-use fee in Session Costs.`)});
+    if(s.eta!=null&&s.eta>36)out.push({k:'slow',t:A_(`استرداد قيمة «${escH(x.name)}» يحتاج ~${s.eta} شهرًا بالمعدل الحالي — ارفع رسم الاستخدام في تكاليف الجلسات.`,`Recovering “${escH(x.name)}” will take ~${s.eta} months at the current rate — raise its per-use fee in Session Costs.`)});
   });
   return out;
 }
@@ -3181,7 +3184,7 @@ function renderEquipment(){
    <label>${A_('مرتبطة بمعدة الجلسات','Linked session equipment')}<select class="bz-in" id="eqf-link"><option value="">${A_('تلقائي (بنفس الاسم)','Auto (same name)')}</option>${S.equip.map(pe=>`<option value="${escH(pe.id)}"${pe.id===e.link?' selected':''}>${escH(pe.n)} — ${f3(pe.f)}</option>`).join('')}</select></label>
    <label>${A_('ملاحظات','Notes')}<input class="bz-in" id="eqf-notes" value="${escH(e.notes||'')}"></label></div>
    <div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn-gold" data-bz="eq-save">${EQE&&EQE.id?A_('حفظ التعديل','Save changes'):A_('+ إضافة','+ Add')}</button>${EQE&&EQE.id?`<button class="btn-outline" data-bz="eq-cancel">${A_('إلغاء','Cancel')}</button>`:''}</div>
-   <p class="pr-hint">${A_('الاستخدام والاسترداد يُحسبان من المعدات التي تختارها داخل كل جلسة في «جلسات التصوير» (رسم الاستخدام × عدد الجلسات).','Usage and recovery come from the equipment you pick inside each session in Session Costs (per-use fee × sessions).')}</p></div>
+   <p class="pr-hint">${A_('الاستخدام والاسترداد يُحسبان من المعدات التي تختارها داخل كل جلسة في «تكاليف الجلسات» (رسم الاستخدام × عدد الجلسات).','Usage and recovery come from the equipment you pick inside each session in Session Costs (per-use fee × sessions).')}</p></div>
   ${card(A_('تقرير المعدات (الأكثر استخدامًا أولًا)','Equipment report (most used first)'),`<div style="overflow-x:auto"><table class="bz-table" style="min-width:760px"><thead><tr><th>${A_('المعدة','Item')}</th><th>${A_('الحالة','Status')}</th><th class="num">${A_('الاستخدام','Uses')}</th><th class="num">${A_('من المشاريع (12ش)','Of projects (12m)')}</th><th>${A_('آخر استخدام','Last used')}</th><th class="num">${A_('إيراد المشاريع','Project revenue')}</th><th class="num">${A_('المسترد','Recovered')}</th><th>${A_('العائد على الشراء','ROI')}</th><th class="num">${A_('المتبقي','Remaining')}</th><th></th></tr></thead><tbody>${list.map(({x,s},i)=>`<tr><td><b>${escH(x.name)}</b>${i===0&&s.used?' <small class="pr-pill">'+A_('الأكثر','Top')+'</small>':''}${i===list.length-1&&list.length>2?' <small class="pr-hint">'+A_('الأقل','Least')+'</small>':''}<br><small class="pr-hint">${lk(EQC,x.cat)}${x.serial?' · SN '+escH(x.serial):''}${s.link?'':' · ⚠ '+A_('غير مرتبطة','not linked')}</small></td><td>${lk(EQS,x.status)}</td><td class="num">${s.used}</td><td class="num">${pct(s.usePct)}</td><td style="white-space:nowrap">${s.last?escH(s.last):'—'}</td><td class="num">${f3(s.rev)}</td><td class="num">${f3(s.income)}</td><td style="min-width:110px"><div class="bz-hbar" style="grid-template-columns:1fr auto;margin:0"><div><i style="width:${Math.min(100,s.roi*100).toFixed(1)}%"></i></div><b>${pct(s.roi)}</b></div></td><td class="num">${s.remain?f3(s.remain)+(s.eta?`<br><small class="pr-hint">~${s.eta} ${A_('شهر','mo')}</small>`:''):'✓'}</td><td style="white-space:nowrap"><button class="btn-sm" data-bz="eq-edit" data-id="${escH(x.id)}">✎</button> <button class="btn-sm danger" data-bz="eq-del" data-id="${escH(x.id)}">✕</button></td></tr>`).join('')||emptyRow(10,A_('لا توجد معدات بعد — أضفها أو استوردها من قائمة معدات الجلسات.','No equipment yet — add it or import it from the session equipment list.'))}</tbody></table></div>`)}`;
 }
 function saveEquip(){
@@ -3247,7 +3250,7 @@ function renderSettings(){
   ${card('🧾 '+A_('الضريبة والترقيم','Tax & numbering'),`<label class="ck" style="display:flex;gap:.5rem;align-items:center;margin-bottom:.8rem;font-weight:600"><input type="checkbox" data-bc="vatOn"${C.vatOn?' checked':''}> ${A_('تفعيل ضريبة القيمة المضافة على الفواتير وعروض الأسعار','Charge VAT on invoices & quotations')}</label><div class="bz-form">${inp('vat',A_('نسبة الضريبة %','VAT rate %'),'number',' min="0" step="0.1"')}<label>${A_('العملة','Currency')}<input class="bz-in" value="BHD" disabled></label>${inp('invPrefix',A_('بادئة رقم الفاتورة','Invoice prefix'))}${inp('quotePrefix',A_('بادئة رقم عرض السعر','Quotation prefix'))}${inp('dueDays',A_('مهلة السداد (أيام)','Payment terms (days)'),'number',' min="0"')}${inp('validDays',A_('صلاحية عرض السعر (أيام)','Quotation validity (days)'),'number',' min="0"')}</div><p class="pr-hint">${A_('في البحرين التسجيل في الضريبة إلزامي عند تجاوز الإيرادات السنوية 37,500 د.ب. فعّلها فقط إذا كنت مسجّلًا، وأدخل رقم التسجيل ليظهر «TAX INVOICE».','In Bahrain VAT registration is mandatory above BHD 37,500 annual revenue. Enable it only if you are registered, and enter the registration number so invoices show “TAX INVOICE”.')}</p>`)}
   ${card('🎯 '+A_('الأهداف والحساب','Targets & calculations'),`<div class="bz-form">${sel('targetBasis',A_('الهدف مبني على','Target is based on'),[['profit',A_('الربح','Profit')],['revenue',A_('الإيراد','Revenue')]])}${inp('monthTarget',A_('الهدف الشهري (د.ب)','Monthly target (BHD)'),'number',' min="0" step="any"')}${inp('yearTarget',A_('الهدف السنوي (د.ب)','Annual target (BHD)'),'number',' min="0" step="any"')}${sel('revSrc',A_('مصدر الإيرادات في التقارير','Revenue source for reports'),[['invoices',A_('الفواتير','Invoices')],['sessions',A_('أسعار الجلسات','Session prices')]])}${inp('workDays',A_('أيام العمل في الأسبوع (للإشغال)','Working days / week (occupancy)'),'number',' min="1" max="7"')}</div><p class="pr-hint">${A_('اختر مصدرًا واحدًا للإيرادات حتى لا تُحسب الجلسة مرتين (مرة كفاتورة ومرة كجلسة).','Pick one revenue source so a job isn\'t counted twice (as an invoice and as a session).')}</p>`)}
   ${card('🎨 '+A_('المظهر واللغة','Appearance & language'),`<div class="bz-form">${sel('theme',A_('المظهر','Theme'),[['auto',A_('تلقائي (حسب الجهاز)','Auto (device)')],['light',A_('فاتح','Light')],['dark',A_('داكن','Dark')]])}<label>${A_('اللغة','Language')}<select class="bz-in" data-act="lang"><option value="ar"${lang==='ar'?' selected':''}>العربية</option><option value="en"${lang==='en'?' selected':''}>English</option></select></label></div>`)}
-  ${card('🛍 '+A_('الخدمات والأسعار','Services & prices'),`<p class="pr-hint">${A_('هذه القائمة تظهر في الفواتير وعروض الأسعار. الباقات وأسعار أدوار الفريق في «جلسات التصوير ← الفريق والإعدادات».','This list is used by invoices and quotations. Packages and team role rates live in Session Costs → Team & settings.')}</p>${SERVICES.map((s,i)=>`<div class="svc-ed"><input value="${escH(s.icon||'')}" data-sv="${i}" data-k="icon" aria-label="icon" style="text-align:center"><input value="${escH(s.ar)}" data-sv="${i}" data-k="ar" placeholder="الاسم بالعربي"><input class="hide-sm" value="${escH(s.en)}" data-sv="${i}" data-k="en" placeholder="English name"><input class="hide-sm" value="${escH(s.type)}" data-sv="${i}" data-k="type" placeholder="Type"><input type="number" step="0.001" min="0" value="${+s.unit||0}" data-sv="${i}" data-k="unit" aria-label="${A_('السعر','Price')}"><button type="button" class="remove-row" data-bz="st-svcdel" data-i="${i}" aria-label="${A_('حذف','Delete')}">✕</button></div>`).join('')}<button type="button" class="btn-sm" data-bz="st-svcadd">+ ${A_('خدمة جديدة','New service')}</button>`)}
+  ${card('🛍 '+A_('الخدمات والأسعار','Services & prices'),`<p class="pr-hint">${A_('هذه القائمة تظهر في الفواتير وعروض الأسعار. الباقات وأسعار أدوار الفريق في «تكاليف الجلسات ← الفريق والإعدادات».','This list is used by invoices and quotations. Packages and team role rates live in Session Costs → Team & settings.')}</p>${SERVICES.map((s,i)=>`<div class="svc-ed"><input value="${escH(s.icon||'')}" data-sv="${i}" data-k="icon" aria-label="icon" style="text-align:center"><input value="${escH(s.ar)}" data-sv="${i}" data-k="ar" placeholder="الاسم بالعربي"><input class="hide-sm" value="${escH(s.en)}" data-sv="${i}" data-k="en" placeholder="English name"><input class="hide-sm" value="${escH(s.type)}" data-sv="${i}" data-k="type" placeholder="Type"><input type="number" step="0.001" min="0" value="${+s.unit||0}" data-sv="${i}" data-k="unit" aria-label="${A_('السعر','Price')}"><button type="button" class="remove-row" data-bz="st-svcdel" data-i="${i}" aria-label="${A_('حذف','Delete')}">✕</button></div>`).join('')}<button type="button" class="btn-sm" data-bz="st-svcadd">+ ${A_('خدمة جديدة','New service')}</button>`)}
   ${card('🔐 '+A_('الحسابات والصلاحيات','Accounts & roles'),`<p class="pr-hint">${A_('لوحة التحكم هذه لحساب صاحب الاستوديو فقط، والمصورون يدخلون صفحة الموظفين (staff.html) ويرون جدولهم ومهامهم بدون الأسعار. كل البيانات تُحفظ سحابيًا تلقائيًا، ويمكنك تنزيل نسخة احتياطية من لوحة التحكم.','This dashboard is for the studio owner account only; photographers sign in to the staff page (staff.html) and see their schedule and tasks without prices. All data syncs to the cloud automatically, and you can download a backup from the dashboard.')}</p>`)}`;
 }
 
@@ -3272,7 +3275,7 @@ function portalData(c){
   const items=a=>(a||[]).map(x=>({desc:String(x.desc||''),qty:+x.qty||0,unit:+x.unit||0,disc:+x.disc||0}));
   return{first:nm.split(/\s+/)[0]||nm,name:nm,
     studio:{name:C.company||'',cr:C.cr||'',vatNo:C.vatNo||'',addr:C.addr||'',phone:C.phone||'',email:C.email||'',wa:String(C.wa||'').replace(/\D/g,''),insta:String(C.insta||'').replace(/^@/,''),note:C.portalNote||''},
-    sessions:PR.data().sessions.filter(s=>s.d&&(sessClient(s)||{}).id===c.id).sort((a,b)=>(a.d+(a.t||'')).localeCompare(b.d+(b.t||''))).map(s=>({id:s.id,d:s.d,t:s.t||'',te:s.te||'',n:strip(s.n),loc:s.loc||'',pk:PR.pkgName(s)||'',stage:dvStage(s),due:s.dvd||'',gal:safeUrl(s.gal)})),
+    sessions:PR.data().sessions.filter(s=>s.d&&(sessClient(s)||{}).id===c.id).sort((a,b)=>(a.d+(a.t||'')).localeCompare(b.d+(b.t||''))).map(s=>({id:s.id,d:s.d,t:s.t||'',te:s.te||'',n:strip(s.n),loc:s.loc||'',pk:PR.pkgName(s)||'',stage:dvStage(s),due:s.dvd||'',gal:safeUrl(s.gal),pv:s.pvAt&&(s.pv||[]).length?{f:s.pvf,n:s.pv,at:s.pvAt}:null})),
     invoices:clientInvs(c).filter(i=>i.status!=='draft').sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(i=>({id:i.id,number:i.number,date:i.date||'',due:i.due||dueFrom(i.date),status:i.status,overdue:invOverdue(i),items:items(i.items),subtotal:+i.subtotal||0,disc:+i.disc||0,vat:+i.vat||0,vatRate:+i.vatRate||0,grand:+i.grand||0,paid:invPaid(i),rem:invRem(i),notes:i.notes||''})),
     quotes:B.quotes.filter(q=>q.status!=='draft'&&(q.clientId===c.id||(!q.clientId&&String(q.client||'').trim().toLowerCase()===low))).sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(q=>{const t=qTotals(q.items);return{id:q.id,number:q.number,date:q.date||'',valid:q.valid||'',status:q.status,items:items(q.items),subtotal:t.sub,disc:t.disc,vat:t.vat,vatRate:t.vat?(+q.vatRate||+C.vat):0,grand:t.grand,notes:q.notes||''}})};
 }
@@ -3294,9 +3297,12 @@ async function pullPortal(){
   let acts;try{acts=await (await sbReq('portal_actions?imported=eq.false&select=id,token,kind,ref,note,created_at&order=id.asc')).json()}catch(e){return}
   if(!Array.isArray(acts)||!acts.length)return;
   let n=0,last=null;
-  acts.forEach(a=>{const q=B.quotes.find(x=>x.id===a.ref);if(!q||q.clientAction)return;
+  let pvN=0;
+  acts.forEach(a=>{if(a.kind==='preview_seen'||a.kind==='story_shared'){const s=PR.data().sessions.find(x=>x.id===a.ref);if(s){s[a.kind==='preview_seen'?'pvSeen':'pvShared']=a.created_at;pvN++}return}
+    const q=B.quotes.find(x=>x.id===a.ref);if(!q||q.clientAction)return;
     q.status=a.kind==='approve_quote'?'approved':'rejected';q.clientAction={kind:a.kind,at:a.created_at,note:a.note||''};n++;last=q});
   try{await sbReq('portal_actions?id=in.('+acts.map(a=>+a.id).join(',')+')',{method:'PATCH',body:JSON.stringify({imported:true}),headers:{Prefer:'return=minimal'}})}catch(e){}
+  if(pvN){PR.persist();if(onHub())renderHub()}
   if(!n)return;
   persist();renderHome();if(G('page-quotes').classList.contains('active'))renderQuotes();
   const ok=last.status==='approved',bar=G('bk-banner');
@@ -3305,6 +3311,82 @@ async function pullPortal(){
   const id=last.id,inv=G('pa-inv');if(inv)inv.onclick=()=>{bar.hidden=true;toInvoice(id)};
   G('pa-open').onclick=()=>{bar.hidden=true;showPage('quotes');viewQuote(id)};G('pa-x').onclick=()=>{bar.hidden=true};
 }
+// ═════════════ ⚡ المعاينة خلال 24 ساعة ═════════════
+const PV_MAX=12;
+const pvUrl=(s,n)=>sbCfg().url+'/storage/v1/object/public/previews/'+s.pvf+'/'+n;
+const pvHandle=()=>'@'+String(B.cfg.insta||'shuaib_studio').replace(/^@/,'');
+function pvShrink(file){return new Promise((res,rej)=>{const u=URL.createObjectURL(file),img=new Image();img.onload=()=>{
+  const max=1600,sc=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight)),w=Math.max(1,Math.round(img.naturalWidth*sc)),h=Math.max(1,Math.round(img.naturalHeight*sc));
+  const cv=document.createElement('canvas');cv.width=w;cv.height=h;const x=cv.getContext('2d');x.drawImage(img,0,0,w,h);
+  const fs=Math.max(14,Math.round(Math.min(w,h)*0.028));x.font=`700 ${fs}px Tajawal, sans-serif`;x.textBaseline='bottom';
+  const t='📸 '+pvHandle(),tw=x.measureText(t).width,px=Math.round(fs*0.9);
+  x.shadowColor='rgba(0,0,0,.55)';x.shadowBlur=fs*0.35;x.fillStyle='rgba(255,255,255,.82)';x.fillText(t,w-tw-px,h-px*0.7);
+  URL.revokeObjectURL(u);cv.toBlob(b=>b?res(b):rej(new Error('blob')),'image/jpeg',0.82)};
+  img.onerror=()=>{URL.revokeObjectURL(u);rej(new Error('image'))};img.src=u})}
+async function pvUpload(sid,files){
+  const S=PR.data().sessions.find(x=>x.id===sid);if(!S)return;
+  if(typeof sbAuth==='undefined'||!sbAuth){note(A_('سجّل الدخول للحساب السحابي أولًا','Sign in to the cloud account first'));return}
+  files=[...files].filter(f=>/^image\//.test(f.type));
+  const room=PV_MAX-(S.pv||[]).length;if(room<=0){note(A_(`الحد الأقصى ${PV_MAX} صورة`,`Maximum ${PV_MAX} photos`));return}
+  if(files.length>room){note(A_(`سيتم رفع أول ${room} صور فقط`,`Only the first ${room} photos will be uploaded`));files=files.slice(0,room)}
+  if(!files.length)return;
+  S.pvf=S.pvf||newToken();S.pv=S.pv||[];
+  const bar=G('pvp-'+sid),i0=bar&&bar.querySelector('i');if(bar)bar.hidden=false;
+  let done=0,fail=0;
+  for(const f of files){
+    try{const blob=await pvShrink(f),name=Date.now().toString(36)+Math.random().toString(36).slice(2,6)+'.jpg';
+      await sbReq('/storage/v1/object/previews/'+S.pvf+'/'+name,{method:'POST',body:blob,headers:{'Content-Type':'image/jpeg','x-upsert':'true','cache-control':'31536000'}});
+      S.pv.push(name);PR.persist();}
+    catch(e){fail++}
+    done++;if(i0)i0.style.width=Math.round(done/files.length*100)+'%';
+  }
+  if(S.pvAt)await pushPortals();
+  renderHub();
+  note(fail?A_(`تعذّر رفع ${fail} صورة — تأكد أنك شغّلت ملف portal-setup.sql المحدّث`,`${fail} photo(s) failed — make sure you ran the updated portal-setup.sql`):A_(`✓ تم رفع ${files.length} صورة`,`✓ ${files.length} photo(s) uploaded`));
+}
+async function pvDelete(S,names){
+  if(!names.length||!S.pvf)return;
+  try{await sbReq('/storage/v1/object/previews',{method:'DELETE',body:JSON.stringify({prefixes:names.map(n=>S.pvf+'/'+n)})})}catch(e){}
+  S.pv=(S.pv||[]).filter(n=>!names.includes(n));PR.persist();
+}
+async function pvPublish(sid){
+  const S=PR.data().sessions.find(x=>x.id===sid),c=hubClient();if(!S||!c)return;
+  if(!(S.pv||[]).length){note(A_('ارفع الصور أولًا','Upload photos first'));return}
+  if(!c.phone){note(A_('أضف رقم هاتف العميل أولًا','Add the client\'s phone number first'));return}
+  if(!(c.portal&&c.portal.on&&c.portal.token))c.portal=Object.assign(c.portal||{},{on:true,token:newToken(),pin:!!pinOf(c),created:todayISO()});
+  S.pvAt=new Date().toISOString();if(dvStage(S)==='booked'||!S.dv)S.dv='shot';
+  PR.persist();save();await pushPortals();renderHub();
+  const u=portalUrl(c.portal.token),first=String(c.name||'').trim().split(/\s+/)[0],pin=c.portal.pin&&pinOf(c);
+  const m=A_(`مرحبًا ${first} 😍\nمعاينة صوركم وصلت! ⚡\nاختارنا لكم ${S.pv.length} صور من ${stripN(c,S.n)||'جلستكم'}، شوفوها الآن وشاركوها على الستوري:\n${u}${pin?'\n\nرمز الدخول: آخر 4 أرقام من هاتفك.':''}\n\nلا تنسون تسوون لنا منشن ${pvHandle()} 🤍`,
+    `Hi ${first} 😍\nYour sneak peek is here! ⚡\nWe picked ${S.pv.length} photos from your ${stripN(c,S.n)||'session'} — see them now and share them on your story:\n${u}${pin?'\n\nAccess code: the last 4 digits of your phone.':''}\n\nDon't forget to tag us ${pvHandle()} 🤍`);
+  window.open('https://wa.me/'+waPhone(c.phone)+'?text='+encodeURIComponent(m),'_blank');
+}
+function pvBlock(c,S){
+  const L=S.pv||[],live=!!S.pvAt,past=S.d&&S.d<=todayISO();
+  const st=[S.pvSeen?'👁 '+A_('فتحها العميل','Opened by client'):'',S.pvShared?'📲 '+A_('شارك الستوري','Shared to story'):''].filter(Boolean);
+  return `<div class="pv-box${live?' live':''}"><div style="display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;align-items:center"><b style="color:var(--white)">⚡ ${A_('المعاينة خلال 24 ساعة','24-hour sneak peek')}</b>${live?`<span class="bz-health h-good"><i></i>${A_('منشورة','Published')}</span>`:(past&&L.length===0?`<span class="bz-health h-warn"><i></i>${A_('مستحقة الآن','Due now')}</span>`:'')}</div>
+  ${L.length?`<div class="pv-grid">${L.map(n=>`<figure><img src="${escH(pvUrl(S,n))}" alt="" loading="lazy"><button data-bz="pv-del" data-id="${escH(S.id)}" data-n="${escH(n)}" aria-label="${A_('حذف','Delete')}">✕</button></figure>`).join('')}</div>`:`<p class="pr-hint" style="margin:.4rem 0 .6rem">${A_(`ارفع ${PV_MAX>10?'10':PV_MAX} من أجمل الصور صباح اليوم التالي — تُصغَّر تلقائيًا وتُضاف عليها علامة ${pvHandle()}.`,`Upload ~10 of the best shots the next morning — auto-resized with a ${pvHandle()} watermark.`)}</p>`}
+  <div class="pv-prog" id="pvp-${escH(S.id)}" hidden><i></i></div>
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">${L.length<PV_MAX?`<label class="btn-sm" style="cursor:pointer">⬆ ${L.length?A_('إضافة صور','Add photos'):A_('رفع الصور','Upload photos')} <small>(${L.length}/${PV_MAX})</small><input type="file" accept="image/*" multiple hidden data-pv-up="${escH(S.id)}"></label>`:''}
+  ${L.length?`<button class="btn-gold" data-bz="pv-pub" data-id="${escH(S.id)}">📲 ${live?A_('إعادة الإرسال للعميل','Resend to client'):A_('نشر المعاينة وإرسالها','Publish & send')}</button>`:''}
+  ${L.length?`<button class="btn-sm danger" data-bz="pv-clear" data-id="${escH(S.id)}">${A_('حذف الكل','Delete all')}</button>`:''}</div>
+  ${st.length?`<p class="pr-hint" style="margin:.6rem 0 0;color:var(--sage-dd);font-weight:700">${st.join(' · ')}</p>`:''}
+  ${live?`<p class="pr-hint" style="margin:.4rem 0 0">${A_('تُحذف صور المعاينة تلقائيًا بعد 30 يومًا من نشرها.','Preview photos are deleted automatically 30 days after publishing.')}</p>`:''}</div>`;
+}
+async function pvCleanup(){
+  if(typeof sbAuth==='undefined'||!sbAuth)return;
+  const cut=Date.now()-30*864e5;
+  for(const S of PR.data().sessions){if(S.pvAt&&(S.pv||[]).length&&Date.parse(S.pvAt)<cut){await pvDelete(S,[...S.pv]);S.pvGone=true;PR.persist()}}
+}
+const pvDue=()=>{const td=todayISO(),from=addDays(td,-3);return PR.data().sessions.filter(s=>s.d&&s.d<td&&s.d>=from&&!s.pvAt&&s.bs!=='new'&&sessClient(s))};
+document.addEventListener('change',e=>{const i=e.target;if(i.dataset&&i.dataset.pvUp){pvUpload(i.dataset.pvUp,i.files||[]);i.value=''}});
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-bz^="pv-"]');if(!b)return;e.stopPropagation();
+  const S=PR.data().sessions.find(x=>x.id===b.dataset.id);if(!S)return;
+  if(b.dataset.bz==='pv-pub')pvPublish(S.id);
+  else if(b.dataset.bz==='pv-del'){await pvDelete(S,[b.dataset.n]);if(!S.pv.length)delete S.pvAt;PR.persist();await pushPortals();renderHub()}
+  else if(b.dataset.bz==='pv-clear'){if(!confirm(A_('حذف كل صور المعاينة؟','Delete all preview photos?')))return;await pvDelete(S,[...(S.pv||[])]);delete S.pvAt;PR.persist();await pushPortals();renderHub()}
+});
+
 // ═════════════ BOOKING → CLIENT FILE (الحجز يُنشئ ملف العميل) ═════════════
 const ph8=x=>{let d=String(x||'').replace(/\D/g,'');if(d.length>8&&d.startsWith('973'))d=d.slice(3);return d.slice(-8)};
 function fromBooking(b,sid,isNew){
@@ -3399,7 +3481,7 @@ function renderHub(){
   let fixed=false;S.forEach(s=>{if(String(s.cid||'')!==String(c.id)){s.cid=String(c.id);fixed=true}});if(fixed)PR.persist();
   const P=c.portal||{},on=!!(P.on&&P.token),pin=pinOf(c),url=on?portalUrl(P.token):'';
   const real=I.filter(i=>i.status!=='draft'),rev=sum(real,i=>i.grand),due=sum(real,invRem),openQ=Q.filter(q=>q.status==='draft'||q.status==='sent').length;
-  const steps=[['h-info',A_('البيانات','Details'),!!c.phone],['h-sess',A_('الجلسة','Session'),S.length>0],['h-q',A_('عرض السعر','Quotation'),Q.length>0],['h-inv',A_('الفاتورة','Invoice'),I.length>0],['h-portal',A_('رابط البوابة','Portal link'),on],['h-sess',A_('رابط الصور','Gallery link'),S.some(s=>safeUrl(s.gal))]];
+  const steps=[['h-info',A_('البيانات','Details'),!!c.phone],['h-sess',A_('الجلسة','Session'),S.length>0],['h-q',A_('عرض السعر','Quotation'),Q.length>0],['h-inv',A_('الفاتورة','Invoice'),I.length>0],['h-portal',A_('رابط البوابة','Portal link'),on],['h-sess',A_('المعاينة','Sneak peek'),S.some(s=>s.pvAt)],['h-sess',A_('رابط الصور','Gallery link'),S.some(s=>safeUrl(s.gal))]];
   const sec=(id,n,t,btn)=>`<div class="section-header hub-sec" id="${id}"><h2><span class="hub-n">${n}</span>${t}</h2>${btn||''}</div>`;
   const lbl=(t,inner,full)=>`<label${full?' style="grid-column:1/-1"':''}>${t}${inner}</label>`;
   const hc=(k,t,type,full)=>lbl(t,`<input class="bz-in" data-hc="${k}" type="${type||'text'}" value="${escH(c[k]||'')}">`,full);
@@ -3429,7 +3511,7 @@ function renderHub(){
     ${lbl(A_('مرحلة التسليم','Delivery stage'),`<select class="bz-in" data-hs="${escH(x.id)}" data-hk="dv">${stageOpts(x)}</select>`)}
     ${lbl(A_('موعد التسليم','Delivery date'),`<input class="bz-in" type="date" data-hs="${escH(x.id)}" data-hk="dvd" value="${escH(x.dvd||'')}">`)}
     ${lbl(A_('رابط الصور والفيديوهات (يظهر للعميل)','Photos & videos link (shown to client)'),`<input class="bz-in" type="url" inputmode="url" placeholder="https://" data-hs="${escH(x.id)}" data-hk="gal" value="${escH(x.gal||'')}" style="direction:ltr">`,true)}</div>
-    <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">${cf?`<span class="bz-health h-warn"><i></i>${A_('تعارض في الجدول','Schedule conflict')}</span>`:''}${g?`<a class="btn-sm" href="${escH(g)}" target="_blank" rel="noopener">🖼 ${A_('فتح الرابط','Open link')}</a>`:''}<button class="btn-sm" data-bz="h-team" data-id="${escH(x.id)}">👥 ${A_('المصورون والتكاليف','Team & costs')} ←</button></div></section>`}).join('')
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">${cf?`<span class="bz-health h-warn"><i></i>${A_('تعارض في الجدول','Schedule conflict')}</span>`:''}${g?`<a class="btn-sm" href="${escH(g)}" target="_blank" rel="noopener">🖼 ${A_('فتح الرابط','Open link')}</a>`:''}<button class="btn-sm" data-bz="h-team" data-id="${escH(x.id)}">👥 ${A_('المصورون والتكاليف','Team & costs')} ←</button></div>${pvBlock(c,x)}</section>`}).join('')
     :`<section class="card"><p class="pr-hint" style="margin:0">${A_('لا توجد جلسات بعد — اضغط «جلسة جديدة».','No sessions yet — press “New session”.')}</p></section>`;
 
   // 3) quotations
@@ -3611,7 +3693,7 @@ document.addEventListener('change',e=>{
   if(d.bc==='theme')applyTheme();
 });
 
-return{fromBooking,bookingBanner,openClient,markRet,clearRet,back,pushPortals,pullPortal,portalPanel,portalDrop,clientOpts,stageOpts,dvLine,cfg,vatOf,dueFrom,applyTheme,toggleTheme,applyLang,renderPage,renderHome,newQuote,editQuote,viewQuote,waQuote,toInvoice,advisor};
+return{pvCleanup,fromBooking,bookingBanner,openClient,markRet,clearRet,back,pushPortals,pullPortal,portalPanel,portalDrop,clientOpts,stageOpts,dvLine,cfg,vatOf,dueFrom,applyTheme,toggleTheme,applyLang,renderPage,renderHome,newQuote,editQuote,viewQuote,waQuote,toInvoice,advisor};
 })();
 
 // ── INIT ─────────────────────────────────────────────
