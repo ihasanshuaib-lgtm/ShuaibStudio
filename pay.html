@@ -1261,12 +1261,12 @@ window.addEventListener('message',e=>{
 });
 // حجز جديد → جلسة في التكاليف + شريط إشعار بزر «فتح الجلسة»
 function onBookingCreated(b){
-  const r=PR.addBooking(b);if(!r)return;
-  const bar=document.getElementById('bk-banner');
-  bar.innerHTML=`<span>${r.isNew?A_('✓ أُضيف الحجز إلى التكاليف كجلسة جاهزة — اكتب أسماء المصورين والمعدات.','✓ Booking added to costs as a ready session — just enter photographers and equipment.'):A_('هذا الحجز موجود مسبقًا في التكاليف.','This booking is already in costs.')}</span><button class="btn-gold" id="bk-open">${A_('فتح الجلسة','Open session')}</button><button class="btn-outline" id="bk-x" aria-label="close">✕</button>`;
-  bar.hidden=false;
-  document.getElementById('bk-open').onclick=()=>{bar.hidden=true;PR.openSession(r.id)};
-  document.getElementById('bk-x').onclick=()=>{bar.hidden=true};
+  const r=PR.addBooking(b,true);if(!r)return;
+  const cid=BZ.fromBooking(b,r.id,r.isNew);
+  PR.render();renderClients();updateStats();
+  if(r.isNew)BZ.bookingBanner(1,cid,r.id);
+  else{const bar=document.getElementById('bk-banner');bar.innerHTML=`<span>${A_('هذا الحجز موجود مسبقًا.','This booking already exists.')}</span>${cid?`<button class="btn-gold" id="bk-open">📂 ${A_('فتح ملف العميل','Open client file')}</button>`:''}<button class="btn-outline" id="bk-x" aria-label="close">✕</button>`;bar.hidden=false;
+    const o=document.getElementById('bk-open');if(o)o.onclick=()=>{bar.hidden=true;BZ.openClient(cid)};document.getElementById('bk-x').onclick=()=>{bar.hidden=true}}
 }
 
 // ── FILTER STATE ─────────────────────────────────────
@@ -1592,6 +1592,7 @@ function renderClients(){
       <div class="pr-sum" style="margin-top:.6rem;font-size:.76rem;gap:.4rem .8rem"><span>${A_('الإيراد','Revenue')} <b>${rev.toFixed(3)}</b></span><span>${A_('المشاريع','Projects')} <b>${real.length}</b></span><span>${A_('آخر حجز','Last booking')} <b>${escH(last||'—')}</b></span>${due>0.0005?`<span>${A_('متبقي','Due')} <b style="color:var(--danger)">${due.toFixed(3)}</b></span>`:''}</div>
       <div class="client-actions" style="flex-wrap:wrap;align-items:center">
         <button class="btn-gold" style="padding:.5rem 1rem;font-size:.84rem" onclick="event.stopPropagation();BZ.openClient(${cl.id})">📂 ${A_('فتح ملف العميل','Open client file')}</button>
+        ${invoices.some(i=>i._clientId===cl.id&&i.fromBooking&&i.status==='draft')?`<span class="bz-health h-warn" style="font-size:.72rem"><i></i>📥 ${A_('حجز جديد','New booking')}</span>`:''}
         ${cl.portal&&cl.portal.on?`<span class="bz-health h-good" style="font-size:.72rem"><i></i>${A_('البوابة','Portal')}</span>`:''}
         <button class="btn-sm danger" style="margin-inline-start:auto" onclick="event.stopPropagation();deleteClient(${cl.id})" aria-label="${A_('حذف','Delete')}">✕</button>
       </div>
@@ -2548,20 +2549,14 @@ async function sbSync(manual){
   sbBusy=true;
   try{
     const rows=await (await sbReq('bookings?imported=eq.false&select=id,payload&order=created_at.asc')).json();
-    let n=0,first=null;
-    rows.forEach(r=>{const x=PR.addBooking(r.payload,true);if(x){if(x.isNew){n++;first=first||x.id}}});
+    let n=0,first=null,firstC=null;
+    rows.forEach(r=>{const x=PR.addBooking(r.payload,true);if(x){const cid=BZ.fromBooking(r.payload,x.id,x.isNew);if(x.isNew){n++;first=first||x.id;firstC=firstC||cid}}});
     if(rows.length){
       await sbReq('bookings?id=in.('+rows.map(r=>r.id).join(',')+')',{method:'PATCH',body:JSON.stringify({imported:true}),headers:{Prefer:'return=minimal'}});
       PR.render();
     }
     sbMsg=A_(`آخر مزامنة: ${new Date().toLocaleTimeString()} — ${n} حجز جديد`,`Last sync: ${new Date().toLocaleTimeString()} — ${n} new booking(s)`);
-    if(n){
-      const bar=document.getElementById('bk-banner');
-      bar.innerHTML=`<span>${A_(`✓ وصل ${n} حجز جديد وأُضيف إلى التكاليف كجلسات جاهزة — اكتب أسماء المصورين والمعدات.`,`✓ ${n} new booking(s) added to costs as ready sessions — enter photographers and equipment.`)}</span><button class="btn-gold" id="bk-open">${A_('فتح الجلسة','Open session')}</button><button class="btn-outline" id="bk-x" aria-label="close">✕</button>`;
-      bar.hidden=false;
-      document.getElementById('bk-open').onclick=()=>{bar.hidden=true;PR.openSession(first)};
-      document.getElementById('bk-x').onclick=()=>{bar.hidden=true};
-    }
+    if(n){renderClients();updateStats();BZ.bookingBanner(n,firstC,first)}
   }catch(e){sbMsg=A_('تعذّرت المزامنة: ','Sync failed: ')+String(e.message||e).slice(0,160)}
   await BZ.pullPortal();
   sbBusy=false;sbRender();
@@ -3300,6 +3295,73 @@ async function pullPortal(){
   const id=last.id,inv=G('pa-inv');if(inv)inv.onclick=()=>{bar.hidden=true;toInvoice(id)};
   G('pa-open').onclick=()=>{bar.hidden=true;showPage('quotes');viewQuote(id)};G('pa-x').onclick=()=>{bar.hidden=true};
 }
+// ═════════════ BOOKING → CLIENT FILE (الحجز يُنشئ ملف العميل) ═════════════
+const ph8=x=>{let d=String(x||'').replace(/\D/g,'');if(d.length>8&&d.startsWith('973'))d=d.slice(3);return d.slice(-8)};
+function fromBooking(b,sid,isNew){
+  const S=PR.data(),ses=S.sessions.find(x=>x.id===sid);
+  if(!isNew)return (sessClient(ses)||{}).id||null;
+  const name=String(b.name||'').trim()||A_('عميل جديد','New client'),p8=ph8(b.phone),low=name.toLowerCase();
+  let cl=(p8.length===8&&clients.find(c=>ph8(c.phone)===p8))||clients.find(c=>String(c.name||'').trim().toLowerCase()===low);
+  if(!cl){cl={id:Date.now()+Math.floor(Math.random()*1000),name,phone:String(b.phone||'').trim(),custid:'',iban:'',addr:'',email:'',company:'',notes:'',src:'booking',created:todayISO()};clients.push(cl)}
+  else if(!cl.phone&&b.phone)cl.phone=String(b.phone).trim();
+  let items=(Array.isArray(b.items)&&b.items.length?b.items:[{desc:[b.category,b.package].filter(Boolean).join(' — '),qty:1,unit:+b.total||0}])
+    .map((x,i)=>({_svcId:null,qty:+x.qty||1,type:'Package',itemNo:String(i+1),desc:String(x.desc||''),unit:+x.unit||0,disc:0}));
+  const sub=sum(items,x=>x.qty*x.unit),disc=Math.max(0,Math.round(sub*(+b.discountRate||0)*1000)/1000);
+  if(disc&&items[0])items[0].disc=disc;
+  const vat=vatOf(sub-disc),grand=sub-disc+vat,iid=Date.now()+Math.floor(Math.random()*1000)+1;
+  const extras=Object.entries(b.extras||{}).map(([k,v])=>k+': '+v);
+  const notes=[A_('📥 حجز من صفحة الحجز','📥 Booked via the booking page'),A_('العربون المطلوب (50%): ','Deposit required (50%): ')+f3(grand/2)+' BD',b.discountCode?A_('كود الخصم: ','Discount code: ')+b.discountCode:'',...extras,b.notes||''].filter(Boolean).join('\n');
+  invoices.unshift({id:iid,number:nextInvNo(),client:cl.name,custid:cl.custid||'',phone:cl.phone||'',iban:cl.iban||'',addr:cl.addr||'',email:cl.email||'',company:cl.company||'',
+    date:todayISO(),due:b.date||dueFrom(todayISO()),status:'draft',paid:0,notes,items,subtotal:sub,disc,vat,vatRate:vat?B.cfg.vat:0,grand,_clientId:cl.id,fromBooking:true,sessId:sid});
+  if(ses){ses.cid=String(cl.id);ses.inv=iid;ses.bs='new';PR.persist()}
+  save();
+  return cl.id;
+}
+const pendingBk=c=>invoices.filter(i=>i._clientId===c.id&&i.fromBooking&&i.status==='draft');
+function bookingCards(c){
+  const P=pendingBk(c);if(!P.length)return'';
+  return P.map(i=>{const s=PR.data().sessions.find(x=>x.id===i.sessId||x.inv===i.id),dep=Math.round(i.grand/2*1000)/1000;
+    return `<section class="card" style="border:1.5px solid var(--focus);box-shadow:var(--lift),var(--focus-ring);margin-top:1rem">
+    <div class="card-title" style="display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;align-items:center"><span>📥 ${A_('حجز جديد بانتظار التأكيد','New booking awaiting confirmation')}</span><span class="bz-health h-warn"><i></i>${A_('بانتظار العربون','Awaiting deposit')}</span></div>
+    <div class="pr-sum" style="gap:.4rem 1.1rem;font-size:.86rem;margin-bottom:.7rem">${s?`<span>📅 <b>${escH(s.d||'—')}</b>${s.t?' · '+escH(s.t):''}</span><span>📸 <b>${escH(stripN(c,s.n))}</b></span>${s.loc?`<span>📍 ${escH(s.loc)}</span>`:''}`:''}<span>${A_('الإجمالي','Total')} <b>${f3(i.grand)}</b></span><span>${A_('العربون 50%','Deposit 50%')} <b>${f3(dep)}</b></span></div>
+    <details style="margin-bottom:.7rem"><summary class="pr-lnk" style="cursor:pointer">${A_('تفاصيل الطلب','Request details')}</summary><ul style="margin:.5rem 0;padding-inline-start:1.1rem;font-size:.84rem">${(i.items||[]).map(it=>`<li>${escH(it.desc)}${it.qty>1?' × '+it.qty:''} — ${f3(it.qty*it.unit-(it.disc||0))}</li>`).join('')}</ul><div class="pr-hint" style="white-space:pre-line;margin:0">${escH(i.notes||'')}</div></details>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center"><label style="display:flex;gap:.4rem;align-items:center;font-size:.8rem;color:var(--muted);font-weight:700">${A_('العربون المستلم','Deposit received')}<input class="bz-in" type="number" step="0.001" min="0" id="bkdep-${i.id}" value="${f3(dep)}" style="width:110px"></label>
+    <button class="btn-gold" data-bz="h-bkok" data-id="${i.id}">✓ ${A_('تأكيد الحجز','Confirm booking')}</button>
+    ${c.phone?`<button class="btn-outline wa-btn" data-bz="h-bkwa" data-id="${i.id}">💬 ${A_('طلب العربون بواتساب','Request deposit on WhatsApp')}</button>`:''}
+    <button class="btn-sm danger" data-bz="h-bkno" data-id="${i.id}">✕ ${A_('إلغاء الطلب','Cancel request')}</button></div>
+    <p class="pr-hint" style="margin:.6rem 0 0">${A_('عند التأكيد تتحول الفاتورة إلى «غير مدفوعة» ويُسجَّل العربون كدفعة، وتظهر للعميل في بوابته.','On confirm, the invoice becomes “unpaid”, the deposit is recorded as a payment, and it shows in the client’s portal.')}</p></section>`}).join('');
+}
+async function bookingAct(a,id){
+  const c=hubClient(),inv=invoices.find(x=>x.id===+id);if(!c||!inv)return;
+  const s=PR.data().sessions.find(x=>x.id===inv.sessId||x.inv===inv.id);
+  if(a==='h-bkok'){
+    const f=G('bkdep-'+id),amt=Math.max(0,+(f&&f.value)||0);
+    inv.status='unpaid';inv.date=todayISO();inv.paid=Math.min(inv.grand||0,amt);
+    if(amt>0)(inv.payments=inv.payments||[]).push({d:todayISO(),a:inv.paid,k:'deposit'});
+    if(inv.paid>=(inv.grand||0)-0.0005){inv.status='paid';inv.paid=inv.grand||0;inv.paidAt=todayISO()}
+    if(s){s.bs='confirmed';PR.persist()}
+    save();updateStats();renderHub();note(A_('✓ تم تأكيد الحجز','✓ Booking confirmed'));
+  }else if(a==='h-bkwa'){
+    const dep=f3(inv.grand/2),co=B.cfg.company&&B.cfg.company!=='Shuaib Studio'?B.cfg.company:A_('شعيب استوديو','Shuaib Studio');
+    const m=A_(`مرحبًا ${c.name} 🌷\nوصلنا طلب حجزك في ${co}${s?` بتاريخ ${s.d}${s.t?' الساعة '+s.t:''}`:''}.\nالإجمالي: ${f3(inv.grand)} د.ب\nلتأكيد الموعد يرجى دفع العربون (50%): ${dep} د.ب\n\nشكرًا لاختيارك لنا 📸`,
+      `Hi ${c.name} 🌷\nWe received your booking request at ${co}${s?` for ${s.d}${s.t?' at '+s.t:''}`:''}.\nTotal: ${f3(inv.grand)} BHD\nTo confirm the date, please pay the 50% deposit: ${dep} BHD\n\nThank you for choosing us 📸`);
+    window.open('https://wa.me/'+waPhone(c.phone)+'?text='+encodeURIComponent(m),'_blank');
+  }else if(a==='h-bkno'){
+    if(!confirm(A_('إلغاء طلب الحجز؟ ستُحذف الجلسة والفاتورة المسودة (يبقى العميل في القائمة).','Cancel this booking request? The session and draft invoice will be removed (the client stays).')))return;
+    invoices.splice(invoices.indexOf(inv),1);
+    if(s){const L=PR.data().sessions;L.splice(L.indexOf(s),1);PR.persist()}
+    save();updateStats();renderHub();note(A_('تم إلغاء الطلب','Request cancelled'));
+  }
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-bz^="h-bk"]');if(b){e.stopImmediatePropagation();bookingAct(b.dataset.bz,b.dataset.id)}},true);
+function bookingBanner(n,cid,sid){
+  const bar=document.getElementById('bk-banner'),c=clients.find(x=>x.id===cid);
+  bar.innerHTML=`<span>📥 ${n>1?A_(`وصل ${n} حجوزات جديدة`,`${n} new bookings`):A_('حجز جديد','New booking')}${c?': <b>'+escH(c.name)+'</b>':''} — ${A_('أُنشئ ملف العميل والجلسة والفاتورة (بانتظار العربون).','client file, session and invoice created (awaiting deposit).')}</span><button class="btn-gold" id="bk-open">📂 ${A_('فتح ملف العميل','Open client file')}</button><button class="btn-outline" id="bk-x" aria-label="close">✕</button>`;
+  bar.hidden=false;
+  document.getElementById('bk-open').onclick=()=>{bar.hidden=true;if(c)openClient(cid);else PR.openSession(sid)};
+  document.getElementById('bk-x').onclick=()=>{bar.hidden=true};
+}
+
 // ═════════════ CLIENT FILE — كل شيء عن العميل في مكان واحد ═════════════
 let HUB_ID=null,HUB_RET=null,hubT=0;
 const hubClient=()=>clients.find(x=>x.id===HUB_ID);
@@ -3336,10 +3398,12 @@ function renderHub(){
   // header
   h+=`<section class="card"><div class="hub-head"><div class="hub-av">${c.thumb?`<img src="${escH(c.thumb)}" alt="">`:escH(initials(c.name))}</div>
     <div style="flex:1;min-width:180px"><h2 class="hub-name" id="hub-name">${escH(c.name)}</h2><div class="pr-hint" style="margin:.15rem 0 .4rem">${[c.phone&&'📞 '+escH(c.phone),c.company&&'🏢 '+escH(c.company)].filter(Boolean).join(' · ')||A_('أضف رقم الهاتف من «البيانات» بالأسفل','Add a phone number under Details below')}</div>
-    <span class="bz-health ${on?'h-good':'h-warn'}"><i></i>${on?A_('البوابة مفعّلة','Portal on'):A_('البوابة غير مفعّلة','Portal off')}</span></div>
+    <span class="bz-health ${on?'h-good':'h-warn'}"><i></i>${on?A_('البوابة مفعّلة','Portal on'):A_('البوابة غير مفعّلة','Portal off')}</span>${c.src==='booking'?` <span class="pr-pill" style="font-size:.72rem">🌐 ${A_('من صفحة الحجز','From booking page')}</span>`:''}</div>
     <div class="hub-acts"><button class="btn-gold" data-bz="h-send">📲 ${on?A_('إرسال رابط البوابة','Send portal link'):A_('إنشاء وإرسال رابط البوابة','Create & send portal link')}</button>${c.phone?`<button class="btn-outline wa-btn" data-bz="h-wa">💬 ${A_('واتساب','WhatsApp')}</button>`:''}</div></div>
     <div class="bz-grid" style="margin:1rem 0 .3rem">${kpi(A_('الجلسات','Sessions'),S.length)}${kpi(A_('إجمالي الفواتير','Invoiced'),f3(rev))}${kpi(A_('المتبقي عليه','Balance due'),f3(due),'',due>0.0005?'pr-neg':'')}${kpi(A_('عروض مفتوحة','Open quotes'),openQ)}</div>
     <div class="hub-steps">${steps.map((x,i)=>`<button class="hub-step${x[2]?' ok':''}" data-bz="h-jump" data-to="${x[0]}">${x[2]?'✓':i+1} ${x[1]}</button>`).join('')}</div></section>`;
+
+  h+=bookingCards(c);
 
   // 1) details
   h+=sec('h-info',1,A_('بيانات العميل','Client details'),`<small class="pr-hint" style="margin:0">${A_('تُحفظ تلقائيًا','Saved automatically')}</small>`);
@@ -3537,7 +3601,7 @@ document.addEventListener('change',e=>{
   if(d.bc==='theme')applyTheme();
 });
 
-return{openClient,markRet,clearRet,back,pushPortals,pullPortal,portalPanel,portalDrop,clientOpts,stageOpts,dvLine,cfg,vatOf,dueFrom,applyTheme,toggleTheme,applyLang,renderPage,renderHome,newQuote,editQuote,viewQuote,waQuote,toInvoice,advisor};
+return{fromBooking,bookingBanner,openClient,markRet,clearRet,back,pushPortals,pullPortal,portalPanel,portalDrop,clientOpts,stageOpts,dvLine,cfg,vatOf,dueFrom,applyTheme,toggleTheme,applyLang,renderPage,renderHome,newQuote,editQuote,viewQuote,waQuote,toInvoice,advisor};
 })();
 
 // ── INIT ─────────────────────────────────────────────

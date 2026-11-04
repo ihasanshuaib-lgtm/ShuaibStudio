@@ -1333,6 +1333,7 @@ function renderInfoCard(){
 
   // احفظ القيم القديمة قبل إعادة البناء (لو كانت موجودة)
   const oldName = document.getElementById('custName')?.value || '';
+  const oldPhone = document.getElementById('custPhone')?.value || '';
   const oldDate = document.getElementById('custDate')?.value || '';
   const oldTime = document.getElementById('custTime')?.value || '';
   const oldNotes = document.getElementById('custNotes')?.value || '';
@@ -1350,6 +1351,10 @@ function renderInfoCard(){
     <div class="field full">
       <label>${info.nameLabel}</label>
       <input type="text" id="custName" placeholder="${info.namePlaceholder}" value="${oldName}"><div class="field-err"></div>
+    </div>
+    <div class="field full">
+      <label>رقم الهاتف (واتساب)</label>
+      <input type="tel" id="custPhone" inputmode="tel" autocomplete="tel" dir="ltr" placeholder="3xxxxxxx" value="${oldPhone}"><div class="field-err"></div>
     </div>
     <div class="field">
       <label>${info.dateLabel}</label>
@@ -2113,6 +2118,8 @@ function buildMessage(){
   const name = document.getElementById('custName').value.trim();
   const date = document.getElementById('custDate').value;
   const time = document.getElementById('custTime').value;
+  const phone = (document.getElementById('custPhone')?.value || '').trim();
+  const phoneDigits = phone.replace(/\D/g,'');
 
   clearFieldErrors();
   if(!activeCategory){
@@ -2121,12 +2128,14 @@ function buildMessage(){
   }
   const missing = [];
   if(!name) missing.push(['custName','عليك ملء الاسم']);
+  if(!phoneDigits) missing.push(['custPhone','عليك كتابة رقم الهاتف']);
+  else if(phoneDigits.length < 8) missing.push(['custPhone','رقم الهاتف غير صحيح (8 أرقام على الأقل)']);
   if(!date) missing.push(['custDate','عليك اختيار تاريخ التصوير']);
   if(!time) missing.push(['custTime','عليك اختيار وقت التصوير']);
   if(missing.length){
     missing.forEach(([id,msg])=>markFieldError(id,msg));
     const first = document.getElementById(missing[0][0]);
-    showToast(missing.length === 1 ? missing[0][1] : 'عليك ملء الاسم والتاريخ والوقت قبل الإرسال');
+    showToast(missing.length === 1 ? missing[0][1] : 'عليك ملء الاسم والهاتف والتاريخ والوقت قبل الإرسال');
     first.scrollIntoView({behavior:'smooth',block:'center'});
     setTimeout(()=>{ try{ first.focus({preventScroll:true}); }catch(e){} }, 350);
     return null;
@@ -2150,6 +2159,7 @@ function buildMessage(){
     `*طلب حجز جديد - شعيب استوديو*`,
     `نوع التصوير: ${CATEGORIES[activeCategory].icon} ${CATEGORIES[activeCategory].name}`,
     `الاسم: ${name}`,
+    `الهاتف: ${phone}`,
     `تاريخ التصوير: ${date}`,
     `وقت التصوير: ${time}`,
     ...extraLines,
@@ -2200,13 +2210,21 @@ function bookingPayload(){
     categoryKey: activeCategory,
     category: cat.name,
     name: document.getElementById('custName').value.trim(),
+    phone: (document.getElementById('custPhone')?.value || '').trim(),
     date: document.getElementById('custDate').value,
     time: document.getElementById('custTime').value,
     package: selectedPackage ? selectedPackage.name : '',
     services: currentServices().filter(s=>selectedServices[s.id]).map(s=>s.name),
     extras,
     notes: document.getElementById('custNotes').value.trim(),
-    total: +(calcRawTotal() * (1 - rate)).toFixed(3)
+    total: +(calcRawTotal() * (1 - rate)).toFixed(3),
+    // تفاصيل الأسعار ليُنشئ النظام الفاتورة تلقائيًا في ملف العميل
+    items: [
+      ...(selectedPackage ? [{desc: cat.name + ' — ' + selectedPackage.name, qty: 1, unit: +selectedPackage.price || 0}] : []),
+      ...currentServices().filter(s=>selectedServices[s.id]).map(s=>({desc: s.name, qty: s.perUnit ? selectedServices[s.id].qty : 1, unit: +s.price || 0}))
+    ],
+    discountRate: rate,
+    discountCode: rate ? discountInput.value.trim() : ''
   };
   b.key = [b.date, b.time, b.name, b.category, b.total].join('|');   // نفس مفتاح pay.html لمنع التكرار
   return b;
