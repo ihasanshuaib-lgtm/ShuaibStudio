@@ -222,6 +222,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,12,10,0.96);backdrop-fi
 .pr-seg button{border:0;background:var(--surface);color:var(--muted);padding:0.45rem 1rem;font-family:inherit;font-size:0.82rem;cursor:pointer}
 .pr-seg button.on{background:var(--gold);color:#000;font-weight:700}
 .pr-newbtn{width:100%;margin-bottom:1rem;padding:0.8rem;font-size:0.95rem}
+.ps-cl,.ps-ncl{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}.ps-ncl .pr-txt{flex:1 1 140px}
 .pr-sh2{display:flex;flex-wrap:wrap;align-items:center;gap:0.6rem;margin-bottom:0.75rem}
 .pr-dt{background:rgba(201,164,99,0.12);color:var(--gold);border-radius:8px;padding:0.15rem 0.65rem;font-weight:600;font-size:0.78rem}
 .pr-nm{flex:1 1 140px;font-size:1rem;color:var(--white)}
@@ -1038,7 +1039,7 @@ html.locked body>*:not(#gate){display:none !important}
 <!-- PAYROLL -->
 <div class="page" id="page-payroll">
   <div class="section-header">
-    <h2 id="pr-title">Session Costs & Team Payments</h2>
+    <h2 id="pr-title">Photo Sessions & Team Payments</h2>
     <div class="pr-head"><button class="btn-gold" id="pr-repbtn">Report</button></div>
   </div>
   <div class="flt" id="pr-flt"></div>
@@ -1093,7 +1094,7 @@ function save(){
 const T = {
   en:{
     logo:'Shuaib Studio',
-    nav:['Dashboard','Bookings','Invoices','Quotations','Clients','Team','Session Costs','Expenses','Equipment','Reports','Settings'],
+    nav:['Dashboard','Bookings','Invoices','Quotations','Clients','Team','Photo Sessions','Expenses','Equipment','Reports','Settings'],
     langBtn:'عربي',
     heroTag:'Photography & Videography Studio',
     heroTitle:'We Capture <em>Moments</em><br>That Last Forever',
@@ -1127,7 +1128,7 @@ const T = {
   },
   ar:{
     logo:'شعيب استوديو',
-    nav:['لوحة التحكم','الحجوزات','الفواتير','عروض الأسعار','العملاء','فريق العمل','تكاليف الجلسات','المصروفات','المعدات','التقارير','الإعدادات'],
+    nav:['لوحة التحكم','الحجوزات','الفواتير','عروض الأسعار','العملاء','فريق العمل','جلسات التصوير','المصروفات','المعدات','التقارير','الإعدادات'],
     langBtn:'English',
     heroTag:'استوديو تصوير واستوديو فيديوغرافي',
     heroTitle:'نحن نلتقط <em>اللحظات</em><br>التي تدوم للأبد',
@@ -1568,7 +1569,7 @@ function saveClient(){
     var newId=Date.now(); clients.push({ id: newId, ...data });
   }
   save(); hideClientForm(); renderClients(); updateClientPicker();
-  if(typeof newId!=='undefined') BZ.openClient(newId);
+  if(typeof newId!=='undefined'){BZ.ensurePortal(newId);BZ.openClient(newId)}
 }
 
 function deleteClient(id){
@@ -1942,7 +1943,7 @@ const WDEN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const WDF={ar:WDAR,en:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']};
 const L={
 ar:{
- title:'حساب رواتب المصورين',report:'📄 التقرير',cur:'د.ب',
+ title:'جلسات التصوير',report:'📄 التقرير',cur:'د.ب',
  profit:'الربح',yearProfit:'ربح سنة',sProjects:'إجمالي المشاريع',sPay:'قيمة المصورين',sEq:'رسوم المعدات',sSubs:'رسوم الاشتراكات',sFund:'الصندوق الاحتياطي',
  fundNote:'خصم المصورين % يذهب للصندوق من أجورهم ولا يؤثر على الربح.',
  newS:'+ جلسة جديدة',noSess:'لا توجد جلسات بهذا الفلتر.',noName:'جلسة بدون اسم',
@@ -1975,7 +1976,7 @@ ar:{
  calHint:'اضغط على يوم لعرض جلساته.',newDay:'+ جلسة في هذا اليوم',dayEmpty:'لا توجد جلسات في هذا اليوم.',openPay:'فتح في الرواتب',todayBtn:'اليوم',copy:'⧉ نسخ',goCal:'عرض في التقويم'
 },
 en:{
- title:'Photographer Payroll',report:'📄 Report',cur:'BHD',
+ title:'Photo Sessions',report:'📄 Report',cur:'BHD',
  profit:'Profit',yearProfit:'Year profit',sProjects:'Total projects',sPay:'Photographers',sEq:'Equipment fees',sSubs:'Subscription fees',sFund:'Reserve fund',
  fundNote:'The photographer deduction % goes to the fund from their pay and does not affect profit.',
  newS:'+ New session',noSess:'No sessions match this filter.',noName:'Untitled session',
@@ -2032,7 +2033,7 @@ function norm(o){
 let S;try{S=norm(JSON.parse(localStorage.getItem(KEY)))}catch(e){S=norm()}
 const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}syncTouch()};
 let V={y:now.getFullYear(),m:now.getMonth()+1},F={ph:'',pk:'',q:''},REP=null;
-const OPEN=new Set(),EDIT=new Set();
+const OPEN=new Set(),EDIT=new Set();let NCL=null;   // الجلسة التي يُضاف لها عميل جديد الآن
 const SC={y:now.getFullYear(),m:now.getMonth()+1,sel:TD,ph:'',pk:''};
 const ymK=()=>V.y+'-'+pad(V.m);
 const isOn=t=>t.on!==0&&t.on!==false;
@@ -2117,7 +2118,7 @@ function sessCard(s){
     `<div class="pr-sum"><span>${tr('price')} <b>${f3(sessPrice(s))}</b></span><span>${tr('phTotal')} <b>${f3(pay)}</b></span><span>${tr('eqTotal')} <b>${f3(eq)}</b></span><span>${tr('sessNet')} <b class="${pr<0?'pr-neg':'pr-b'}">${f3(pr)}</b></span></div>`+
     `<div class="pr-acts"><button class="btn-sm" data-ed="${s.id}">${tr('edit')}</button><button class="btn-sm" data-dup="${s.id}">${tr('dup')}</button><button class="btn-sm danger" data-ds="${s.id}">${tr('del')}</button></div>`;
   }else{
-    body=cf+`<div class="pr-sh"><label>${tr('sessPrice')}<input type="number" step="any" min="0" data-i="${s.id}" data-f="p" value="${s.p}"></label><label>${tr('pkg')}<select data-pk="${s.id}"><option value="">${tr('noPkg')}</option>${S.pkgs.map(k=>`<option value="${k.id}"${k.id==s.k?' selected':''}>${esc(k.n)}</option>`).join('')}</select></label><label>${tr('date')}<input type="date" data-i="${s.id}" data-f="d" value="${s.d}"></label><label>${tr('time')}<input type="time" data-i="${s.id}" data-f="t" value="${s.t||''}"></label><label>${A_('وقت الانتهاء','End time')}<input type="time" data-i="${s.id}" data-f="te" value="${s.te||''}"></label><label class="grow">${tr('sessName')}<input class="pr-txt" data-i="${s.id}" data-f="n" value="${esc(s.n)}"></label><label class="grow">${A_('المكان','Location')}<input class="pr-txt" data-i="${s.id}" data-f="loc" value="${esc(s.loc||'')}"></label></div>
+    body=cf+`<div class="pr-sh"><label>${tr('sessPrice')}<input type="number" step="any" min="0" data-i="${s.id}" data-f="p" value="${s.p}"></label><label>${tr('pkg')}<select data-pk="${s.id}"><option value="">${tr('noPkg')}</option>${S.pkgs.map(k=>`<option value="${k.id}"${k.id==s.k?' selected':''}>${esc(k.n)}</option>`).join('')}</select></label><label>${tr('date')}<input type="date" data-i="${s.id}" data-f="d" value="${s.d}"></label><label>${tr('time')}<input type="time" data-i="${s.id}" data-f="t" value="${s.t||''}"></label><label>${A_('وقت الانتهاء','End time')}<input type="time" data-i="${s.id}" data-f="te" value="${s.te||''}"></label><label class="grow">${tr('sessName')}<input class="pr-txt" data-i="${s.id}" data-f="n" value="${esc(s.n)}"></label><div class="grow ps-cl">${typeof clients!=='undefined'&&clients.length?`<select data-cpick="${s.id}"><option value="">— ${A_('اختر عميلًا محفوظًا','Pick a saved client')} —</option>${clients.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select>`:''}<button type="button" class="btn-sm" data-ncl="${s.id}">${A_('+ إضافة عميل جديد','+ Add new client')}</button></div>${NCL===s.id?`<div class="grow ps-ncl"><input class="pr-txt" id="ncl-name" placeholder="${A_('اسم العميل','Client name')}"><input class="pr-txt" id="ncl-phone" type="tel" placeholder="${A_('رقم الهاتف (اختياري)','Phone (optional)')}"><button type="button" class="btn-sm" data-nclsave="${s.id}">${A_('حفظ العميل','Save client')}</button><button type="button" class="btn-sm" data-nclx="1">${A_('إلغاء','Cancel')}</button></div>`:''}<label class="grow">${A_('المكان','Location')}<input class="pr-txt" data-i="${s.id}" data-f="loc" value="${esc(s.loc||'')}"></label></div>
 <h4 class="ps-h4">🎬 ${A_('العميل والتسليم (يظهر في بوابة العميل)','Client & delivery (shown in the client portal)')}</h4><div class="pr-sh"><label class="grow">${A_('العميل','Client')}<select data-i="${s.id}" data-f="cid">${BZ.clientOpts(s)}</select></label><label>${A_('مرحلة التسليم','Delivery stage')}<select data-i="${s.id}" data-f="dv">${BZ.stageOpts(s)}</select></label><label>${A_('موعد التسليم','Delivery date')}<input type="date" data-i="${s.id}" data-f="dvd" value="${esc(s.dvd||'')}"></label><label class="grow">${A_('رابط الصور والفيديوهات (https://…)','Photos & videos link (https://…)')}<input class="pr-txt" type="url" inputmode="url" placeholder="https://" data-i="${s.id}" data-f="gal" value="${esc(s.gal||'')}"></label></div>
 <div class="pr-lines">${s.lines.map(l=>`<div class="pr-ln"><select data-i="${s.id}" data-l="${l.id}" data-lf="r">${roleOpts(l.r)}</select><select data-i="${s.id}" data-l="${l.id}" data-lf="p">${persOpts(l.p,tr('pickPh'))}</select><input type="number" step="any" min="0" data-i="${s.id}" data-l="${l.id}" data-lf="a" value="${l.a}" aria-label="${tr('amount')}"><button class="pr-x" data-dl="${s.id}" data-l="${l.id}" aria-label="${tr('del')}">×</button></div>`).join('')}</div>
 <div class="pr-adds">${S.roles.map(r=>`<button data-al="${s.id}" data-role="${r.id}">+ ${esc(r.n)}<b>${f3(rateOf(s.k,r.id))}</b></button>`).join('')}</div>
@@ -2359,6 +2360,7 @@ function bind(){
     else if(d.xi){const x=(ses(d.i).x||[]).find(q=>q.id==d.xi);if(x){x[d.xf]=d.xf==='a'?(v===''?'':+v):v;persist();viewMain()}}
     else if(d.l&&d.lf=='r'){const l=ln(ses(d.i),d.l),r=S.roles.find(x=>x.id==v);l.r=v;if(r){l.a=rateOf(ses(d.i).k,v);if(r.p)l.p=r.p}persist();render()}
     else if(d.l&&d.lf=='p'){ln(ses(d.i),d.l).p=v;persist();render()}
+    else if(d.cpick){const c=clients.find(x=>String(x.id)===v),s=ses(d.cpick);if(c&&s){s.n=c.name;s.cid=String(c.id);persist();render()}}
     else if(d.pk){const s=ses(d.pk),o=s.k,pk=S.pkgs.find(x=>x.id==v);s.lines.forEach(l=>{if((+l.a||0)==rateOf(o,l.r))l.a=rateOf(v,l.r)});s.k=v;if(pk&&pk.price!==''&&pk.price!=null&&s.p==='')s.p=+pk.price;persist();render()}
     else if(d.kn||d.rn||d.eqn||d.sbn){render()}
     else if(d.i&&(d.f=='t'||d.f=='te')){viewMain();renderSchedule()}
@@ -2372,6 +2374,14 @@ function bind(){
     else if(b.id=='pr-freset'){F={ph:'',pk:'',q:''};render()}
     else if(b.id=='pr-repbtn')showRep();
     else if(b.id=='pr-tclose'){G('pr-toast').hidden=true}
+    else if(d.ncl){NCL=NCL===d.ncl?null:d.ncl;viewMain();const i=G('ncl-name');if(i)i.focus()}
+    else if(d.nclx){NCL=null;viewMain()}
+    else if(d.nclsave){
+      const nm=(G('ncl-name').value||'').trim();if(!nm){G('ncl-name').focus();return}
+      const ph=(G('ncl-phone').value||'').trim(),s=ses(d.nclsave);
+      let c=clients.find(x=>x.name.trim().toLowerCase()===nm.toLowerCase());
+      if(!c){c={id:Date.now(),name:nm,custid:'',phone:ph,iban:'',addr:'',email:'',company:'',notes:''};clients.push(c);save();try{renderClients();updateClientPicker();BZ.ensurePortal(c.id)}catch(_){}}
+      if(s){s.n=c.name;s.cid=String(c.id)}NCL=null;persist();render()}
     else if(d.tg){const id=d.tg;if(EDIT.has(id)){EDIT.delete(id);OPEN.delete(id)}else OPEN.has(id)?OPEN.delete(id):OPEN.add(id);viewMain()}
     else if(d.ps){const Ls=shown(agg(ymK()).L);Ls.forEach(s=>d.ps=='open'?OPEN.add(s.id):(OPEN.delete(s.id),EDIT.delete(s.id)));viewMain()}
     else if(d.eqt){const s=ses(d.eqt);s.eq=s.eq||[];const i=s.eq.indexOf(d.eid);i<0?s.eq.push(d.eid):s.eq.splice(i,1);persist();viewMain()}
@@ -3083,7 +3093,7 @@ function renderExpenses(){
   const e=EE||{date:td,cat:'operations',sub:'Internet',amt:'',note:''};
   R.innerHTML=`<div class="section-header"><h2>${A_('المصروفات والتسويق','Expenses & Marketing')}</h2><button class="btn-outline" data-bz="ex-csv">⬇ ${A_('تصدير Excel','Export CSV')}</button></div>
   <div class="bz-grid">${kpi(A_('مصروفات الشهر (مسجلة)','Logged expenses — month'),f3(cm.exp),A_('كل التكاليف: ','All costs: ')+f3(cm.total))}${kpi(A_('مصروفات السنة (مسجلة)','Logged expenses — year'),f3(cy.exp),A_('كل التكاليف: ','All costs: ')+f3(cy.total))}${kpi(A_('متوسط شهري','Monthly average'),f3(cy.exp/mOn))}${kpi(A_('التسويق هذه السنة','Marketing this year'),f3(cy.byCat.marketing||0),cy.exp?pct((cy.byCat.marketing||0)/cy.exp)+A_(' من المصروفات',' of expenses'):'')}</div>
-  <p class="pr-hint">${A_('«كل التكاليف» = المصروفات المسجلة هنا + أجور المصورين + رسوم المعدات + الاشتراكات من صفحة تكاليف الجلسات. لا تسجّل الاشتراكات هنا مرة ثانية.','“All costs” = expenses logged here + photographer pay + equipment fees + subscriptions from Session Costs. Don\'t log those subscriptions here again.')}</p>
+  <p class="pr-hint">${A_('«كل التكاليف» = المصروفات المسجلة هنا + أجور المصورين + رسوم المعدات + الاشتراكات من صفحة جلسات التصوير. لا تسجّل الاشتراكات هنا مرة ثانية.','“All costs” = expenses logged here + photographer pay + equipment fees + subscriptions from Session Costs. Don\'t log those subscriptions here again.')}</p>
   <div class="card" id="ex-form"><div class="card-title">${EE&&EE.id?A_('تعديل مصروف','Edit expense'):A_('إضافة مصروف','Add expense')}</div>
    <div class="bz-form"><label>${A_('التاريخ','Date')}<input class="bz-in" type="date" id="ef-date" value="${escH(e.date)}"></label>
    <label>${A_('الفئة','Category')}<select class="bz-in" id="ef-cat">${Object.keys(EXC).map(k=>`<option value="${k}"${k===e.cat?' selected':''}>${catL(k)}</option>`).join('')}</select></label>
@@ -3160,7 +3170,7 @@ function eqAdvice(){
   B.equipment.filter(x=>x.status!=='retired').forEach(x=>{const s=eqStats(x);
     if(s.u12>=5&&s.usePct>=0.7)out.push({k:'buy',t:A_(`«${escH(x.name)}» استُخدمت في ${pct(s.usePct)} من المشاريع خلال 12 شهرًا — فكّر بشراء وحدة إضافية.`,`“${escH(x.name)}” was used in ${pct(s.usePct)} of projects in the last 12 months. Consider purchasing another unit.`)});
     else if(s.link&&(!s.last||s.last<addDays(td,-180))&&(!x.date||x.date<addDays(td,-180)))out.push({k:'sell',t:A_(`«${escH(x.name)}» لم تُستخدم منذ 6 أشهر — فكّر ببيعها أو تأجيرها (مثلًا عبر Shuaib Gear).`,`“${escH(x.name)}” hasn't been used in 6 months — consider selling or renting it out (e.g. via Shuaib Gear).`)});
-    if(s.eta!=null&&s.eta>36)out.push({k:'slow',t:A_(`استرداد قيمة «${escH(x.name)}» يحتاج ~${s.eta} شهرًا بالمعدل الحالي — ارفع رسم الاستخدام في تكاليف الجلسات.`,`Recovering “${escH(x.name)}” will take ~${s.eta} months at the current rate — raise its per-use fee in Session Costs.`)});
+    if(s.eta!=null&&s.eta>36)out.push({k:'slow',t:A_(`استرداد قيمة «${escH(x.name)}» يحتاج ~${s.eta} شهرًا بالمعدل الحالي — ارفع رسم الاستخدام في جلسات التصوير.`,`Recovering “${escH(x.name)}” will take ~${s.eta} months at the current rate — raise its per-use fee in Session Costs.`)});
   });
   return out;
 }
@@ -3184,7 +3194,7 @@ function renderEquipment(){
    <label>${A_('مرتبطة بمعدة الجلسات','Linked session equipment')}<select class="bz-in" id="eqf-link"><option value="">${A_('تلقائي (بنفس الاسم)','Auto (same name)')}</option>${S.equip.map(pe=>`<option value="${escH(pe.id)}"${pe.id===e.link?' selected':''}>${escH(pe.n)} — ${f3(pe.f)}</option>`).join('')}</select></label>
    <label>${A_('ملاحظات','Notes')}<input class="bz-in" id="eqf-notes" value="${escH(e.notes||'')}"></label></div>
    <div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn-gold" data-bz="eq-save">${EQE&&EQE.id?A_('حفظ التعديل','Save changes'):A_('+ إضافة','+ Add')}</button>${EQE&&EQE.id?`<button class="btn-outline" data-bz="eq-cancel">${A_('إلغاء','Cancel')}</button>`:''}</div>
-   <p class="pr-hint">${A_('الاستخدام والاسترداد يُحسبان من المعدات التي تختارها داخل كل جلسة في «تكاليف الجلسات» (رسم الاستخدام × عدد الجلسات).','Usage and recovery come from the equipment you pick inside each session in Session Costs (per-use fee × sessions).')}</p></div>
+   <p class="pr-hint">${A_('الاستخدام والاسترداد يُحسبان من المعدات التي تختارها داخل كل جلسة في «جلسات التصوير» (رسم الاستخدام × عدد الجلسات).','Usage and recovery come from the equipment you pick inside each session in Session Costs (per-use fee × sessions).')}</p></div>
   ${card(A_('تقرير المعدات (الأكثر استخدامًا أولًا)','Equipment report (most used first)'),`<div style="overflow-x:auto"><table class="bz-table" style="min-width:760px"><thead><tr><th>${A_('المعدة','Item')}</th><th>${A_('الحالة','Status')}</th><th class="num">${A_('الاستخدام','Uses')}</th><th class="num">${A_('من المشاريع (12ش)','Of projects (12m)')}</th><th>${A_('آخر استخدام','Last used')}</th><th class="num">${A_('إيراد المشاريع','Project revenue')}</th><th class="num">${A_('المسترد','Recovered')}</th><th>${A_('العائد على الشراء','ROI')}</th><th class="num">${A_('المتبقي','Remaining')}</th><th></th></tr></thead><tbody>${list.map(({x,s},i)=>`<tr><td><b>${escH(x.name)}</b>${i===0&&s.used?' <small class="pr-pill">'+A_('الأكثر','Top')+'</small>':''}${i===list.length-1&&list.length>2?' <small class="pr-hint">'+A_('الأقل','Least')+'</small>':''}<br><small class="pr-hint">${lk(EQC,x.cat)}${x.serial?' · SN '+escH(x.serial):''}${s.link?'':' · ⚠ '+A_('غير مرتبطة','not linked')}</small></td><td>${lk(EQS,x.status)}</td><td class="num">${s.used}</td><td class="num">${pct(s.usePct)}</td><td style="white-space:nowrap">${s.last?escH(s.last):'—'}</td><td class="num">${f3(s.rev)}</td><td class="num">${f3(s.income)}</td><td style="min-width:110px"><div class="bz-hbar" style="grid-template-columns:1fr auto;margin:0"><div><i style="width:${Math.min(100,s.roi*100).toFixed(1)}%"></i></div><b>${pct(s.roi)}</b></div></td><td class="num">${s.remain?f3(s.remain)+(s.eta?`<br><small class="pr-hint">~${s.eta} ${A_('شهر','mo')}</small>`:''):'✓'}</td><td style="white-space:nowrap"><button class="btn-sm" data-bz="eq-edit" data-id="${escH(x.id)}">✎</button> <button class="btn-sm danger" data-bz="eq-del" data-id="${escH(x.id)}">✕</button></td></tr>`).join('')||emptyRow(10,A_('لا توجد معدات بعد — أضفها أو استوردها من قائمة معدات الجلسات.','No equipment yet — add it or import it from the session equipment list.'))}</tbody></table></div>`)}`;
 }
 function saveEquip(){
@@ -3250,7 +3260,7 @@ function renderSettings(){
   ${card('🧾 '+A_('الضريبة والترقيم','Tax & numbering'),`<label class="ck" style="display:flex;gap:.5rem;align-items:center;margin-bottom:.8rem;font-weight:600"><input type="checkbox" data-bc="vatOn"${C.vatOn?' checked':''}> ${A_('تفعيل ضريبة القيمة المضافة على الفواتير وعروض الأسعار','Charge VAT on invoices & quotations')}</label><div class="bz-form">${inp('vat',A_('نسبة الضريبة %','VAT rate %'),'number',' min="0" step="0.1"')}<label>${A_('العملة','Currency')}<input class="bz-in" value="BHD" disabled></label>${inp('invPrefix',A_('بادئة رقم الفاتورة','Invoice prefix'))}${inp('quotePrefix',A_('بادئة رقم عرض السعر','Quotation prefix'))}${inp('dueDays',A_('مهلة السداد (أيام)','Payment terms (days)'),'number',' min="0"')}${inp('validDays',A_('صلاحية عرض السعر (أيام)','Quotation validity (days)'),'number',' min="0"')}</div><p class="pr-hint">${A_('في البحرين التسجيل في الضريبة إلزامي عند تجاوز الإيرادات السنوية 37,500 د.ب. فعّلها فقط إذا كنت مسجّلًا، وأدخل رقم التسجيل ليظهر «TAX INVOICE».','In Bahrain VAT registration is mandatory above BHD 37,500 annual revenue. Enable it only if you are registered, and enter the registration number so invoices show “TAX INVOICE”.')}</p>`)}
   ${card('🎯 '+A_('الأهداف والحساب','Targets & calculations'),`<div class="bz-form">${sel('targetBasis',A_('الهدف مبني على','Target is based on'),[['profit',A_('الربح','Profit')],['revenue',A_('الإيراد','Revenue')]])}${inp('monthTarget',A_('الهدف الشهري (د.ب)','Monthly target (BHD)'),'number',' min="0" step="any"')}${inp('yearTarget',A_('الهدف السنوي (د.ب)','Annual target (BHD)'),'number',' min="0" step="any"')}${sel('revSrc',A_('مصدر الإيرادات في التقارير','Revenue source for reports'),[['invoices',A_('الفواتير','Invoices')],['sessions',A_('أسعار الجلسات','Session prices')]])}${inp('workDays',A_('أيام العمل في الأسبوع (للإشغال)','Working days / week (occupancy)'),'number',' min="1" max="7"')}</div><p class="pr-hint">${A_('اختر مصدرًا واحدًا للإيرادات حتى لا تُحسب الجلسة مرتين (مرة كفاتورة ومرة كجلسة).','Pick one revenue source so a job isn\'t counted twice (as an invoice and as a session).')}</p>`)}
   ${card('🎨 '+A_('المظهر واللغة','Appearance & language'),`<div class="bz-form">${sel('theme',A_('المظهر','Theme'),[['auto',A_('تلقائي (حسب الجهاز)','Auto (device)')],['light',A_('فاتح','Light')],['dark',A_('داكن','Dark')]])}<label>${A_('اللغة','Language')}<select class="bz-in" data-act="lang"><option value="ar"${lang==='ar'?' selected':''}>العربية</option><option value="en"${lang==='en'?' selected':''}>English</option></select></label></div>`)}
-  ${card('🛍 '+A_('الخدمات والأسعار','Services & prices'),`<p class="pr-hint">${A_('هذه القائمة تظهر في الفواتير وعروض الأسعار. الباقات وأسعار أدوار الفريق في «تكاليف الجلسات ← الفريق والإعدادات».','This list is used by invoices and quotations. Packages and team role rates live in Session Costs → Team & settings.')}</p>${SERVICES.map((s,i)=>`<div class="svc-ed"><input value="${escH(s.icon||'')}" data-sv="${i}" data-k="icon" aria-label="icon" style="text-align:center"><input value="${escH(s.ar)}" data-sv="${i}" data-k="ar" placeholder="الاسم بالعربي"><input class="hide-sm" value="${escH(s.en)}" data-sv="${i}" data-k="en" placeholder="English name"><input class="hide-sm" value="${escH(s.type)}" data-sv="${i}" data-k="type" placeholder="Type"><input type="number" step="0.001" min="0" value="${+s.unit||0}" data-sv="${i}" data-k="unit" aria-label="${A_('السعر','Price')}"><button type="button" class="remove-row" data-bz="st-svcdel" data-i="${i}" aria-label="${A_('حذف','Delete')}">✕</button></div>`).join('')}<button type="button" class="btn-sm" data-bz="st-svcadd">+ ${A_('خدمة جديدة','New service')}</button>`)}
+  ${card('🛍 '+A_('الخدمات والأسعار','Services & prices'),`<p class="pr-hint">${A_('هذه القائمة تظهر في الفواتير وعروض الأسعار. الباقات وأسعار أدوار الفريق في «جلسات التصوير ← الفريق والإعدادات».','This list is used by invoices and quotations. Packages and team role rates live in Session Costs → Team & settings.')}</p>${SERVICES.map((s,i)=>`<div class="svc-ed"><input value="${escH(s.icon||'')}" data-sv="${i}" data-k="icon" aria-label="icon" style="text-align:center"><input value="${escH(s.ar)}" data-sv="${i}" data-k="ar" placeholder="الاسم بالعربي"><input class="hide-sm" value="${escH(s.en)}" data-sv="${i}" data-k="en" placeholder="English name"><input class="hide-sm" value="${escH(s.type)}" data-sv="${i}" data-k="type" placeholder="Type"><input type="number" step="0.001" min="0" value="${+s.unit||0}" data-sv="${i}" data-k="unit" aria-label="${A_('السعر','Price')}"><button type="button" class="remove-row" data-bz="st-svcdel" data-i="${i}" aria-label="${A_('حذف','Delete')}">✕</button></div>`).join('')}<button type="button" class="btn-sm" data-bz="st-svcadd">+ ${A_('خدمة جديدة','New service')}</button>`)}
   ${card('🔐 '+A_('الحسابات والصلاحيات','Accounts & roles'),`<p class="pr-hint">${A_('لوحة التحكم هذه لحساب صاحب الاستوديو فقط، والمصورون يدخلون صفحة الموظفين (staff.html) ويرون جدولهم ومهامهم بدون الأسعار. كل البيانات تُحفظ سحابيًا تلقائيًا، ويمكنك تنزيل نسخة احتياطية من لوحة التحكم.','This dashboard is for the studio owner account only; photographers sign in to the staff page (staff.html) and see their schedule and tasks without prices. All data syncs to the cloud automatically, and you can download a backup from the dashboard.')}</p>`)}`;
 }
 
@@ -3260,7 +3270,7 @@ const STG=['booked','shot','editing','ready','delivered'];
 const stL=k=>({booked:A_('محجوز','Booked'),shot:A_('تم التصوير','Shot'),editing:A_('التعديل والمونتاج','Editing'),ready:A_('جاهز للتسليم','Ready'),delivered:A_('تم التسليم','Delivered')})[k]||k;
 const dvStage=s=>STG.includes(s.dv)?s.dv:((s.d||'')>todayISO()?'booked':'shot');
 const safeUrl=u=>/^https:\/\/[^\s"'<>]+$/i.test(String(u||'').trim())?String(u).trim():'';
-const pinOf=c=>{const d=String(c&&c.phone||'').replace(/\D/g,'');return d.length>=4?d.slice(-4):''};
+const pinOf=c=>'';   // رمز الدخول مُعطَّل بطلب المالك
 const newToken=()=>{const a=new Uint8Array(18);crypto.getRandomValues(a);return btoa(String.fromCharCode(...a)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
 const portalUrl=t=>{const u=new URL('portal.html',location.href);u.search='';u.hash='c='+t;return u.href};
 function clientOpts(s){const a=sessClient({...s,cid:''});return `<option value="">${A_('تلقائي','Auto')}${a?': '+escH(a.name):' —'}</option>`+clients.map(c=>`<option value="${c.id}"${String(c.id)===String(s.cid||'')?' selected':''}>${escH(c.name)}</option>`).join('')}
@@ -3470,6 +3480,7 @@ function openClient(id){
   const nb=document.querySelector('.nav-links button[data-page="clients"]');if(nb)nb.classList.add('active');
 }
 const portalPanel=id=>openClient(id);
+function ensurePortal(id){const c=clients.find(x=>x.id===+id);if(c&&!(c.portal&&c.portal.on&&c.portal.token)){c.portal=Object.assign(c.portal||{},{on:true,token:newToken(),pin:false,created:todayISO()});save();pushPortals()}}
 const hubSessions=c=>PR.data().sessions.filter(s=>(sessClient(s)||{}).id===c.id).sort((a,b)=>((b.d||'')+(b.t||'')).localeCompare((a.d||'')+(a.t||'')));
 const hubQuotes=c=>{const low=String(c.name||'').trim().toLowerCase();return B.quotes.filter(q=>q.clientId===c.id||(!q.clientId&&String(q.client||'').trim().toLowerCase()===low)).sort((a,b)=>(b.date||'').localeCompare(a.date||''))};
 const stripN=(c,n)=>{const p=String(n||'').split(' — ');return p.length>1&&p[0].trim().toLowerCase()===String(c.name||'').trim().toLowerCase()?p.slice(1).join(' — '):String(n||'')};
@@ -3508,6 +3519,8 @@ function renderHub(){
     ${lbl(A_('التاريخ','Date'),`<input class="bz-in" type="date" data-hs="${escH(x.id)}" data-hk="d" value="${escH(x.d||'')}">`)}
     ${lbl(A_('الوقت','Time'),`<input class="bz-in" type="time" data-hs="${escH(x.id)}" data-hk="t" value="${escH(x.t||'')}">`)}
     ${lbl(A_('المكان','Location'),`<input class="bz-in" data-hs="${escH(x.id)}" data-hk="loc" value="${escH(x.loc||'')}">`)}
+    ${lbl(A_('سعر الجلسة (د.ب)','Session price (BHD)'),`<input class="bz-in" type="number" step="any" min="0" data-hs="${escH(x.id)}" data-hk="p" value="${escH(x.p===''||x.p==null?'':x.p)}">`)}
+    ${lbl(A_('الباقة','Package'),`<select class="bz-in" data-hs="${escH(x.id)}" data-hk="k"><option value="">${A_('بدون باقة','No package')}</option>${PR.data().pkgs.map(k=>`<option value="${escH(k.id)}"${k.id==x.k?' selected':''}>${escH(k.n)}</option>`).join('')}</select>`)}
     ${lbl(A_('مرحلة التسليم','Delivery stage'),`<select class="bz-in" data-hs="${escH(x.id)}" data-hk="dv">${stageOpts(x)}</select>`)}
     ${lbl(A_('موعد التسليم','Delivery date'),`<input class="bz-in" type="date" data-hs="${escH(x.id)}" data-hk="dvd" value="${escH(x.dvd||'')}">`)}
     ${lbl(A_('رابط الصور والفيديوهات (يظهر للعميل)','Photos & videos link (shown to client)'),`<input class="bz-in" type="url" inputmode="url" placeholder="https://" data-hs="${escH(x.id)}" data-hk="gal" value="${escH(x.gal||'')}" style="direction:ltr">`,true)}</div>
@@ -3537,7 +3550,6 @@ function renderHub(){
     :`<label style="display:flex;flex-direction:column;gap:.3rem;font-size:.74rem;color:var(--muted);font-weight:600">${A_('الرابط','Link')}<input class="bz-in" readonly value="${escH(url)}" onclick="this.select()" style="direction:ltr"></label>
     <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.7rem 0"><button class="btn-sm" data-bz="pt-copy" data-id="${c.id}">⧉ ${A_('نسخ','Copy')}</button><button class="btn-sm wa-btn" data-bz="pt-wa" data-id="${c.id}">💬 ${A_('إرسال واتساب','Send on WhatsApp')}</button><button class="btn-sm" data-bz="pt-open" data-id="${c.id}">👁 ${A_('معاينة','Preview')}</button></div>
     <div style="display:flex;gap:.8rem;align-items:center;margin:.6rem 0 .8rem;padding:.7rem;border:1px dashed var(--border);border-radius:14px">${c.thumb?`<img src="${escH(c.thumb)}" alt="" style="width:64px;height:64px;border-radius:12px;object-fit:cover;flex-shrink:0">`:`<div style="width:64px;height:64px;border-radius:12px;background:var(--off);display:grid;place-items:center;font-size:24px;flex-shrink:0">🖼</div>`}<div style="flex:1;min-width:0"><b style="color:var(--white)">${A_('صورة العميل','Client photo')}</b><div class="pr-hint" style="margin:0">${A_('تظهر كبيرة أعلى صفحة العميل','Shown large at the top of the client page')}</div></div><label class="btn-sm" style="cursor:pointer;white-space:nowrap">⬆ ${c.thumb?A_('تغيير','Change'):A_('رفع صورة','Upload')}<input type="file" accept="image/*" hidden data-pt-photo="${c.id}"></label>${c.thumb?`<button class="btn-sm danger" data-bz="pt-nophoto" data-id="${c.id}" aria-label="${A_('حذف الصورة','Remove photo')}">✕</button>`:''}</div>
-    <label style="display:flex;gap:.5rem;align-items:center;font-size:.86rem;margin:.4rem 0"><input type="checkbox" data-bz="pt-pin" data-id="${c.id}"${P.pin&&pin?' checked':''}${pin?'':' disabled'}> ${A_('طلب رمز دخول: آخر 4 أرقام من هاتف العميل','Ask for a PIN: last 4 digits of the client\'s phone')} ${pin?`<b>(${pin})</b>`:`<small class="pr-hint">${A_('— أضف رقم الهاتف أولًا','— add a phone number first')}</small>`}</label>
     <p class="pr-hint" id="pt-seen">${A_('آخر فتح','Last opened')}: …</p><p class="pr-hint">${sync}</p>
     <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--border)"><button class="btn-sm" data-bz="pt-regen" data-id="${c.id}">↻ ${A_('رابط جديد (يلغي القديم)','New link (revokes old)')}</button><button class="btn-sm danger" data-bz="pt-off" data-id="${c.id}">⏻ ${A_('إيقاف البوابة','Turn off portal')}</button></div>`)
     +`<p class="pr-hint" style="margin-top:.9rem">🔒 ${A_('لا يرى العميل: أجور الفريق، التكاليف، الأرباح، المسودات، أو أي عميل آخر.','Hidden from the client: team pay, costs, profit, drafts and other clients.')}</p></section>`;
@@ -3570,11 +3582,12 @@ document.addEventListener('input',e=>{
   if(d.hc!==undefined){const c=hubClient();if(!c)return;c[d.hc]=t.value;if(d.hc==='name'){const n=G('hub-name');if(n)n.textContent=t.value}
     clearTimeout(hubT);hubT=setTimeout(()=>{save();note(A_('✓ تم الحفظ','✓ Saved'))},700);return}
   if(d.hs){const s=PR.data().sessions.find(x=>x.id===d.hs),c=hubClient();if(!s||!c)return;
-    if(d.hk==='title')s.n=c.name+' — '+t.value;else s[d.hk]=t.value;s.cid=String(c.id);PR.persist()}
+    if(d.hk==='title')s.n=c.name+' — '+t.value;else if(d.hk==='p')s.p=t.value===''?'':+t.value;else s[d.hk]=t.value;s.cid=String(c.id);PR.persist()}
 });
 document.addEventListener('change',e=>{
   const t=e.target,d=t.dataset;if(!d)return;
-  if(d.hs&&(d.hk==='dv'||d.hk==='d'||d.hk==='t'||d.hk==='gal'))renderHub();
+  if(d.hs&&d.hk==='k'){const s=PR.data().sessions.find(x=>x.id===d.hs),pk=PR.data().pkgs.find(x=>x.id==t.value);if(s){s.k=t.value;if(pk&&pk.price!==''&&pk.price!=null&&(s.p===''||s.p==null||!+s.p))s.p=+pk.price;PR.persist();renderHub()}}
+  else if(d.hs&&(d.hk==='dv'||d.hk==='d'||d.hk==='t'||d.hk==='gal'))renderHub();
   else if(d.hc==='phone')renderHub();
   else if(d.hq){const q=B.quotes.find(x=>x.id===d.hq);if(q){q.status=t.value;persist();renderHub()}}
 });
@@ -3693,7 +3706,7 @@ document.addEventListener('change',e=>{
   if(d.bc==='theme')applyTheme();
 });
 
-return{pvCleanup,fromBooking,bookingBanner,openClient,markRet,clearRet,back,pushPortals,pullPortal,portalPanel,portalDrop,clientOpts,stageOpts,dvLine,cfg,vatOf,dueFrom,applyTheme,toggleTheme,applyLang,renderPage,renderHome,newQuote,editQuote,viewQuote,waQuote,toInvoice,advisor};
+return{ensurePortal,pvCleanup,fromBooking,bookingBanner,openClient,markRet,clearRet,back,pushPortals,pullPortal,portalPanel,portalDrop,clientOpts,stageOpts,dvLine,cfg,vatOf,dueFrom,applyTheme,toggleTheme,applyLang,renderPage,renderHome,newQuote,editQuote,viewQuote,waQuote,toInvoice,advisor};
 })();
 
 // ── INIT ─────────────────────────────────────────────
