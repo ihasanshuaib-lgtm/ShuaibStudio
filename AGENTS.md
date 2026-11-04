@@ -492,4 +492,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-11-04** — **معرض «Flow» (الافتراضي الآن)** في `index.html`: وضع جديد بأسلوب Cover Flow بإطارات بولارويد بيضاء — الصورة الوسطى كبيرة والجانبية أصغر خلفها (حتى 3 على كل جانب) وتحتها شريط أبيض بعبارة «شعيب استوديو» للصورة النشطة. تبويب `Flow` أول التبويبات و`gMode='flow'` افتراضيًا، والأوضاع الأربعة السابقة (Helix/Barrel/Ring/Sphere) باقية. الفئة `.gallery.flow` تضبط الشكل، و`galleryMeasure()` يحسب حجمًا أعرض له، والسحب/التكبير بالضغط/الأسهم تعمل كالسابق. جُرّب بلقطة شاشة في Chrome.
 
+- **2026-11-04** — **معرض Flow انتقل من صفحة الحجز إلى بوابة العميل فقط**: أُعيد `index.html` إلى نسخته القديمة (المعرض ثلاثي الأبعاد بأوضاعه الأربعة، الافتراضي Barrel) وأُلغي بند «معرض Flow الافتراضي» السابق. في `portal.html` صارت صور «المعاينة» تُعرض بمعرض Flow بإطارات بولارويد بيضاء (الوسطى كبيرة والجانبية أصغر خلفها) بدل الشبكة `.pvg`: أسهم، سحب/سوايب، ضغطة على جانبية تجعلها الوسطى، وضغطة على الوسطى تفتح العارض الكامل. الدوال `cfStyle/cfSet`، الفئات `.cf/.cf-c/.cf-n`. جُرّب بلقطة شاشة لنموذج معزول لا للبوابة الحية.
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
