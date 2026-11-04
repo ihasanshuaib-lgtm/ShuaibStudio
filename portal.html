@@ -521,33 +521,31 @@ document.addEventListener('keydown',e=>{const el=$('lb');if(!el||el.hidden)retur
 const loadImg=src=>new Promise((res,rej)=>{const i=new Image();i.crossOrigin='anonymous';i.onload=()=>res(i);i.onerror=rej;i.src=src});
 function rr(x,X,Y,W,H,R){x.beginPath();x.moveTo(X+R,Y);x.arcTo(X+W,Y,X+W,Y+H,R);x.arcTo(X+W,Y+H,X,Y+H,R);x.arcTo(X,Y+H,X,Y,R);x.arcTo(X,Y,X+W,Y,R);x.closePath()}
 async function makeStory(s,i){
-  const n=s.pv.n.filter(okId),img=await loadImg(pvSrc(s.pv,n[i%n.length]));
+  // ستوري بتصميم راقٍ: 3 صور متتالية (تبدأ من الصورة i) في إطارات متراصّة على خلفية فاتحة، وعبارة الحمد على الصورة الوسطى
+  const n=s.pv.n.filter(okId),imgs=await Promise.all([0,1,2].map(k=>loadImg(pvSrc(s.pv,n[(i+k)%n.length]))));
   try{await document.fonts.ready}catch(e){}
   const W=1080,H=1920,cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
-  const iw=img.naturalWidth,ih=img.naturalHeight;
-  // خلفية مموّهة من الصورة نفسها (تصغير ثم تكبير = تمويه يعمل على كل الجوالات)
-  const sm=document.createElement('canvas');sm.width=27;sm.height=48;const sx=sm.getContext('2d'),sc=Math.max(27/iw,48/ih);
-  sx.drawImage(img,(27-iw*sc)/2,(48-ih*sc)/2,iw*sc,ih*sc);
-  x.imageSmoothingEnabled=true;x.imageSmoothingQuality='high';x.drawImage(sm,0,0,W,H);
-  x.fillStyle='rgba(18,14,11,.30)';x.fillRect(0,0,W,H);
-  const g=x.createLinearGradient(0,H*0.55,0,H);g.addColorStop(0,'rgba(18,14,11,0)');g.addColorStop(1,'rgba(18,14,11,.62)');x.fillStyle=g;x.fillRect(0,0,W,H);
-  // الصورة في المنتصف بإطار ناعم
-  const mw=880,mh=1080,k=Math.min(mw/iw,mh/ih),pw=Math.round(iw*k),ph=Math.round(ih*k),px=(W-pw)/2,py=Math.round(Math.max(255,(H-(ph+330))/2));
-  x.save();x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=70;x.shadowOffsetY=24;rr(x,px,py,pw,ph,38);x.fillStyle='#000';x.fill();x.restore();
-  x.save();rr(x,px,py,pw,ph,38);x.clip();x.drawImage(img,px,py,pw,ph);x.restore();
-  x.lineWidth=6;x.strokeStyle='rgba(255,255,255,.85)';rr(x,px,py,pw,ph,38);x.stroke();
-  // النصوص
-  x.textAlign='center';x.direction=lang==='ar'?'rtl':'ltr';x.fillStyle='rgba(255,255,255,.92)';
-  x.direction='rtl';x.font='600 46px "IBM Plex Sans Arabic", Tajawal, sans-serif';x.fillText('الحمدلله الذي بنعمته تتم الصالحات',W/2,Math.max(150,py-70));x.direction=lang==='ar'?'rtl':'ltr';
-  const by=py+ph+120;
-  x.shadowColor='rgba(0,0,0,.35)';x.shadowBlur=18;
-  x.fillStyle='#fff';x.font='800 78px Tajawal, sans-serif';x.fillText(D.first||D.name||'',W/2,by);
-  x.font='500 40px Tajawal, sans-serif';x.fillStyle='rgba(255,255,255,.88)';x.fillText([s.n||s.pk||'',fD(s.d)].filter(Boolean).join(' · '),W/2,by+66);
-  x.shadowBlur=0;
-  const hd='📸 '+handle();x.font='800 42px Tajawal, sans-serif';const tw=x.measureText(hd).width+80,ty=by+116;
-  rr(x,(W-tw)/2,ty,tw,84,42);x.fillStyle='rgba(255,255,255,.94)';x.fill();
-  x.fillStyle='#8a5f56';x.direction='ltr';x.fillText(hd,W/2,ty+57);
-  return new Promise(r=>cv.toBlob(b=>r(b),'image/jpeg',0.9));
+  x.fillStyle='#f6f3ee';x.fillRect(0,0,W,H);
+  const fw=900,fh=500,gap=14,fx=(W-fw)/2,top=Math.round((H-(3*fh+2*gap))/2)-70,ys=[0,1,2].map(k=>top+k*(fh+gap));
+  // كل صورة تُقصّ لتملأ إطارها (cover)
+  imgs.forEach((im,k)=>{
+    const iw=im.naturalWidth,ih=im.naturalHeight,sc=Math.max(fw/iw,fh/ih),dw=iw*sc,dh=ih*sc;
+    x.save();x.beginPath();x.rect(fx,ys[k],fw,fh);x.clip();x.drawImage(im,fx+(fw-dw)/2,ys[k]+(fh-dh)/2,dw,dh);x.restore();
+  });
+  // تظليل أسفل الصورة الوسطى ليظهر النص
+  const g=x.createLinearGradient(0,ys[1]+fh*0.45,0,ys[1]+fh);g.addColorStop(0,'rgba(20,16,13,0)');g.addColorStop(1,'rgba(20,16,13,.68)');
+  x.fillStyle=g;x.fillRect(fx,ys[1]+fh*0.45,fw,fh*0.55);
+  x.textAlign='center';x.direction='rtl';
+  x.save();x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=16;x.fillStyle='#fff';
+  x.font='600 52px "IBM Plex Sans Arabic", Tajawal, sans-serif';x.fillText('الحمدلله الذي بنعمته تتم الصالحات',W/2,ys[1]+fh-70);x.restore();
+  // أسفل التصميم: الاسم والجلسة ثم الحساب بحروف متباعدة
+  const by=ys[2]+fh+120;
+  x.fillStyle='#5a524b';x.font='700 54px Tajawal, sans-serif';x.fillText(D.first||D.name||'',W/2,by);
+  x.fillStyle='#8a8178';x.font='500 34px Tajawal, sans-serif';x.fillText([s.n||s.pk||'',fD(s.d)].filter(Boolean).join(' · '),W/2,by+58);
+  x.direction='ltr';x.fillStyle='#9a8f86';x.font='500 30px Tajawal, sans-serif';
+  try{x.letterSpacing='10px'}catch(e){}
+  x.fillText(handle().toUpperCase(),W/2+5,by+130);
+  return new Promise(r=>cv.toBlob(b=>r(b),'image/jpeg',0.92));
 }
 const STORY={};
 function dl(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
