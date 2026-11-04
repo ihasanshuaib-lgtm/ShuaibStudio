@@ -939,6 +939,14 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 #nt .bh-clock{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:0;min-width:0;border:0;border-radius:0;background:transparent;box-shadow:none;pointer-events:none}
 #nt .bh-clock .bh-sub{font-size:10px}
 @media(max-width:560px){#nt .bh-clock .bh-sub{font-size:9px}#nt .bh-time{font-size:15px}}
+
+  /* وضع Flow: صور بإطار أبيض (بولارويد) — الوسطى كبيرة والجانبية أصغر خلفها */
+  .gallery.flow .card,#nt .gallery.flow .card{border:7px solid #fff;border-radius:3px;background:#fff;box-shadow:0 10px 26px rgba(0,0,0,.35)}
+  .gallery.flow .card img.ph{height:calc(100% - 30px);border-radius:0}
+  .gallery.flow .card .overlay{top:auto;bottom:0;left:0;right:0;height:30px;padding:0;background:none;display:flex;align-items:center;justify-content:center;color:#8a7a63;opacity:0;transition:opacity .4s ease}
+  .gallery.flow .card.active .overlay{opacity:1}
+  .gallery.flow .card .overlay h3{display:none}
+  .gallery.flow .card .overlay p{font:600 15px 'Aref Ruqaa',serif;margin:0;opacity:1;color:#8a7a63}
 </style>
 </head>
 <body id="nt" class="light-mode">
@@ -1015,6 +1023,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     <div class="gallery" id="gallerySlideshow"><div class="scene" id="galleryScene"></div></div>
     <div class="gallery-bar" id="galleryBar">
       <div class="gallery-tabs" role="tablist" aria-label="شكل العرض">
+        <button class="gallery-tab" role="tab" data-mode="flow" type="button">Flow</button>
         <button class="gallery-tab" role="tab" data-mode="helix" type="button">Helix</button>
         <button class="gallery-tab" role="tab" data-mode="barrel" type="button">Barrel</button>
         <button class="gallery-tab" role="tab" data-mode="ring" type="button">Ring</button>
@@ -1496,7 +1505,7 @@ const GALLERY_SPEED = 0.32; // بطاقة في الثانية تقريبًا
 const reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 let currentGalleryImages = [];
-let gMode = 'barrel', gAuto = !reduceMotion;
+let gMode = 'flow', gAuto = !reduceMotion;
 let gCards = [], gN = 0;
 let gT = 0, gTarget = 0, gMx = 0, gMy = 0, gTmx = 0, gTmy = 0;
 let gDragging = false, gMoved = 0, gLastX = 0, gDownCard = null;
@@ -1566,8 +1575,13 @@ function handleGalleryImageError(img){
 function galleryMeasure(){
   gSw = gallerySlideshow.clientWidth || 800;
   gSh = gallerySlideshow.clientHeight || 400;
-  gCh = Math.max(140, Math.min(gSh * 0.56, gSw * 0.62));
-  gCw = gCh * 0.75;
+  if(gMode === 'flow'){
+    gCh = Math.max(150, gSh * 0.78);
+    gCw = Math.min(gCh * 1.3, gSw * 0.58);
+  } else {
+    gCh = Math.max(140, Math.min(gSh * 0.56, gSw * 0.62));
+    gCw = gCh * 0.75;
+  }
   gallerySlideshow.style.setProperty('--cw', gCw + 'px');
   gallerySlideshow.style.setProperty('--ch', gCh + 'px');
 }
@@ -1580,8 +1594,10 @@ function galleryApply(){
   if(!gN) return;
   const step = Math.PI * 2 / gN;
   const rotY = gMx * 14, rotX = -gMy * 9;
-  let R;
-  if(gMode === 'barrel'){
+  let R = 0;
+  if(gMode === 'flow'){
+    galleryScene.style.transform = 'none';
+  } else if(gMode === 'barrel'){
     R = gN < 3 ? gCw * 1.2 : Math.max(gCw * 1.2, (gCw * 1.08) / (2 * Math.tan(Math.PI / gN)));
     galleryScene.style.transform = `translateZ(${-R}px) rotateX(${-8 + rotX}deg) rotateY(${rotY}deg)`;
   } else if(gMode === 'helix'){
@@ -1599,7 +1615,12 @@ function galleryApply(){
   for(let i = 0; i < gN; i++){
     const d = gWrap(i - gT), a = d * step, cs = Math.cos(a), sn = Math.sin(a);
     let tr, op;
-    if(gMode === 'barrel'){
+    if(gMode === 'flow'){
+      const ad = Math.abs(d), sg = d < 0 ? -1 : 1;
+      const x = sg * (ad < 1 ? ad * gCw * 0.6 : gCw * 0.6 + (ad - 1) * gCw * 0.2);
+      tr = `translate3d(${x}px,0,${-ad * 70}px) scale(${(1 - 0.13 * Math.min(ad, 3)).toFixed(3)})`;
+      op = 1 - gSmooth(2.4, 3.4, ad);
+    } else if(gMode === 'barrel'){
       tr = `rotateY(${a}rad) translateZ(${R}px)`;
       op = 0.18 + 0.82 * Math.pow((cs + 1) / 2, 0.8);
     } else if(gMode === 'helix'){
@@ -1615,6 +1636,7 @@ function galleryApply(){
     }
     const c = gCards[i];
     let z = Math.round((1 - Math.abs(d) / (gN / 2)) * 100);
+    if(gMode === 'flow') z = Math.round(100 - Math.abs(d) * 10);
     if(gZs > 0.001){
       if(i === gZi){ tr += ` scale(${(1 + (zMax - 1) * gZs).toFixed(3)})`; op = op + (1 - op) * gZs; z = 500; }
       else op *= (1 - 0.55 * gZs);
@@ -1664,6 +1686,8 @@ function stopGallerySlideshow(){
 
 function gallerySetMode(m){
   gMode = m; gZoom = -1;
+  gallerySlideshow.classList.toggle('flow', m === 'flow');
+  galleryMeasure();
   galleryTabs.forEach(b=>b.setAttribute('aria-selected', b.dataset.mode === m ? 'true' : 'false'));
   galleryScene.classList.add('morph');
   clearTimeout(gMorphTimer);
@@ -1678,7 +1702,7 @@ function gallerySetAuto(v){
 }
 function galleryStep(dir){
   gZoom = -1; gTarget = Math.round(gTarget) + dir; }
-function galleryPps(){ return Math.max(90, gallerySlideshow.clientWidth / (gMode === 'ring' ? 3 : 5)); }
+function galleryPps(){ return gMode === 'flow' ? Math.max(70, gCw * 0.45) : Math.max(90, gallerySlideshow.clientWidth / (gMode === 'ring' ? 3 : 5)); }
 
 // ربط الأحداث مرة واحدة فقط
 galleryTabs.forEach(b=>b.addEventListener('click', ()=>gallerySetMode(b.dataset.mode)));

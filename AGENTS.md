@@ -490,4 +490,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-11-04** — **تصميم الستوري الجديد** (`portal.html` → `makeStory`): بدل صورة واحدة بخلفية مموّهة، صار الستوري 1080×1920 بخلفية فاتحة (`#f6f3ee`) و**3 صور متتالية** (تبدأ من الصورة المعروضة؛ تتكرر الصور إن كانت أقل من 3) في إطارات 900×500 متراصّة، وعبارة «الحمدلله الذي بنعمته تتم الصالحات» على الصورة الوسطى، وأسفلها اسم العميل والجلسة والتاريخ ثم حساب إنستقرام بحروف متباعدة. (يحلّ محل بند العبارة السابق.)
 
+- **2026-11-04** — **معرض «Flow» (الافتراضي الآن)** في `index.html`: وضع جديد بأسلوب Cover Flow بإطارات بولارويد بيضاء — الصورة الوسطى كبيرة والجانبية أصغر خلفها (حتى 3 على كل جانب) وتحتها شريط أبيض بعبارة «شعيب استوديو» للصورة النشطة. تبويب `Flow` أول التبويبات و`gMode='flow'` افتراضيًا، والأوضاع الأربعة السابقة (Helix/Barrel/Ring/Sphere) باقية. الفئة `.gallery.flow` تضبط الشكل، و`galleryMeasure()` يحسب حجمًا أعرض له، والسحب/التكبير بالضغط/الأسهم تعمل كالسابق. جُرّب بلقطة شاشة في Chrome.
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
