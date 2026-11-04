@@ -486,4 +486,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-11-04** — `pay.html`: (1) «تكاليف الجلسات» ← **«جلسات التصوير» / Photo Sessions**. (2) داخل تعديل الجلسة: قائمة عملاء محفوظين (`data-cpick`) وزر «+ إضافة عميل جديد» (`data-ncl`، الحالة `NCL`) يحفظ العميل (الاسم+الهاتف، بلا تكرار بالاسم) ويربطه بالجلسة (`s.cid`). (3) **ملف العميل = المكان الواحد**: في بطاقة كل جلسة بملف العميل أُضيف **سعر الجلسة** و**الباقة** (تملأ السعر إن كان فارغًا)، ورابط البوابة يُنشأ تلقائيًا لكل عميل جديد (`BZ.ensurePortal`) وتُفتح صفحته بعد الحفظ؛ تبقى المصورون/التكاليف عبر «المصورون والتكاليف ←». (4) **رمز الأمان معطّل** (`pinOf` ترجع فارغًا) وحُذف مربعه من ملف العميل. ملاحظة: commit `85359d4` كان قد أعاد ملف `pay.html` لنسخة قبل هذه التعديلات فأُعيد تطبيقها. syntax فقط (`node --check`)، لم يُراجَع بصريًا.
 
+- **2026-11-04** — `portal.html` صانع الستوري (`makeStory`): استُبدل النص العلوي «شعيب استوديو/Shuaib Studio» بعبارة «الحمدلله الذي بنعمته تتم الصالحات». بقي حساب إنستقرام أسفل الستوري.
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.

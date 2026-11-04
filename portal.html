@@ -538,7 +538,7 @@ async function makeStory(s,i){
   x.lineWidth=6;x.strokeStyle='rgba(255,255,255,.85)';rr(x,px,py,pw,ph,38);x.stroke();
   // النصوص
   x.textAlign='center';x.direction=lang==='ar'?'rtl':'ltr';x.fillStyle='rgba(255,255,255,.92)';
-  x.font='600 46px "IBM Plex Sans Arabic", Tajawal, sans-serif';x.fillText($('logo').textContent,W/2,Math.max(150,py-70));
+  x.direction='rtl';x.font='600 46px "IBM Plex Sans Arabic", Tajawal, sans-serif';x.fillText('الحمدلله الذي بنعمته تتم الصالحات',W/2,Math.max(150,py-70));x.direction=lang==='ar'?'rtl':'ltr';
   const by=py+ph+120;
   x.shadowColor='rgba(0,0,0,.35)';x.shadowBlur=18;
   x.fillStyle='#fff';x.font='800 78px Tajawal, sans-serif';x.fillText(D.first||D.name||'',W/2,by);
