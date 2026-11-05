@@ -2569,6 +2569,8 @@ async function sbReq(path,opt={},retry=true){
 async function sbSync(manual){
   if(!sbAuth||sbBusy)return;
   sbBusy=true;
+  // لا نستورد الحجوزات قبل أول سحب من السحابة: استيراد حجز في متصفح فارغ كان يجعل بياناته المحلية «الأحدث» فتُرفع فوق بيانات السحابة وتمحوها
+  if(!localStorage.getItem('ss_pulled')){await syncPull();if(!localStorage.getItem('ss_pulled')){sbBusy=false;return}}
   try{
     const rows=await (await sbReq('bookings?imported=eq.false&select=id,payload&order=created_at.asc')).json();
     let n=0,first=null,firstC=null;
@@ -2640,6 +2642,7 @@ function syncTouch(){
 function syncSnapshot(){const d={};SYNC_KEYS.forEach(k=>d[k]=localStorage.getItem(k));return d}
 async function syncPush(){
   if(!sbAuth||!sbCfg().key||syncPushing)return;
+  if(!localStorage.getItem('ss_pulled'))return;   // لا رفع قبل أول سحب ناجح
   syncPushing=true;
   try{
     const ts=lts()||Date.now();
@@ -2690,9 +2693,12 @@ async function syncPull(){
   if(!sbAuth||!sbCfg().key)return;
   try{
     const rows=await (await sbReq('app_state?key=eq.pay&select=value')).json();
-    const r=rows[0]&&rows[0].value;
+    const r=rows[0]&&rows[0].value,first=!localStorage.getItem('ss_pulled');
+    localStorage.setItem('ss_pulled','1');
     if(!r||!r.data){ if(SYNC_KEYS.some(k=>localStorage.getItem(k))) await syncPush(); return; }
-    if(r.ts>lts()){
+    // أول سحب في هذا المتصفح: إن كانت بيانات السحابة أكبر من المحلية نأخذها حتى لو بدت المحلية «أحدث» (تُحفظ نسخة المحلية احتياطيًا)
+    const bigger=first&&r.ts<=lts()&&SYNC_KEYS.reduce((s,k)=>s+String(r.data[k]||'').length,0)>SYNC_KEYS.reduce((s,k)=>s+String(localStorage.getItem(k)||'').length,0);
+    if(r.ts>lts()||bigger){
       try{localStorage.setItem('ss_backup_before_sync',JSON.stringify(syncSnapshot()))}catch(e){}
       SYNC_KEYS.forEach(k=>{r.data[k]==null?localStorage.removeItem(k):localStorage.setItem(k,r.data[k])});
       localStorage.setItem('ss_ts',String(r.ts));
