@@ -3275,7 +3275,7 @@ function renderSettings(){
 const STG=['booked','shot','editing','ready','delivered'];
 const stL=k=>({booked:A_('محجوز','Booked'),shot:A_('تم التصوير','Shot'),editing:A_('التعديل والمونتاج','Editing'),ready:A_('جاهز للتسليم','Ready'),delivered:A_('تم التسليم','Delivered')})[k]||k;
 const dvStage=s=>STG.includes(s.dv)?s.dv:((s.d||'')>todayISO()?'booked':'shot');
-const safeUrl=u=>/^https:\/\/[^\s"'<>]+$/i.test(String(u||'').trim())?String(u).trim():'';
+const safeUrl=u=>{let s=String(u||'').trim();if(!s)return'';if(/^http:\/\//i.test(s))s='https://'+s.slice(7);else if(!/^https:\/\//i.test(s)){if(/^[a-z][a-z0-9+.-]*:/i.test(s))return'';s='https://'+s.replace(/^\/+/,'')}return /^https:\/\/[^\s"'<>]+\.[^\s"'<>]+$/i.test(s)?s:''};   // يقبل الرابط بدون https:// أو بـ http:// ويحوّله إلى https
 const pinOf=c=>'';   // رمز الدخول مُعطَّل بطلب المالك
 const newToken=()=>{const a=new Uint8Array(18);crypto.getRandomValues(a);return btoa(String.fromCharCode(...a)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
 const portalUrl=t=>{const u=new URL('portal.html',location.href);u.search='';u.hash='c='+t;return u.href};
