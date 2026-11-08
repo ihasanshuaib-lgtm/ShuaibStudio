@@ -3291,7 +3291,7 @@ function portalData(c){
   const items=a=>(a||[]).map(x=>({desc:String(x.desc||''),qty:+x.qty||0,unit:+x.unit||0,disc:+x.disc||0}));
   return{first:nm.split(/\s+/)[0]||nm,name:nm,
     studio:{name:C.company||'',cr:C.cr||'',vatNo:C.vatNo||'',addr:C.addr||'',phone:C.phone||'',email:C.email||'',wa:String(C.wa||'').replace(/\D/g,''),insta:String(C.insta||'').replace(/^@/,''),note:C.portalNote||''},
-    sessions:PR.data().sessions.filter(s=>s.d&&(sessClient(s)||{}).id===c.id).sort((a,b)=>(a.d+(a.t||'')).localeCompare(b.d+(b.t||''))).map(s=>({id:s.id,d:s.d,t:s.t||'',te:s.te||'',n:strip(s.n),loc:s.loc||'',pk:PR.pkgName(s)||'',stage:dvStage(s),due:s.dvd||'',gal:safeUrl(s.gal),pv:s.pvAt&&(s.pv||[]).length?{f:s.pvf,n:s.pv,at:s.pvAt}:null})),
+    sessions:PR.data().sessions.filter(s=>s.d&&(sessClient(s)||{}).id===c.id).sort((a,b)=>(a.d+(a.t||'')).localeCompare(b.d+(b.t||''))).map(s=>({id:s.id,d:s.d,t:s.t||'',te:s.te||'',n:strip(s.n),loc:s.loc||'',pk:PR.pkgName(s)||'',stage:dvStage(s),due:s.dvd||'',gal:safeUrl(s.gal),pv:s.pvAt&&(s.pv||[]).length?{f:s.pvf,n:s.pv,at:s.pvAt,p:Object.fromEntries(Object.entries(s.pvp||{}).filter(([k,v])=>s.pv.includes(k)&&Array.isArray(v)))}:null})),
     invoices:clientInvs(c).filter(i=>i.status!=='draft').sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(i=>({id:i.id,number:i.number,date:i.date||'',due:i.due||dueFrom(i.date),status:i.status,overdue:invOverdue(i),items:items(i.items),subtotal:+i.subtotal||0,disc:+i.disc||0,vat:+i.vat||0,vatRate:+i.vatRate||0,grand:+i.grand||0,paid:invPaid(i),rem:invRem(i),notes:i.notes||''})),
     quotes:B.quotes.filter(q=>q.status!=='draft'&&(q.clientId===c.id||(!q.clientId&&String(q.client||'').trim().toLowerCase()===low))).sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(q=>{const t=qTotals(q.items);return{id:q.id,number:q.number,date:q.date||'',valid:q.valid||'',status:q.status,items:items(q.items),subtotal:t.sub,disc:t.disc,vat:t.vat,vatRate:t.vat?(+q.vatRate||+C.vat):0,grand:t.grand,notes:q.notes||''}})};
 }
@@ -3360,6 +3360,30 @@ async function pvUpload(sid,files){
   renderHub();
   note(fail?A_(`تعذّر رفع ${fail} صورة — تأكد أنك شغّلت ملف portal-setup.sql المحدّث`,`${fail} photo(s) failed — make sure you ran the updated portal-setup.sql`):A_(`✓ تم رفع ${files.length} صورة`,`✓ ${files.length} photo(s) uploaded`));
 }
+const pvPos=(S,n)=>{const v=(S.pvp||{})[n];return v?`${+v[0]||50}% ${+v[1]||50}%`:'50% 50%'};
+function pvCrop(S,n){
+  const old=document.getElementById('pvcrop');if(old)old.remove();
+  let pos=((S.pvp||{})[n]||[50,50]).map(Number);
+  const m=document.createElement('div');m.id='pvcrop';
+  m.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.6);display:grid;place-items:center;padding:16px';
+  m.innerHTML=`<div style="background:#fff;border-radius:16px;padding:16px;width:min(420px,100%);direction:rtl;text-align:center;color:#333">
+  <b>${A_('اسحب الصورة لتحديد الجزء الظاهر في بوابة العميل','Drag the photo to choose what shows in the client portal')}</b>
+  <div id="pvc-f" style="margin:12px auto;width:100%;aspect-ratio:1.1;border:6px solid #fff;outline:1px solid #ddd;border-radius:3px;overflow:hidden;cursor:grab;touch-action:none;box-shadow:0 8px 20px rgba(0,0,0,.25)"><img id="pvc-i" src="${escH(pvUrl(S,n))}" draggable="false" style="width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;object-position:${pos[0]}% ${pos[1]}%"></div>
+  <div style="display:flex;gap:8px;justify-content:center"><button class="btn-gold" id="pvc-ok">${A_('حفظ','Save')}</button><button class="btn-sm" id="pvc-rs">${A_('توسيط','Center')}</button><button class="btn-sm" id="pvc-x">${A_('إلغاء','Cancel')}</button></div></div>`;
+  document.body.appendChild(m);
+  const f=m.querySelector('#pvc-f'),im=m.querySelector('#pvc-i'),show=()=>{im.style.objectPosition=pos[0]+'% '+pos[1]+'%'};
+  let d=null;
+  f.addEventListener('pointerdown',e=>{d={x:e.clientX,y:e.clientY,p:pos.slice()};f.setPointerCapture(e.pointerId);f.style.cursor='grabbing'});
+  f.addEventListener('pointermove',e=>{if(!d)return;
+    const r=f.getBoundingClientRect(),nw=im.naturalWidth||1,nh=im.naturalHeight||1,sc=Math.max(r.width/nw,r.height/nh),ox=nw*sc-r.width,oy=nh*sc-r.height;
+    if(ox>1)pos[0]=Math.min(100,Math.max(0,d.p[0]-(e.clientX-d.x)/ox*100));
+    if(oy>1)pos[1]=Math.min(100,Math.max(0,d.p[1]-(e.clientY-d.y)/oy*100));show()});
+  f.addEventListener('pointerup',()=>{d=null;f.style.cursor='grab'});
+  m.querySelector('#pvc-x').onclick=()=>m.remove();
+  m.addEventListener('click',e=>{if(e.target===m)m.remove()});
+  m.querySelector('#pvc-rs').onclick=()=>{pos=[50,50];show()};
+  m.querySelector('#pvc-ok').onclick=async()=>{S.pvp=S.pvp||{};S.pvp[n]=[Math.round(pos[0]),Math.round(pos[1])];PR.persist();m.remove();if(S.pvAt)await pushPortals();renderHub()};
+}
 async function pvDelete(S,names){
   if(!names.length||!S.pvf)return;
   try{await sbReq('/storage/v1/object/previews',{method:'DELETE',body:JSON.stringify({prefixes:names.map(n=>S.pvf+'/'+n)})})}catch(e){}
@@ -3381,7 +3405,7 @@ function pvBlock(c,S){
   const L=S.pv||[],live=!!S.pvAt,past=S.d&&S.d<=todayISO();
   const st=[S.pvSeen?'👁 '+A_('فتحها العميل','Opened by client'):'',S.pvShared?'📲 '+A_('شارك الستوري','Shared to story'):''].filter(Boolean);
   return `<div class="pv-box${live?' live':''}"><div style="display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;align-items:center"><b style="color:var(--white)">⚡ ${A_('المعاينة خلال 24 ساعة','24-hour sneak peek')}</b>${live?`<span class="bz-health h-good"><i></i>${A_('منشورة','Published')}</span>`:(past&&L.length===0?`<span class="bz-health h-warn"><i></i>${A_('مستحقة الآن','Due now')}</span>`:'')}</div>
-  ${L.length?`<div class="pv-grid">${L.map(n=>`<figure><img src="${escH(pvUrl(S,n))}" alt="" loading="lazy"><button data-bz="pv-del" data-id="${escH(S.id)}" data-n="${escH(n)}" aria-label="${A_('حذف','Delete')}">✕</button></figure>`).join('')}</div>`:`<p class="pr-hint" style="margin:.4rem 0 .6rem">${A_(`ارفع ${PV_MAX>10?'10':PV_MAX} من أجمل الصور صباح اليوم التالي — تُصغَّر تلقائيًا وتُضاف عليها علامة ${pvHandle()}.`,`Upload ~10 of the best shots the next morning — auto-resized with a ${pvHandle()} watermark.`)}</p>`}
+  ${L.length?`<div class="pv-grid">${L.map(n=>`<figure><img src="${escH(pvUrl(S,n))}" alt="" loading="lazy" style="cursor:pointer;object-position:${pvPos(S,n)}" data-bz="pv-crop" data-id="${escH(S.id)}" data-n="${escH(n)}" title="${A_('تحكم بالاقتصاص','Adjust crop')}"><button data-bz="pv-del" data-id="${escH(S.id)}" data-n="${escH(n)}" aria-label="${A_('حذف','Delete')}">✕</button></figure>`).join('')}</div>`:`<p class="pr-hint" style="margin:.4rem 0 .6rem">${A_(`ارفع ${PV_MAX>10?'10':PV_MAX} من أجمل الصور صباح اليوم التالي — تُصغَّر تلقائيًا وتُضاف عليها علامة ${pvHandle()}.`,`Upload ~10 of the best shots the next morning — auto-resized with a ${pvHandle()} watermark.`)}</p>`}
   <div class="pv-prog" id="pvp-${escH(S.id)}" hidden><i></i></div>
   <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">${L.length<PV_MAX?`<label class="btn-sm" style="cursor:pointer">⬆ ${L.length?A_('إضافة صور','Add photos'):A_('رفع الصور','Upload photos')} <small>(${L.length}/${PV_MAX})</small><input type="file" accept="image/*" multiple hidden data-pv-up="${escH(S.id)}"></label>`:''}
   ${L.length?`<button class="btn-gold" data-bz="pv-pub" data-id="${escH(S.id)}">📲 ${live?A_('إعادة الإرسال للعميل','Resend to client'):A_('نشر المعاينة وإرسالها','Publish & send')}</button>`:''}
@@ -3398,7 +3422,8 @@ const pvDue=()=>{const td=todayISO(),from=addDays(td,-3);return PR.data().sessio
 document.addEventListener('change',e=>{const i=e.target;if(i.dataset&&i.dataset.pvUp){pvUpload(i.dataset.pvUp,i.files||[]);i.value=''}});
 document.addEventListener('click',async e=>{const b=e.target.closest('[data-bz^="pv-"]');if(!b)return;e.stopPropagation();
   const S=PR.data().sessions.find(x=>x.id===b.dataset.id);if(!S)return;
-  if(b.dataset.bz==='pv-pub')pvPublish(S.id);
+  if(b.dataset.bz==='pv-crop')pvCrop(S,b.dataset.n);
+  else if(b.dataset.bz==='pv-pub')pvPublish(S.id);
   else if(b.dataset.bz==='pv-del'){await pvDelete(S,[b.dataset.n]);if(!S.pv.length)delete S.pvAt;PR.persist();await pushPortals();renderHub()}
   else if(b.dataset.bz==='pv-clear'){if(!confirm(A_('حذف كل صور المعاينة؟','Delete all preview photos?')))return;await pvDelete(S,[...(S.pv||[])]);delete S.pvAt;PR.persist();await pushPortals();renderHub()}
 });

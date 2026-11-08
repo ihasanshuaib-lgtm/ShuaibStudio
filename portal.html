@@ -492,13 +492,14 @@ function render(){
 // ── ⚡ المعاينة + الستوري ──
 const okId=x=>/^[\w-]{6,80}(\.jpg)?$/.test(String(x||''));
 const pvSrc=(pv,n)=>SB.url+'/storage/v1/object/public/previews/'+encodeURIComponent(pv.f)+'/'+encodeURIComponent(n);
+const pvPos=(pv,n)=>{const v=pv.p&&pv.p[n];return Array.isArray(v)?(Math.min(100,Math.max(0,+v[0]||0))+'% '+Math.min(100,Math.max(0,+v[1]||0))+'%'):'50% 50%'};
 const pvList=S=>S.filter(s=>s.pv&&okId(s.pv.f)&&(s.pv.n||[]).some(okId)).sort((a,b)=>String(b.pv.at).localeCompare(String(a.pv.at)));
 const handle=()=>'@'+String((D&&D.studio&&D.studio.insta)||'shuaib_studio').replace(/^@/,'');
 function previewH(S){
   let h='';
   pvList(S).forEach(s=>{const n=s.pv.n.filter(okId);
     h+=`<section class="card pv"><div class="kicker">${T('pvTitle')}</div><h3>${esc(s.n||s.pk||'')}</h3><p class="muted" style="margin:0">${T('pvSub').replace('{n}',n.length)}</p>
-    <div class="cf" data-cf="${esc(s.id)}" data-cur="0"><button type="button" class="cf-n p" data-cfn="-1" aria-label="prev">‹</button>${n.map((x,i)=>`<div class="cf-c" data-ci="${i}" style="${cfStyle(i,0,n.length)}" role="button" aria-label="${i+1}"><img src="${esc(pvSrc(s.pv,x))}" alt="" draggable="false" loading="${i<4?'eager':'lazy'}" crossorigin="anonymous"><i>${i+1} / ${n.length}</i></div>`).join('')}<button type="button" class="cf-n x" data-cfn="1" aria-label="next">›</button></div>
+    <div class="cf" data-cf="${esc(s.id)}" data-cur="0"><button type="button" class="cf-n p" data-cfn="-1" aria-label="prev">‹</button>${n.map((x,i)=>`<div class="cf-c" data-ci="${i}" style="${cfStyle(i,0,n.length)}" role="button" aria-label="${i+1}"><img src="${esc(pvSrc(s.pv,x))}" style="object-position:${pvPos(s.pv,x)}" alt="" draggable="false" loading="${i<4?'eager':'lazy'}" crossorigin="anonymous"><i>${i+1} / ${n.length}</i></div>`).join('')}<button type="button" class="cf-n x" data-cfn="1" aria-label="next">›</button></div>
     <button class="btn btn-sage full" data-story="${esc(s.id)}|0">📲 ${T('story')}</button></section>`;
     seen(s.id);
   });

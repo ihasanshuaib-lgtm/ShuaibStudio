@@ -498,4 +498,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-11-05** — **رابط الصور لا يظهر في بوابة العميل**: `safeUrl` (في `pay.html` و`portal.html`) كانت ترفض بصمت أي رابط لا يبدأ بـ`https://` (مثل `drive.google.com/…` أو `http://…`) فيختفي زر «فتح الصور». الآن تقبل الرابط بدون بروتوكول أو بـ`http://` وتحوّله إلى `https://`، وما زالت ترفض `javascript:` وأي نص فيه مسافات. شرط الظهور الآخر: الجلسة مربوطة بالعميل ولها تاريخ، وأن تكون البوابة قد تحدّثت (تسجيل الدخول السحابي).
 
+- **2026-11-08** — **التحكم باقتصاص صور المعاينة في بوابة العميل**: في `pay.html` الضغط على أي مصغّرة في صندوق المعاينة (`pvBlock`) يفتح نافذة `pvCrop(S,n)` بإطار بنفس شكل بطاقة البوابة؛ يسحب المالك الصورة لتحديد الجزء الظاهر (حفظ/توسيط/إلغاء). الموضع بالنسبة المئوية يُحفظ في `S.pvp = {اسم الملف:[x,y]}` ويُرفع مع حمولة البوابة كـ`pv.p`؛ و`portal.html` يطبّقه كـ`object-position` على بطاقات معرض Flow عبر `pvPos(pv,n)` (الافتراضي 50% 50%). العارض الكامل لا يقتطع أصلًا؛ صورة الستوري (`makeStory`) ما زالت تقتطع من الوسط. فُحصت الصياغة فقط (`new Function`)، لم يُجرَّب بصريًا.
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
