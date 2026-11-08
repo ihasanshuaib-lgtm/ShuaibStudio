@@ -512,4 +512,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-11-08** — **صفحة الأرشيف في `pay.html`**: زر «🗄 الأرشيف (عدد)» (`#archive-btn`) بجوار «+ إضافة عميل» في صفحة العملاء يفتح `#page-archive` (`showPage('archive')` ← `renderArchive()`): بطاقات العملاء الذين تعاملنا معهم **مرة واحدة فقط** = `max(عدد جلساته، عدد فواتيره غير المسودة) === 1` (`dealingCounts`/`archiveList`)، مع بحث وزر «→ العملاء» وفتح ملف العميل بالضغط. تلقائي بالكامل (بلا أرشفة يدوية)؛ من تعامل معه مرتين فأكثر أو لم يتعامل معه لا يظهر. جُرّب بمتصفح بلا واجهة (عميلان في الأرشيف من أصل 4).
 
+- **2026-11-08** — زر **«🗄 أرشفة العميل»** على كل بطاقة عميل (`archiveClient(id)`): يضع `c.archived=true` ويخفي العميل من قائمة العملاء وينقلك إلى صفحة الأرشيف؛ والأرشيف صار يعرض المؤرشفين يدويًا + من تعاملنا معه مرة واحدة، وفي بطاقة المؤرشف يدويًا زر «↩ إلغاء الأرشفة» (`unarchiveClient`). الحقل `archived` يُحفظ مع العميل.
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
