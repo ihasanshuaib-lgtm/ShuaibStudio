@@ -851,6 +851,92 @@ html[data-theme="dark"] .tk-card{border-top-color:var(--tc)}
 html[data-theme="dark"] .tk-st-doing{color:#8cc4f2}html[data-theme="dark"] .tk-st-done{color:#9fd3ac}
 html[data-theme="dark"] .tk-ov{background:rgba(0,0,0,.6)}
 
+/* ===== to-do list (calm) ===== */
+.td-head{display:flex;align-items:center;gap:.8rem 1rem;flex-wrap:wrap;margin-bottom:1.1rem}
+.td-head h2{margin:0;font-size:1.5rem;color:var(--white)}
+.td-tabs{display:inline-flex;padding:.25rem;border-radius:999px;background:var(--off);box-shadow:var(--sunk)}
+.td-tabs button{border:0;background:transparent;font:inherit;font-weight:700;font-size:.88rem;color:var(--muted);padding:.45rem 1rem;border-radius:999px;cursor:pointer}
+.td-tabs button small{font-weight:600;opacity:.7;margin-inline-start:.15rem}
+.td-tabs button.on{background:var(--card-g);color:var(--white);box-shadow:var(--lift-sm)}
+.td-links{display:flex;gap:.2rem;flex-wrap:wrap;margin-inline-start:auto}
+.td-links button{border:0;background:transparent;font:inherit;font-size:.8rem;font-weight:600;color:var(--muted);padding:.35rem .6rem;border-radius:10px;cursor:pointer}
+.td-links button:hover,.td-links button.on{color:var(--white);background:var(--off)}
+.td-sum{padding:1rem 1.1rem;border-radius:18px;background:var(--card-g);border:1px solid rgba(255,255,255,.85);box-shadow:var(--lift-sm);margin-bottom:1rem}
+.td-sum-h{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:.8rem}
+.td-sum-h b{display:block;font-size:1.05rem;color:var(--white)}.td-sum-h span{font-size:.8rem;color:var(--muted)}
+.td-ring{--p:0;width:52px;height:52px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;background:conic-gradient(var(--sage-d) calc(var(--p)*1%),#e3ddd5 0)}
+.td-ring span{width:40px;height:40px;border-radius:50%;background:var(--off);display:grid;place-items:center;font-size:.72rem;font-weight:800;color:var(--white)}
+.td-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem}
+.td-stat{border:0;background:var(--off);border-radius:12px;padding:.55rem .6rem;text-align:start;font:inherit;cursor:pointer;box-shadow:var(--sunk);min-width:0}
+.td-stat b{display:block;font-size:1.25rem;color:var(--white);line-height:1.2}
+.td-stat span{font-size:.72rem;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.td-stat.bad b{color:var(--danger)}.td-stat.good b{color:var(--sage-dd)}
+.td-bar{height:6px;border-radius:4px;background:#e3ddd5;overflow:hidden;margin:.8rem 0 .3rem}.td-bar i{display:block;height:100%;background:var(--btn-sage);border-radius:4px;transition:width .5s}
+.td-sub{font-size:.78rem;color:var(--muted)}
+.td-next{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;width:100%;margin-top:.8rem;padding:.6rem .8rem;border:0;border-inline-start:4px solid var(--tc);border-radius:10px;background:var(--off);font:inherit;text-align:start;cursor:pointer;color:var(--text)}
+.td-next span{font-size:.78rem;color:var(--muted);font-weight:700}.td-next b{color:var(--white)}.td-next small{color:var(--muted);font-size:.75rem}
+.td-add{padding:.6rem .7rem .55rem;border-radius:16px;background:var(--card-g);border:1px solid rgba(255,255,255,.85);box-shadow:var(--lift-sm);margin-bottom:.8rem}
+.td-add-row{display:flex;align-items:center;gap:.5rem}
+.td-plus{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:var(--sage-d);border:2px dashed var(--sage);font-weight:800;flex-shrink:0}
+.td-add-row input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:1rem;color:var(--text);padding:.45rem .2rem;outline:none}
+.td-add-row .btn-gold{padding:.45rem 1rem}
+.td-opts{display:flex;align-items:center;gap:.5rem .9rem;flex-wrap:wrap;margin-top:.45rem;padding-top:.5rem;border-top:1px dashed var(--border)}
+.td-seg{display:inline-flex;gap:.25rem;flex-wrap:wrap}
+.td-seg button,.td-seg label{border:1px solid var(--border);background:transparent;font:inherit;font-size:.76rem;font-weight:700;color:var(--muted);padding:.25rem .65rem;border-radius:999px;cursor:pointer;position:relative}
+.td-seg .on{background:var(--btn-sage);color:#fff;border-color:transparent}
+.td-seg label input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.td-dots{display:inline-flex;align-items:center;gap:.3rem}
+.td-dots button{width:22px;height:22px;border-radius:50%;border:2px solid transparent;background:transparent;padding:0;cursor:pointer;display:grid;place-items:center}
+.td-dots button i{width:12px;height:12px;border-radius:50%;background:var(--c)}
+.td-dots button.on{border-color:var(--c)}
+.td-dots span{font-size:.74rem;color:var(--muted);font-weight:600;margin-inline-start:.2rem}
+.td-more{margin-inline-start:auto;border:0;background:transparent;font:inherit;font-size:.76rem;color:var(--rose-d);font-weight:700;cursor:pointer}
+.td-tool{display:flex;gap:.5rem;align-items:center;margin-bottom:.6rem}.td-tool .f-search{flex:1}
+.td-tool .f-search{display:flex;align-items:center;gap:.5rem;padding:.5rem .9rem;border-radius:999px;background:var(--off);box-shadow:var(--sunk);border:1px solid var(--border)}
+.td-tool .f-search input{flex:1;min-width:0;border:0!important;background:transparent!important;box-shadow:none!important;outline:none;font:inherit;font-size:.92rem;color:var(--text);padding:0!important}
+.td-tool .f-search:focus-within{border-color:var(--focus);box-shadow:var(--sunk),var(--focus-ring)}
+.td-tool .btn-sm.on{border-color:var(--focus);color:var(--white)}
+.td-fp{margin-bottom:.8rem}
+.td-grp{margin:1.1rem 0 0;scroll-margin-top:90px;border-radius:14px;transition:box-shadow .4s}
+.td-grp.flash{box-shadow:0 0 0 3px var(--focus)}
+.td-grp h3{display:flex;align-items:center;gap:.45rem;margin:0 .2rem .45rem;font-size:.9rem;font-weight:800;color:var(--white)}
+.td-grp h3 small{font-size:.72rem;font-weight:700;color:var(--muted);background:var(--off);padding:.05rem .5rem;border-radius:999px}
+.td-grp h3 span{margin-inline-start:auto;font-size:.75rem;font-weight:600;color:var(--muted)}
+.td-g-overdue h3{color:var(--danger)}
+.td-list{border-radius:14px;background:var(--card-g);border:1px solid rgba(255,255,255,.85);box-shadow:var(--lift-sm);overflow:hidden}
+.td-row{display:flex;align-items:center;gap:.75rem;padding:.7rem .85rem;cursor:pointer;transition:background .15s,opacity .35s,transform .35s}
+.td-row+.td-row{border-top:1px solid var(--border)}
+.td-row:hover{background:rgba(255,255,255,.35)}
+.td-ck{width:24px;height:24px;border-radius:50%;border:2px solid var(--tc);background:transparent;color:transparent;flex-shrink:0;cursor:pointer;display:grid;place-items:center;padding:0;transition:background .2s,color .2s}
+.td-row:not([style*="#9aa0a6"]) .td-ck{box-shadow:inset 0 0 0 3px var(--off)}
+.td-ck:hover{color:var(--tc);background:color-mix(in srgb,var(--tc) 14%,transparent)}
+.td-row.is-done .td-ck,.td-row.td-anim .td-ck{background:var(--tc);color:#fff;box-shadow:none}
+.td-main{flex:1;min-width:0}
+.td-t{font-size:.97rem;color:var(--white);font-weight:600;overflow-wrap:anywhere;line-height:1.45}
+.td-m{display:flex;flex-wrap:wrap;align-items:center;gap:.1rem .35rem;font-size:.75rem;color:var(--muted);margin-top:.12rem}
+.td-sep{font-style:normal;opacity:.5}
+.td-doing{color:#3a7cb5;font-weight:700}
+.td-pr{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.td-row.sel{background:color-mix(in srgb,var(--focus) 10%,transparent)}
+.td-row .tk-ck{accent-color:var(--focus)}
+.td-x{border:0;background:transparent;cursor:pointer;opacity:0;font-size:.85rem;padding:.2rem;border-radius:8px;transition:opacity .15s}
+.td-row:hover .td-x,.td-x:focus-visible{opacity:.6}.td-x:hover{opacity:1!important;background:var(--off)}
+@media(hover:none){.td-x{display:none}}
+.td-row.is-done .td-t{text-decoration:line-through;color:var(--muted);font-weight:500}
+.td-row.td-anim .td-t{text-decoration:line-through;color:var(--muted)}
+.td-row.td-anim{opacity:.35;transform:translateX(-12px)}
+[dir="rtl"] .td-row.td-anim{transform:translateX(12px)}
+.td-donehead{display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap;margin:.2rem 0 .2rem}
+.td-toast{position:fixed;bottom:max(18px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:400;display:flex;align-items:center;gap:.9rem;padding:.65rem .75rem .65rem 1.1rem;border-radius:14px;background:#2f2924;color:#f6efe4;font-weight:600;font-size:.88rem;box-shadow:0 14px 30px -10px rgba(0,0,0,.45);max-width:92vw}
+.td-toast[hidden]{display:none}
+.td-toast button{border:0;background:rgba(255,255,255,.14);color:#fff;font:inherit;font-weight:800;padding:.35rem .8rem;border-radius:9px;cursor:pointer}
+@media(max-width:600px){.td-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.td-links{margin-inline-start:0;width:100%}.td-head h2{font-size:1.25rem}.td-add-row input{font-size:16px}}
+html[data-theme="dark"] .td-sum,html[data-theme="dark"] .td-add,html[data-theme="dark"] .td-list{border-color:#2f2924}
+html[data-theme="dark"] .td-row:hover{background:rgba(255,255,255,.04)}
+html[data-theme="dark"] .td-ring{background:conic-gradient(var(--sage-d) calc(var(--p)*1%),#2a2521 0)}
+html[data-theme="dark"] .td-bar{background:#2a2521}
+html[data-theme="dark"] .td-doing{color:#8cc4f2}
+
 /* ===== dark mode ===== */
 html[data-theme="dark"]{color-scheme:dark;
   --gold:#d8b27a;--rose:#c99486;--rose-d:#e3a998;--sage:#8fb09a;--sage-d:#7aa086;--sage-dd:#a9cdb3;
@@ -3900,10 +3986,10 @@ async function delFile(t,fid){
 const fSize=b=>b>1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB';
 
 // ── حالة الواجهة ──
-const V={view:'list',q:'',st:'open',pc:'all',who:'all',due:'all',cl:'all',sort:'due',cal:todayISO().slice(0,7),open:null,isNew:false,rep:'week',ref:todayISO(),aq:'',apc:'all'};
+const V={view:'list',q:'',st:'open',pc:'all',who:'all',due:'all',cl:'all',sort:'due',cal:todayISO().slice(0,7),open:null,isNew:false,rep:'week',ref:todayISO(),aq:'',apc:'all',qd:'today',qp:'none',qtx:'',fopen:false,selMode:false};
 const SEL=new Set();
 try{const s=JSON.parse(localStorage.getItem('ss_tasks_ui')||'{}');['view','sort','st'].forEach(k=>{if(s[k])V[k]=s[k]})}catch(e){}
-const saveUI=()=>{try{localStorage.setItem('ss_tasks_ui',JSON.stringify({view:V.view==='archive'||V.view==='reports'?'list':V.view,sort:V.sort,st:V.st}))}catch(e){}};
+const saveUI=()=>{try{localStorage.setItem('ss_tasks_ui',JSON.stringify({view:['list','done','cal','board'].includes(V.view)?V.view:'list',sort:V.sort,st:V.st}))}catch(e){}};
 
 // ── تطبيع البحث (عربي) ──
 const norm=s=>String(s||'').toLowerCase().replace(/[\u064B-\u0652\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
@@ -4126,20 +4212,114 @@ function drawEd(){
 function closeEd(){V.open=null;V.isNew=false;DRAFT=null;drawEd();render()}
 
 // ═════════════ الصفحة ═════════════
+// ═════════════ قائمة المهام (To-Do) — مرتبة بالتاريخ ثم الأولوية ═════════════
+const addD=(iso,n)=>{const d=new Date(iso+'T00:00');d.setDate(d.getDate()+n);return todayISO(d)};
+const dayName=iso=>new Date(iso+'T00:00').toLocaleDateString(loc(),{weekday:'long',day:'numeric',month:'short'});
+function bucket(t){
+  const td=todayISO(),W=weekRange(td);
+  if(!t.due)return 'none';
+  if(isOverdue(t))return 'overdue';
+  if(t.due===td)return 'today';
+  if(t.due===addD(td,1))return 'tomorrow';
+  if(t.due<=W.to)return 'week';
+  return 'later';
+}
+const BK=[['overdue','⚠','متأخرة','Overdue'],['today','📅','اليوم','Today'],['tomorrow','🌤','غدًا','Tomorrow'],['week','🗓','باقي هذا الأسبوع','Rest of this week'],['later','⏭','لاحقًا','Later'],['none','📝','بدون تاريخ','No date']];
+const byDatePr=(a,b)=>((a.due||'9999')<(b.due||'9999')?-1:(a.due||'9999')>(b.due||'9999')?1:0)||PRI[b.pr].w-PRI[a.pr].w||((a.dueT||'99')<(b.dueT||'99')?-1:(a.dueT||'99')>(b.dueT||'99')?1:0)||a.created.localeCompare(b.created);
+function liteFilter(L){
+  const q=norm(V.q).trim();
+  if(q)L=L.filter(t=>hay(t).includes(q));
+  if(V.pc!=='all')L=L.filter(t=>V.pc.startsWith('#')?colorOf(t).toLowerCase()===V.pc:(V.pc==='custom'?!!t.color:t.pr===V.pc));
+  if(V.who!=='all')L=L.filter(t=>(t.who||'')===V.who);
+  if(V.cl!=='all')L=L.filter(t=>String(t.clientId||'')===V.cl);
+  return L;
+}
+const openSet=()=>liteFilter(T().filter(t=>!t.archived&&t.status!=='done')).sort(byDatePr);
+const doneSet=()=>liteFilter(T().filter(t=>!t.archived&&t.status==='done')).sort((a,b)=>(b.doneAt||'').localeCompare(a.doneAt||''));
+const CHK='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+function todoRow(t,bk){
+  const c=colorOf(t),cl=clients.find(x=>x.id===t.clientId),done=t.status==='done',m=mins(t);
+  const meta=[];
+  if(done){const dd=new Date(t.doneAt),old=Date.now()-dd<6*864e5;meta.push('✓ '+escH(dd.toLocaleString(loc(),old?{weekday:'short',hour:'numeric',minute:'2-digit'}:{day:'numeric',month:'short',year:'numeric'})))}
+  else{
+    if(t.due&&bk!=='today'&&bk!=='tomorrow')meta.push(`<span${bk==='overdue'?' class="tk-od"':''}>📅 ${escH(dayName(t.due))}</span>`);
+    if(t.dueT)meta.push('🕒 '+escH(t.dueT));
+    if(t.status==='doing')meta.push(`<span class="td-doing">▶ ${A_('قيد التنفيذ','In progress')}</span>`);
+  }
+  if(t.who)meta.push('👤 '+escH(t.who));
+  if(cl)meta.push('📂 '+escH(cl.name));
+  if((t.files||[]).length)meta.push('📎 '+t.files.length);
+  if(running(t))meta.push(`<span class="tk-run">⏱ ${fMin(m)}</span>`);else if(m&&!done)meta.push('⏱ '+fMin(m));
+  if(t.desc&&!done)meta.push('📝');
+  return `<div class="td-row${done?' is-done':''}${SEL.has(t.id)?' sel':''}" data-tk-open="${t.id}" style="--tc:${c}">
+    ${V.selMode?`<input type="checkbox" class="tk-ck" data-tk-sel="${t.id}"${SEL.has(t.id)?' checked':''} aria-label="${A_('تحديد','Select')}">`:''}<button type="button" class="td-ck" data-tk-done="${t.id}" aria-label="${done?A_('إعادة فتح','Reopen'):A_('تم','Mark done')}" title="${done?A_('إعادة فتح','Reopen'):A_('تم','Mark done')}">${CHK}</button>
+    <div class="td-main"><div class="td-t">${escH(t.title||A_('بدون عنوان','Untitled'))}</div>${meta.length?`<div class="td-m">${meta.join('<i class="td-sep">·</i>')}</div>`:''}</div>
+    ${t.pr!=='none'||t.color?`<span class="td-pr" style="background:${c}" title="${t.color?A_('لون مخصص','Custom color'):prL(t.pr)}"></span>`:''}
+    ${done?'':`<button type="button" class="td-x" data-tk-arch="${t.id}" aria-label="${A_('أرشفة','Archive')}" title="${A_('أرشفة','Archive')}">🗄</button>`}</div>`;
+}
+function summaryH(){
+  const td=todayISO(),W=weekRange(td),A=T().filter(t=>!t.archived);
+  const open=A.filter(t=>t.status!=='done'),od=open.filter(t=>isOverdue(t)),tdy=open.filter(t=>t.due===td&&!isOverdue(t)),wk=open.filter(t=>t.due&&t.due>td&&t.due<=W.to);
+  const doneTd=A.filter(t=>t.doneAt&&todayISO(new Date(t.doneAt))===td),doneWk=A.filter(t=>t.doneAt&&todayISO(new Date(t.doneAt))>=W.from);
+  const plan=doneTd.length+tdy.length+od.length,p=plan?doneTd.length/plan:0;
+  const next=open.slice().sort((a,b)=>{const r=x=>x.due?(isOverdue(x)?0:x.due===td?1:2):3;return r(a)-r(b)||byDatePr(a,b)})[0];
+  const st=(ic,l,n,go,cls)=>`<button type="button" class="td-stat${cls?' '+cls:''}" ${go?`data-tk-jump="${go}"`:''}><b>${n}</b><span>${ic} ${l}</span></button>`;
+  return `<section class="td-sum"><div class="td-sum-h"><div><b>${A_('ملخص اليوم','Today’s summary')}</b><span>${escH(new Date().toLocaleDateString(loc(),{weekday:'long',day:'numeric',month:'long'}))}</span></div>${plan?`<div class="td-ring" style="--p:${Math.round(p*100)}"><span>${Math.round(p*100)}%</span></div>`:''}</div>
+    <div class="td-stats">${st('⚠',A_('متأخرة','Overdue'),od.length,'overdue',od.length?'bad':'')}${st('📅',A_('اليوم','Today'),tdy.length,'today')}${st('🗓',A_('هذا الأسبوع','This week'),wk.length,'week')}${st('✓',A_('أُنجزت اليوم','Done today'),doneTd.length,'',doneTd.length?'good':'')}</div>
+    ${plan?`<div class="td-bar"><i style="width:${(p*100).toFixed(1)}%"></i></div><div class="td-sub">${A_(`أنجزت ${doneTd.length} من ${plan} مهام لليوم`,`${doneTd.length} of ${plan} done for today`)}${doneWk.length?` · ${A_('هذا الأسبوع','this week')} ${doneWk.length} ✓`:''}</div>`:''}
+    ${next?`<button type="button" class="td-next" data-tk-open="${next.id}" style="--tc:${colorOf(next)}"><span>🎯 ${A_('ابدأ بـ','Start with')}</span><b>${escH(next.title)}</b><small>${next.due?(isOverdue(next)?A_('متأخرة','Overdue'):next.due===td?A_('اليوم','Today'):escH(dayName(next.due))):A_('بدون تاريخ','No date')}${next.pr!=='none'?' · '+prL(next.pr):''}</small></button>`:(open.length?'':`<div class="td-sub" style="margin-top:.4rem">🎉 ${A_('لا توجد مهام مفتوحة — يوم رائع!','No open tasks — great job!')}</div>`)}</section>`;
+}
+function addH(){
+  const qd=[['today',A_('اليوم','Today')],['tomorrow',A_('غدًا','Tomorrow')],['',A_('بدون تاريخ','No date')]];
+  return `<form class="td-add" data-tk-quick autocomplete="off"><div class="td-add-row"><span class="td-plus" aria-hidden="true">+</span><input name="t" data-tk-qt value="${escH(V.qtx)}" placeholder="${A_('أضف مهمة… ثم Enter','Add a task… then Enter')}" maxlength="200" aria-label="${A_('مهمة جديدة','New task')}"><button class="btn-gold" type="submit">${A_('إضافة','Add')}</button></div>
+  <div class="td-opts"><div class="td-seg" role="group" aria-label="${A_('التاريخ','Date')}">${qd.map(([v,l])=>`<button type="button" class="${V.qd===v?'on':''}" data-qd="${v}">${l}</button>`).join('')}<label class="${/^\d{4}/.test(V.qd)?'on':''}" title="${A_('تاريخ آخر','Other date')}">📅${/^\d{4}/.test(V.qd)?' '+escH(dayName(V.qd)):''}<input type="date" data-qdate value="${/^\d{4}/.test(V.qd)?V.qd:''}" aria-label="${A_('تاريخ آخر','Other date')}"></label></div>
+  <div class="td-dots" role="group" aria-label="${A_('الأولوية','Priority')}">${PK.map(k=>`<button type="button" class="${V.qp===k?'on':''}" data-qp="${k}" style="--c:${PRI[k].c}" title="${prL(k)}" aria-label="${prL(k)}"><i></i></button>`).join('')}<span>${prL(V.qp)}</span></div>
+  <button type="button" class="td-more" data-tk-new>${A_('تفاصيل أكثر…','More details…')}</button></div></form>`;
+}
+function toolH(){
+  const n=[V.pc!=='all',V.who!=='all',V.cl!=='all'].filter(Boolean).length;
+  const W=whos().filter(w=>T().some(t=>t.who===w)),CL=clients.filter(c=>T().some(t=>t.clientId===c.id));
+  const sel=(id,cur,opts)=>`<label class="f-sel"><select class="bz-in" data-tk-f="${id}">${opts.map(([v,l])=>`<option value="${escH(v)}"${String(v)===String(cur)?' selected':''}>${l}</option>`).join('')}</select></label>`;
+  return `<div class="td-tool">${fSearch('tk-q',V.q,A_('ابحث…','Search…'))}<button type="button" class="btn-sm${V.selMode?' on':''}" data-tk-selmode aria-pressed="${V.selMode}">☑ ${V.selMode?A_('إنهاء التحديد','Done selecting'):A_('تحديد','Select')}</button><button type="button" class="btn-sm${n||V.fopen?' on':''}" data-tk-filters aria-expanded="${V.fopen}">⚙ ${A_('فلترة','Filter')}${n?` (${n})`:''}</button></div>
+  ${V.fopen?`<div class="flt td-fp">${W.length?sel('who',V.who,[['all',A_('كل المسؤولين','All owners')],...W.map(w=>[w,escH(w)])]):''}${CL.length?sel('cl',V.cl,[['all',A_('كل العملاء','All clients')],...CL.map(c=>[String(c.id),escH(c.name)])]):''}${n?`<button class="btn-sm" data-tk-clear>✕ ${A_('مسح','Clear')}</button>`:''}<div style="flex-basis:100%"></div>${pcChips(V.pc,'data-tk-pc')}<div style="flex-basis:100%"></div>${legend()}</div>`:''}`;
+}
+function todoV(){
+  const L=openSet(),G2={};L.forEach(t=>(G2[bucket(t)]=G2[bucket(t)]||[]).push(t));
+  if(!L.length)return noRes(T().some(t=>!t.archived&&t.status!=='done')?A_('لا توجد مهام بهذا البحث.','No tasks match.'):A_('لا توجد مهام مفتوحة. أضف مهمة بالأعلى ✍️','No open tasks. Add one above ✍️'));
+  return BK.filter(([k])=>G2[k]).map(([k,ic,ar,en])=>`<section class="td-grp td-g-${k}" id="tdg-${k}"><h3>${ic} ${A_(ar,en)}<small>${G2[k].length}</small>${k==='today'?`<span>${escH(dayName(todayISO()))}</span>`:k==='tomorrow'?`<span>${escH(dayName(addD(todayISO(),1)))}</span>`:''}</h3><div class="td-list">${G2[k].map(t=>todoRow(t,k)).join('')}</div></section>`).join('');
+}
+function doneV(){
+  const L=doneSet(),td=todayISO(),y=addD(td,-1),w=addD(td,-7),G2={};
+  const b=t=>{const d=todayISO(new Date(t.doneAt));return d===td?'d0':d===y?'d1':d>w?'d7':'old'};
+  L.forEach(t=>(G2[b(t)]=G2[b(t)]||[]).push(t));
+  const old=L.filter(t=>b(t)==='old'||b(t)==='d7');
+  const H=[['d0',A_('أُنجزت اليوم','Completed today')],['d1',A_('أمس','Yesterday')],['d7',A_('آخر 7 أيام','Last 7 days')],['old',A_('أقدم','Older')]];
+  return `<div class="td-donehead"><p class="pr-hint" style="margin:0">${A_('اضغط ✓ لإعادة أي مهمة إلى القائمة.','Tap ✓ to move a task back to the list.')}</p>${old.length?`<button class="btn-sm" data-tk-archdone>🗄 ${A_(`أرشفة المنجزة قبل اليوم وأمس (${old.length})`,`Archive older completed (${old.length})`)}</button>`:''}</div>`+
+   (L.length?H.filter(([k])=>G2[k]).map(([k,l])=>`<section class="td-grp"><h3>✓ ${l}<small>${G2[k].length}</small></h3><div class="td-list">${G2[k].map(t=>todoRow(t,'done')).join('')}</div></section>`).join(''):noRes(A_('لا توجد مهام منجزة بعد.','No completed tasks yet.')));
+}
 function render(){
   const R=G('tasks-root');if(!R)return;
   const page=G('page-tasks');if(!page||!page.classList.contains('active')){renderHome();return}
-  const tabs=[['list','☰ '+A_('قائمة','List')],['board','▦ '+A_('لوحة','Board')],['cal','📅 '+A_('تقويم','Calendar')],['archive','🗄 '+A_('الأرشيف','Archive')+` <small>${T().filter(t=>t.archived).length}</small>`],['reports','📊 '+A_('التقارير','Reports')]];
-  const ae=document.activeElement,fid=ae&&ae.id,pos=ae&&ae.selectionStart;
-  let h=`<div class="section-header"><h2>${A_('مهام الإدارة','Management tasks')}</h2><div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn-gold" data-tk-new>+ ${A_('مهمة جديدة','New task')}</button><button class="btn-outline" data-tk-view="reports">📊 ${A_('التقارير','Reports')}</button><button class="btn-outline" data-tk-view="archive">🗄 ${A_('الأرشيف','Archive')}</button></div></div>`;
-  if(V.view!=='reports'&&V.view!=='archive')h+=`<form class="tk-quick" data-tk-quick><input class="bz-in" name="t" placeholder="${A_('اكتب مهمة سريعة واضغط Enter…','Type a quick task and press Enter…')}" maxlength="200" aria-label="${A_('مهمة سريعة','Quick task')}"><select class="bz-in" name="p" aria-label="${A_('الأولوية','Priority')}">${PK.map(k=>`<option value="${k}"${k==='none'?' selected':''}>${PRI[k].e} ${prL(k)}</option>`).join('')}</select><input type="date" class="bz-in" name="d" aria-label="${A_('الموعد','Due date')}"><button class="btn-gold" type="submit">${A_('إضافة','Add')}</button></form>`;
-  h+=kpis();
-  h+=`<div class="tk-tabs" role="tablist">${tabs.map(([k,l])=>`<button type="button" role="tab" aria-selected="${V.view===k}" class="tk-tab${V.view===k?' on':''}" data-tk-view="${k}">${l}</button>`).join('')}</div>`;
-  if(V.view==='list'||V.view==='board'||V.view==='cal')h+=filtersH()+legend();
-  h+=V.view==='board'?boardV():V.view==='cal'?calV():V.view==='archive'?archV():V.view==='reports'?repV():listV();
+  const nDone=T().filter(t=>!t.archived&&t.status==='done').length,nOpen=T().filter(t=>!t.archived&&t.status!=='done').length,nArch=T().filter(t=>t.archived).length;
+  const main=[['list','☰ '+A_('المهام','Tasks'),nOpen],['done','✓ '+A_('المنجزة','Done'),nDone]];
+  const more=[['cal','📅 '+A_('التقويم','Calendar')],['board','▦ '+A_('اللوحة','Board')],['archive','🗄 '+A_('الأرشيف','Archive')+(nArch?` (${nArch})`:'')],['reports','📊 '+A_('التقارير','Reports')]];
+  const ae=document.activeElement,fid=ae&&(ae.id||(ae.dataset&&ae.dataset.tkQt!==undefined?'__qt':'')),pos=ae&&ae.selectionStart;
+  let h=`<div class="td-head"><h2>${A_('مهامي','My tasks')}</h2><div class="td-tabs" role="tablist">${main.map(([k,l,n])=>`<button type="button" role="tab" aria-selected="${V.view===k}" class="${V.view===k?'on':''}" data-tk-view="${k}">${l} <small>${n}</small></button>`).join('')}</div>
+    <div class="td-links" role="group" aria-label="${A_('عروض أخرى','Other views')}">${more.map(([k,l])=>`<button type="button" class="${V.view===k?'on':''}" data-tk-view="${k}">${l}</button>`).join('')}</div></div>`;
+  if(V.view==='list')h+=summaryH()+addH()+toolH()+bulkBar(false)+todoV();
+  else if(V.view==='done')h+=toolH()+bulkBar(false)+doneV();
+  else if(V.view==='board'||V.view==='cal')h+=filtersH()+legend()+(V.view==='board'?boardV():calV());
+  else h+=V.view==='archive'?archV():repV();
   R.innerHTML=h;
-  if(fid){const e=G(fid);if(e){e.focus();try{if(pos!=null)e.setSelectionRange(pos,pos)}catch(x){}}}
+  if(fid==='__qt'){const e=R.querySelector('[data-tk-qt]');if(e){e.focus();try{e.setSelectionRange(pos,pos)}catch(x){}}}
+  else if(fid){const e=G(fid);if(e){e.focus();try{if(pos!=null)e.setSelectionRange(pos,pos)}catch(x){}}}
   renderHome();
+}
+// إشعار مع «تراجع» بعد إنجاز مهمة
+function undoToast(t,prev){
+  let el=G('tk-toast');if(!el){el=document.createElement('div');el.id='tk-toast';el.className='td-toast';el.setAttribute('role','status');document.body.appendChild(el)}
+  el.innerHTML=`<span>✓ ${A_('أُنجزت — نُقلت إلى «المنجزة»','Done — moved to “Done”')}</span><button type="button" data-tk-undo="${t.id}" data-prev="${prev}">${A_('تراجع','Undo')}</button>`;
+  el.hidden=false;clearTimeout(undoToast.t);undoToast.t=setTimeout(()=>{el.hidden=true},5000);
 }
 function renderHome(){
   const box=G('home-tasks');if(!box)return;
@@ -4202,17 +4382,28 @@ async function xls(btn){
 // ═════════════ الأحداث ═════════════
 function commit(t,k,v){if(V.isNew){t[k]=k==='clientId'?(v?+v:null):v;if(k==='pr')t.color=null;drawEd();return}if(setField(t,k,v)){persist();drawEd();render()}}
 document.addEventListener('click',async e=>{
-  const el=e.target.closest('[data-tk-new],[data-tk-view],[data-tk-open],[data-tk-done],[data-tk-arch],[data-tk-restore],[data-tk-purge],[data-tk-bulk],[data-tk-pc],[data-tk-apc],[data-tk-clear],[data-tk-kpi],[data-tk-mv],[data-tk-cal],[data-tk-newday],[data-tk-day],[data-tk-rep],[data-tk-rp],[data-tk-pdf],[data-tk-xls],[data-tk-print],[data-tk-close],[data-tk-save],[data-tk-set],[data-tk-timer],[data-tk-link],[data-tk-fopen],[data-tk-fdel],[data-tk-client],.tk-ov');
+  const el=e.target.closest('[data-tk-new],[data-tk-view],[data-tk-open],[data-tk-done],[data-tk-arch],[data-tk-restore],[data-tk-purge],[data-tk-bulk],[data-tk-pc],[data-tk-apc],[data-tk-clear],[data-tk-kpi],[data-tk-mv],[data-tk-cal],[data-tk-newday],[data-tk-day],[data-tk-rep],[data-tk-rp],[data-tk-pdf],[data-tk-xls],[data-tk-print],[data-tk-close],[data-tk-save],[data-tk-set],[data-tk-timer],[data-tk-link],[data-tk-fopen],[data-tk-fdel],[data-tk-client],[data-tk-undo],[data-qd],[data-qp],[data-tk-filters],[data-tk-selmode],[data-tk-jump],[data-tk-archdone],.tk-ov');
   if(!el)return;const d=el.dataset;
   if(el.classList.contains('tk-ov')){if(e.target===el)closeEd();return}
   if(e.target.closest('.tk-ck'))return;
   if(d.tkNew!==undefined){openEd(null);return}
-  if(d.tkView){V.view=d.tkView;SEL.clear();saveUI();render();return}
-  if(d.tkDone){e.stopPropagation();const t=T().find(x=>x.id===d.tkDone);if(t){setField(t,'status',t.status==='done'?'todo':'done');persist();render();if(V.open===t.id)drawEd();note(t.status==='done'?A_('✓ أُنجزت المهمة','✓ Task completed'):A_('أُعيد فتح المهمة','Task reopened'))}return}
+  if(d.tkView){V.view=d.tkView;SEL.clear();V.selMode=false;saveUI();render();return}
+  if(d.tkDone){e.stopPropagation();const t=T().find(x=>x.id===d.tkDone);if(!t)return;
+    if(t.status!=='done'){const prev=t.status,row=el.closest('.td-row,.tk-row');if(row){row.classList.add('td-anim');el.disabled=true}
+      setTimeout(()=>{setField(t,'status','done');persist();render();if(V.open===t.id)drawEd();undoToast(t,prev)},row?420:0)}
+    else{setField(t,'status','todo');persist();render();if(V.open===t.id)drawEd();note(A_('↩ أُعيدت المهمة إلى القائمة','↩ Task moved back to the list'))}
+    return}
+  if(d.tkUndo){const t=T().find(x=>x.id===d.tkUndo);if(t){setField(t,'status',d.prev||'todo');persist();render();if(V.open===t.id)drawEd()}const el2=G('tk-toast');if(el2)el2.hidden=true;return}
+  if(d.qd!==undefined){V.qd=d.qd;render();const q=document.querySelector('[data-tk-qt]');if(q)q.focus();return}
+  if(d.qp){V.qp=d.qp;render();const q=document.querySelector('[data-tk-qt]');if(q)q.focus();return}
+  if(d.tkFilters!==undefined){V.fopen=!V.fopen;render();return}
+  if(d.tkSelmode!==undefined){V.selMode=!V.selMode;if(!V.selMode)SEL.clear();render();return}
+  if(d.tkJump){const g=G('tdg-'+d.tkJump);if(g){g.scrollIntoView({behavior:'smooth',block:'start'});g.classList.add('flash');setTimeout(()=>g.classList.remove('flash'),1200)}return}
+  if(d.tkArchdone!==undefined){const td=todayISO(),y=addD(td,-1),ids=T().filter(t=>!t.archived&&t.status==='done'&&t.doneAt&&todayISO(new Date(t.doneAt))<y).map(t=>t.id);if(!ids.length||!confirm(A_(`أرشفة ${ids.length} مهمة منجزة؟ تبقى محفوظة في الأرشيف.`,`Archive ${ids.length} completed task(s)? They stay in the archive.`)))return;const n=archive(ids,true);render();note(A_(`🗄 أُرشفت ${n} مهمة`,`🗄 ${n} task(s) archived`));return}
   if(d.tkArch){e.stopPropagation();const t=T().find(x=>x.id===d.tkArch);if(!t||!confirm(A_(`أرشفة «${t.title}»؟ تبقى محفوظة بكل تفاصيلها ويمكن استعادتها.`,`Archive “${t.title}”? It keeps all details and can be restored.`)))return;archive([t.id],true);if(V.open===t.id)closeEd();else render();note(A_('🗄 أُرشفت المهمة','🗄 Task archived'));return}
   if(d.tkRestore){e.stopPropagation();archive([d.tkRestore],false);if(V.open===d.tkRestore)drawEd();render();note(A_('↺ أُعيدت المهمة إلى المهام النشطة','↺ Task restored'));return}
   if(d.tkPurge){e.stopPropagation();const t=T().find(x=>x.id===d.tkPurge);if(!t||!confirm(A_(`حذف «${t.title}» نهائيًا مع مرفقاتها وسجلها؟ لا يمكن التراجع.`,`Permanently delete “${t.title}” with its attachments and history? This cannot be undone.`)))return;await purge([t.id]);if(V.open===t.id)closeEd();else render();note(A_('حُذفت المهمة نهائيًا','Task deleted permanently'));return}
-  if(d.tkBulk){const arch=V.view==='archive',vis=filtered(arch).map(t=>t.id),ids=[...SEL];
+  if(d.tkBulk){const arch=V.view==='archive',vis=(V.view==='list'?openSet():V.view==='done'?doneSet():filtered(arch)).map(t=>t.id),ids=[...SEL];
     if(d.tkBulk==='all'){vis.forEach(i=>SEL.add(i));render();return}
     if(d.tkBulk==='none'){SEL.clear();render();return}
     if(d.tkBulk==='archive'){if(!confirm(A_(`أرشفة ${ids.length} مهمة؟`,`Archive ${ids.length} task(s)?`)))return;const n=archive(ids,true);note(A_(`🗄 أُرشفت ${n} مهمة`,`🗄 ${n} task(s) archived`));render();return}
@@ -4251,6 +4442,7 @@ document.addEventListener('change',e=>{
   if(d.tkF){V[d.tkF]=x.value;saveUI();render();return}
   if(d.tkBulkpr){if(!x.value)return;[...SEL].forEach(i=>{const t=T().find(y=>y.id===i);if(t)setField(t,'pr',x.value)});SEL.clear();persist();render();return}
   if(d.tkRpd!==undefined){if(x.value){V.ref=x.value;render()}return}
+  if(d.qdate!==undefined){if(x.value){V.qd=x.value;render();const q=document.querySelector('[data-tk-qt]');if(q)q.focus()}return}
   const t=edTask();if(!t)return;
   if(d.tkE){commit(t,d.tkE,d.tkE==='title'?x.value.trim():x.value);return}
   if(d.tkColor!==undefined){commit(t,'color',x.value.toLowerCase());return}
@@ -4259,11 +4451,13 @@ document.addEventListener('change',e=>{
 document.addEventListener('input',e=>{const x=e.target;
   if(x.id==='tk-q'){V.q=x.value;clearTimeout(V.qt);V.qt=setTimeout(render,150);return}
   if(x.id==='tk-aq'){V.aq=x.value;clearTimeout(V.qt);V.qt=setTimeout(render,150);return}
+  if(x.dataset&&x.dataset.tkQt!==undefined){V.qtx=x.value;return}
   if(V.isNew&&DRAFT&&x.dataset&&x.dataset.tkE)DRAFT[x.dataset.tkE]=x.value;
 });
 document.addEventListener('submit',e=>{const f=e.target;if(!f.matches('[data-tk-quick]'))return;e.preventDefault();
   const ti=f.t.value.trim();if(!ti){f.t.focus();return}
-  newTask({title:ti,pr:f.p.value,due:f.d.value});persist();render();const q=document.querySelector('[data-tk-quick] input[name="t"]');if(q)q.focus();note(A_('✓ أُضيفت المهمة','✓ Task added'))});
+  const td=todayISO(),due=V.qd==='today'?td:V.qd==='tomorrow'?addD(td,1):(/^\d{4}-\d\d-\d\d$/.test(V.qd)?V.qd:'');
+  newTask({title:ti,pr:V.qp,due});V.qtx='';persist();render();const q=document.querySelector('[data-tk-qt]');if(q)q.focus();note(A_('✓ أُضيفت المهمة','✓ Task added'))});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&V.open){const ov=G('tk-ov');if(ov&&!ov.hidden){e.preventDefault();closeEd()}}});
 // السحب والإفلات في اللوحة
 document.addEventListener('dragstart',e=>{const c=e.target.closest&&e.target.closest('[data-tk-drag]');if(c){e.dataTransfer.setData('text/plain',c.dataset.tkDrag);e.dataTransfer.effectAllowed='move';c.classList.add('dragging')}});
