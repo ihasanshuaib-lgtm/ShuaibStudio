@@ -504,4 +504,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-11-08** — **تحكم كامل بما يظهر في بوابة العميل**: في لوحة البوابة (`pay.html`، `portalPanel`) مربع «ما يظهر للعميل» بصناديق اختيار لكل عميل (`c.portal.show`، القائمة `PSHOW`): الجلسة القادمة، الجلسات والتسليم، معاينة الصور، رابط الصور الكامل، عروض الأسعار، الفواتير، تفاصيل البنود، المدفوع والمتبقي. الافتراضي الكل ظاهر. `portalData` يحذف الأقسام المخفية من الحمولة فعليًا (الجلسات، المعاينة، الرابط، العروض، الفواتير، البنود) ويرسل `show`؛ أما «الجلسة القادمة» و«المدفوع والمتبقي» فتُخفيان في `portal.html` (`on(k)`) لأن بياناتهما مشتركة. التبديل يرفع التحديث فورًا (`pt-show`). فُحصت الصياغة فقط.
 
+- **2026-11-08** — زر **«🎛 تحكم بالبوابة»** على كل بطاقة عميل في صفحة العملاء (`ptControls(id)`): نافذة بنفس صناديق `PSHOW` (تُنشئ البوابة إن لم توجد) مع زر معاينة البوابة، بدل أن تكون الخيارات داخل ملف العميل فقط.
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.

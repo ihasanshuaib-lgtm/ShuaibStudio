@@ -1607,6 +1607,7 @@ function renderClients(){
         <button class="btn-gold" style="padding:.5rem 1rem;font-size:.84rem" onclick="event.stopPropagation();BZ.openClient(${cl.id})">📂 ${A_('فتح ملف العميل','Open client file')}</button>
         ${invoices.some(i=>i._clientId===cl.id&&i.fromBooking&&i.status==='draft')?`<span class="bz-health h-warn" style="font-size:.72rem"><i></i>📥 ${A_('حجز جديد','New booking')}</span>`:''}
         ${cl.portal&&cl.portal.on?`<span class="bz-health h-good" style="font-size:.72rem"><i></i>${A_('البوابة','Portal')}</span>`:''}
+        <button class="btn-sm" onclick="event.stopPropagation();ptControls(${cl.id})">🎛 ${A_('تحكم بالبوابة','Portal controls')}</button>
         <button class="btn-sm danger" style="margin-inline-start:auto" onclick="event.stopPropagation();deleteClient(${cl.id})" aria-label="${A_('حذف','Delete')}">✕</button>
       </div>
     </div>`}).join('')+`</div>`;
@@ -3516,6 +3517,23 @@ function openClient(id){
   const nb=document.querySelector('.nav-links button[data-page="clients"]');if(nb)nb.classList.add('active');
 }
 const portalPanel=id=>openClient(id);
+function ptControls(id){
+  const c=clients.find(x=>x.id===+id);if(!c)return;
+  if(!(c.portal&&c.portal.on&&c.portal.token)){c.portal=Object.assign(c.portal||{},{on:true,token:newToken(),pin:false,created:todayISO()});save();pushPortals();renderClients()}
+  const old=document.getElementById('ptctl');if(old)old.remove();
+  const m=document.createElement('div');m.id='ptctl';
+  m.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.55);display:grid;place-items:center;padding:16px';
+  const sh=pshow(c);
+  m.innerHTML=`<div style="background:#fff;border-radius:16px;padding:18px;width:min(440px,100%);max-height:90vh;overflow:auto;color:#333">
+  <b style="font-size:1.05rem">🎛 ${A_('تحكم بصفحة','Portal controls for')} ${escH(c.name)}</b>
+  <p class="pr-hint" style="margin:.3rem 0 .8rem">${A_('اختر ما يظهر للعميل في بوابته. التغيير يُرسل فورًا.','Choose what this client sees. Changes apply immediately.')}</p>
+  <div style="display:grid;gap:.55rem">${PSHOW.map(x=>`<label style="display:flex;gap:.55rem;align-items:center;cursor:pointer;padding:.5rem .6rem;border:1px solid #e5ded4;border-radius:10px"><input type="checkbox" data-bz="pt-show" data-id="${c.id}" data-k="${x[0]}"${sh[x[0]]?' checked':''}> <span>${x[1]} ${A_(x[2],x[3])}</span></label>`).join('')}</div>
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.9rem"><button class="btn-sm" data-bz="pt-open" data-id="${c.id}">👁 ${A_('معاينة البوابة','Preview portal')}</button><button class="btn-gold" id="ptctl-x">${A_('تم','Done')}</button></div></div>`;
+  document.body.appendChild(m);
+  m.querySelector('#ptctl-x').onclick=()=>m.remove();
+  m.addEventListener('click',e=>{if(e.target===m)m.remove()});
+}
+window.ptControls=ptControls;
 function ensurePortal(id){const c=clients.find(x=>x.id===+id);if(c&&!(c.portal&&c.portal.on&&c.portal.token)){c.portal=Object.assign(c.portal||{},{on:true,token:newToken(),pin:false,created:todayISO()});save();pushPortals()}}
 const hubSessions=c=>PR.data().sessions.filter(s=>(sessClient(s)||{}).id===c.id).sort((a,b)=>((b.d||'')+(b.t||'')).localeCompare((a.d||'')+(a.t||'')));
 const hubQuotes=c=>{const low=String(c.name||'').trim().toLowerCase();return B.quotes.filter(q=>q.clientId===c.id||(!q.clientId&&String(q.client||'').trim().toLowerCase()===low)).sort((a,b)=>(b.date||'').localeCompare(a.date||''))};
