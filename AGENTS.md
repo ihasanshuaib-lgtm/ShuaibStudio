@@ -514,4 +514,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-11-08** — زر **«🗄 أرشفة العميل»** على كل بطاقة عميل (`archiveClient(id)`): يضع `c.archived=true` ويخفي العميل من قائمة العملاء وينقلك إلى صفحة الأرشيف؛ والأرشيف صار يعرض المؤرشفين يدويًا + من تعاملنا معه مرة واحدة، وفي بطاقة المؤرشف يدويًا زر «↩ إلغاء الأرشفة» (`unarchiveClient`). الحقل `archived` يُحفظ مع العميل.
 
+- **2026-11-08** — **صفحة المهام (`main.html`، `TK`): التاريخ صار ثلاثة حقول** في نافذة المهمة بدل «الموعد»: **تاريخ البدء** (`t.start`) ← **عدد الأيام** (`t.days`) ← **تاريخ التسليم** (`t.due`، نفس الحقل القديم فتبقى التصنيفات والتأخير والتقويم والتقارير كما هي). مربوطة عبر `linkDates()`: البدء + الأيام = التسليم؛ تغيير التسليم مع وجود بدء يعيد حساب الأيام؛ إدخال الأيام مع تسليم بلا بدء يحسب البدء. تُسجَّل في سجل التعديلات، وتظهر في صف المهمة (🚀 البدء · ⏳ الأيام). جُرّبت الدالة بـnode والصياغة بـ`new Function`، لم يُراجَع بصريًا.
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.
