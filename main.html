@@ -892,6 +892,14 @@ html[data-theme="dark"] .tk-ov{background:rgba(0,0,0,.6)}
 .td-dots button.on{border-color:var(--c)}
 .td-dots span{font-size:.74rem;color:var(--muted);font-weight:600;margin-inline-start:.2rem}
 .td-more{margin-inline-start:auto;border:0;background:transparent;font:inherit;font-size:.76rem;color:var(--rose-d);font-weight:700;cursor:pointer}
+.td-types{display:flex;gap:.3rem;flex-wrap:wrap;margin-top:.45rem}
+.td-types button{border:1px solid var(--border);background:transparent;font:inherit;font-size:.76rem;font-weight:700;color:var(--muted);padding:.25rem .7rem;border-radius:999px;cursor:pointer}
+.td-types button small{font-weight:600;opacity:.8}
+.td-types button.on{background:var(--btn-sage);color:#fff;border-color:transparent}
+.ty-row{display:grid;grid-template-columns:minmax(0,2fr) 90px minmax(0,1.4fr) auto;gap:.5rem;align-items:center;padding:.55rem 0;border-bottom:1px dashed var(--border)}
+.ty-row:last-child{border-bottom:0}
+.ty-row .ty-act{display:flex;gap:.35rem}
+@media(max-width:640px){.ty-row{grid-template-columns:1fr 80px}.ty-row .ty-who{grid-column:1/-1}.ty-row .ty-act{grid-column:1/-1}}
 .td-tool{display:flex;gap:.5rem;align-items:center;margin-bottom:.6rem}.td-tool .f-search{flex:1}
 .td-tool .f-search{display:flex;align-items:center;gap:.5rem;padding:.5rem .9rem;border-radius:999px;background:var(--off);box-shadow:var(--sunk);border:1px solid var(--border)}
 .td-tool .f-search input{flex:1;min-width:0;border:0!important;background:transparent!important;box-shadow:none!important;outline:none;font:inherit;font-size:.92rem;color:var(--text);padding:0!important}
@@ -4028,6 +4036,8 @@ const TK=(()=>{
 const KEY='ss_tasks',G=id=>document.getElementById(id);
 let D;try{D=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){D={}}
 if(!Array.isArray(D.tasks))D.tasks=[];
+if(!Array.isArray(D.types))D.types=[];
+const TY=()=>D.types,tyOf=id=>D.types.find(x=>x.id===id);
 const T=()=>D.tasks;
 const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){note(A_('تعذّر الحفظ — المساحة ممتلئة','Could not save — storage full'))}syncTouch()};
 const uid=()=>'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -4056,8 +4066,8 @@ const fMin=m=>{m=Math.max(0,Math.round(m||0));const h=Math.floor(m/60),r=m%60;re
 
 // ── السجل ──
 function log(t,k,from,to){(t.log=t.log||[]).push({at:nowISO(),k,from:from==null?'':String(from),to:to==null?'':String(to)});t.updated=nowISO()}
-const LOGL={create:['أُنشئت المهمة','Task created'],title:['تغيير العنوان','Title changed'],desc:['تعديل الوصف','Description edited'],status:['تغيير الحالة','Status changed'],pr:['تغيير الأولوية','Priority changed'],color:['تغيير اللون','Color changed'],due:['تغيير تاريخ التسليم','Delivery date changed'],start:['تغيير تاريخ البدء','Start date changed'],days:['تغيير عدد الأيام','Number of days changed'],who:['تغيير المسؤول','Owner changed'],client:['ربط عميل','Client linked'],file:['إضافة مرفق','Attachment added'],unfile:['حذف مرفق','Attachment removed'],archive:['أُرشفت','Archived'],restore:['استُعيدت من الأرشيف','Restored'],timer:['تسجيل وقت','Time logged']};
-function logVal(k,v){if(v==='')return '—';if(k==='status')return stL(v);if(k==='pr')return prL(v);if(k==='client'){const c=clients.find(x=>String(x.id)===v);return c?c.name:'—'}if(k==='color')return v.startsWith('#')?v:A_('حسب الأولوية','By priority');if(k==='desc')return '';return v}
+const LOGL={create:['أُنشئت المهمة','Task created'],title:['تغيير العنوان','Title changed'],desc:['تعديل الوصف','Description edited'],status:['تغيير الحالة','Status changed'],pr:['تغيير الأولوية','Priority changed'],color:['تغيير اللون','Color changed'],type:['تغيير نوع المهمة','Task type changed'],due:['تغيير تاريخ التسليم','Delivery date changed'],start:['تغيير تاريخ البدء','Start date changed'],days:['تغيير عدد الأيام','Number of days changed'],who:['تغيير المسؤول','Owner changed'],client:['ربط عميل','Client linked'],file:['إضافة مرفق','Attachment added'],unfile:['حذف مرفق','Attachment removed'],archive:['أُرشفت','Archived'],restore:['استُعيدت من الأرشيف','Restored'],timer:['تسجيل وقت','Time logged']};
+function logVal(k,v){if(v==='')return '—';if(k==='status')return stL(v);if(k==='pr')return prL(v);if(k==='client'){const c=clients.find(x=>String(x.id)===v);return c?c.name:'—'}if(k==='type'){const y=tyOf(v);return y?y.name:'—'}if(k==='color')return v.startsWith('#')?v:A_('حسب الأولوية','By priority');if(k==='desc')return '';return v}
 
 // ── الحالة في وقت معيّن (للتقارير الدقيقة) ──
 function statusAt(t,at){if(Date.parse(t.created)>at)return null;let s='todo';(t.log||[]).forEach(l=>{if(l.k==='status'&&Date.parse(l.at)<=at)s=l.to});return s}
@@ -4072,7 +4082,7 @@ function setField(t,k,v){
   log(t,k==='clientId'?'client':k,old,v);return true;
 }
 function newTask(o){
-  const t=Object.assign({id:uid(),title:'',desc:'',status:'todo',pr:'none',color:null,due:'',dueT:'',who:'',clientId:null,created:nowISO(),updated:nowISO(),doneAt:null,archived:false,archivedAt:null,files:[],log:[],time:[]},o||{});
+  const t=Object.assign({id:uid(),title:'',desc:'',status:'todo',pr:'none',color:null,type:'',start:'',days:'',due:'',dueT:'',who:'',clientId:null,created:nowISO(),updated:nowISO(),doneAt:null,archived:false,archivedAt:null,files:[],log:[],time:[]},o||{});
   log(t,'create','',t.title);T().unshift(t);return t;
 }
 function archive(ids,on){
@@ -4117,7 +4127,7 @@ async function delFile(t,fid){
 const fSize=b=>b>1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB';
 
 // ── حالة الواجهة ──
-const V={view:'list',q:'',st:'open',pc:'all',who:'all',due:'all',cl:'all',sort:'due',cal:todayISO().slice(0,7),open:null,isNew:false,rep:'week',ref:todayISO(),aq:'',apc:'all',qd:'today',qp:'none',qtx:'',fopen:false,selMode:false,sum:'day'};
+const V={view:'list',q:'',st:'open',pc:'all',who:'all',due:'all',cl:'all',sort:'due',cal:todayISO().slice(0,7),open:null,isNew:false,rep:'week',ref:todayISO(),aq:'',apc:'all',qd:'today',qp:'none',qtx:'',fopen:false,selMode:false,sum:'day',qtype:'',tyEdit:null};
 const SEL=new Set();
 try{const s=JSON.parse(localStorage.getItem('ss_tasks_ui')||'{}');['view','sort','st','sum'].forEach(k=>{if(s[k])V[k]=s[k]})}catch(e){}
 const saveUI=()=>{try{localStorage.setItem('ss_tasks_ui',JSON.stringify({view:['list','done','cal','board'].includes(V.view)?V.view:'list',sort:V.sort,st:V.st,sum:V.sum}))}catch(e){}};
@@ -4300,6 +4310,7 @@ function editorH(t){
    <div class="tk-lbl">${A_('الأولوية','Priority')}</div><div class="tk-seg">${PK.map(k=>`<button type="button" class="tk-segb${t.pr===k?' on':''}" data-tk-set="pr" data-v="${k}" style="--pc:${PRI[k].c}"><i class="tk-dot" style="background:${PRI[k].c}"></i>${prL(k)}</button>`).join('')}</div>
    <div class="tk-lbl">${A_('اللون','Color')}</div><div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap"><label class="tk-colorbtn"><input type="color" data-tk-color value="${c}"><span style="background:${c}"></span>${t.color?A_('لون مخصص','Custom color'):A_('حسب الأولوية — اضغط لاختيار لون مخصص','By priority — tap to pick a custom color')}</label>${t.color?`<button class="btn-sm" data-tk-set="color" data-v="">↺ ${A_('رجوع للون الأولوية','Back to priority color')}</button>`:''}</div>
    <div class="bz-form" style="margin-top:.9rem">
+    <label>${A_('نوع المهمة','Task type')}<select class="bz-in" data-tk-e="type"><option value="">—</option>${TY().map(y=>`<option value="${y.id}"${y.id===t.type?' selected':''}>${escH(y.name)}${y.days!==''&&y.days!=null?' · '+escH(y.days)+' '+A_('يوم','d'):''}</option>`).join('')}</select></label>
     <label>${A_('تاريخ البدء','Start date')}<input type="date" class="bz-in" data-tk-e="start" value="${escH(t.start||'')}"></label>
     <label>${A_('عدد الأيام','Number of days')}<input type="number" min="0" max="365" step="1" inputmode="numeric" class="bz-in" data-tk-e="days" value="${escH(t.days==null?'':t.days)}" placeholder="${A_('مثال: 3','e.g. 3')}"></label>
     <label>${A_('تاريخ التسليم','Delivery date')}<input type="date" class="bz-in" data-tk-e="due" value="${escH(t.due)}"></label>
@@ -4324,7 +4335,7 @@ function editorH(t){
 let DRAFT=null;
 function openEd(id,preset){
   if(id){const t=T().find(x=>x.id===id);if(!t)return;V.open=id;V.isNew=false;DRAFT=null}
-  else{V.open='__new';V.isNew=true;DRAFT=Object.assign({id:'__new',title:'',desc:'',status:'todo',pr:'none',color:null,start:'',days:'',due:'',dueT:'',who:'',clientId:null,created:nowISO(),files:[],log:[],time:[]},preset||{})}
+  else{V.open='__new';V.isNew=true;DRAFT=Object.assign({id:'__new',title:'',desc:'',status:'todo',pr:'none',color:null,type:'',start:'',days:'',due:'',dueT:'',who:'',clientId:null,created:nowISO(),files:[],log:[],time:[]},preset||{})}
   drawEd();setTimeout(()=>{const e=document.querySelector('.tk-ed-ttl');if(e&&V.isNew)e.focus()},30);
 }
 const edTask=()=>V.isNew?DRAFT:T().find(x=>x.id===V.open);
@@ -4375,6 +4386,7 @@ function todoRow(t,bk){
   const meta=[];
   if(done){const dd=new Date(t.doneAt),old=Date.now()-dd<6*864e5;meta.push('✓ '+escH(dd.toLocaleString(loc(),old?{weekday:'short',hour:'numeric',minute:'2-digit'}:{day:'numeric',month:'short',year:'numeric'})))}
   else{
+    if(t.type&&tyOf(t.type))meta.push('🏷 '+escH(tyOf(t.type).name));
     if(t.start)meta.push('🚀 '+escH(fD(t.start)));
     if(t.days!==''&&t.days!=null)meta.push('⏳ '+escH(t.days)+' '+A_('يوم','days'));
     if(t.due&&bk!=='today'&&bk!=='tomorrow')meta.push(`<span${bk==='overdue'?' class="tk-od"':''}>📅 ${escH(dayName(t.due))}</span>`);
@@ -4423,11 +4435,13 @@ function perSum(kind,seg){
   <button type="button" class="td-full" data-tk-fullrep="${kind}">📊 ${wk?A_('التقرير الأسبوعي الكامل','Full weekly report'):A_('التقرير الشهري الكامل','Full monthly report')} ${A_('←','→')}</button></section>`;
 }
 function addH(){
+  if(V.qtype&&!tyOf(V.qtype))V.qtype='';
   const qd=[['today',A_('اليوم','Today')],['tomorrow',A_('غدًا','Tomorrow')],['',A_('بدون تاريخ','No date')]];
   return `<form class="td-add" data-tk-quick autocomplete="off"><div class="td-add-row"><span class="td-plus" aria-hidden="true">+</span><input name="t" data-tk-qt value="${escH(V.qtx)}" placeholder="${A_('أضف مهمة… ثم Enter','Add a task… then Enter')}" maxlength="200" aria-label="${A_('مهمة جديدة','New task')}"><button class="btn-gold" type="submit">${A_('إضافة','Add')}</button></div>
   <div class="td-opts"><div class="td-seg" role="group" aria-label="${A_('التاريخ','Date')}">${qd.map(([v,l])=>`<button type="button" class="${V.qd===v?'on':''}" data-qd="${v}">${l}</button>`).join('')}<label class="${/^\d{4}/.test(V.qd)?'on':''}" title="${A_('تاريخ آخر','Other date')}">📅${/^\d{4}/.test(V.qd)?' '+escH(dayName(V.qd)):''}<input type="date" data-qdate value="${/^\d{4}/.test(V.qd)?V.qd:''}" aria-label="${A_('تاريخ آخر','Other date')}"></label></div>
   <div class="td-dots" role="group" aria-label="${A_('الأولوية','Priority')}">${PK.map(k=>`<button type="button" class="${V.qp===k?'on':''}" data-qp="${k}" style="--c:${PRI[k].c}" title="${prL(k)}" aria-label="${prL(k)}"><i></i></button>`).join('')}<span>${prL(V.qp)}</span></div>
-  <button type="button" class="td-more" data-tk-new>${A_('تفاصيل أكثر…','More details…')}</button></div></form>`;
+  <button type="button" class="td-more" data-tk-new>${A_('تفاصيل أكثر…','More details…')}</button></div>
+  ${TY().length?`<div class="td-types" role="group" aria-label="${A_('نوع المهمة','Task type')}">${TY().map(y=>`<button type="button" class="${V.qtype===y.id?'on':''}" data-tk-qtype="${y.id}" aria-pressed="${V.qtype===y.id}">🏷 ${escH(y.name)}${y.days!==''&&y.days!=null?` <small>· ${escH(y.days)} ${A_('يوم','d')}</small>`:''}${y.who?` <small>· ${escH(y.who)}</small>`:''}</button>`).join('')}<button type="button" data-tk-view="types" title="${A_('لوحة تحكم المهام','Task control panel')}">⚙</button></div>`:''}</form>`;
 }
 function toolH(){
   const n=[V.pc!=='all',V.who!=='all',V.cl!=='all'].filter(Boolean).length;
@@ -4455,19 +4469,40 @@ function render(){
   const page=G('page-tasks');if(!page||!page.classList.contains('active')){renderHome();return}
   const nDone=T().filter(t=>!t.archived&&t.status==='done').length,nOpen=T().filter(t=>!t.archived&&t.status!=='done').length,nArch=T().filter(t=>t.archived).length;
   const main=[['list','☰ '+A_('المهام','Tasks'),nOpen],['done','✓ '+A_('المنجزة','Done'),nDone]];
-  const more=[['cal','📅 '+A_('التقويم','Calendar')],['board','▦ '+A_('اللوحة','Board')],['archive','🗄 '+A_('الأرشيف','Archive')+(nArch?` (${nArch})`:'')],['reports','📊 '+A_('التقارير','Reports')]];
+  const more=[['types','⚙ '+A_('لوحة التحكم','Control panel')],['cal','📅 '+A_('التقويم','Calendar')],['board','▦ '+A_('اللوحة','Board')],['archive','🗄 '+A_('الأرشيف','Archive')+(nArch?` (${nArch})`:'')],['reports','📊 '+A_('التقارير','Reports')]];
   const ae=document.activeElement,fid=ae&&(ae.id||(ae.dataset&&ae.dataset.tkQt!==undefined?'__qt':'')),pos=ae&&ae.selectionStart;
   let h=`<div class="td-head"><h2>${A_('مهامي','My tasks')}</h2><div class="td-tabs" role="tablist">${main.map(([k,l,n])=>`<button type="button" role="tab" aria-selected="${V.view===k}" class="${V.view===k?'on':''}" data-tk-view="${k}">${l} <small>${n}</small></button>`).join('')}</div>
     <div class="td-links" role="group" aria-label="${A_('عروض أخرى','Other views')}">${more.map(([k,l])=>`<button type="button" class="${V.view===k?'on':''}" data-tk-view="${k}">${l}</button>`).join('')}</div></div>`;
   if(V.view==='list')h+=summaryH()+addH()+toolH()+bulkBar(false)+todoV();
   else if(V.view==='done')h+=toolH()+bulkBar(false)+doneV();
   else if(V.view==='board'||V.view==='cal')h+=filtersH()+legend()+(V.view==='board'?boardV():calV());
+  else if(V.view==='types')h+=typesV();
   else h+=V.view==='archive'?archV():repV();
   R.innerHTML=h;
   if(fid==='__qt'){const e=R.querySelector('[data-tk-qt]');if(e){e.focus();try{e.setSelectionRange(pos,pos)}catch(x){}}}
   else if(fid){const e=G(fid);if(e){e.focus();try{if(pos!=null)e.setSelectionRange(pos,pos)}catch(x){}}}
   renderHome();
 }
+// ═════════════ لوحة تحكم المهام: أنواع المهام المتكررة (المدة + المسؤول) ═════════════
+function typesV(){
+  const W=whos(),dl=`<datalist id="ty-whos">${W.map(w=>`<option value="${escH(w)}">`).join('')}</datalist>`;
+  const cnt=id=>T().filter(t=>!t.archived&&t.type===id).length;
+  const rows=TY().map(y=>`<div class="ty-row">
+    <input class="bz-in" data-tk-ty="${y.id}" data-f="name" value="${escH(y.name)}" aria-label="${A_('نوع المهمة','Task type')}" maxlength="80">
+    <input class="bz-in" type="number" min="0" max="365" data-tk-ty="${y.id}" data-f="days" value="${escH(y.days==null?'':y.days)}" placeholder="${A_('الأيام','Days')}" aria-label="${A_('عدد الأيام','Number of days')}">
+    <input class="bz-in ty-who" data-tk-ty="${y.id}" data-f="who" value="${escH(y.who||'')}" list="ty-whos" placeholder="${A_('المسؤول','Owner')}" aria-label="${A_('المسؤول','Owner')}">
+    <span class="ty-act"><button type="button" class="btn-sm" data-tk-tyuse="${y.id}" title="${A_('مهمة جديدة من هذا النوع','New task of this type')}">+ ${A_('مهمة','Task')}</button><button type="button" class="btn-sm danger" data-tk-tydel="${y.id}" aria-label="${A_('حذف النوع','Delete type')}">✕</button></span>
+    <small class="pr-hint" style="grid-column:1/-1;margin:0">${cnt(y.id)} ${A_('مهمة نشطة من هذا النوع','active tasks of this type')}</small></div>`).join('');
+  return `<section class="card"><div class="card-title">⚙ ${A_('لوحة تحكم المهام — أنواع المهام المتكررة','Task control panel — recurring task types')}</div>
+  <p class="pr-hint">${A_('أضف أنواع المهام التي تتكرر (مثل: مونتاج، تعديل صور، تصميم ألبوم) مع مدة كل نوع بالأيام والمسؤول عنه. عند إضافة مهمة من هذا النوع يُضبط تلقائيًا: تاريخ البدء (اليوم أو التاريخ المختار) وعدد الأيام وتاريخ التسليم والمسؤول.','Add the task types you repeat (e.g. montage, photo editing) with a duration in days and an owner. A task of that type gets its start date, days, delivery date and owner automatically.')}</p>
+  <form class="ty-row" data-tk-tyadd autocomplete="off" style="border-bottom:1px solid var(--border);padding-bottom:.8rem;margin-bottom:.3rem">
+    <input class="bz-in" name="n" placeholder="${A_('نوع المهمة (مثال: مونتاج)','Task type (e.g. Montage)')}" maxlength="80" required>
+    <input class="bz-in" name="d" type="number" min="0" max="365" placeholder="${A_('الأيام','Days')}">
+    <input class="bz-in ty-who" name="w" list="ty-whos" placeholder="${A_('المسؤول','Owner')}">
+    <span class="ty-act"><button class="btn-gold" type="submit">+ ${A_('إضافة','Add')}</button></span></form>
+  ${dl}${rows||noRes(A_('لا توجد أنواع بعد — أضف أول نوع بالأعلى.','No task types yet — add the first one above.'))}</section>`;
+}
+const tyDays=v=>v===''||v==null?'':String(Math.max(0,Math.min(365,Math.round(+v||0))));
 // إشعار مع «تراجع» بعد إنجاز مهمة
 function undoToast(t,prev){
   let el=G('tk-toast');if(!el){el=document.createElement('div');el.id='tk-toast';el.className='td-toast';el.setAttribute('role','status');document.body.appendChild(el)}
@@ -4546,14 +4581,25 @@ function linkDates(t,k,v){
   if(k==='due'&&iso(due)&&iso(start)){const n=dDiff(start,due);ch.days=n>=0?String(n):''}
   return ch;
 }
-function commit(t,k,v){if(k==='start'||k==='days'||k==='due'){const ch=linkDates(t,k,v);if(V.isNew){Object.assign(t,ch);drawEd();return}let any=false;Object.keys(ch).forEach(f=>{if(setField(t,f,ch[f]))any=true});if(any){persist();drawEd();render()}else drawEd();return}
+function applyType(t,id){
+  const y=tyOf(id),ch={type:id||''};if(!y)return ch;
+  if(y.who)ch.who=y.who;
+  if(y.days!==''&&y.days!=null){const st=/^\d{4}-\d\d-\d\d$/.test(t.start||'')?t.start:todayISO();ch.start=st;ch.days=String(y.days);ch.due=addD(st,+y.days)}
+  if(!t.title)ch.title=y.name;
+  return ch;
+}
+function commit(t,k,v){if(k==='type'){const ch=applyType(t,v);if(V.isNew){Object.assign(t,ch);drawEd();return}let any=false;Object.keys(ch).forEach(f=>{if(setField(t,f,ch[f]))any=true});if(any){persist();drawEd();render()}return}
+  if(k==='start'||k==='days'||k==='due'){const ch=linkDates(t,k,v);if(V.isNew){Object.assign(t,ch);drawEd();return}let any=false;Object.keys(ch).forEach(f=>{if(setField(t,f,ch[f]))any=true});if(any){persist();drawEd();render()}else drawEd();return}
   if(V.isNew){t[k]=k==='clientId'?(v?+v:null):v;if(k==='pr')t.color=null;drawEd();return}if(setField(t,k,v)){persist();drawEd();render()}}
 document.addEventListener('click',async e=>{
-  const el=e.target.closest('[data-tk-new],[data-tk-view],[data-tk-open],[data-tk-done],[data-tk-arch],[data-tk-restore],[data-tk-purge],[data-tk-bulk],[data-tk-pc],[data-tk-apc],[data-tk-clear],[data-tk-kpi],[data-tk-mv],[data-tk-cal],[data-tk-newday],[data-tk-day],[data-tk-rep],[data-tk-rp],[data-tk-pdf],[data-tk-xls],[data-tk-print],[data-tk-close],[data-tk-save],[data-tk-set],[data-tk-timer],[data-tk-link],[data-tk-fopen],[data-tk-fdel],[data-tk-client],[data-tk-undo],[data-qd],[data-qp],[data-tk-filters],[data-tk-selmode],[data-tk-sum],[data-tk-fullrep],[data-tk-jump],[data-tk-archdone],.tk-ov');
+  const el=e.target.closest('[data-tk-new],[data-tk-view],[data-tk-open],[data-tk-done],[data-tk-arch],[data-tk-restore],[data-tk-purge],[data-tk-bulk],[data-tk-pc],[data-tk-apc],[data-tk-clear],[data-tk-kpi],[data-tk-mv],[data-tk-cal],[data-tk-newday],[data-tk-day],[data-tk-rep],[data-tk-rp],[data-tk-pdf],[data-tk-xls],[data-tk-print],[data-tk-close],[data-tk-save],[data-tk-set],[data-tk-timer],[data-tk-link],[data-tk-fopen],[data-tk-fdel],[data-tk-client],[data-tk-undo],[data-qd],[data-qp],[data-tk-filters],[data-tk-selmode],[data-tk-sum],[data-tk-fullrep],[data-tk-jump],[data-tk-archdone],[data-tk-qtype],[data-tk-tyuse],[data-tk-tydel],.tk-ov');
   if(!el)return;const d=el.dataset;
   if(el.classList.contains('tk-ov')){if(e.target===el)closeEd();return}
   if(e.target.closest('.tk-ck'))return;
   if(d.tkNew!==undefined){openEd(null);return}
+  if(d.tkQtype){V.qtype=V.qtype===d.tkQtype?'':d.tkQtype;render();const q=document.querySelector('[data-tk-qt]');if(q)q.focus();return}
+  if(d.tkTyuse){const y=tyOf(d.tkTyuse);if(!y)return;const st=todayISO(),o={title:y.name,type:y.id,who:y.who||'',start:st};if(y.days!==''&&y.days!=null){o.days=String(y.days);o.due=addD(st,+y.days)}openEd(null,o);return}
+  if(d.tkTydel){const y=tyOf(d.tkTydel);if(!y||!confirm(A_(`حذف النوع «${y.name}»؟ المهام الموجودة تبقى كما هي.`,`Delete type “${y.name}”? Existing tasks stay.`)))return;D.types=TY().filter(x=>x.id!==y.id);if(V.qtype===y.id)V.qtype='';persist();render();return}
   if(d.tkView){V.view=d.tkView;SEL.clear();V.selMode=false;saveUI();render();return}
   if(d.tkDone){e.stopPropagation();const t=T().find(x=>x.id===d.tkDone);if(!t)return;
     if(t.status!=='done'){const prev=t.status,row=el.closest('.td-row,.tk-row');if(row){row.classList.add('td-anim');el.disabled=true}
@@ -4597,7 +4643,7 @@ document.addEventListener('click',async e=>{
   if(d.tkClose!==undefined){closeEd();return}
   const t=edTask();if(!t)return;
   if(d.tkSave!==undefined){const ti=document.querySelector('.tk-ed-ttl');t.title=(ti?ti.value:t.title).trim();if(!t.title){note(A_('اكتب عنوان المهمة','Enter a task title'));if(ti)ti.focus();return}
-    const x=newTask({title:t.title,desc:t.desc,status:t.status,pr:t.pr,color:t.color,start:t.start||'',days:t.days==null?'':t.days,due:t.due,dueT:t.dueT,who:t.who,clientId:t.clientId});if(x.status==='done')x.doneAt=nowISO();persist();V.isNew=false;V.open=x.id;DRAFT=null;drawEd();render();note(A_('✓ أُضيفت المهمة','✓ Task added'));return}
+    const x=newTask({title:t.title,desc:t.desc,status:t.status,pr:t.pr,color:t.color,type:t.type||'',start:t.start||'',days:t.days==null?'':t.days,due:t.due,dueT:t.dueT,who:t.who,clientId:t.clientId});if(x.status==='done')x.doneAt=nowISO();persist();V.isNew=false;V.open=x.id;DRAFT=null;drawEd();render();note(A_('✓ أُضيفت المهمة','✓ Task added'));return}
   if(d.tkSet){commit(t,d.tkSet,d.v);return}
   if(d.tkTimer){if(d.tkTimer==='start')startTimer(t);else if(d.tkTimer==='stop'){stopTimer(t);persist()}else{const m=+prompt(A_('كم دقيقة تريد إضافتها؟','How many minutes to add?'),'30');if(m>0){const n=Date.now();(t.time=t.time||[]).push({s:n-m*60000,e:n,manual:1});log(t,'timer','',fMin(m));persist()}}drawEd();render();return}
   if(d.tkLink!==undefined){const u=prompt(A_('الصق الرابط (https://…)','Paste the link (https://…)'),'https://');if(!u||!/^https?:\/\/\S+$/i.test(u.trim()))return;const nm=prompt(A_('اسم الرابط','Link name'),u.trim().replace(/^https?:\/\//,'').slice(0,40))||u;(t.files=t.files||[]).push({id:uid(),name:nm,url:u.trim(),at:nowISO()});log(t,'file','',nm);persist();drawEd();render();return}
@@ -4609,6 +4655,7 @@ document.addEventListener('change',e=>{
   const x=e.target,d=x.dataset;if(!d)return;
   if(d.tkSel){x.checked?SEL.add(d.tkSel):SEL.delete(d.tkSel);render();return}
   if(d.tkF){V[d.tkF]=x.value;saveUI();render();return}
+  if(d.tkTy){const y=tyOf(d.tkTy);if(!y)return;const f=d.f,v=f==='days'?tyDays(x.value):x.value.trim();if(f==='name'&&!v){x.value=y.name;return}y[f]=v;persist();return}
   if(d.tkBulkpr){if(!x.value)return;[...SEL].forEach(i=>{const t=T().find(y=>y.id===i);if(t)setField(t,'pr',x.value)});SEL.clear();persist();render();return}
   if(d.tkRpd!==undefined){if(x.value){V.ref=x.value;render()}return}
   if(d.qdate!==undefined){if(x.value){V.qd=x.value;render();const q=document.querySelector('[data-tk-qt]');if(q)q.focus()}return}
@@ -4623,10 +4670,16 @@ document.addEventListener('input',e=>{const x=e.target;
   if(x.dataset&&x.dataset.tkQt!==undefined){V.qtx=x.value;return}
   if(V.isNew&&DRAFT&&x.dataset&&x.dataset.tkE)DRAFT[x.dataset.tkE]=x.value;
 });
+document.addEventListener('submit',e=>{const f=e.target;if(!f.matches('[data-tk-tyadd]'))return;e.preventDefault();
+  const n=f.n.value.trim();if(!n){f.n.focus();return}
+  if(TY().some(y=>norm(y.name)===norm(n))){note(A_('هذا النوع موجود مسبقًا','This type already exists'));return}
+  TY().push({id:uid(),name:n,days:tyDays(f.d.value),who:f.w.value.trim()});persist();render();note(A_('✓ أُضيف نوع المهمة','✓ Task type added'));
+  const e2=document.querySelector('[data-tk-tyadd] [name=n]');if(e2)e2.focus()});
 document.addEventListener('submit',e=>{const f=e.target;if(!f.matches('[data-tk-quick]'))return;e.preventDefault();
-  const ti=f.t.value.trim();if(!ti){f.t.focus();return}
+  const y=tyOf(V.qtype),ti=f.t.value.trim()||(y?y.name:'');if(!ti){f.t.focus();return}
   const td=todayISO(),due=V.qd==='today'?td:V.qd==='tomorrow'?addD(td,1):(/^\d{4}-\d\d-\d\d$/.test(V.qd)?V.qd:'');
-  newTask({title:ti,pr:V.qp,due});V.qtx='';persist();render();const q=document.querySelector('[data-tk-qt]');if(q)q.focus();note(A_('✓ أُضيفت المهمة','✓ Task added'))});
+  if(y){const st=due||td,o={title:ti,pr:V.qp,type:y.id,who:y.who||'',start:st};if(y.days!==''&&y.days!=null){o.days=String(y.days);o.due=addD(st,+y.days)}else o.due=due;newTask(o)}
+  else newTask({title:ti,pr:V.qp,due});V.qtx='';persist();render();const q=document.querySelector('[data-tk-qt]');if(q)q.focus();note(A_('✓ أُضيفت المهمة','✓ Task added'))});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&V.open){const ov=G('tk-ov');if(ov&&!ov.hidden){e.preventDefault();closeEd()}}});
 // السحب والإفلات في اللوحة
 document.addEventListener('dragstart',e=>{const c=e.target.closest&&e.target.closest('[data-tk-drag]');if(c){e.dataTransfer.setData('text/plain',c.dataset.tkDrag);e.dataTransfer.effectAllowed='move';c.classList.add('dragging')}});
