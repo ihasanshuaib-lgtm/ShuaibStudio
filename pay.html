@@ -973,7 +973,7 @@ html.locked body>*:not(#gate){display:none !important}
 <div class="page" id="page-clients">
   <div class="section-header">
     <h2 id="clients-page-title">Clients</h2>
-    <button class="btn-gold" onclick="showAddClientForm()" id="add-client-btn">+ Add Client</button>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn-outline" onclick="BZ.clearRet();showPage('archive')" id="archive-btn">🗄 Archive</button><button class="btn-gold" onclick="showAddClientForm()" id="add-client-btn">+ Add Client</button></div>
   </div>
 
   <!-- فورم إضافة/تعديل عميل -->
@@ -1050,6 +1050,12 @@ html.locked body>*:not(#gate){display:none !important}
 
 
 <!-- QUOTATIONS · EXPENSES · EQUIPMENT · REPORTS · SETTINGS (rendered by BZ) -->
+<div class="page" id="page-archive">
+  <div class="section-header"><h2 id="archive-title">Archive</h2><button class="btn-outline" onclick="showPage('clients')" id="archive-back">→ Clients</button></div>
+  <p class="pr-hint" id="archive-hint" style="margin:0 0 .8rem"></p>
+  <div class="flt"><input id="archive-q" class="bz-in" type="text" oninput="renderArchive()" style="max-width:320px"></div>
+  <div id="archive-container"></div>
+</div>
 <div class="page" id="page-client"><div id="client-root"></div></div>
 <div class="page" id="page-quotes"><div id="quotes-root"></div></div>
 <div class="page" id="page-expenses"><div id="expenses-root"></div></div>
@@ -1179,6 +1185,7 @@ function applyLang(){
 
   ['qa1','qa2','qa3','qa4'].forEach((id,i)=>{document.getElementById(id).textContent=t('qa')[i]});
   document.getElementById('clients-page-title').textContent = t('clientsTitle');
+  { const ab=document.getElementById('archive-btn'); if(ab) ab.textContent='🗄 '+(lang==='ar'?'الأرشيف':'Archive'); }
   document.getElementById('add-client-btn').textContent = t('addClientBtn');
   document.getElementById('th-linetotal').textContent = t('lineTotal');
   document.getElementById('lbl-paidamt').textContent = t('lblPaidAmt');
@@ -1237,7 +1244,7 @@ function applyLang(){
   Array.from(roleSel.options).forEach((o,i)=>{ o.text = roleOpts[i]||o.text; });
 
   renderHomeFlt(); renderInvFlt(); renderClFlt(); renderStFlt();
-  renderInvoices(); renderStaff(); renderClients(); PR.render(); updateStats(); BZ.applyLang();
+  renderInvoices(); renderStaff(); renderClients(); renderArchive(); PR.render(); updateStats(); BZ.applyLang();
   // تحديث chips لو الفورم مفتوح
   if(document.getElementById('invoice-form').style.display !== 'none') buildServiceChips();
 }
@@ -1256,6 +1263,7 @@ function showPage(p){
   if(p==='home'){ updateStats(); PR.renderSchedule(); }
   if(p==='invoices') renderInvoices();
   if(p==='clients'){ renderClients(); }
+  if(p==='archive'){ renderArchive(); const nb=document.querySelector('.nav-links button[data-page="clients"]'); if(nb)nb.classList.add('active'); window.scrollTo(0,0); }
   if(p==='staff'){ renderStFlt(); renderStaff(); }
   if(p==='payroll') PR.render();
   if(p==='booking'){
@@ -1579,6 +1587,33 @@ function deleteClient(id){
   save(); renderClients(); updateClientPicker();
 }
 
+// ── الأرشيف: العملاء الذين تعاملنا معهم مرة واحدة فقط (جلسة واحدة أو فاتورة واحدة غير مسودة) ──
+function dealingCounts(){
+  const m=new Map();clients.forEach(c=>m.set(c.id,{s:0,i:0}));
+  PR.data().sessions.forEach(s=>{const c=sessClient(s);if(c&&m.has(c.id))m.get(c.id).s++});
+  invoices.forEach(i=>{if(i.status==='draft')return;const c=i._clientId!=null?clients.find(x=>x.id===i._clientId):clients.find(x=>String(x.name||'').trim().toLowerCase()===String(i.client||'').trim().toLowerCase());if(c&&m.has(c.id))m.get(c.id).i++});
+  return m;
+}
+const archiveList=()=>{const m=dealingCounts();return clients.filter(c=>{const o=m.get(c.id);return o&&Math.max(o.s,o.i)===1})};
+function renderArchive(){
+  const root=document.getElementById('archive-container');if(!root)return;
+  document.getElementById('archive-title').textContent='🗄 '+A_('الأرشيف','Archive');
+  document.getElementById('archive-back').textContent=A_('→ العملاء','← Clients');
+  document.getElementById('archive-hint').textContent=A_('العملاء الذين تمت معاملتهم مرة واحدة فقط (جلسة واحدة أو فاتورة واحدة).','Clients dealt with only once (a single session or invoice).');
+  const qi=document.getElementById('archive-q');qi.placeholder=A_('بحث في الأرشيف…','Search the archive…');
+  const q=qi.value.trim().toLowerCase(),L=archiveList().filter(cl=>!q||[cl.name,cl.phone,cl.email,cl.company].some(v=>String(v||'').toLowerCase().includes(q)));
+  const b=document.getElementById('archive-btn');if(b)b.textContent='🗄 '+A_('الأرشيف','Archive')+' ('+archiveList().length+')';
+  if(!L.length){root.innerHTML=noRes(A_('لا يوجد عملاء في الأرشيف.','No clients in the archive.'));return}
+  const ses=PR.data().sessions;
+  root.innerHTML='<div class="clients-grid">'+L.map(cl=>{
+    const real=clientInvs(cl).filter(i=>i.status!=='draft'),inv=real[0],s=ses.find(x=>(sessClient(x)||{}).id===cl.id),when=(s&&s.d)||(inv&&inv.date)||'';
+    return `<div class="client-card" style="cursor:pointer" onclick="BZ.openClient(${cl.id})">
+      <div class="client-avatar" style="overflow:hidden">${cl.thumb?`<img src="${escH(cl.thumb)}" alt="" style="width:100%;height:100%;object-fit:cover">`:escH(initials(cl.name))}</div>
+      <div class="client-name">${escH(cl.name)}</div>
+      <div class="client-meta">${cl.phone?`<div>📞 ${escH(cl.phone)}</div>`:''}${when?`<div>📅 ${escH(when)}</div>`:''}${s&&s.n?`<div>📸 ${escH(String(s.n).split(' — ').slice(1).join(' — ')||s.n)}</div>`:''}${inv?`<div>🧾 ${escH(inv.number||'')} · ${(+inv.grand||0).toFixed(3)} ${A_('د.ب','BD')}</div>`:''}</div>
+      <div class="client-actions"><button class="btn-gold" style="padding:.5rem 1rem;font-size:.84rem" onclick="event.stopPropagation();BZ.openClient(${cl.id})">📂 ${A_('فتح ملف العميل','Open client file')}</button></div>
+    </div>`}).join('')+'</div>';
+}
 function renderClients(){
   const c = document.getElementById('clients-container');
   if(!c) return;
