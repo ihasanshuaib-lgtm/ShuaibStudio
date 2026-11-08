@@ -506,4 +506,6 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 
 - **2026-11-08** — زر **«🎛 تحكم بالبوابة»** على كل بطاقة عميل في صفحة العملاء (`ptControls(id)`): نافذة بنفس صناديق `PSHOW` (تُنشئ البوابة إن لم توجد) مع زر معاينة البوابة، بدل أن تكون الخيارات داخل ملف العميل فقط.
 
+- **2026-11-08** — إصلاح: بطاقة «المتبقي عليك» كانت تختفي مع إخفاء الفواتير. الآن `portalData` يرسل `due` (مجموع المتبقي) متى كان خيار «المدفوع والمتبقي» مفعّلًا، و`portal.html` تعرض البطاقة بصرف النظر عن ظهور الفواتير (ولا تفتح قسم الفواتير إن كان مخفيًا).
+
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.

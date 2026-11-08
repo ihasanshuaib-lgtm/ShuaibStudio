@@ -3292,7 +3292,7 @@ function portalData(c){
   const C=B.cfg,SH=pshow(c),nm=String(c.name||'').trim(),low=nm.toLowerCase();
   const strip=n=>{const p=String(n||'').split(' — ');return p.length>1&&p[0].trim().toLowerCase()===low?p.slice(1).join(' — '):String(n||'')};
   const items=a=>!SH.items?[]:(a||[]).map(x=>({desc:String(x.desc||''),qty:+x.qty||0,unit:+x.unit||0,disc:+x.disc||0}));
-  return{first:nm.split(/\s+/)[0]||nm,name:nm,show:SH,
+  return{first:nm.split(/\s+/)[0]||nm,name:nm,show:SH,due:SH.due?clientInvs(c).filter(i=>i.status!=='draft').reduce((q,i)=>q+invRem(i),0):null,
     studio:{name:C.company||'',cr:C.cr||'',vatNo:C.vatNo||'',addr:C.addr||'',phone:C.phone||'',email:C.email||'',wa:String(C.wa||'').replace(/\D/g,''),insta:String(C.insta||'').replace(/^@/,''),note:C.portalNote||''},
     sessions:!SH.sessions?[]:PR.data().sessions.filter(s=>s.d&&(sessClient(s)||{}).id===c.id).sort((a,b)=>(a.d+(a.t||'')).localeCompare(b.d+(b.t||''))).map(s=>({id:s.id,d:s.d,t:s.t||'',te:s.te||'',n:strip(s.n),loc:s.loc||'',pk:PR.pkgName(s)||'',stage:dvStage(s),due:s.dvd||'',gal:SH.gallery?safeUrl(s.gal):'',pv:SH.preview&&s.pvAt&&(s.pv||[]).length?{f:s.pvf,n:s.pv,at:s.pvAt,p:Object.fromEntries(Object.entries(s.pvp||{}).filter(([k,v])=>s.pv.includes(k)&&Array.isArray(v)))}:null})),
     invoices:!SH.invoices?[]:clientInvs(c).filter(i=>i.status!=='draft').sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(i=>({id:i.id,number:i.number,date:i.date||'',due:i.due||dueFrom(i.date),status:i.status,overdue:invOverdue(i),items:items(i.items),subtotal:+i.subtotal||0,disc:+i.disc||0,vat:+i.vat||0,vatRate:+i.vatRate||0,grand:+i.grand||0,paid:invPaid(i),rem:invRem(i),notes:i.notes||''})),

@@ -454,13 +454,13 @@ function render(){
   secN=0;const SHW=D.show||{},on=k=>SHW[k]!==false;
   const td=todayISO(),S=D.sessions||[],I=D.invoices||[],Q=D.quotes||[],st=D.studio||{},photo=safeImg(D.photo);
   const up=S.filter(s=>s.d>=td).sort((a,b)=>(a.d+a.t).localeCompare(b.d+b.t))[0];
-  const due=I.reduce((q,i)=>q+(+i.rem||0),0),pendQ=Q.filter(q=>q.status==='sent');
+  const due=typeof D.due==='number'?D.due:I.reduce((q,i)=>q+(+i.rem||0),0),pendQ=Q.filter(q=>q.status==='sent');
   let h=photo
     ?`<figure class="hero" style="margin-top:0"><img src="${photo}" alt="${esc(D.name||'')}"><figcaption class="cap"><small>${T('welcome')}</small><h1>${T('hello')} <span>${esc(D.first||'')}</span> 👋</h1></figcaption></figure>`
     :`<header><img class="brand-logo" src="logo.png" alt="" width="110" onerror="this.remove()"><h1>${T('hello')} <span>${esc(D.first||'')}</span> 👋</h1><p class="sub">${T('sub')}</p></header>`;
   h+=previewH(S);
   if(up&&on('next')){const n=daysTo(up.d);h+=`<div class="card next"><div class="datebox"><b>${pd(up.d).getDate()}</b><span>${esc(pd(up.d).toLocaleDateString(loc(),{month:'short'}))}</span></div><div><div class="kicker">${T('next')}</div><h3>${esc(up.n||up.pk||'')}</h3><div class="meta"><span>📅 ${esc(fD(up.d,{weekday:'long',day:'numeric',month:'long'}))}</span>${up.t?`<span>🕒 ${esc(up.t)}${up.te?'–'+esc(up.te):''}</span>`:''}${up.loc?`<span>📍 ${esc(up.loc)}</span>`:''}</div><span class="count">${n===0?T('today'):n===1?T('tomorrow'):T('inDays').replace('{n}',n)}</span></div></div>`}
-  const chipDue=on('due')&&on('invoices')?`<button type="button" class="chip" data-open="sec-det"><span>${T('due')}</span><b class="${due>0.0005?'due':'ok'}">${due>0.0005?f3(due):'✓'}</b>${due>0.0005?` <small class="muted">${T('cur')}</small>`:`<small class="muted" style="display:block">${T('allPaid')}</small>`}</button>`:'',chipSes=on('sessions')?`<div class="chip"><span>${T('sessions')}</span><b>${S.length}</b></div>`:'';
+  const chipDue=on('due')?`<button type="button" class="chip"${on('invoices')?' data-open="sec-det"':' style="cursor:default"'}><span>${T('due')}</span><b class="${due>0.0005?'due':'ok'}">${due>0.0005?f3(due):'✓'}</b>${due>0.0005?` <small class="muted">${T('cur')}</small>`:`<small class="muted" style="display:block">${T('allPaid')}</small>`}</button>`:'',chipSes=on('sessions')?`<div class="chip"><span>${T('sessions')}</span><b>${S.length}</b></div>`:'';
   if(chipDue||chipSes)h+=`<div class="sum">${chipDue}${chipSes}</div>`;
   if(pendQ.length)h+=`<div class="alert"><span>📄 ${T('pendingQ')}</span><button class="btn btn-sage" style="padding:8px 14px;font-size:14px" data-go="sec-q">${T('view')}</button></div>`;
 
