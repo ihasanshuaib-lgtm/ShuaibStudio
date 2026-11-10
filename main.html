@@ -973,6 +973,7 @@ html[data-theme="dark"] .td-mb::after{background:#2a2521}
 
 /* ===== dark mode ===== */
 /* ===== tasks: «اليوم» — تصميم ناعم بسيط (Soft Day) ===== */
+[hidden]{display:none!important}   /* شرائط الحفظ لها display:flex مضمّن */
 .st-top{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem}
 .st-top h2{margin:0;font-size:1.7rem;color:var(--white)}
 .st-top p{margin:.25rem 0 0;color:var(--muted);font-size:.88rem}
@@ -1036,6 +1037,14 @@ html[data-theme="dark"] .st-nav{border-color:rgba(255,255,255,.05)}
 .th-cr{display:grid;gap:.35rem;margin-top:.8rem;font-size:.74rem}
 .th-cr div{display:flex;justify-content:space-between;gap:.5rem;padding:.35rem .55rem;border-radius:9px;background:var(--off)}
 .th-cr b.ok{color:var(--success)}.th-cr b.bad{color:var(--danger)}
+/* الحركة */
+.mo-opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.5rem}
+.mo-opts button{display:flex;flex-direction:column;gap:.15rem;align-items:flex-start;text-align:start;border:1px solid var(--border);background:transparent;border-radius:14px;padding:.6rem .7rem;font:inherit;cursor:pointer;color:var(--text)}
+.mo-opts button b{font-size:.85rem}.mo-opts button small{font-size:.7rem;color:var(--muted);line-height:1.35}
+.mo-opts button.on{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold);background:var(--off)}
+.mo-stage{position:sticky;top:1rem;border-radius:20px;padding:1rem;background:var(--dark);box-shadow:var(--sunk);border:1px solid var(--border);display:grid;gap:.8rem}
+.mo-stage .card{margin:0;padding:1rem}
+.mo-stage .row{display:flex;gap:.5rem;flex-wrap:wrap}
 @media(max-width:1100px){.th-layout{grid-template-columns:minmax(0,1fr)}.th-demo{position:static}}
 @media(max-width:560px){.th-row{grid-template-columns:minmax(0,1fr)}}
 .ct-cats{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.9rem}
@@ -3864,7 +3873,7 @@ function thEff(t){   // القيم الفعلية (مع التلقائي) للع
     text:t.text||(dark?thMix(bg,'w',.85):TH_DEF.text),muted:t.muted||(dark?thMix(bg,'w',.55):TH_DEF.muted),
     btnText:t.btnText||(thLum(btn)>.55?thMix(btn,'b',.75):'#ffffff')};
 }
-function thPreview(t){TH_PREV=t;if(window.SiteTheme){window.SiteTheme.preview=true;window.SiteTheme.apply(t)}const b=G('th-bar');if(b)b.hidden=false;thContrast()}
+function thPreview(t){TH_PREV=t;if(window.SiteTheme){window.SiteTheme.preview=true;window.SiteTheme.apply(t)}['th-bar','mo-bar'].forEach(i=>{const b=G(i);if(b)b.hidden=false});thContrast()}
 function thContrast(){const box=G('th-cr');if(!box)return;const E=thEff(thCur());
   const row=(l,a,b2,min)=>{const r=thCon(a,b2),ok=r>=min;return `<div><span>${l}</span><b class="${ok?'ok':'bad'}">${ok?'✓':'⚠'} ${r.toFixed(1)}:1</b></div>`};
   box.innerHTML=row(A_('النص على الخلفية','Text on background'),E.text,E.bg,4.5)+row(A_('النص الثانوي','Secondary text'),E.muted,E.bg,3)+row(A_('نص الأزرار','Button text'),E.btnText,E.btn,3)+row(A_('لون التمييز','Accent'),E.accent,E.bg,3);}
@@ -3922,8 +3931,29 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
   if(d.thSeg){thSet(d.thSeg,d.v,true);return}
   if(d.thSave!==undefined){if(TH_PREV)thCommit(TH_PREV);note(A_('✓ حُفظ الثيم','✓ Theme saved'));return}
   if(d.thCancel!==undefined){TH_PREV=null;if(window.SiteTheme){window.SiteTheme.preview=false;window.SiteTheme.apply(thSaved())}renderSettings();return}
-  if(d.thReset!==undefined){if(confirm(A_('الرجوع إلى الثيم الأصلي في كل الصفحات؟','Go back to the original theme on every page?')))thCommit(null);return}
+  if(d.thReset!==undefined){if(confirm(A_('الرجوع إلى الثيم الأصلي في كل الصفحات؟','Go back to the original theme on every page?'))){const o=thSaved()||{},m={on:false};['mPage','mBtn','mCard','mSpeed'].forEach(k=>{if(o[k])m[k]=o[k]});thCommit(Object.keys(m).length>1?m:null)}return}
 });
+// ── الحركة والانتقالات (ضمن siteTheme: mPage, mBtn, mCard, mSpeed — تعمل حتى لو لم تُفعَّل الألوان) ──
+const MO_PAGE=[['','الافتراضي','Default','كما هو الآن','As it is now'],['none','بدون حركة','None','ظهور فوري','Instant'],['fade','تلاشي','Fade','ظهور ناعم تدريجي','Soft fade-in'],['up','انزلاق للأعلى','Slide up','يصعد قليلًا مع الظهور','Rises slightly'],['side','انزلاق جانبي','Slide in','يدخل من الجانب','Enters from the side'],['zoom','تكبير','Zoom','يتكبّر بلطف','Gentle scale-in'],['blur','ضبابي','Blur','من ضبابي إلى واضح','Blur to sharp']];
+const MO_BTN=[['','الافتراضي','Default','كما هو الآن','As it is now'],['none','بدون','None','بلا أي حركة','No motion'],['lift','رفع','Lift','يرتفع مع ظل','Rises with a shadow'],['scale','تكبير','Grow','يكبر قليلًا','Grows slightly'],['glow','توهّج','Glow','هالة بلون التمييز','Accent halo'],['press','ضغط','Press','ينضغط عند النقر','Presses on tap']];
+function motionCard(){
+  const t=thCur(),opt=(k,L)=>`<div class="mo-opts">${L.map(([v,ar,en,dar,den])=>`<button type="button" class="${(t[k]||'')===v?'on':''}" data-mo="${k}" data-v="${v}"><b>${A_(ar,en)}</b><small>${A_(dar,den)}</small></button>`).join('')}</div>`;
+  const seg=(k,opts)=>`<div class="th-seg" role="group">${opts.map(([v,ar,en])=>`<button type="button" class="${(t[k]||'')===v?'on':''}" data-mo="${k}" data-v="${v}">${A_(ar,en)}</button>`).join('')}</div>`;
+  return card('🎬 '+A_('الحركة والانتقالات','Motion & transitions'),`<p class="pr-hint" style="margin-top:0">${A_('حركات خفيفة واحترافية تُطبَّق على كل صفحات الموقع (ومنها صفحة الحجز). من يفعّل «تقليل الحركة» في جهازه لا يرى أي حركة تلقائيًا.','Light, professional motion applied on every page (including booking). Visitors with “reduce motion” enabled on their device see none.')}</p>
+  <div class="th-layout"><div>
+   <div class="th-sec"><h4>📄 ${A_('دخول الصفحات','Page entrance')} <small>${A_('— عند فتح صفحة أو التنقل بين الأقسام','— when a page opens or you switch sections')}</small></h4>${opt('mPage',MO_PAGE)}</div>
+   <div class="th-sec"><h4>🔘 ${A_('الأزرار','Buttons')} <small>${A_('— عند المرور والضغط','— on hover and press')}</small></h4>${opt('mBtn',MO_BTN)}</div>
+   <div class="th-sec"><h4>🗂 ${A_('البطاقات','Cards')}</h4><div class="th-row"><span>${A_('عند المرور','On hover')}</span>${seg('mCard',[['','ثابتة','Still'],['lift','ترتفع قليلًا','Lift slightly']])}<span>${A_('سرعة الحركة','Speed')}</span>${seg('mSpeed',[['fast','سريعة','Fast'],['','عادية','Normal'],['slow','هادئة','Calm']])}</div></div>
+  </div>
+  <aside class="mo-stage" aria-label="${A_('تجربة','Try it')}"><div class="pr-hint" style="margin:0;font-weight:700">👆 ${A_('جرّب هنا: مرّر على الزر والبطاقة','Try it: hover the button and card')}</div>
+   <div class="card" id="mo-demo"><h5 style="margin:0 0 .3rem;color:var(--white)">${A_('باقة الذكريات','Memories package')}</h5><p style="margin:0 0 .8rem;font-size:.82rem;color:var(--muted)">${A_('تصوير فوتوغرافي احترافي','Professional photography')}</p><div class="row"><button type="button" class="btn-gold" tabindex="-1">${A_('اختيار','Select')}</button><button type="button" class="btn-outline" tabindex="-1">${A_('تفاصيل','Details')}</button></div></div>
+   <button type="button" class="btn-sm" data-mo-play>▶ ${A_('تشغيل حركة الدخول','Play the entrance')}</button></aside></div>
+  <div id="mo-bar" ${TH_PREV?'':'hidden'} style="position:sticky;bottom:.6rem;z-index:5;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:1rem;padding:.65rem .85rem;border-radius:14px;background:var(--card-g);box-shadow:var(--lift)"><b style="flex:1;font-size:.86rem">👁 ${A_('هذه معاينة — احفظ لتطبيقها على كل الصفحات','This is a preview — save to apply it everywhere')}</b><button type="button" class="btn-gold" data-th-save>💾 ${A_('حفظ','Save')}</button><button type="button" class="btn-outline" data-th-cancel>${A_('إلغاء','Discard')}</button></div>`);
+}
+function moPlay(){const c=G('mo-demo');if(!c)return;c.classList.remove('st-enter');void c.offsetWidth;c.classList.add('st-enter')}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-mo],[data-mo-play]');if(!b)return;
+  if(b.dataset.moPlay!==undefined){moPlay();return}
+  const t={...thCur()};const k=b.dataset.mo,v=b.dataset.v;if(v)t[k]=v;else delete t[k];thPreview(t);renderSettings();if(k==='mPage')setTimeout(moPlay,30)});
 // ── تخطيط صفحة الإعدادات: قائمة جانبية بالمجموعات، وقسم واحد ظاهر ──
 const ST_META=[
  ['🏢','company','العمل','Business','بيانات الشركة','Company','الاسم، السجل، التواصل','Name, CR, contact'],
@@ -3933,6 +3963,7 @@ const ST_META=[
  ['📦','catalog','صفحة الحجز','Booking page','الباقات والخدمات','Packages & services','الأسعار وما يراه الزبون','Prices customers see'],
  ['🏷','discounts','صفحة الحجز','Booking page','كودات الخصم','Discount codes','الخصومات في صفحة الحجز','Booking-page discounts'],
  ['🖌','theme','المظهر','Appearance','الألوان والثيم','Colors & theme','ألوان وخطوط كل الصفحات','Colors & fonts site-wide'],
+ ['🎬','motion','المظهر','Appearance','الحركة والانتقالات','Motion','حركة الصفحات والأزرار','Page & button animation'],
  ['🎨','appearance','المظهر','Appearance','الوضع واللغة','Mode & language','فاتح/داكن والعربية/الإنجليزية','Light/dark & language'],
  ['🔐','accounts','النظام','System','الحسابات والصلاحيات','Accounts & roles','من يدخل أي صفحة','Who can access what'],
 ];
@@ -3952,7 +3983,7 @@ function stLayout(R){
   R.querySelector('.st-nav').innerHTML=nav;
   if(ST_CUR==='theme')thContrast();
 }
-document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-st-go]');if(!b)return;ST_CUR=b.dataset.stGo;try{localStorage.setItem('ss_set_cur',ST_CUR)}catch(x){}const R=G('settings-root');if(R){stLayout(R);if(innerWidth<=860)R.querySelector('.st-main')?.scrollIntoView({behavior:'smooth',block:'start'})}});
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-st-go]');if(!b)return;ST_CUR=b.dataset.stGo;try{localStorage.setItem('ss_set_cur',ST_CUR)}catch(x){}const R=G('settings-root');if(R){stLayout(R);const c=R.querySelector('.st-main>section.card:not(.st-off)');if(c){c.classList.remove('st-enter');void c.offsetWidth;c.classList.add('st-enter')}if(innerWidth<=860)R.querySelector('.st-main')?.scrollIntoView({behavior:'smooth',block:'start'})}});
 document.addEventListener('input',e=>{if(e.target.id!=='st-q')return;ST_Q=e.target.value;const R=G('settings-root');if(!R)return;const pos=e.target.selectionStart;stLayout(R);const i=G('st-q');if(i){i.focus();try{i.setSelectionRange(pos,pos)}catch(x){}}});
 function renderSettings(){
   const R=G('settings-root');if(!R)return;const C=B.cfg;
@@ -3967,6 +3998,7 @@ function renderSettings(){
   ${card('🎯 '+A_('الأهداف والحساب','Targets & calculations'),`<div class="bz-form">${sel('targetBasis',A_('الهدف مبني على','Target is based on'),[['profit',A_('الربح','Profit')],['revenue',A_('الإيراد','Revenue')]])}${inp('monthTarget',A_('الهدف الشهري (د.ب)','Monthly target (BHD)'),'number',' min="0" step="any"')}${inp('yearTarget',A_('الهدف السنوي (د.ب)','Annual target (BHD)'),'number',' min="0" step="any"')}${sel('revSrc',A_('مصدر الإيرادات في التقارير','Revenue source for reports'),[['invoices',A_('الفواتير','Invoices')],['sessions',A_('أسعار الجلسات','Session prices')]])}${inp('workDays',A_('أيام العمل في الأسبوع (للإشغال)','Working days / week (occupancy)'),'number',' min="1" max="7"')}</div><p class="pr-hint">${A_('اختر مصدرًا واحدًا للإيرادات حتى لا تُحسب الجلسة مرتين (مرة كفاتورة ومرة كجلسة).','Pick one revenue source so a job isn\'t counted twice (as an invoice and as a session).')}</p>`)}
   ${card('🎨 '+A_('المظهر واللغة','Appearance & language'),`<div class="bz-form">${sel('theme',A_('المظهر','Theme'),[['auto',A_('تلقائي (حسب الجهاز)','Auto (device)')],['light',A_('فاتح','Light')],['dark',A_('داكن','Dark')]])}<label>${A_('اللغة','Language')}<select class="bz-in" data-act="lang"><option value="ar"${lang==='ar'?' selected':''}>العربية</option><option value="en"${lang==='en'?' selected':''}>English</option></select></label></div>`)}
   ${themeCard()}
+  ${motionCard()}
   ${card('🛍 '+A_('الخدمات والأسعار','Services & prices'),`<p class="pr-hint">${A_('هذه القائمة تظهر في الفواتير وعروض الأسعار. الباقات وأسعار أدوار الفريق في «جلسات التصوير ← الفريق والإعدادات».','This list is used by invoices and quotations. Packages and team role rates live in Session Costs → Team & settings.')}</p>${SERVICES.map((s,i)=>`<div class="svc-ed"><input value="${escH(s.icon||'')}" data-sv="${i}" data-k="icon" aria-label="icon" style="text-align:center"><input value="${escH(s.ar)}" data-sv="${i}" data-k="ar" placeholder="الاسم بالعربي"><input class="hide-sm" value="${escH(s.en)}" data-sv="${i}" data-k="en" placeholder="English name"><input class="hide-sm" value="${escH(s.type)}" data-sv="${i}" data-k="type" placeholder="Type"><input type="number" step="0.001" min="0" value="${+s.unit||0}" data-sv="${i}" data-k="unit" aria-label="${A_('السعر','Price')}"><button type="button" class="remove-row" data-bz="st-svcdel" data-i="${i}" aria-label="${A_('حذف','Delete')}">✕</button></div>`).join('')}<button type="button" class="btn-sm" data-bz="st-svcadd">+ ${A_('خدمة جديدة','New service')}</button>`)}
   ${card('🔐 '+A_('الحسابات والصلاحيات','Accounts & roles'),`<p class="pr-hint">${A_('لوحة التحكم هذه لحساب صاحب الاستوديو فقط، والمصورون يدخلون صفحة الموظفين (staff.html) ويرون جدولهم ومهامهم بدون الأسعار. كل البيانات تُحفظ سحابيًا تلقائيًا، ويمكنك تنزيل نسخة احتياطية من لوحة التحكم.','This dashboard is for the studio owner account only; photographers sign in to the staff page (staff.html) and see their schedule and tasks without prices. All data syncs to the cloud automatically, and you can download a backup from the dashboard.')}</p>`)}</div></div>`;
   stLayout(R);
