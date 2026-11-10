@@ -2892,6 +2892,16 @@ setInterval(()=>{if(!document.hidden)sbSync()},30000);   // حجوزات الز�
 
 // ── مزامنة سحابية: كل بيانات pay.html تُحفظ في Supabase (جدول app_state) فتظهر في أي متصفح/جهاز بعد تسجيل الدخول ──
 // القاعدة: آخر تعديل يفوز (ss_ts = وقت آخر تعديل محلي؛ remote.ts = وقت آخر رفع). قبل استبدال البيانات المحلية تُحفظ نسخة في ss_backup_before_sync
+// دمج المهام بدل الاستبدال: اتحاد بالمعرّف (الأحدث تعديلًا يفوز) مع احترام المحذوفات نهائيًا (del)
+function mergeTasksJSON(a,b){
+  const P=x=>{try{const o=JSON.parse(x||'{}')||{};return{tasks:Array.isArray(o.tasks)?o.tasks:[],types:Array.isArray(o.types)?o.types:[],del:Array.isArray(o.del)?o.del:[]}}catch(e){return{tasks:[],types:[],del:[]}}};
+  const A=P(a),B=P(b),del=[...new Set([...A.del,...B.del])],M=new Map();
+  [...B.tasks,...A.tasks].forEach(t=>{if(!t||!t.id||del.includes(t.id))return;const o=M.get(t.id);if(!o||String(t.updated||'')>=String(o.updated||''))M.set(t.id,t)});
+  const TYm=new Map();[...B.types,...A.types].forEach(y=>{if(y&&y.id)TYm.set(y.id,y)});
+  const tasks=[...M.values()].sort((x,y)=>String(y.created||'').localeCompare(String(x.created||'')));
+  let base={};try{base=JSON.parse(a||'{}')||{}}catch(e){}
+  return JSON.stringify(Object.assign(base,{tasks,types:[...TYm.values()],del}));
+}
 const SYNC_KEYS=['ss_invoices','ss_staff','ss_worklog','ss_clients','ss_payroll','ss_services','ss_biz','ss_tasks'];
 var syncTimer=0,syncPushing=false,syncMsg="";
 const lts=()=>+localStorage.getItem('ss_ts')||0;
@@ -2907,6 +2917,9 @@ async function syncPush(){
   if(!localStorage.getItem('ss_pulled'))return;   // لا رفع قبل أول سحب ناجح
   syncPushing=true;
   try{
+    // قبل الرفع: ادمج مهام السحابة (من جهاز آخر) حتى لا تُمسح بنسخة قديمة من هذا الجهاز
+    try{const rr=await (await sbReq('app_state?key=eq.pay&select=value')).json(),rv=rr[0]&&rr[0].value;
+      if(rv&&rv.data&&rv.data.ss_tasks){const loc=localStorage.getItem('ss_tasks'),m=mergeTasksJSON(loc,rv.data.ss_tasks);if(m!==loc){localStorage.setItem('ss_tasks',m);TK.reload()}}}catch(e){}
     const ts=lts()||Date.now();
     await sbReq('app_state?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'pay',value:{ts,data:syncSnapshot()},updated_at:new Date().toISOString()})});
     syncMsg=A_('☁ تم الحفظ سحابيًا ','☁ Saved to cloud ')+new Date().toLocaleTimeString();
@@ -2962,8 +2975,13 @@ async function syncPull(){
     const bigger=first&&r.ts<=lts()&&SYNC_KEYS.reduce((s,k)=>s+String(r.data[k]||'').length,0)>SYNC_KEYS.reduce((s,k)=>s+String(localStorage.getItem(k)||'').length,0);
     if(r.ts>lts()||bigger){
       try{localStorage.setItem('ss_backup_before_sync',JSON.stringify(syncSnapshot()))}catch(e){}
-      SYNC_KEYS.forEach(k=>{r.data[k]==null?localStorage.removeItem(k):localStorage.setItem(k,r.data[k])});
-      localStorage.setItem('ss_ts',String(r.ts));
+      let keep=false;
+      SYNC_KEYS.forEach(k=>{
+        if(!(k in r.data)){if(localStorage.getItem(k))keep=true;return}   // صفحة قديمة رفعت بدون هذا المفتاح: لا تمسحه
+        if(k==='ss_tasks'&&r.data[k]!=null){const loc=localStorage.getItem(k),m=mergeTasksJSON(loc,r.data[k]);localStorage.setItem(k,m);if(m!==r.data[k])keep=true;return}
+        r.data[k]==null?localStorage.removeItem(k):localStorage.setItem(k,r.data[k]);
+      });
+      localStorage.setItem('ss_ts',String(keep?Date.now():r.ts));   // إن بقي عندنا ما ليس في السحابة يُرفع بعد إعادة التحميل
       location.reload();
     }else if(r.ts<lts()){ await syncPush(); }
     else{syncMsg=A_('☁ البيانات متزامنة ','☁ In sync ')+new Date().toLocaleTimeString();await pushSchedule();await BZ.pushPortals();sbRender()}
@@ -4037,6 +4055,7 @@ const KEY='ss_tasks',G=id=>document.getElementById(id);
 let D;try{D=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){D={}}
 if(!Array.isArray(D.tasks))D.tasks=[];
 if(!Array.isArray(D.types))D.types=[];
+if(!Array.isArray(D.del))D.del=[];
 const TY=()=>D.types,tyOf=id=>D.types.find(x=>x.id===id);
 const T=()=>D.tasks;
 const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){note(A_('تعذّر الحفظ — المساحة ممتلئة','Could not save — storage full'))}syncTouch()};
@@ -4093,7 +4112,7 @@ function archive(ids,on){
 async function purge(ids){
   const L=T().filter(t=>ids.includes(t.id)),paths=[];L.forEach(t=>(t.files||[]).forEach(f=>{if(f.path)paths.push(f.path)}));
   if(paths.length&&sbOn())try{await sbReq('/storage/v1/object/task-files',{method:'DELETE',body:JSON.stringify({prefixes:paths})})}catch(e){}
-  D.tasks=T().filter(t=>!ids.includes(t.id));SEL.clear();persist();
+  D.del=[...new Set([...(D.del||[]),...ids])];D.tasks=T().filter(t=>!ids.includes(t.id));SEL.clear();persist();
 }
 function startTimer(t){T().forEach(x=>{if(x!==t)stopTimer(x)});(t.time=t.time||[]).push({s:Date.now(),e:null});if(t.status==='todo')setField(t,'status','doing');persist()}
 function stopTimer(t,quiet){if(!running(t))return;const x=t.time[t.time.length-1];x.e=Date.now();if(!quiet)log(t,'timer','',fMin((x.e-x.s)/60000));}
@@ -4473,6 +4492,7 @@ function render(){
   const ae=document.activeElement,fid=ae&&(ae.id||(ae.dataset&&ae.dataset.tkQt!==undefined?'__qt':'')),pos=ae&&ae.selectionStart;
   let h=`<div class="td-head"><h2>${A_('مهامي','My tasks')}</h2><div class="td-tabs" role="tablist">${main.map(([k,l,n])=>`<button type="button" role="tab" aria-selected="${V.view===k}" class="${V.view===k?'on':''}" data-tk-view="${k}">${l} <small>${n}</small></button>`).join('')}</div>
     <div class="td-links" role="group" aria-label="${A_('عروض أخرى','Other views')}">${more.map(([k,l])=>`<button type="button" class="${V.view===k?'on':''}" data-tk-view="${k}">${l}</button>`).join('')}</div></div>`;
+  {const L=lostTasks();if(L.tasks.length)h+=`<div class="card" style="margin-bottom:.8rem;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;border:1px solid var(--danger)"><b style="flex:1;min-width:200px">⚠ ${A_(`وُجدت ${L.tasks.length} مهمة في النسخة الاحتياطية غير موجودة الآن`,`${L.tasks.length} task(s) found in the backup that are missing now`)}</b><button class="btn-gold" type="button" data-tk-recover>↺ ${A_('استعادة المهام','Restore tasks')}</button></div>`}
   if(V.view==='list')h+=summaryH()+addH()+toolH()+bulkBar(false)+todoV();
   else if(V.view==='done')h+=toolH()+bulkBar(false)+doneV();
   else if(V.view==='board'||V.view==='cal')h+=filtersH()+legend()+(V.view==='board'?boardV():calV());
@@ -4690,7 +4710,13 @@ document.addEventListener('drop',e=>{const col=e.target.closest&&e.target.closes
 // تحديث المؤقت كل 30 ثانية
 setInterval(()=>{if(!T().some(running))return;document.querySelectorAll('[data-tk-clock]').forEach(el=>{const t=T().find(x=>x.id===el.dataset.tkClock);if(t)el.textContent=fMin(mins(t))})},30000);
 
-return{render,renderHome,data:()=>D};
+// استعادة المهام المفقودة من النسخة الاحتياطية التي تُحفظ تلقائيًا قبل كل استبدال من السحابة
+function lostTasks(){try{const b=JSON.parse(localStorage.getItem('ss_backup_before_sync')||'{}'),o=JSON.parse(b.ss_tasks||'{}')||{},del=D.del||[];
+  return{tasks:(o.tasks||[]).filter(t=>t&&t.id&&!del.includes(t.id)&&!T().some(x=>x.id===t.id)),types:(o.types||[]).filter(y=>y&&y.id&&!TY().some(x=>x.id===y.id))}}catch(e){return{tasks:[],types:[]}}}
+function recoverLost(){const L=lostTasks();if(!L.tasks.length&&!L.types.length)return;D.tasks.push(...L.tasks);D.types.push(...L.types);persist();render();note(A_(`✓ استُعيدت ${L.tasks.length} مهمة`,`✓ Restored ${L.tasks.length} task(s)`))}
+document.addEventListener('click',e=>{if(e.target.closest('[data-tk-recover]'))recoverLost()});
+function reload(){try{const o=JSON.parse(localStorage.getItem(KEY)||'{}')||{};D.tasks=Array.isArray(o.tasks)?o.tasks:[];D.types=Array.isArray(o.types)?o.types:[];D.del=Array.isArray(o.del)?o.del:[]}catch(e){}render()}
+return{render,renderHome,reload,lost:lostTasks,data:()=>D};
 })();
 
 // ── INIT ─────────────────────────────────────────────
