@@ -202,12 +202,11 @@ selectCategory('weddings'); // selects "تصوير الأعراس" by default on
 
 ## 6. Discount Codes
 
-Defined in `DISCOUNT_CODES` (lowercase keys):
+**Managed from `main.html` → الإعدادات → «🏷 كودات الخصم (صفحة الحجز)»** (since 2026-11-10): add a code + discount %, edit the %, enable/disable, delete. Stored in `B.cfg.discounts = [{code, pct, on}]` (inside `ss_biz`, so it syncs to the cloud with the rest) and mirrored by `BZ.pushDiscounts()` (after every sync push/pull) to the Supabase table **`discount_codes`** (`code` lowercase PK, `pct` 1–100, `active`). Codes are case-insensitive.
 
-| Code | Discount |
-|------|----------|
-| `m10`| 10%      |
-| `f15`| 15%      |
+`index.html` checks a typed code with the RPC **`check_discount(p_code)`** (security definer, callable by `anon`): it returns that one code's % or null, so visitors can never list the codes. `getDiscountRate()` caches results in `discountCache` (debounced 450 ms, shows «جارٍ التحقق من الكود…» meanwhile). If Supabase is unreachable or the function doesn't exist yet, it falls back to the built-in `DISCOUNT_CODES` (`m10` 10%, `f15` 15% — also the defaults seeded into the settings list).
+
+**One-time setup:** run `supabase/discounts.sql` in Supabase → SQL Editor, then open `main.html` signed in (the codes upload automatically; the card says «☁ الكودات مفعّلة في صفحة الحجز»).
 
 Input field: `#discountCode`; feedback message: `#discountMsg`. Invalid codes show an error and apply 0%.
 
@@ -519,5 +518,7 @@ Recent history (most recent first) — run `git log --oneline` for the current h
 - **2026-11-08** — **لوحة تحكم المهام (`main.html`، `TK`، تبويب «⚙ لوحة التحكم» = `V.view='types'` ← `typesV()`)**: أنواع المهام المتكررة `D.types = [{id,name,days,who}]` داخل `ss_tasks` (فتُزامن سحابيًا): إضافة (`data-tk-tyadd`، بلا تكرار بالاسم)، تعديل مباشر للاسم/الأيام/المسؤول (`data-tk-ty`)، حذف (`data-tk-tydel`؛ المهام الموجودة تبقى)، و«+ مهمة» (`data-tk-tyuse`) يفتح مهمة جديدة جاهزة. حقل جديد في المهمة `t.type`: (1) في نموذج الإضافة السريعة أزرار للأنواع (`V.qtype`) — اختيار نوع يجعل التاريخ المختار هو **البدء** ويضبط الأيام والتسليم (= البدء + أيام النوع) والمسؤول، والعنوان يصبح اسم النوع إن تُرك فارغًا؛ (2) في نافذة المهمة قائمة «نوع المهمة» (`applyType()`) تملأ نفس الحقول. يظهر النوع في صف المهمة (🏷) وفي سجل التعديلات. جُرّب في Chrome بلا واجهة: إضافة نوعين، مهمة سريعة من «مونتاج» (5 أيام، علي) ← البدء اليوم والتسليم بعد 5 أيام، و«+ مهمة» يفتح المحرر معبّأً.
 
 - **2026-11-10** — **اختفاء المهام بعد المزامنة — إصلاح**: المزامنة السحابية «آخر تعديل يفوز» على كامل اللقطة، فكانت المهام (`ss_tasks`) تُمحى إذا رفع جهاز/تبويب بنسخة أقدم، أو إذا فُتحت صفحة قديمة منشورة (`pay01.html` = pay.html القديمة، `payold.html`) لا تحوي `ss_tasks` في `SYNC_KEYS` — فتُرفع لقطة بلا المهام ثم يحذفها `syncPull` محليًا (`r.data[k]==null → removeItem`). الإصلاح في `main.html`: (1) `mergeTasksJSON()` يدمج المهام بالمعرّف (الأحدث `updated` يفوز) مع قائمة محذوفات نهائية `D.del` (يملؤها `purge`)، ويُستخدم في `syncPull` بدل الاستبدال، وفي `syncPush` (يجلب مهام السحابة ويدمجها قبل الرفع ثم `TK.reload()`)؛ (2) `syncPull` لا يمسح أي مفتاح غير موجود أصلًا في بيانات السحابة، وإن بقي محليًا ما ليس في السحابة يضبط `ss_ts` على الآن ليُرفع؛ (3) لافتة في صفحة المهام «وُجدت N مهمة في النسخة الاحتياطية…» + زر «استعادة المهام» (`data-tk-recover` ← `recoverLost()`) يقرأ `ss_backup_before_sync`؛ (4) `pay01.html` و`payold.html` صارتا تحوّلان فورًا إلى `main.html` حتى لا ترفعا بيانات ناقصة. جُرّب: الدمج بـnode، والاستعادة في Chrome بلا واجهة.
+
+- **2026-11-10** — **كودات الخصم من الإعدادات**: بطاقة جديدة في إعدادات `main.html` لإضافة/تعديل/تعطيل/حذف الكودات (الكود + نسبة الخصم)، تُرفع إلى جدول `discount_codes`، وصفحة الحجز تتحقق عبر الدالة `check_discount` بدل القائمة الثابتة (التي بقيت احتياطًا). ملف SQL جديد `supabase/discounts.sql` (يلزم تشغيله مرة). التفاصيل في القسم 6. جُرّب في Chrome بلا واجهة: إضافة كود، وصفحة الحجز تقبل `M10` (احتياط) وترفض كودًا خاطئًا.
 
 > **Reminder for the agent:** Before making any change, read this file. After every change, update the relevant sections here (structure, data model, functions, changelog) so this file always reflects the current state of the project.

@@ -2004,6 +2004,9 @@ themeToggle.addEventListener('click', ()=>{
 });
 syncThemeToggle();
 
+// كودات الخصم تُدار من «الإعدادات» في main.html وتُحفظ في Supabase (جدول discount_codes).
+// التحقق عبر الدالة check_discount (تُرجع نسبة كود واحد فقط دون كشف القائمة) — انظر supabase/discounts.sql.
+// هذه القائمة احتياط فقط إن تعذّر الوصول إلى Supabase أو لم تُنشأ الدالة بعد.
 const DISCOUNT_CODES = {
   'm10': 0.10,
   'f15': 0.15,
@@ -2016,14 +2019,47 @@ const sendEmail = document.getElementById('sendEmail');
 const discountInput = document.getElementById('discountCode');
 const discountMsg = document.getElementById('discountMsg');
 
+const discountCache = {};      // code → rate (0 = غير صحيح) | 'wait'
+let discountTimer = 0;
+async function checkDiscountRemote(code){
+  const c = window.SB;
+  try{
+    if(!c || !c.key) throw new Error('no-config');
+    const r = await fetch(c.url + '/rest/v1/rpc/check_discount', {
+      method:'POST',
+      headers:{apikey:c.key, Authorization:'Bearer ' + c.key, 'Content-Type':'application/json'},
+      body: JSON.stringify({p_code: code})
+    });
+    if(!r.ok) throw new Error('http-' + r.status);
+    const pct = await r.json();
+    discountCache[code] = (+pct > 0 && +pct <= 100) ? +pct / 100 : 0;
+  }catch(e){
+    discountCache[code] = DISCOUNT_CODES.hasOwnProperty(code) ? DISCOUNT_CODES[code] : 0;   // احتياط
+  }
+  if(discountInput.value.trim().toLowerCase() === code) update();
+}
+
 function getDiscountRate(){
   const code = discountInput.value.trim().toLowerCase();
   if(!code) { discountMsg.textContent=''; discountMsg.className='discount-msg'; return 0; }
-  if(DISCOUNT_CODES.hasOwnProperty(code)){
-    const pct = DISCOUNT_CODES[code]*100;
+  const v = discountCache[code];
+  if(v === undefined || v === 'wait'){
+    if(v === undefined){
+      clearTimeout(discountTimer);
+      discountTimer = setTimeout(()=>{
+        const cur = discountInput.value.trim().toLowerCase();
+        if(cur && discountCache[cur] === undefined){ discountCache[cur] = 'wait'; checkDiscountRemote(cur); }
+      }, 450);
+    }
+    discountMsg.textContent = 'جارٍ التحقق من الكود…';
+    discountMsg.className = 'discount-msg';
+    return 0;
+  }
+  if(v > 0){
+    const pct = Math.round(v*1000)/10;
     discountMsg.textContent = `تم تطبيق خصم ${pct}% ✓`;
     discountMsg.className = 'discount-msg valid';
-    return DISCOUNT_CODES[code];
+    return v;
   }
   discountMsg.textContent = 'الكود غير صحيح';
   discountMsg.className = 'discount-msg invalid';
