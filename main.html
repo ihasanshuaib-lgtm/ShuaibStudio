@@ -973,23 +973,71 @@ html[data-theme="dark"] .td-mb::after{background:#2a2521}
 
 /* ===== dark mode ===== */
 /* ===== tasks: «اليوم» — تصميم ناعم بسيط (Soft Day) ===== */
-.st-tools{display:flex;gap:.4rem;justify-content:flex-end;margin:-.4rem 0 .8rem}
-#settings-root>section.card>.card-title{cursor:pointer;user-select:none;display:flex;align-items:center;gap:.5rem}
-#settings-root>section.card>.card-title::after{content:"▾";margin-inline-start:auto;flex:none;color:var(--muted);font-size:1.1rem;line-height:1;transition:transform .2s;transform:rotate(180deg)}
-#settings-root>section.card.folded>.card-title::after{transform:none}
-#settings-root>section.card.folded>.card-title{margin-bottom:0;padding-bottom:0;border-bottom:0}
-#settings-root>section.card.folded>:not(.card-title){display:none!important}
-#settings-root>section.card{padding-top:1rem;padding-bottom:1rem}
-.th-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin:.6rem 0}
-.th-pick{display:flex;align-items:center;gap:.6rem;padding:.6rem .7rem;border-radius:14px;background:var(--off);box-shadow:var(--sunk);font-size:.82rem;font-weight:700;color:var(--text);cursor:pointer}
-.th-pick input[type=color]{width:42px;height:42px;border:0;border-radius:12px;padding:0;background:none;cursor:pointer;flex:none}
-.th-pick input[type=color]::-webkit-color-swatch-wrapper{padding:0}.th-pick input[type=color]::-webkit-color-swatch{border:2px solid rgba(255,255,255,.7);border-radius:12px}
-.th-pick small{display:block;font-weight:600;color:var(--muted);font-size:.72rem;direction:ltr;text-align:start}
-.th-pre{display:flex;gap:.45rem;flex-wrap:wrap;margin:.3rem 0 .6rem}
-.th-pre button{display:flex;align-items:center;gap:.35rem;border:1px solid var(--border);background:transparent;border-radius:999px;padding:.25rem .7rem .25rem .35rem;font:inherit;font-size:.78rem;font-weight:700;color:var(--text);cursor:pointer}
-.th-pre i{display:inline-flex;border-radius:99px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
-.th-pre i b{width:13px;height:20px;display:block}
-@media(max-width:640px){.th-grid{grid-template-columns:minmax(0,1fr)}}
+.st-top{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.st-top h2{margin:0;font-size:1.7rem;color:var(--white)}
+.st-top p{margin:.25rem 0 0;color:var(--muted);font-size:.88rem}
+.st-wrap{display:grid;grid-template-columns:260px minmax(0,1fr);gap:1.4rem;align-items:start}
+.st-nav{position:sticky;top:1rem;background:var(--card-g);border:1px solid rgba(255,255,255,.6);border-radius:20px;box-shadow:var(--lift-sm);padding:.8rem .6rem}
+html[data-theme="dark"] .st-nav{border-color:rgba(255,255,255,.05)}
+.st-find{display:flex;align-items:center;gap:.4rem;margin:0 .2rem .6rem;padding:.45rem .7rem;border-radius:12px;background:var(--off);box-shadow:var(--sunk)}
+.st-find input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:.85rem;color:var(--text);outline:none}
+.st-grp{font-size:.68rem;font-weight:800;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin:.7rem .6rem .25rem}
+.st-it{display:flex;align-items:center;gap:.6rem;width:100%;border:0;background:transparent;border-radius:12px;padding:.55rem .6rem;font:inherit;text-align:start;cursor:pointer;color:var(--text)}
+.st-it:hover{background:var(--off)}
+.st-it.on{background:var(--btn-sage);color:#fff;box-shadow:var(--lift-sm)}
+.st-it i{font-style:normal;width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:9px;background:var(--off);font-size:1rem}
+.st-it.on i{background:rgba(255,255,255,.22)}
+.st-it b{display:block;font-size:.88rem;font-weight:700}
+.st-it small{display:block;font-size:.7rem;color:var(--muted);font-weight:500;line-height:1.35;margin-top:.05rem}
+.st-it.on small{color:rgba(255,255,255,.85)}
+.st-main>section.card{margin:0}
+.st-main>section.card.st-off{display:none}
+.st-main>section.card>.card-title{display:none}
+.st-sh{display:flex;align-items:center;gap:.8rem;padding-bottom:1rem;margin-bottom:1.1rem;border-bottom:1px solid var(--border)}
+.st-sh .st-ic{width:46px;height:46px;flex:none;display:grid;place-items:center;border-radius:14px;background:var(--off);box-shadow:var(--sunk);font-size:1.35rem}
+.st-sh h3{margin:0;font-size:1.2rem;color:var(--white)}
+.st-sh p{margin:.15rem 0 0;font-size:.82rem;color:var(--muted)}
+@media(max-width:860px){.st-wrap{grid-template-columns:minmax(0,1fr)}.st-nav{position:static;display:flex;gap:.35rem;overflow-x:auto;padding:.5rem;border-radius:16px;scrollbar-width:none}.st-nav::-webkit-scrollbar{display:none}.st-find,.st-grp,.st-it small{display:none}.st-it{width:auto;flex:none;white-space:nowrap;padding:.45rem .7rem}.st-it i{width:24px;height:24px;font-size:.85rem}}
+/* الثيم */
+.th-sec{margin-top:1.3rem}
+.th-sec>h4{margin:0 0 .6rem;font-size:.95rem;color:var(--white);display:flex;align-items:center;gap:.4rem}
+.th-sec>h4 small{font-weight:500;color:var(--muted);font-size:.75rem}
+.th-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:1.3rem;align-items:start}
+.th-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem}
+.th-pick{position:relative;display:flex;align-items:center;gap:.6rem;padding:.55rem .65rem;border-radius:14px;background:var(--off);box-shadow:var(--sunk);font-size:.82rem;font-weight:700;color:var(--text);cursor:pointer;min-width:0}
+.th-pick input[type=color]{width:40px;height:40px;border:0;border-radius:11px;padding:0;background:none;cursor:pointer;flex:none}
+.th-pick input[type=color]::-webkit-color-swatch-wrapper{padding:0}.th-pick input[type=color]::-webkit-color-swatch{border:2px solid rgba(255,255,255,.75);border-radius:11px}
+.th-pick span{min-width:0;flex:1}
+.th-pick small{display:block;font-weight:600;color:var(--muted);font-size:.7rem}
+.th-pick code{font-size:.7rem;color:var(--muted);direction:ltr;display:inline-block}
+.th-auto{display:inline-block;font-size:.62rem;font-weight:800;padding:.05rem .4rem;border-radius:99px;background:var(--border);color:var(--muted);margin-inline-start:.25rem;vertical-align:middle}
+.th-clr{position:absolute;top:.3rem;inset-inline-end:.35rem;border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:.8rem;padding:.1rem .25rem;border-radius:6px}
+.th-clr:hover{background:var(--border)}
+.th-pre{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:.45rem}
+.th-pre button{display:flex;flex-direction:column;align-items:stretch;gap:.35rem;border:1px solid var(--border);background:transparent;border-radius:14px;padding:.4rem;font:inherit;font-size:.76rem;font-weight:700;color:var(--text);cursor:pointer;text-align:center}
+.th-pre button:hover{box-shadow:var(--lift-sm)}
+.th-pre button.on{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+.th-pre i{display:grid;grid-template-columns:2fr 1fr 1fr;height:34px;border-radius:9px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.th-seg{display:inline-flex;padding:.2rem;border-radius:12px;background:var(--off);box-shadow:var(--sunk);gap:.15rem;flex-wrap:wrap}
+.th-seg button{border:0;background:transparent;border-radius:9px;font:inherit;font-size:.8rem;font-weight:700;color:var(--muted);padding:.4rem .8rem;cursor:pointer}
+.th-seg button.on{background:var(--card-g);color:var(--white);box-shadow:var(--lift-sm)}
+.th-row{display:grid;grid-template-columns:140px minmax(0,1fr);gap:.6rem 1rem;align-items:center}
+.th-row>span{font-size:.82rem;font-weight:700;color:var(--text)}
+.th-row select{max-width:280px}
+.th-range{display:flex;align-items:center;gap:.7rem}.th-range input{flex:1;max-width:260px;accent-color:var(--sage-d)}
+.th-range output{font-weight:800;color:var(--text);min-width:3.2em;direction:ltr}
+.th-demo{position:sticky;top:1rem;border-radius:20px;padding:1rem;background:var(--dark);box-shadow:var(--sunk);border:1px solid var(--border)}
+.th-demo .card{margin:0;padding:1rem}
+.th-demo h5{margin:0 0 .35rem;font-size:1rem;color:var(--white)}
+.th-demo p{margin:0 0 .7rem;font-size:.82rem;color:var(--text)}
+.th-demo .mut{color:var(--muted);font-size:.75rem}
+.th-demo .acc{color:var(--gold);font-weight:800;font-size:1.3rem}
+.th-demo .row{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.7rem}
+.th-cr{display:grid;gap:.35rem;margin-top:.8rem;font-size:.74rem}
+.th-cr div{display:flex;justify-content:space-between;gap:.5rem;padding:.35rem .55rem;border-radius:9px;background:var(--off)}
+.th-cr b.ok{color:var(--success)}.th-cr b.bad{color:var(--danger)}
+@media(max-width:1100px){.th-layout{grid-template-columns:minmax(0,1fr)}.th-demo{position:static}}
+@media(max-width:560px){.th-row{grid-template-columns:minmax(0,1fr)}}
 .ct-cats{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.9rem}
 .ct-cats button{border:1px solid var(--border);background:transparent;border-radius:999px;font:inherit;font-size:.82rem;font-weight:700;color:var(--muted);padding:.35rem .85rem;cursor:pointer}
 .ct-cats button.on{background:var(--btn-sage);color:#fff;border-color:transparent}
@@ -3799,26 +3847,57 @@ document.addEventListener('change',e=>{const x=e.target,d=x.dataset||{};
   if(d.dcOn!==undefined){const it=dcList()[+d.dcOn];if(it){it.on=x.checked;dcSave()}}});
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-dc-del]');if(!b)return;const it=dcList()[+b.dataset.dcDel];
   if(it&&confirm(A_(`حذف الكود «${it.code}»؟`,`Delete code “${it.code}”?`))){dcList().splice(+b.dataset.dcDel,1);dcSave()}});
-// ── ألوان الموقع المخصّصة: B.cfg.siteTheme = {on,bg,btn,accent} ← theme.js في كل الصفحات (عبر site_config/theme) ──
-const TH_DEF={bg:'#efebe6',btn:'#93ad98',accent:'#9a6f66'};
-const TH_PRE=[['الأصلي','Original','#efebe6','#93ad98','#9a6f66'],['رملي','Sand','#f3ece2','#c0654f','#a0573f'],['وردي','Blush','#f6ecec','#c98b95','#9b5a66'],['أزرق','Sky','#e9eef4','#5b87b5','#3f6a96'],['زيتي','Olive','#eef0e6','#7b8f4e','#5d6d3a'],['أسود وذهبي','Black & gold','#1f1d1b','#c9a463','#d8b27a'],['ليلكي','Lilac','#efecf5','#8b7bb8','#6a5a99']];
+// ── ألوان وثيم الموقع: B.cfg.siteTheme ← theme.js في كل الصفحات (عبر site_config/theme) ──
+// الحقول: on,bg,card,btn,btnText,accent,text,muted,radius,shadow,bgStyle,font,scale (الفارغ = تلقائي/افتراضي)
+const TH_DEF={bg:'#efebe6',btn:'#93ad98',accent:'#9a6f66',text:'#5a524b',muted:'#8a8178'};
+const TH_PRE=[['الأصلي','Original','#efebe6','#93ad98','#9a6f66'],['رملي','Sand','#f3ece2','#c0654f','#a0573f'],['وردي','Blush','#f6ecec','#c98b95','#9b5a66'],['أزرق','Sky','#e9eef4','#5b87b5','#3f6a96'],['زيتي','Olive','#eef0e6','#7b8f4e','#5d6d3a'],['ليلكي','Lilac','#efecf5','#8b7bb8','#6a5a99'],['نعناعي','Mint','#e9f3ef','#3f9b84','#2f7565'],['رمادي','Slate','#eceef1','#5c6773','#3d4650'],['أسود وذهبي','Black & gold','#1f1d1b','#c9a463','#d8b27a'],['كحلي','Navy','#18202c','#4f86c6','#8fb6e8']];
+const TH_FONTS=[['','الافتراضي','Default'],['tajawal','Tajawal','Tajawal'],['plex','IBM Plex Sans Arabic','IBM Plex Sans Arabic'],['cairo','Cairo','Cairo'],['almarai','Almarai','Almarai'],['readex','Readex Pro','Readex Pro'],['noto','Noto Kufi Arabic','Noto Kufi Arabic']];
 let TH_PREV=null,TH_ERR='',TH_SENT=null,TH_T=0;
 const thSaved=()=>B.cfg.siteTheme||null;
-const thCur=()=>TH_PREV||thSaved()||{on:false,...TH_DEF};
-function thPreview(t){TH_PREV=t;if(window.SiteTheme){window.SiteTheme.preview=true;window.SiteTheme.apply(t)}const b=G('th-bar');if(b)b.hidden=false}
+const thCur=()=>TH_PREV||thSaved()||{on:false,bg:TH_DEF.bg,btn:TH_DEF.btn,accent:TH_DEF.accent};
+const thMix=(c,w,t)=>window.SiteTheme?window.SiteTheme.mix(c,w,t):c;
+const thLum=c=>window.SiteTheme?window.SiteTheme.lum(c):.5;
+const thCon=(a,b)=>window.SiteTheme?window.SiteTheme.contrast(a,b):21;
+function thEff(t){   // القيم الفعلية (مع التلقائي) للعرض وفحص التباين
+  const bg=t.bg||TH_DEF.bg,dark=thLum(bg)<.18,btn=t.btn||TH_DEF.btn;
+  return{bg,btn,accent:t.accent||TH_DEF.accent,card:t.card||thMix(bg,'w',.35),
+    text:t.text||(dark?thMix(bg,'w',.85):TH_DEF.text),muted:t.muted||(dark?thMix(bg,'w',.55):TH_DEF.muted),
+    btnText:t.btnText||(thLum(btn)>.55?thMix(btn,'b',.75):'#ffffff')};
+}
+function thPreview(t){TH_PREV=t;if(window.SiteTheme){window.SiteTheme.preview=true;window.SiteTheme.apply(t)}const b=G('th-bar');if(b)b.hidden=false;thContrast()}
+function thContrast(){const box=G('th-cr');if(!box)return;const E=thEff(thCur());
+  const row=(l,a,b2,min)=>{const r=thCon(a,b2),ok=r>=min;return `<div><span>${l}</span><b class="${ok?'ok':'bad'}">${ok?'✓':'⚠'} ${r.toFixed(1)}:1</b></div>`};
+  box.innerHTML=row(A_('النص على الخلفية','Text on background'),E.text,E.bg,4.5)+row(A_('النص الثانوي','Secondary text'),E.muted,E.bg,3)+row(A_('نص الأزرار','Button text'),E.btnText,E.btn,3)+row(A_('لون التمييز','Accent'),E.accent,E.bg,3);}
 function themeCard(){
-  const t=thCur(),v=k=>t[k]||TH_DEF[k];
-  const pick=(k,l,h)=>`<label class="th-pick"><input type="color" data-th="${k}" value="${escH(v(k))}"><span>${l}<small>${escH(v(k))}</small><small style="direction:rtl">${h}</small></span></label>`;
-  const st=typeof sbAuth==='undefined'||!sbAuth?A_('⚠ سجّل الدخول للحساب السحابي حتى تصل الألوان إلى بقية الصفحات والأجهزة.','⚠ Sign in to the cloud account so the colors reach the other pages and devices.'):TH_ERR?'⚠ '+escH(TH_ERR):!thSaved()?A_('الموقع بالألوان الأصلية.','The site uses the original colors.'):TH_SENT===JSON.stringify(thSaved())?A_('☁ الألوان مطبّقة على كل الصفحات.','☁ Colors are live on every page.'):A_('… جارٍ الرفع','… uploading');
-  return card('🖌 '+A_('ألوان الموقع (كل الصفحات)','Site colors (all pages)'),`<p class="pr-hint">${A_('اختر لون الخلفية والأزرار ولون التمييز، فتتغيّر في كل صفحات الموقع: صفحة الحجز، لوحة التحكم، صفحة الموظفين، بوابة العميل وصفحة الصور. تُطبَّق على الوضع الفاتح.','Pick the background, button and accent colors; they apply to every page (booking, dashboard, staff, client portal, photos) in light mode.')}</p>
-  <label class="ck" style="display:flex;gap:.5rem;align-items:center;font-weight:700"><input type="checkbox" data-th-on${t.on?' checked':''}> ${A_('تفعيل الألوان المخصّصة','Use custom colors')}</label>
-  <div style="${t.on?'':'opacity:.45;pointer-events:none'}">
-   <div class="pr-hint" style="margin:.7rem 0 .2rem">${A_('ألوان جاهزة','Presets')}</div>
-   <div class="th-pre">${TH_PRE.map((p,i)=>`<button type="button" data-th-pre="${i}"><i><b style="background:${p[2]}"></b><b style="background:${p[3]}"></b><b style="background:${p[4]}"></b></i>${A_(p[0],p[1])}</button>`).join('')}</div>
-   <div class="th-grid">${pick('bg',A_('الخلفية','Background'),A_('خلفية الصفحات والبطاقات','Pages & cards'))}${pick('btn',A_('الأزرار','Buttons'),A_('الأزرار الرئيسية والتحديد','Main buttons & selection'))}${pick('accent',A_('لون التمييز','Accent'),A_('العناوين والأرقام البارزة','Titles & highlights'))}</div>
+  const t=thCur(),E=thEff(t),dis=t.on?'':'opacity:.45;pointer-events:none';
+  const pick=(k,l,h,opt)=>`<label class="th-pick"><input type="color" data-th="${k}" value="${escH(E[k])}"><span>${l}${opt&&!t[k]?`<span class="th-auto">${A_('تلقائي','Auto')}</span>`:''}<small>${h}</small><code>${escH(E[k])}</code></span>${opt&&t[k]?`<button type="button" class="th-clr" data-th-clr="${k}" title="${A_('رجوع للتلقائي','Back to auto')}">↺</button>`:''}</label>`;
+  const seg=(k,opts)=>`<div class="th-seg" role="group">${opts.map(([v,ar,en])=>`<button type="button" class="${(t[k]||'')===v?'on':''}" data-th-seg="${k}" data-v="${v}">${A_(ar,en)}</button>`).join('')}</div>`;
+  const preOn=p=>t.bg===p[2]&&t.btn===p[3]&&t.accent===p[4];
+  const st=typeof sbAuth==='undefined'||!sbAuth?A_('⚠ سجّل الدخول للحساب السحابي حتى تصل الألوان إلى بقية الصفحات والأجهزة.','⚠ Sign in to the cloud account so the theme reaches the other pages and devices.'):TH_ERR?'⚠ '+escH(TH_ERR):!thSaved()||!thSaved().on?A_('الموقع بالثيم الأصلي.','The site uses the original theme.'):TH_SENT===JSON.stringify(thSaved())?A_('☁ الثيم مطبّق على كل الصفحات.','☁ Theme is live on every page.'):A_('… جارٍ الرفع','… uploading');
+  return card('🖌 '+A_('الألوان والثيم','Colors & theme'),`
+  <label class="ck" style="display:flex;gap:.6rem;align-items:center;font-weight:700;padding:.7rem .9rem;border-radius:14px;background:var(--off);box-shadow:var(--sunk)"><input type="checkbox" data-th-on${t.on?' checked':''} style="width:18px;height:18px"> ${A_('تفعيل الثيم المخصّص على كل صفحات الموقع','Use a custom theme on every page')}<small class="pr-hint" style="margin:0 auto 0 0">${A_('صفحة الحجز · لوحة التحكم · الموظفين · بوابة العميل · الصور','Booking · dashboard · staff · client portal · photos')}</small></label>
+  <div class="th-layout" style="${dis}"><div>
+   <div class="th-sec"><h4>🎨 ${A_('ثيمات جاهزة','Ready-made themes')}</h4><div class="th-pre">${TH_PRE.map((p,i)=>`<button type="button" class="${preOn(p)?'on':''}" data-th-pre="${i}"><i><b style="background:${p[2]}"></b><b style="background:${p[3]}"></b><b style="background:${p[4]}"></b></i>${A_(p[0],p[1])}</button>`).join('')}</div></div>
+   <div class="th-sec"><h4>🖍 ${A_('الألوان','Colors')} <small>${A_('— «تلقائي» يُحسب من لون الخلفية أو الأزرار','— “Auto” is derived from the background or buttons')}</small></h4><div class="th-grid">
+    ${pick('bg',A_('الخلفية','Background'),A_('خلفية كل الصفحات','All page backgrounds'))}${pick('card',A_('البطاقات','Cards'),A_('البطاقات والصناديق','Cards & panels'),1)}${pick('btn',A_('الأزرار','Buttons'),A_('الأزرار الرئيسية والتحديد','Main buttons & selection'))}${pick('btnText',A_('نص الأزرار','Button text'),A_('لون الكتابة على الأزرار','Text on buttons'),1)}${pick('accent',A_('لون التمييز','Accent'),A_('العناوين والأرقام البارزة','Titles & highlights'))}${pick('text',A_('النص الأساسي','Main text'),A_('الفقرات والعناوين','Paragraphs & titles'),1)}${pick('muted',A_('النص الثانوي','Secondary text'),A_('الشرح والتواريخ الصغيرة','Hints & small dates'),1)}
+   </div></div>
+   <div class="th-sec"><h4>📐 ${A_('الشكل','Shape')}</h4><div class="th-row">
+    <span>${A_('حواف العناصر','Corners')}</span>${seg('radius',[['sharp','حادة','Sharp'],['','عادية','Normal'],['round','دائرية','Round']])}
+    <span>${A_('الظلال','Shadows')}</span>${seg('shadow',[['flat','مسطّح','Flat'],['','ناعم','Soft'],['deep','عميق','Deep']])}
+    <span>${A_('نمط الخلفية','Background style')}</span>${seg('bgStyle',[['','متدرّج','Gradient'],['solid','لون سادة','Solid']])}
+   </div></div>
+   <div class="th-sec"><h4>🔤 ${A_('الخط','Typography')}</h4><div class="th-row">
+    <span>${A_('نوع الخط','Font')}</span><select class="bz-in" data-th-font>${TH_FONTS.map(([v,ar,en])=>`<option value="${v}"${(t.font||'')===v?' selected':''}>${A_(ar,en)}</option>`).join('')}</select>
+    <span>${A_('حجم النص','Text size')}</span><div class="th-range"><input type="range" min="90" max="115" step="5" value="${+t.scale||100}" data-th-scale aria-label="${A_('حجم النص','Text size')}"><output id="th-sc">${+t.scale||100}%</output></div>
+   </div></div>
   </div>
-  <div id="th-bar" ${TH_PREV?'':'hidden'} style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:.6rem;padding:.6rem .8rem;border-radius:14px;background:var(--card-g);box-shadow:var(--lift)"><b style="flex:1;font-size:.86rem">👁 ${A_('هذه معاينة — احفظ لتطبيقها على كل الصفحات','This is a preview — save to apply it everywhere')}</b><button type="button" class="btn-gold" data-th-save>💾 ${A_('حفظ الألوان','Save colors')}</button><button type="button" class="btn-outline" data-th-cancel>${A_('إلغاء','Discard')}</button></div>
-  <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-top:.6rem"><p class="pr-hint" style="margin:0;flex:1">${st}</p>${thSaved()&&thSaved().on?`<button type="button" class="btn-sm" data-th-reset>↺ ${A_('الرجوع للألوان الأصلية','Back to original colors')}</button>`:''}</div>`);
+  <aside class="th-demo" aria-label="${A_('معاينة','Preview')}"><div class="pr-hint" style="margin:0 0 .5rem;font-weight:700">👁 ${A_('معاينة حيّة','Live preview')}</div>
+   <div class="card"><h5>${A_('باقة الفخامة','Premium package')}</h5><div class="acc">99 ${A_('د.ب','BHD')}</div><p>${A_('فوتو + فيديو + بطاقة دعوة','Photo + video + invitation card')}</p><div class="mut">${A_('الثلاثاء، 10 نوفمبر','Tuesday, 10 November')} · ${t12('17:00')}</div>
+    <input class="bz-in" placeholder="${A_('حقل إدخال','Input field')}" style="margin-top:.7rem;width:100%" tabindex="-1">
+    <div class="row"><button type="button" class="btn-gold th-demo-btn" tabindex="-1">${A_('احجز الآن','Book now')}</button><button type="button" class="btn-outline" tabindex="-1">${A_('تفاصيل','Details')}</button></div></div>
+   <div class="th-cr" id="th-cr"></div></aside></div>
+  <div id="th-bar" ${TH_PREV?'':'hidden'} style="position:sticky;bottom:.6rem;z-index:5;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:1rem;padding:.65rem .85rem;border-radius:14px;background:var(--card-g);box-shadow:var(--lift)"><b style="flex:1;font-size:.86rem">👁 ${A_('هذه معاينة — احفظ لتطبيقها على كل الصفحات','This is a preview — save to apply it everywhere')}</b><button type="button" class="btn-gold" data-th-save>💾 ${A_('حفظ الثيم','Save theme')}</button><button type="button" class="btn-outline" data-th-cancel>${A_('إلغاء','Discard')}</button></div>
+  <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-top:.9rem"><p class="pr-hint" style="margin:0;flex:1">${st}</p>${thSaved()&&thSaved().on?`<button type="button" class="btn-sm" data-th-reset>↺ ${A_('الرجوع للثيم الأصلي','Back to the original theme')}</button>`:''}</div>`);
 }
 async function pushTheme(){
   if(typeof sbAuth==='undefined'||!sbAuth||!sbCfg().key)return;
@@ -3829,31 +3908,58 @@ async function pushTheme(){
   rsSafe();
 }
 function thCommit(t){B.cfg.siteTheme=t;TH_PREV=null;if(window.SiteTheme){window.SiteTheme.preview=false;window.SiteTheme.cache(t);window.SiteTheme.apply(t)}persist();renderSettings();clearTimeout(TH_T);TH_T=setTimeout(pushTheme,300)}
-document.addEventListener('input',e=>{const x=e.target;if(!x.matches||!x.matches('[data-th]'))return;const t={...thCur(),on:true};t[x.dataset.th]=x.value.toLowerCase();thPreview(t);const sm=x.closest('.th-pick')?.querySelector('small');if(sm)sm.textContent=x.value});
-document.addEventListener('change',e=>{const x=e.target;if(!x.matches||!x.matches('[data-th-on]'))return;const t={...thCur(),on:x.checked};if(!x.checked){thCommit(thSaved()?{...thSaved(),on:false}:null);return}thPreview(t);renderSettings()});
-document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-th-pre],[data-th-save],[data-th-cancel],[data-th-reset]');if(!b)return;const d=b.dataset;
-  if(d.thPre!==undefined){const p=TH_PRE[+d.thPre];thPreview({on:true,bg:p[2],btn:p[3],accent:p[4]});renderSettings();return}
-  if(d.thSave!==undefined){if(TH_PREV)thCommit(TH_PREV);note(A_('✓ حُفظت الألوان','✓ Colors saved'));return}
+const thSet=(k,v,rr)=>{const t={...thCur(),on:true};if(v===''||v==null)delete t[k];else t[k]=v;thPreview(t);if(rr)renderSettings()};
+document.addEventListener('input',e=>{const x=e.target;if(!x.matches)return;
+  if(x.matches('[data-th]')){thSet(x.dataset.th,x.value.toLowerCase());const c=x.closest('.th-pick')?.querySelector('code');if(c)c.textContent=x.value;return}
+  if(x.matches('[data-th-scale]')){const o=G('th-sc');if(o)o.textContent=x.value+'%';thSet('scale',+x.value===100?'':+x.value)}});
+document.addEventListener('change',e=>{const x=e.target;if(!x.matches)return;
+  if(x.matches('[data-th]')){renderSettings();return}
+  if(x.matches('[data-th-font]')){thSet('font',x.value,true);return}
+  if(!x.matches('[data-th-on]'))return;if(!x.checked){thCommit(thSaved()?{...thSaved(),on:false}:null);return}thPreview({...thCur(),on:true});renderSettings()});
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-th-pre],[data-th-save],[data-th-cancel],[data-th-reset],[data-th-clr],[data-th-seg]');if(!b)return;const d=b.dataset;
+  if(d.thPre!==undefined){const p=TH_PRE[+d.thPre],t={...thCur(),on:true,bg:p[2],btn:p[3],accent:p[4]};['card','text','muted','btnText'].forEach(k=>delete t[k]);thPreview(t);renderSettings();return}
+  if(d.thClr){e.preventDefault();thSet(d.thClr,'',true);return}
+  if(d.thSeg){thSet(d.thSeg,d.v,true);return}
+  if(d.thSave!==undefined){if(TH_PREV)thCommit(TH_PREV);note(A_('✓ حُفظ الثيم','✓ Theme saved'));return}
   if(d.thCancel!==undefined){TH_PREV=null;if(window.SiteTheme){window.SiteTheme.preview=false;window.SiteTheme.apply(thSaved())}renderSettings();return}
-  if(d.thReset!==undefined){if(confirm(A_('الرجوع إلى ألوان الموقع الأصلية في كل الصفحات؟','Go back to the original colors on every page?')))thCommit(null);return}
+  if(d.thReset!==undefined){if(confirm(A_('الرجوع إلى الثيم الأصلي في كل الصفحات؟','Go back to the original theme on every page?')))thCommit(null);return}
 });
-// ── طيّ أقسام الإعدادات (الحالة محفوظة في هذا المتصفح) ──
-let ST_OPEN;try{ST_OPEN=new Set(JSON.parse(localStorage.getItem('ss_set_open')||'[]'))}catch(e){ST_OPEN=new Set()}
-const stKey=c=>(c.querySelector('.card-title')?.textContent||'').trim().replace(/\s+/g,' ').slice(0,40);
-const stSaveOpen=()=>{try{localStorage.setItem('ss_set_open',JSON.stringify([...ST_OPEN]))}catch(e){}};
-function stFold(R){R.querySelectorAll(':scope>section.card').forEach(c=>{const k=stKey(c),t=c.querySelector('.card-title');if(!t)return;const open=ST_OPEN.has(k);c.classList.toggle('folded',!open);t.setAttribute('role','button');t.tabIndex=0;t.setAttribute('aria-expanded',open)})}
-document.addEventListener('click',e=>{
-  const all=e.target.closest&&e.target.closest('[data-st-all]');const R=G('settings-root');if(!R)return;
-  if(all){const open=all.dataset.stAll==='1';R.querySelectorAll(':scope>section.card').forEach(c=>{open?ST_OPEN.add(stKey(c)):ST_OPEN.delete(stKey(c))});stSaveOpen();stFold(R);return}
-  const t=e.target.closest&&e.target.closest('#settings-root>section.card>.card-title');if(!t)return;const c=t.parentElement,k=stKey(c);ST_OPEN.has(k)?ST_OPEN.delete(k):ST_OPEN.add(k);stSaveOpen();stFold(R);
-});
-document.addEventListener('keydown',e=>{const t=e.target.closest&&e.target.closest('#settings-root>section.card>.card-title');if(t&&(e.key==='Enter'||e.key===' ')){e.preventDefault();t.click()}});
+// ── تخطيط صفحة الإعدادات: قائمة جانبية بالمجموعات، وقسم واحد ظاهر ──
+const ST_META=[
+ ['🏢','company','العمل','Business','بيانات الشركة','Company','الاسم، السجل، التواصل','Name, CR, contact'],
+ ['🧾','tax','العمل','Business','الضريبة والترقيم','Tax & numbering','الضريبة وأرقام الفواتير','VAT & invoice numbers'],
+ ['🎯','targets','العمل','Business','الأهداف','Targets','الهدف الشهري والسنوي','Monthly & yearly goals'],
+ ['🛍','services','العمل','Business','خدمات الفواتير','Invoice services','قائمة الفواتير والعروض','Used in invoices & quotes'],
+ ['📦','catalog','صفحة الحجز','Booking page','الباقات والخدمات','Packages & services','الأسعار وما يراه الزبون','Prices customers see'],
+ ['🏷','discounts','صفحة الحجز','Booking page','كودات الخصم','Discount codes','الخصومات في صفحة الحجز','Booking-page discounts'],
+ ['🖌','theme','المظهر','Appearance','الألوان والثيم','Colors & theme','ألوان وخطوط كل الصفحات','Colors & fonts site-wide'],
+ ['🎨','appearance','المظهر','Appearance','الوضع واللغة','Mode & language','فاتح/داكن والعربية/الإنجليزية','Light/dark & language'],
+ ['🔐','accounts','النظام','System','الحسابات والصلاحيات','Accounts & roles','من يدخل أي صفحة','Who can access what'],
+];
+let ST_CUR;try{ST_CUR=localStorage.getItem('ss_set_cur')||'company'}catch(e){ST_CUR='company'}
+let ST_Q='';
+function stLayout(R){
+  const main=R.querySelector('.st-main');if(!main)return;
+  const cards=[...main.querySelectorAll(':scope>section.card')];
+  cards.forEach(c=>{const ic=(c.querySelector('.card-title')?.textContent||'').trim().split(' ')[0].replace(/️/g,'');const m=ST_META.find(x=>x[0].replace(/️/g,'')===ic);if(!m)return;c.dataset.st=m[1];
+    if(!c.querySelector('.st-sh'))c.insertAdjacentHTML('afterbegin',`<div class="st-sh"><span class="st-ic">${m[0]}</span><div><h3>${A_(m[4],m[5])}</h3><p>${A_(m[6],m[7])}</p></div></div>`)});
+  const have=ST_META.filter(m=>cards.some(c=>c.dataset.st===m[1]));if(!have.some(m=>m[1]===ST_CUR))ST_CUR=have[0]?.[1];
+  cards.forEach(c=>c.classList.toggle('st-off',c.dataset.st!==ST_CUR));
+  const q=ST_Q.trim().toLowerCase(),vis=have.filter(m=>!q||[m[4],m[5],m[6],m[7]].join(' ').toLowerCase().includes(q));
+  let nav=`<label class="st-find"><span aria-hidden="true">🔍</span><input id="st-q" value="${escH(ST_Q)}" placeholder="${A_('ابحث في الإعدادات…','Search settings…')}" autocomplete="off"></label>`,g='';
+  vis.forEach(m=>{const gl=A_(m[2],m[3]);if(gl!==g){g=gl;nav+=`<div class="st-grp">${gl}</div>`}nav+=`<button type="button" class="st-it${m[1]===ST_CUR?' on':''}" data-st-go="${m[1]}" aria-current="${m[1]===ST_CUR}"><i>${m[0]}</i><span><b>${A_(m[4],m[5])}</b><small>${A_(m[6],m[7])}</small></span></button>`});
+  if(!vis.length)nav+=`<p class="pr-hint" style="margin:.4rem .6rem">${A_('لا نتائج','No results')}</p>`;
+  R.querySelector('.st-nav').innerHTML=nav;
+  if(ST_CUR==='theme')thContrast();
+}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-st-go]');if(!b)return;ST_CUR=b.dataset.stGo;try{localStorage.setItem('ss_set_cur',ST_CUR)}catch(x){}const R=G('settings-root');if(R){stLayout(R);if(innerWidth<=860)R.querySelector('.st-main')?.scrollIntoView({behavior:'smooth',block:'start'})}});
+document.addEventListener('input',e=>{if(e.target.id!=='st-q')return;ST_Q=e.target.value;const R=G('settings-root');if(!R)return;const pos=e.target.selectionStart;stLayout(R);const i=G('st-q');if(i){i.focus();try{i.setSelectionRange(pos,pos)}catch(x){}}});
 function renderSettings(){
   const R=G('settings-root');if(!R)return;const C=B.cfg;
   const inp=(k,l,type,extra)=>`<label>${l}<input class="bz-in" data-bc="${k}" type="${type||'text'}" value="${escH(C[k])}"${extra||''}></label>`;
   const sel=(k,l,opts)=>`<label>${l}<select class="bz-in" data-bc="${k}">${opts.map(([v,t2])=>`<option value="${v}"${String(C[k])===String(v)?' selected':''}>${t2}</option>`).join('')}</select></label>`;
-  R.innerHTML=`<div class="section-header"><h2>${A_('الإعدادات','Settings')}</h2></div>
-  <div class="st-tools"><button type="button" class="btn-sm" data-st-all="1">▾ ${A_('فتح الكل','Expand all')}</button><button type="button" class="btn-sm" data-st-all="0">▸ ${A_('طيّ الكل','Collapse all')}</button></div>
+  R.innerHTML=`<div class="st-top"><div><h2>⚙️ ${A_('الإعدادات','Settings')}</h2><p>${A_('إدارة بيانات الاستوديو، صفحة الحجز، والمظهر — التعديلات تُحفظ سحابيًا.','Manage studio details, the booking page and the look — changes sync to the cloud.')}</p></div></div>
+  <div class="st-wrap"><nav class="st-nav" aria-label="${A_('أقسام الإعدادات','Settings sections')}"></nav><div class="st-main">
   ${card('🏢 '+A_('بيانات الشركة (تظهر على الفواتير وعروض الأسعار)','Company details (shown on invoices & quotations)'),`<div class="bz-form">${inp('company',A_('اسم الشركة','Company name'))}${inp('cr',A_('رقم السجل التجاري (CR)','CR number'))}${inp('vatNo',A_('رقم التسجيل الضريبي','VAT registration no.'))}${inp('addr',A_('العنوان','Address'))}${inp('phone',A_('الهاتف','Phone'),'tel')}${inp('email',A_('البريد الإلكتروني','Email'),'email')}${inp('wa',A_('واتساب الاستوديو (لبوابة العميل)','Studio WhatsApp (client portal)'),'tel')}${inp('insta',A_('حساب إنستغرام','Instagram handle'))}</div><label style="display:flex;flex-direction:column;gap:.3rem;font-size:.74rem;color:var(--muted);font-weight:600">${A_('التنبيه في آخر صفحة العميل','Notice at the end of the client page')}<input class="bz-in" data-bc="portalNote" value="${escH(C.portalNote||'')}"></label>`)}
   ${card('🧾 '+A_('الضريبة والترقيم','Tax & numbering'),`<label class="ck" style="display:flex;gap:.5rem;align-items:center;margin-bottom:.8rem;font-weight:600"><input type="checkbox" data-bc="vatOn"${C.vatOn?' checked':''}> ${A_('تفعيل ضريبة القيمة المضافة على الفواتير وعروض الأسعار','Charge VAT on invoices & quotations')}</label><div class="bz-form">${inp('vat',A_('نسبة الضريبة %','VAT rate %'),'number',' min="0" step="0.1"')}<label>${A_('العملة','Currency')}<input class="bz-in" value="BHD" disabled></label>${inp('invPrefix',A_('بادئة رقم الفاتورة','Invoice prefix'))}${inp('quotePrefix',A_('بادئة رقم عرض السعر','Quotation prefix'))}${inp('dueDays',A_('مهلة السداد (أيام)','Payment terms (days)'),'number',' min="0"')}${inp('validDays',A_('صلاحية عرض السعر (أيام)','Quotation validity (days)'),'number',' min="0"')}</div><p class="pr-hint">${A_('في البحرين التسجيل في الضريبة إلزامي عند تجاوز الإيرادات السنوية 37,500 د.ب. فعّلها فقط إذا كنت مسجّلًا، وأدخل رقم التسجيل ليظهر «TAX INVOICE».','In Bahrain VAT registration is mandatory above BHD 37,500 annual revenue. Enable it only if you are registered, and enter the registration number so invoices show “TAX INVOICE”.')}</p>`)}
   ${catalogCard()}
@@ -3862,8 +3968,8 @@ function renderSettings(){
   ${card('🎨 '+A_('المظهر واللغة','Appearance & language'),`<div class="bz-form">${sel('theme',A_('المظهر','Theme'),[['auto',A_('تلقائي (حسب الجهاز)','Auto (device)')],['light',A_('فاتح','Light')],['dark',A_('داكن','Dark')]])}<label>${A_('اللغة','Language')}<select class="bz-in" data-act="lang"><option value="ar"${lang==='ar'?' selected':''}>العربية</option><option value="en"${lang==='en'?' selected':''}>English</option></select></label></div>`)}
   ${themeCard()}
   ${card('🛍 '+A_('الخدمات والأسعار','Services & prices'),`<p class="pr-hint">${A_('هذه القائمة تظهر في الفواتير وعروض الأسعار. الباقات وأسعار أدوار الفريق في «جلسات التصوير ← الفريق والإعدادات».','This list is used by invoices and quotations. Packages and team role rates live in Session Costs → Team & settings.')}</p>${SERVICES.map((s,i)=>`<div class="svc-ed"><input value="${escH(s.icon||'')}" data-sv="${i}" data-k="icon" aria-label="icon" style="text-align:center"><input value="${escH(s.ar)}" data-sv="${i}" data-k="ar" placeholder="الاسم بالعربي"><input class="hide-sm" value="${escH(s.en)}" data-sv="${i}" data-k="en" placeholder="English name"><input class="hide-sm" value="${escH(s.type)}" data-sv="${i}" data-k="type" placeholder="Type"><input type="number" step="0.001" min="0" value="${+s.unit||0}" data-sv="${i}" data-k="unit" aria-label="${A_('السعر','Price')}"><button type="button" class="remove-row" data-bz="st-svcdel" data-i="${i}" aria-label="${A_('حذف','Delete')}">✕</button></div>`).join('')}<button type="button" class="btn-sm" data-bz="st-svcadd">+ ${A_('خدمة جديدة','New service')}</button>`)}
-  ${card('🔐 '+A_('الحسابات والصلاحيات','Accounts & roles'),`<p class="pr-hint">${A_('لوحة التحكم هذه لحساب صاحب الاستوديو فقط، والمصورون يدخلون صفحة الموظفين (staff.html) ويرون جدولهم ومهامهم بدون الأسعار. كل البيانات تُحفظ سحابيًا تلقائيًا، ويمكنك تنزيل نسخة احتياطية من لوحة التحكم.','This dashboard is for the studio owner account only; photographers sign in to the staff page (staff.html) and see their schedule and tasks without prices. All data syncs to the cloud automatically, and you can download a backup from the dashboard.')}</p>`)}`;
-  stFold(R);
+  ${card('🔐 '+A_('الحسابات والصلاحيات','Accounts & roles'),`<p class="pr-hint">${A_('لوحة التحكم هذه لحساب صاحب الاستوديو فقط، والمصورون يدخلون صفحة الموظفين (staff.html) ويرون جدولهم ومهامهم بدون الأسعار. كل البيانات تُحفظ سحابيًا تلقائيًا، ويمكنك تنزيل نسخة احتياطية من لوحة التحكم.','This dashboard is for the studio owner account only; photographers sign in to the staff page (staff.html) and see their schedule and tasks without prices. All data syncs to the cloud automatically, and you can download a backup from the dashboard.')}</p>`)}</div></div>`;
+  stLayout(R);
 }
 
 
