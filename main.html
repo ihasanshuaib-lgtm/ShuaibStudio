@@ -973,6 +973,23 @@ html[data-theme="dark"] .td-mb::after{background:#2a2521}
 
 /* ===== dark mode ===== */
 /* ===== tasks: «اليوم» — تصميم ناعم بسيط (Soft Day) ===== */
+.st-tools{display:flex;gap:.4rem;justify-content:flex-end;margin:-.4rem 0 .8rem}
+#settings-root>section.card>.card-title{cursor:pointer;user-select:none;display:flex;align-items:center;gap:.5rem}
+#settings-root>section.card>.card-title::after{content:"▾";margin-inline-start:auto;flex:none;color:var(--muted);font-size:1.1rem;line-height:1;transition:transform .2s;transform:rotate(180deg)}
+#settings-root>section.card.folded>.card-title::after{transform:none}
+#settings-root>section.card.folded>.card-title{margin-bottom:0;padding-bottom:0;border-bottom:0}
+#settings-root>section.card.folded>:not(.card-title){display:none!important}
+#settings-root>section.card{padding-top:1rem;padding-bottom:1rem}
+.th-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin:.6rem 0}
+.th-pick{display:flex;align-items:center;gap:.6rem;padding:.6rem .7rem;border-radius:14px;background:var(--off);box-shadow:var(--sunk);font-size:.82rem;font-weight:700;color:var(--text);cursor:pointer}
+.th-pick input[type=color]{width:42px;height:42px;border:0;border-radius:12px;padding:0;background:none;cursor:pointer;flex:none}
+.th-pick input[type=color]::-webkit-color-swatch-wrapper{padding:0}.th-pick input[type=color]::-webkit-color-swatch{border:2px solid rgba(255,255,255,.7);border-radius:12px}
+.th-pick small{display:block;font-weight:600;color:var(--muted);font-size:.72rem;direction:ltr;text-align:start}
+.th-pre{display:flex;gap:.45rem;flex-wrap:wrap;margin:.3rem 0 .6rem}
+.th-pre button{display:flex;align-items:center;gap:.35rem;border:1px solid var(--border);background:transparent;border-radius:999px;padding:.25rem .7rem .25rem .35rem;font:inherit;font-size:.78rem;font-weight:700;color:var(--text);cursor:pointer}
+.th-pre i{display:inline-flex;border-radius:99px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.th-pre i b{width:13px;height:20px;display:block}
+@media(max-width:640px){.th-grid{grid-template-columns:minmax(0,1fr)}}
 .ct-cats{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.9rem}
 .ct-cats button{border:1px solid var(--border);background:transparent;border-radius:999px;font:inherit;font-size:.82rem;font-weight:700;color:var(--muted);padding:.35rem .85rem;cursor:pointer}
 .ct-cats button.on{background:var(--btn-sage);color:#fff;border-color:transparent}
@@ -1137,6 +1154,7 @@ html.locked body>*:not(#gate){display:none !important}
 .gate-card button{width:100%;padding:.8rem;font-size:.95rem}
 #gate-err{min-height:1.2rem;margin-top:.6rem;font-size:.82rem;color:var(--danger,#c25c5c)}
 </style>
+<script src="theme.js"></script>
 </head>
 <body>
 <div id="gate" role="dialog" aria-modal="true" aria-label="تسجيل الدخول">
@@ -3050,7 +3068,7 @@ async function syncPush(){
     await sbReq('app_state?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'pay',value:{ts,data:syncSnapshot()},updated_at:new Date().toISOString()})});
     syncMsg=A_('☁ تم الحفظ سحابيًا ','☁ Saved to cloud ')+d12(new Date());
     await pushSchedule();
-    await BZ.pushPortals();await BZ.pushDiscounts();await BZ.pushCatalog();
+    await BZ.pushPortals();await BZ.pushDiscounts();await BZ.pushCatalog();await BZ.pushTheme();
   }catch(e){syncMsg=A_('تعذّر الحفظ السحابي (البيانات محفوظة في هذا المتصفح): ','Cloud save failed (data is kept in this browser): ')+String(e.message||e).slice(0,140)}
   syncPushing=false;sbRender();
 }
@@ -3110,7 +3128,7 @@ async function syncPull(){
       localStorage.setItem('ss_ts',String(keep?Date.now():r.ts));   // إن بقي عندنا ما ليس في السحابة يُرفع بعد إعادة التحميل
       location.reload();
     }else if(r.ts<lts()){ await syncPush(); }
-    else{syncMsg=A_('☁ البيانات متزامنة ','☁ In sync ')+d12(new Date());await pushSchedule();await BZ.pushPortals();await BZ.pushDiscounts();await BZ.pushCatalog();sbRender()}
+    else{syncMsg=A_('☁ البيانات متزامنة ','☁ In sync ')+d12(new Date());await pushSchedule();await BZ.pushPortals();await BZ.pushDiscounts();await BZ.pushCatalog();await BZ.pushTheme();sbRender()}
   }catch(e){syncMsg=A_('تعذّرت المزامنة السحابية: ','Cloud sync failed: ')+String(e.message||e).slice(0,140);sbRender()}
 }
 window.addEventListener('focus',()=>syncPull());
@@ -3781,19 +3799,71 @@ document.addEventListener('change',e=>{const x=e.target,d=x.dataset||{};
   if(d.dcOn!==undefined){const it=dcList()[+d.dcOn];if(it){it.on=x.checked;dcSave()}}});
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-dc-del]');if(!b)return;const it=dcList()[+b.dataset.dcDel];
   if(it&&confirm(A_(`حذف الكود «${it.code}»؟`,`Delete code “${it.code}”?`))){dcList().splice(+b.dataset.dcDel,1);dcSave()}});
+// ── ألوان الموقع المخصّصة: B.cfg.siteTheme = {on,bg,btn,accent} ← theme.js في كل الصفحات (عبر site_config/theme) ──
+const TH_DEF={bg:'#efebe6',btn:'#93ad98',accent:'#9a6f66'};
+const TH_PRE=[['الأصلي','Original','#efebe6','#93ad98','#9a6f66'],['رملي','Sand','#f3ece2','#c0654f','#a0573f'],['وردي','Blush','#f6ecec','#c98b95','#9b5a66'],['أزرق','Sky','#e9eef4','#5b87b5','#3f6a96'],['زيتي','Olive','#eef0e6','#7b8f4e','#5d6d3a'],['أسود وذهبي','Black & gold','#1f1d1b','#c9a463','#d8b27a'],['ليلكي','Lilac','#efecf5','#8b7bb8','#6a5a99']];
+let TH_PREV=null,TH_ERR='',TH_SENT=null,TH_T=0;
+const thSaved=()=>B.cfg.siteTheme||null;
+const thCur=()=>TH_PREV||thSaved()||{on:false,...TH_DEF};
+function thPreview(t){TH_PREV=t;if(window.SiteTheme){window.SiteTheme.preview=true;window.SiteTheme.apply(t)}const b=G('th-bar');if(b)b.hidden=false}
+function themeCard(){
+  const t=thCur(),v=k=>t[k]||TH_DEF[k];
+  const pick=(k,l,h)=>`<label class="th-pick"><input type="color" data-th="${k}" value="${escH(v(k))}"><span>${l}<small>${escH(v(k))}</small><small style="direction:rtl">${h}</small></span></label>`;
+  const st=typeof sbAuth==='undefined'||!sbAuth?A_('⚠ سجّل الدخول للحساب السحابي حتى تصل الألوان إلى بقية الصفحات والأجهزة.','⚠ Sign in to the cloud account so the colors reach the other pages and devices.'):TH_ERR?'⚠ '+escH(TH_ERR):!thSaved()?A_('الموقع بالألوان الأصلية.','The site uses the original colors.'):TH_SENT===JSON.stringify(thSaved())?A_('☁ الألوان مطبّقة على كل الصفحات.','☁ Colors are live on every page.'):A_('… جارٍ الرفع','… uploading');
+  return card('🖌 '+A_('ألوان الموقع (كل الصفحات)','Site colors (all pages)'),`<p class="pr-hint">${A_('اختر لون الخلفية والأزرار ولون التمييز، فتتغيّر في كل صفحات الموقع: صفحة الحجز، لوحة التحكم، صفحة الموظفين، بوابة العميل وصفحة الصور. تُطبَّق على الوضع الفاتح.','Pick the background, button and accent colors; they apply to every page (booking, dashboard, staff, client portal, photos) in light mode.')}</p>
+  <label class="ck" style="display:flex;gap:.5rem;align-items:center;font-weight:700"><input type="checkbox" data-th-on${t.on?' checked':''}> ${A_('تفعيل الألوان المخصّصة','Use custom colors')}</label>
+  <div style="${t.on?'':'opacity:.45;pointer-events:none'}">
+   <div class="pr-hint" style="margin:.7rem 0 .2rem">${A_('ألوان جاهزة','Presets')}</div>
+   <div class="th-pre">${TH_PRE.map((p,i)=>`<button type="button" data-th-pre="${i}"><i><b style="background:${p[2]}"></b><b style="background:${p[3]}"></b><b style="background:${p[4]}"></b></i>${A_(p[0],p[1])}</button>`).join('')}</div>
+   <div class="th-grid">${pick('bg',A_('الخلفية','Background'),A_('خلفية الصفحات والبطاقات','Pages & cards'))}${pick('btn',A_('الأزرار','Buttons'),A_('الأزرار الرئيسية والتحديد','Main buttons & selection'))}${pick('accent',A_('لون التمييز','Accent'),A_('العناوين والأرقام البارزة','Titles & highlights'))}</div>
+  </div>
+  <div id="th-bar" ${TH_PREV?'':'hidden'} style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:.6rem;padding:.6rem .8rem;border-radius:14px;background:var(--card-g);box-shadow:var(--lift)"><b style="flex:1;font-size:.86rem">👁 ${A_('هذه معاينة — احفظ لتطبيقها على كل الصفحات','This is a preview — save to apply it everywhere')}</b><button type="button" class="btn-gold" data-th-save>💾 ${A_('حفظ الألوان','Save colors')}</button><button type="button" class="btn-outline" data-th-cancel>${A_('إلغاء','Discard')}</button></div>
+  <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-top:.6rem"><p class="pr-hint" style="margin:0;flex:1">${st}</p>${thSaved()&&thSaved().on?`<button type="button" class="btn-sm" data-th-reset>↺ ${A_('الرجوع للألوان الأصلية','Back to original colors')}</button>`:''}</div>`);
+}
+async function pushTheme(){
+  if(typeof sbAuth==='undefined'||!sbAuth||!sbCfg().key)return;
+  const v=thSaved(),j=JSON.stringify(v);if(TH_SENT===j)return;
+  try{if(v)await sbReq('site_config?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'theme',value:v,updated_at:new Date().toISOString()})});
+    else await sbReq('site_config?key=eq.theme',{method:'DELETE',headers:{Prefer:'return=minimal'}});TH_SENT=j;TH_ERR=''}
+  catch(e){const m=String(e.message||e);TH_ERR=/site_config|42P01|PGRST20/.test(m)?A_('جدول الإعدادات غير موجود — شغّل ملف supabase/site_config.sql في Supabase.','Settings table missing — run supabase/site_config.sql in Supabase.'):m.slice(0,160)}
+  rsSafe();
+}
+function thCommit(t){B.cfg.siteTheme=t;TH_PREV=null;if(window.SiteTheme){window.SiteTheme.preview=false;window.SiteTheme.cache(t);window.SiteTheme.apply(t)}persist();renderSettings();clearTimeout(TH_T);TH_T=setTimeout(pushTheme,300)}
+document.addEventListener('input',e=>{const x=e.target;if(!x.matches||!x.matches('[data-th]'))return;const t={...thCur(),on:true};t[x.dataset.th]=x.value.toLowerCase();thPreview(t);const sm=x.closest('.th-pick')?.querySelector('small');if(sm)sm.textContent=x.value});
+document.addEventListener('change',e=>{const x=e.target;if(!x.matches||!x.matches('[data-th-on]'))return;const t={...thCur(),on:x.checked};if(!x.checked){thCommit(thSaved()?{...thSaved(),on:false}:null);return}thPreview(t);renderSettings()});
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-th-pre],[data-th-save],[data-th-cancel],[data-th-reset]');if(!b)return;const d=b.dataset;
+  if(d.thPre!==undefined){const p=TH_PRE[+d.thPre];thPreview({on:true,bg:p[2],btn:p[3],accent:p[4]});renderSettings();return}
+  if(d.thSave!==undefined){if(TH_PREV)thCommit(TH_PREV);note(A_('✓ حُفظت الألوان','✓ Colors saved'));return}
+  if(d.thCancel!==undefined){TH_PREV=null;if(window.SiteTheme){window.SiteTheme.preview=false;window.SiteTheme.apply(thSaved())}renderSettings();return}
+  if(d.thReset!==undefined){if(confirm(A_('الرجوع إلى ألوان الموقع الأصلية في كل الصفحات؟','Go back to the original colors on every page?')))thCommit(null);return}
+});
+// ── طيّ أقسام الإعدادات (الحالة محفوظة في هذا المتصفح) ──
+let ST_OPEN;try{ST_OPEN=new Set(JSON.parse(localStorage.getItem('ss_set_open')||'[]'))}catch(e){ST_OPEN=new Set()}
+const stKey=c=>(c.querySelector('.card-title')?.textContent||'').trim().replace(/\s+/g,' ').slice(0,40);
+const stSaveOpen=()=>{try{localStorage.setItem('ss_set_open',JSON.stringify([...ST_OPEN]))}catch(e){}};
+function stFold(R){R.querySelectorAll(':scope>section.card').forEach(c=>{const k=stKey(c),t=c.querySelector('.card-title');if(!t)return;const open=ST_OPEN.has(k);c.classList.toggle('folded',!open);t.setAttribute('role','button');t.tabIndex=0;t.setAttribute('aria-expanded',open)})}
+document.addEventListener('click',e=>{
+  const all=e.target.closest&&e.target.closest('[data-st-all]');const R=G('settings-root');if(!R)return;
+  if(all){const open=all.dataset.stAll==='1';R.querySelectorAll(':scope>section.card').forEach(c=>{open?ST_OPEN.add(stKey(c)):ST_OPEN.delete(stKey(c))});stSaveOpen();stFold(R);return}
+  const t=e.target.closest&&e.target.closest('#settings-root>section.card>.card-title');if(!t)return;const c=t.parentElement,k=stKey(c);ST_OPEN.has(k)?ST_OPEN.delete(k):ST_OPEN.add(k);stSaveOpen();stFold(R);
+});
+document.addEventListener('keydown',e=>{const t=e.target.closest&&e.target.closest('#settings-root>section.card>.card-title');if(t&&(e.key==='Enter'||e.key===' ')){e.preventDefault();t.click()}});
 function renderSettings(){
   const R=G('settings-root');if(!R)return;const C=B.cfg;
   const inp=(k,l,type,extra)=>`<label>${l}<input class="bz-in" data-bc="${k}" type="${type||'text'}" value="${escH(C[k])}"${extra||''}></label>`;
   const sel=(k,l,opts)=>`<label>${l}<select class="bz-in" data-bc="${k}">${opts.map(([v,t2])=>`<option value="${v}"${String(C[k])===String(v)?' selected':''}>${t2}</option>`).join('')}</select></label>`;
   R.innerHTML=`<div class="section-header"><h2>${A_('الإعدادات','Settings')}</h2></div>
+  <div class="st-tools"><button type="button" class="btn-sm" data-st-all="1">▾ ${A_('فتح الكل','Expand all')}</button><button type="button" class="btn-sm" data-st-all="0">▸ ${A_('طيّ الكل','Collapse all')}</button></div>
   ${card('🏢 '+A_('بيانات الشركة (تظهر على الفواتير وعروض الأسعار)','Company details (shown on invoices & quotations)'),`<div class="bz-form">${inp('company',A_('اسم الشركة','Company name'))}${inp('cr',A_('رقم السجل التجاري (CR)','CR number'))}${inp('vatNo',A_('رقم التسجيل الضريبي','VAT registration no.'))}${inp('addr',A_('العنوان','Address'))}${inp('phone',A_('الهاتف','Phone'),'tel')}${inp('email',A_('البريد الإلكتروني','Email'),'email')}${inp('wa',A_('واتساب الاستوديو (لبوابة العميل)','Studio WhatsApp (client portal)'),'tel')}${inp('insta',A_('حساب إنستغرام','Instagram handle'))}</div><label style="display:flex;flex-direction:column;gap:.3rem;font-size:.74rem;color:var(--muted);font-weight:600">${A_('التنبيه في آخر صفحة العميل','Notice at the end of the client page')}<input class="bz-in" data-bc="portalNote" value="${escH(C.portalNote||'')}"></label>`)}
   ${card('🧾 '+A_('الضريبة والترقيم','Tax & numbering'),`<label class="ck" style="display:flex;gap:.5rem;align-items:center;margin-bottom:.8rem;font-weight:600"><input type="checkbox" data-bc="vatOn"${C.vatOn?' checked':''}> ${A_('تفعيل ضريبة القيمة المضافة على الفواتير وعروض الأسعار','Charge VAT on invoices & quotations')}</label><div class="bz-form">${inp('vat',A_('نسبة الضريبة %','VAT rate %'),'number',' min="0" step="0.1"')}<label>${A_('العملة','Currency')}<input class="bz-in" value="BHD" disabled></label>${inp('invPrefix',A_('بادئة رقم الفاتورة','Invoice prefix'))}${inp('quotePrefix',A_('بادئة رقم عرض السعر','Quotation prefix'))}${inp('dueDays',A_('مهلة السداد (أيام)','Payment terms (days)'),'number',' min="0"')}${inp('validDays',A_('صلاحية عرض السعر (أيام)','Quotation validity (days)'),'number',' min="0"')}</div><p class="pr-hint">${A_('في البحرين التسجيل في الضريبة إلزامي عند تجاوز الإيرادات السنوية 37,500 د.ب. فعّلها فقط إذا كنت مسجّلًا، وأدخل رقم التسجيل ليظهر «TAX INVOICE».','In Bahrain VAT registration is mandatory above BHD 37,500 annual revenue. Enable it only if you are registered, and enter the registration number so invoices show “TAX INVOICE”.')}</p>`)}
   ${catalogCard()}
   ${discountCard()}
   ${card('🎯 '+A_('الأهداف والحساب','Targets & calculations'),`<div class="bz-form">${sel('targetBasis',A_('الهدف مبني على','Target is based on'),[['profit',A_('الربح','Profit')],['revenue',A_('الإيراد','Revenue')]])}${inp('monthTarget',A_('الهدف الشهري (د.ب)','Monthly target (BHD)'),'number',' min="0" step="any"')}${inp('yearTarget',A_('الهدف السنوي (د.ب)','Annual target (BHD)'),'number',' min="0" step="any"')}${sel('revSrc',A_('مصدر الإيرادات في التقارير','Revenue source for reports'),[['invoices',A_('الفواتير','Invoices')],['sessions',A_('أسعار الجلسات','Session prices')]])}${inp('workDays',A_('أيام العمل في الأسبوع (للإشغال)','Working days / week (occupancy)'),'number',' min="1" max="7"')}</div><p class="pr-hint">${A_('اختر مصدرًا واحدًا للإيرادات حتى لا تُحسب الجلسة مرتين (مرة كفاتورة ومرة كجلسة).','Pick one revenue source so a job isn\'t counted twice (as an invoice and as a session).')}</p>`)}
   ${card('🎨 '+A_('المظهر واللغة','Appearance & language'),`<div class="bz-form">${sel('theme',A_('المظهر','Theme'),[['auto',A_('تلقائي (حسب الجهاز)','Auto (device)')],['light',A_('فاتح','Light')],['dark',A_('داكن','Dark')]])}<label>${A_('اللغة','Language')}<select class="bz-in" data-act="lang"><option value="ar"${lang==='ar'?' selected':''}>العربية</option><option value="en"${lang==='en'?' selected':''}>English</option></select></label></div>`)}
+  ${themeCard()}
   ${card('🛍 '+A_('الخدمات والأسعار','Services & prices'),`<p class="pr-hint">${A_('هذه القائمة تظهر في الفواتير وعروض الأسعار. الباقات وأسعار أدوار الفريق في «جلسات التصوير ← الفريق والإعدادات».','This list is used by invoices and quotations. Packages and team role rates live in Session Costs → Team & settings.')}</p>${SERVICES.map((s,i)=>`<div class="svc-ed"><input value="${escH(s.icon||'')}" data-sv="${i}" data-k="icon" aria-label="icon" style="text-align:center"><input value="${escH(s.ar)}" data-sv="${i}" data-k="ar" placeholder="الاسم بالعربي"><input class="hide-sm" value="${escH(s.en)}" data-sv="${i}" data-k="en" placeholder="English name"><input class="hide-sm" value="${escH(s.type)}" data-sv="${i}" data-k="type" placeholder="Type"><input type="number" step="0.001" min="0" value="${+s.unit||0}" data-sv="${i}" data-k="unit" aria-label="${A_('السعر','Price')}"><button type="button" class="remove-row" data-bz="st-svcdel" data-i="${i}" aria-label="${A_('حذف','Delete')}">✕</button></div>`).join('')}<button type="button" class="btn-sm" data-bz="st-svcadd">+ ${A_('خدمة جديدة','New service')}</button>`)}
   ${card('🔐 '+A_('الحسابات والصلاحيات','Accounts & roles'),`<p class="pr-hint">${A_('لوحة التحكم هذه لحساب صاحب الاستوديو فقط، والمصورون يدخلون صفحة الموظفين (staff.html) ويرون جدولهم ومهامهم بدون الأسعار. كل البيانات تُحفظ سحابيًا تلقائيًا، ويمكنك تنزيل نسخة احتياطية من لوحة التحكم.','This dashboard is for the studio owner account only; photographers sign in to the staff page (staff.html) and see their schedule and tasks without prices. All data syncs to the cloud automatically, and you can download a backup from the dashboard.')}</p>`)}`;
+  stFold(R);
 }
 
 
@@ -4287,7 +4357,7 @@ document.addEventListener('change',e=>{
   if(d.bc==='theme')applyTheme();
 });
 
-return{bdata:()=>B,ensurePortal,pvCleanup,fromBooking,bookingBanner,openClient,markRet,clearRet,back,pushPortals,pushDiscounts,pushCatalog,pullPortal,portalPanel,portalDrop,clientOpts,stageOpts,dvLine,cfg,vatOf,dueFrom,applyTheme,toggleTheme,applyLang,renderPage,renderHome,newQuote,editQuote,viewQuote,waQuote,toInvoice,advisor};
+return{bdata:()=>B,ensurePortal,pvCleanup,fromBooking,bookingBanner,openClient,markRet,clearRet,back,pushPortals,pushDiscounts,pushCatalog,pushTheme,pullPortal,portalPanel,portalDrop,clientOpts,stageOpts,dvLine,cfg,vatOf,dueFrom,applyTheme,toggleTheme,applyLang,renderPage,renderHome,newQuote,editQuote,viewQuote,waQuote,toInvoice,advisor};
 })();
 
 
