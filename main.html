@@ -985,7 +985,37 @@ html[data-theme="dark"] .td-mb::after{background:#2a2521}
 .ct-act{display:flex;gap:.3rem}
 .ct-ck{display:flex;gap:.4rem;align-items:center;font-size:.8rem;color:var(--muted);font-weight:600}
 @media(max-width:560px){.ct-gp{grid-template-columns:52px minmax(0,1fr) 80px}.ct-gp .ct-act,.ct-gs .ct-act{grid-column:1/-1;justify-content:flex-end}.ct-gs{grid-template-columns:minmax(0,1fr) 80px}}
-.sd{--sd-a:#c0654f;--sd-a2:#d98c78;--sd-t:rgba(192,101,79,.14);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:1rem;align-items:start}
+/* زر «مهمة جديدة» + عرض «كل المهام» الجميل */
+.sd,.sd-all{--sd-a:#c0654f;--sd-a2:#d98c78;--sd-t:rgba(192,101,79,.14)}
+html[data-theme="dark"] .sd-all,html[data-theme="dark"] .td-new,html[data-theme="dark"] .td-fab{--sd-a:#dd8a73;--sd-a2:#e9a793;--sd-t:rgba(221,138,115,.18)}
+.td-new,.td-fab{--sd-a:#c0654f;--sd-t:rgba(192,101,79,.22)}
+.td-new{display:inline-flex;align-items:center;gap:.4rem;border:0;border-radius:999px;background:var(--sd-a);color:#fff;font:inherit;font-weight:700;font-size:.92rem;padding:.6rem 1.15rem;cursor:pointer;box-shadow:0 6px 14px var(--sd-t)}
+.td-new b{font-size:1.2rem;line-height:1}
+.td-new:hover{filter:brightness(1.06)}
+.td-fab{display:none}
+@media(max-width:640px){.td-new{display:none}.td-fab{display:grid;place-items:center;position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));inset-inline-start:18px;z-index:60;width:58px;height:58px;border-radius:50%;border:0;background:var(--sd-a);color:#fff;font-size:2rem;line-height:1;cursor:pointer;box-shadow:0 10px 22px var(--sd-t),0 2px 6px rgba(0,0,0,.18)}}
+.sa-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem;margin-bottom:.9rem}
+.sa-stat{border:0;text-align:start;background:var(--card-g);border-radius:18px;box-shadow:var(--lift-sm);padding:.75rem .9rem;font:inherit;cursor:pointer;color:var(--text)}
+.sa-stat b{display:block;font-size:1.55rem;font-weight:700;line-height:1.1;color:var(--sa-c,var(--text))}
+.sa-stat span{font-size:.78rem;color:var(--muted);font-weight:600}
+.sa-tool{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:.9rem}
+.sa-tool .f-search{flex:1 1 220px;display:flex;align-items:center;gap:.5rem;padding:.55rem .95rem;border-radius:999px;background:var(--off);box-shadow:var(--sunk);border:1px solid var(--border)}
+.sa-tool .f-search input{flex:1;min-width:0;border:0!important;background:transparent!important;box-shadow:none!important;outline:none;font:inherit;color:var(--text);padding:0!important}
+.sa-chips{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.9rem}
+.sa-chips button{border:1px solid var(--border);background:transparent;border-radius:999px;font:inherit;font-size:.8rem;font-weight:700;color:var(--muted);padding:.3rem .8rem;cursor:pointer}
+.sa-chips button.on{background:var(--sd-a);color:#fff;border-color:transparent}
+.sa-chips i{font-style:normal;color:var(--muted);font-size:.75rem;align-self:center;margin-inline-end:.15rem}
+.sa-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1rem;align-items:start}
+.sa-g{background:var(--card-g);border:1px solid rgba(255,255,255,.7);border-radius:22px;box-shadow:var(--lift-sm);padding:1rem 1.1rem .5rem;border-top:4px solid var(--gc)}
+html[data-theme="dark"] .sa-g{border-color:rgba(255,255,255,.05);border-top-color:var(--gc)}
+.sa-gh{display:flex;align-items:center;gap:.5rem;margin-bottom:.2rem}
+.sa-gh b{font-size:1.05rem;color:var(--text)}
+.sa-gh small{color:var(--muted);font-size:.76rem;font-weight:600}
+.sa-gh em{margin-inline-start:auto;font-style:normal;min-width:26px;text-align:center;padding:.1rem .5rem;border-radius:99px;background:color-mix(in srgb,var(--gc) 16%,transparent);color:var(--gc);font-weight:800;font-size:.8rem}
+.sa-g .sd-row{padding:.6rem 0}
+.sa-foot{display:flex;justify-content:center;margin-top:1rem}
+@media(max-width:560px){.sa-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.sa-grid{grid-template-columns:minmax(0,1fr)}}
+.sd{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:1rem;align-items:start}
 html[data-theme="dark"] .sd{--sd-a:#dd8a73;--sd-a2:#e9a793;--sd-t:rgba(221,138,115,.18)}
 .sd-col{display:flex;flex-direction:column;gap:1rem;min-width:0}
 .sd-c{background:var(--card-g);border:1px solid rgba(255,255,255,.7);border-radius:22px;box-shadow:var(--lift-sm);padding:1.1rem 1.15rem}
@@ -1089,7 +1119,7 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb{background:#3a322b}
 </style>
 <script>
 // تنسيق الوقت 12 ساعة: "17:05" ← "5:05 PM" (يُترك أي نص آخر كما هو)
-function t12(v){var m=/^(\d{1,2}):(\d{2})/.exec(String(v==null?'':v).trim());if(!m)return v==null?'':String(v);var h=+m[1],ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+m[2]+' '+ap}
+function t12(v){var m=/^(\d{1,2}):(\d{2})/.exec(String(v==null?'':v).trim());if(!m)return v==null?'':String(v);var h=+m[1],ap=h>=12?'PM':'AM';h=h%12||12;return '\u200E'+h+':'+m[2]+' '+ap+'\u200E'}
 function d12(d){d=new Date(d);return isNaN(d)?'':t12(d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'))}
 </script>
 <script>try{var _th=localStorage.getItem('ss_theme');if(_th==='dark'||(!_th&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
@@ -4611,6 +4641,7 @@ function liteFilter(L){
   if(V.pc!=='all')L=L.filter(t=>V.pc.startsWith('#')?colorOf(t).toLowerCase()===V.pc:(V.pc==='custom'?!!t.color:t.pr===V.pc));
   if(V.who!=='all')L=L.filter(t=>(t.who||'')===V.who);
   if(V.cl!=='all')L=L.filter(t=>String(t.clientId||'')===V.cl);
+  if(V.ty&&V.ty!=='all')L=L.filter(t=>(t.type||'')===V.ty);
   return L;
 }
 const openSet=()=>liteFilter(T().filter(t=>!t.archived&&t.status!=='done')).sort(byDatePr);
@@ -4699,6 +4730,29 @@ function doneV(){
   return `<div class="td-donehead"><p class="pr-hint" style="margin:0">${A_('اضغط ✓ لإعادة أي مهمة إلى القائمة.','Tap ✓ to move a task back to the list.')}</p>${old.length?`<button class="btn-sm" data-tk-archdone>🗄 ${A_(`أرشفة المنجزة قبل اليوم وأمس (${old.length})`,`Archive older completed (${old.length})`)}</button>`:''}</div>`+
    (L.length?H.filter(([k])=>G2[k]).map(([k,l])=>`<section class="td-grp"><h3>✓ ${l}<small>${G2[k].length}</small></h3><div class="td-list">${G2[k].map(t=>todoRow(t,'done')).join('')}</div></section>`).join(''):noRes(A_('لا توجد مهام منجزة بعد.','No completed tasks yet.')));
 }
+// ═════════════ «كل المهام»: بطاقات مجمّعة حسب الموعد + بحث وفلاتر بسيطة ═════════════
+const GC={overdue:'#d64541',today:'var(--sd-a)',tomorrow:'#e0a33a',week:'#6f9c7f',later:'#6d8fb3',none:'#9aa0a6'};
+function allV(){
+  const td=todayISO(),Aall=T().filter(t=>!t.archived),openAll=Aall.filter(t=>t.status!=='done');
+  const L=openSet(),G2={};L.forEach(t=>(G2[bucket(t)]=G2[bucket(t)]||[]).push(t));
+  const nOd=openAll.filter(t=>isOverdue(t)).length,nTd=openAll.filter(t=>t.due===td&&!isOverdue(t)).length,nDoneTd=Aall.filter(t=>t.doneAt&&todayISO(new Date(t.doneAt))===td).length;
+  const stat=(n,l,c,go)=>`<button type="button" class="sa-stat" ${go?`data-sa-go="${go}"`:''} style="--sa-c:${c||'var(--text)'}"><b>${n}</b><span>${l}</span></button>`;
+  const W=[...new Set(openAll.map(t=>t.who).filter(Boolean))],Y=TY().filter(y=>openAll.some(t=>t.type===y.id));
+  const chip=(k,v,l)=>`<button type="button" class="${String(V[k]||'all')===String(v)?'on':''}" data-sa-f="${k}" data-v="${escH(v)}">${l}</button>`;
+  const chips=(W.length>1||Y.length)?`<div class="sa-chips">${W.length>1?`<i>👤</i>${chip('who','all',A_('الكل','All'))}${W.map(w=>chip('who',w,escH(w))).join('')}`:''}${Y.length?`<i style="margin-inline-start:.6rem">🏷</i>${chip('ty','all',A_('كل الأنواع','All types'))}${Y.map(y=>chip('ty',y.id,escH(y.name))).join('')}`:''}</div>`:'';
+  const groups=BK.filter(([k])=>G2[k]).map(([k,ic,ar,en])=>`<section class="sa-g" id="sag-${k}" style="--gc:${GC[k]}"><div class="sa-gh"><span>${ic}</span><b>${A_(ar,en)}</b>${k==='today'?`<small>${escH(dayName(td))}</small>`:k==='tomorrow'?`<small>${escH(dayName(addD(td,1)))}</small>`:''}<em>${G2[k].length}</em></div><div class="sd-list">${G2[k].map(t=>sdRow(t,k!=='today'&&k!=='tomorrow')).join('')}</div></section>`).join('');
+  const empty=openAll.length?`<div class="sd-c sd-empty">${A_('لا توجد مهام بهذا البحث.','No tasks match.')}</div>`:`<div class="sd-c sd-empty" style="padding:2.5rem 1rem">🎉 ${A_('لا توجد مهام مفتوحة.','No open tasks.')}<br><br><button type="button" class="td-new" data-tk-newx style="display:inline-flex"><b>+</b> ${A_('أضف أول مهمة','Add your first task')}</button></div>`;
+  return `<div class="sd-all"><div class="sa-stats">${stat(openAll.length,A_('مهام مفتوحة','Open tasks'))}${stat(nOd,A_('متأخرة','Overdue'),nOd?'#d64541':'','overdue')}${stat(nTd,A_('اليوم','Today'),'var(--sd-a)','today')}${stat(nDoneTd,A_('أُنجزت اليوم','Done today'),nDoneTd?'#4c9a63':'')}</div>
+  <div class="sa-tool">${fSearch('tk-q',V.q,A_('ابحث في المهام…','Search tasks…'))}</div>${chips}
+  ${groups?`<div class="sa-grid">${groups}</div>`:empty}
+  <div class="sa-foot"><button type="button" class="btn-outline" data-tk-view="done">✓ ${A_('عرض المهام المنجزة','View completed tasks')} ${A_('←','→')}</button></div></div>`;
+}
+document.addEventListener('click',e=>{
+  const el=e.target.closest&&e.target.closest('[data-tk-newx],[data-sa-go],[data-sa-f]');if(!el)return;const d=el.dataset;
+  if(d.tkNewx!==undefined){openEd(null,V.view==='day'?{due:V.day}:{});return}
+  if(d.saGo){const g=G('sag-'+d.saGo);if(g)g.scrollIntoView({behavior:'smooth',block:'start'});return}
+  if(d.saF){V[d.saF]=d.v;render();return}
+});
 // ═════════════ «اليوم»: تقويم · قائمة اليوم · مؤقت التركيز · التقدّم · مفاتيح ═════════════
 const dIso=t=>t.doneAt?todayISO(new Date(t.doneAt)):'';
 function dayTasks(day){
@@ -4708,8 +4762,9 @@ function dayTasks(day){
   const done=A.filter(t=>t.status==='done'&&(dIso(t)===day||(t.due===day&&!t.doneAt))).sort((a,b)=>(a.doneAt||'').localeCompare(b.doneAt||''));
   return{open,loose,done};
 }
-function sdRow(t){
+function sdRow(t,showDate){
   const done=t.status==='done',od=!done&&isOverdue(t),y=t.type&&tyOf(t.type),m=[];
+  if(showDate&&!od&&t.due)m.push('📅 '+escH(dayName(t.due)));
   if(od)m.push(`<span class="od">${A_('متأخرة','Overdue')} · ${escH(fD(t.due))}</span>`);
   if(t.dueT)m.push('🕒 '+escH(t12(t.dueT)));
   if(y)m.push(escH(y.name));
@@ -4802,10 +4857,12 @@ function render(){
   const more=[['types','⚙ '+A_('لوحة التحكم','Control panel')],['cal','📅 '+A_('التقويم','Calendar')],['board','▦ '+A_('اللوحة','Board')],['archive','🗄 '+A_('الأرشيف','Archive')+(nArch?` (${nArch})`:'')],['reports','📊 '+A_('التقارير','Reports')]];
   const ae=document.activeElement,fid=ae&&(ae.id||(ae.dataset&&ae.dataset.tkQt!==undefined?'__qt':'')),pos=ae&&ae.selectionStart;
   let h=`<div class="td-head"><h2>${A_('مهامي','My tasks')}</h2><div class="td-tabs" role="tablist">${main.map(([k,l,n])=>`<button type="button" role="tab" aria-selected="${V.view===k}" class="${V.view===k?'on':''}" data-tk-view="${k}">${l} <small>${n}</small></button>`).join('')}</div>
-    <div class="td-links" role="group" aria-label="${A_('عروض أخرى','Other views')}">${more.map(([k,l])=>`<button type="button" class="${V.view===k?'on':''}" data-tk-view="${k}">${l}</button>`).join('')}</div></div>`;
+    <button type="button" class="td-new" data-tk-newx><b>+</b> ${A_('مهمة جديدة','New task')}</button>
+    <div class="td-links" role="group" aria-label="${A_('عروض أخرى','Other views')}">${more.map(([k,l])=>`<button type="button" class="${V.view===k?'on':''}" data-tk-view="${k}">${l}</button>`).join('')}</div></div>
+    <button type="button" class="td-fab" data-tk-newx aria-label="${A_('مهمة جديدة','New task')}">+</button>`;
   {const L=lostTasks();if(L.tasks.length)h+=`<div class="card" style="margin-bottom:.8rem;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;border:1px solid var(--danger)"><b style="flex:1;min-width:200px">⚠ ${A_(`وُجدت ${L.tasks.length} مهمة في النسخة الاحتياطية غير موجودة الآن`,`${L.tasks.length} task(s) found in the backup that are missing now`)}</b><button class="btn-gold" type="button" data-tk-recover>↺ ${A_('استعادة المهام','Restore tasks')}</button></div>`}
   if(V.view==='day')h+=dayV();
-  else if(V.view==='list')h+=summaryH()+addH()+toolH()+bulkBar(false)+todoV();
+  else if(V.view==='list')h+=allV();
   else if(V.view==='done')h+=toolH()+bulkBar(false)+doneV();
   else if(V.view==='board'||V.view==='cal')h+=filtersH()+legend()+(V.view==='board'?boardV():calV());
   else if(V.view==='types')h+=typesV();

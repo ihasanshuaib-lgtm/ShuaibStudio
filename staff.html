@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script>
 // تنسيق الوقت 12 ساعة: "17:05" ← "5:05 PM" (يُترك أي نص آخر كما هو)
-function t12(v){var m=/^(\d{1,2}):(\d{2})/.exec(String(v==null?'':v).trim());if(!m)return v==null?'':String(v);var h=+m[1],ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+m[2]+' '+ap}
+function t12(v){var m=/^(\d{1,2}):(\d{2})/.exec(String(v==null?'':v).trim());if(!m)return v==null?'':String(v);var h=+m[1],ap=h>=12?'PM':'AM';h=h%12||12;return '\u200E'+h+':'+m[2]+' '+ap+'\u200E'}
 function d12(d){d=new Date(d);return isNaN(d)?'':t12(d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'))}
 try{if(!localStorage.getItem('ss_staff_auth'))document.documentElement.classList.add('locked')}catch(e){document.documentElement.classList.add('locked')}</script>
 <style>
