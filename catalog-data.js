@@ -14,7 +14,7 @@ window.CATEGORIES_DEFAULT = {
       timeLabel: 'وقت التصوير',
       timePlaceholder: 'مثال: 7:00 مساءً',
       extraFields: [
-        {id:'venue', label:'المكان', placeholder:'مثال: قصر الأفراح'}
+        {id:'venue', required:true, loc:true, label:'المكان', placeholder:'مثال: قصر الأفراح'}
       ]
     },
     packages: [
@@ -52,7 +52,7 @@ window.CATEGORIES_DEFAULT = {
       timePlaceholder: 'مثال: 10:00 صباحًا',
       extraFields: [
         {id:'productType', label:'نوع المنتج / الأطعمة', placeholder:'مثال: مطعم، عطور، ملابس، حلويات'},
-        {id:'shootLocation', label:'مكان التصوير', placeholder:'الاستوديو أو موقع العميل'}
+        {id:'shootLocation', required:true, loc:true, label:'مكان التصوير', placeholder:'الاستوديو أو موقع العميل'}
       ]
     },packages: [
   {
@@ -104,7 +104,7 @@ window.CATEGORIES_DEFAULT = {
       timePlaceholder: 'مثال: 6:00 مساءً',
       extraFields: [
         {id:'eventType', label:'نوع الإيفنت', placeholder:'مثال: مؤتمر، حفل افتتاح، معرض'},
-        {id:'eventLocation', label:'موقع الإيفنت', placeholder:'اسم المكان / المنطقة'}
+        {id:'eventLocation', required:true, loc:true, label:'موقع الإيفنت', placeholder:'اسم المكان / المنطقة'}
       ]
     },
     packages: [
@@ -164,7 +164,7 @@ window.CATEGORIES_DEFAULT = {
       timeLabel: 'وقت الحفل',
       timePlaceholder: 'مثال: 4:00 عصرًا',
       extraFields: [
-        {id:'university', label:'الجامعة / المدرسة', placeholder:'اسم الجامعة'}
+        {id:'university', required:true, loc:true, label:'الجامعة / المدرسة', placeholder:'اسم الجامعة'}
       ]
     },
     packages: [
@@ -194,7 +194,7 @@ window.CATEGORIES_DEFAULT = {
       timePlaceholder: 'مثال: 5:00 مساءً',
       extraFields: [
         {id:'occasion', label:'نوع المناسبة', placeholder:'مثال: حفل عائلي، إطلاق منتج، جلسة شخصية'},
-        {id:'customLocation', label:'مكان التصوير', placeholder:'اسم المكان / المنطقة'}
+        {id:'customLocation', required:true, loc:true, label:'مكان التصوير', placeholder:'اسم المكان / المنطقة'}
       ]
     },
     // السعر = الساعات × (مصوّرو الفوتو + مصوّرو الفيديو) × perHour (د.ب لكل ساعة لكل مصوّر)

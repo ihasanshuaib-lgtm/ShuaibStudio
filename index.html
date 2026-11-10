@@ -1135,6 +1135,7 @@ const DEFAULT_INFO = {
   extraFields: []
 };
 
+const extraVals = {};   // قيم الحقول الإضافية (تبقى عند تبديل النوع أو إعادة الرسم)
 function renderInfoCard(){
   const info = activeCategory ? CATEGORIES[activeCategory].info : DEFAULT_INFO;
 
@@ -1145,12 +1146,15 @@ function renderInfoCard(){
   const oldTime = document.getElementById('custTime')?.value || '';
   const oldNotes = document.getElementById('custNotes')?.value || '';
 
+  // الحقول الإضافية (المكان…): نحفظ قيمها حتى لا تضيع عند إعادة بناء النموذج
+  document.querySelectorAll('#infoCard [id^="extra-"]').forEach(el=>{ extraVals[el.id] = el.value; });
+  const escA = v => String(v||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
   let extraHtml = '';
   info.extraFields.forEach(f=>{
     extraHtml += `
       <div class="field full">
-        <label>${f.label}</label>
-        <input type="text" id="extra-${f.id}" placeholder="${f.placeholder}">
+        <label>${f.loc ? '📍 ' : ''}${f.label}</label>
+        <input type="text" id="extra-${f.id}" placeholder="${f.placeholder}" value="${escA(extraVals['extra-' + f.id])}"${f.loc ? ' autocomplete="street-address"' : ''}><div class="field-err"></div>
       </div>`;
   });
 
@@ -1577,7 +1581,7 @@ Object.keys(CATEGORIES).forEach(key=>{
     <div class="cat-name">${cat.name}</div>
     ${isEmpty ? `<span class="cat-empty-tag">قريبًا</span>` : ''}
   `;
-  div.addEventListener('click', ()=> selectCategory(key));
+  div.addEventListener('click', ()=>{ if(key !== activeCategory) selectCategory(key); });   // الضغط على النوع المختار لا يمسح النموذج
   // تحميل صور النوع مسبقًا لمجرد مرور المؤشر أو اللمس → يظهر الجلري فورًا عند الاختيار
   div.addEventListener('mouseenter', ()=> preloadThumbs(key, GALLERY_COUNT));
   div.addEventListener('touchstart', ()=> preloadThumbs(key, GALLERY_COUNT), {passive:true});
@@ -1975,10 +1979,15 @@ function buildMessage(){
   else if(phoneDigits.length < 8) missing.push(['custPhone','رقم الهاتف غير صحيح (8 أرقام على الأقل)']);
   if(!date) missing.push(['custDate','عليك اختيار تاريخ التصوير']);
   if(!time) missing.push(['custTime','عليك اختيار وقت التصوير']);
+  const servicesOnly = activeCategory === 'custom' && customState.hours === 0;   // «بدون تصوير» لا يحتاج مكانًا
+  CATEGORIES[activeCategory].info.extraFields.forEach(f=>{
+    if(f.required && !servicesOnly && !(document.getElementById('extra-' + f.id)?.value || '').trim())
+      missing.push(['extra-' + f.id, 'عليك كتابة ' + f.label]);
+  });
   if(missing.length){
     missing.forEach(([id,msg])=>markFieldError(id,msg));
     const first = document.getElementById(missing[0][0]);
-    showToast(missing.length === 1 ? missing[0][1] : 'عليك ملء الاسم والهاتف والتاريخ والوقت قبل الإرسال');
+    showToast(missing.length === 1 ? missing[0][1] : 'عليك ملء الحقول المطلوبة: ' + missing.map(m=>m[1].replace(/^عليك (ملء|كتابة|اختيار) /,'')).join('، '));
     first.scrollIntoView({behavior:'smooth',block:'center'});
     setTimeout(()=>{ try{ first.focus({preventScroll:true}); }catch(e){} }, 350);
     return null;
@@ -1994,7 +2003,7 @@ function buildMessage(){
   const extraLines = [];
   CATEGORIES[activeCategory].info.extraFields.forEach(f=>{
     const v = document.getElementById('extra-' + f.id)?.value.trim();
-    if(v) extraLines.push(`${f.label}: ${v}`);
+    if(v) extraLines.push(`${f.loc ? '📍 ' : ''}${f.label}: ${v}`);
   });
 
   let total = selectedPackage.price;
@@ -2227,6 +2236,7 @@ function clearFieldErrors(){
 }
 // تختفي الرسالة بمجرد أن يكتب أو يختار
 ['input','change'].forEach(ev=>infoCard.addEventListener(ev,e=>{
+  if(e.target.id && e.target.id.startsWith('extra-')) extraVals[e.target.id] = e.target.value;
   const f = e.target.closest && e.target.closest('.field');
   if(f && e.target.value) f.classList.remove('err','shake');
 }));
