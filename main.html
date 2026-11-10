@@ -971,6 +971,84 @@ html[data-theme="dark"] .td-doing{color:#8cc4f2}
 html[data-theme="dark"] .td-mb::after{background:#2a2521}
 
 /* ===== dark mode ===== */
+/* ===== tasks: «اليوم» — تصميم ناعم بسيط (Soft Day) ===== */
+.sd{--sd-a:#c0654f;--sd-a2:#d98c78;--sd-t:rgba(192,101,79,.14);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:1rem;align-items:start}
+html[data-theme="dark"] .sd{--sd-a:#dd8a73;--sd-a2:#e9a793;--sd-t:rgba(221,138,115,.18)}
+.sd-col{display:flex;flex-direction:column;gap:1rem;min-width:0}
+.sd-c{background:var(--card-g);border:1px solid rgba(255,255,255,.7);border-radius:22px;box-shadow:var(--lift-sm);padding:1.1rem 1.15rem}
+html[data-theme="dark"] .sd-c{border-color:rgba(255,255,255,.05)}
+.sd-h{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.8rem}
+.sd-h>span{display:flex;align-items:center;gap:.25rem}
+.sd-h b{font-size:1.15rem;font-weight:700;color:var(--text)}
+.sd-h small{color:var(--muted);font-weight:600;font-size:.8rem}
+.sd-ib{width:34px;height:34px;border-radius:50%;border:0;background:transparent;color:var(--text);font-size:1.1rem;cursor:pointer;display:grid;place-items:center}
+.sd-ib:hover{background:var(--sd-t)}
+.sd-plus{background:var(--sd-t);color:var(--sd-a);font-size:1.35rem;box-shadow:var(--lift-sm)}
+/* التقويم */
+.sd-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:.15rem;text-align:center}
+.sd-cal .wd{font-size:.72rem;color:var(--muted);font-weight:600;padding:.2rem 0 .45rem}
+.sd-cal button{position:relative;aspect-ratio:1;max-width:42px;width:100%;margin:auto;border:0;border-radius:50%;background:transparent;font:inherit;font-size:.88rem;color:var(--text);cursor:pointer}
+.sd-cal button:hover{background:var(--sd-t)}
+.sd-cal button.td{box-shadow:inset 0 0 0 1.5px var(--sd-a);color:var(--sd-a);font-weight:700}
+.sd-cal button.on{background:var(--sd-a);color:#fff;font-weight:700;box-shadow:0 4px 10px var(--sd-t)}
+.sd-cal button i{position:absolute;bottom:4px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--sd-a)}
+.sd-cal button.on i{background:#fff}
+.sd-cal button i.od{background:var(--danger)}
+/* قائمة اليوم */
+.sd-list{display:flex;flex-direction:column}
+.sd-row{display:flex;align-items:center;gap:.75rem;padding:.7rem .1rem;border-bottom:1px solid var(--border)}
+.sd-row:last-child{border-bottom:0}
+.sd-ck{flex:none;width:26px;height:26px;border-radius:50%;border:1.6px solid var(--border);background:transparent;cursor:pointer;display:grid;place-items:center;color:transparent;padding:0;transition:.2s}
+.sd-ck:hover{border-color:var(--sd-a);color:var(--sd-a2)}
+.sd-row.done .sd-ck{background:var(--sd-a);border-color:var(--sd-a);color:#fff}
+.sd-tx{flex:1;min-width:0;cursor:pointer}
+.sd-tx b{display:block;font-weight:500;font-size:.98rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sd-row.done .sd-tx b{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--sd-a2)}
+.sd-tx small{display:block;font-size:.74rem;color:var(--muted);margin-top:.1rem}
+.sd-tx small .od{color:var(--danger);font-weight:700}
+.sd-dot{flex:none;width:8px;height:8px;border-radius:50%}
+.sd-more{flex:none;border:0;background:transparent;color:var(--muted);font-size:1.15rem;letter-spacing:1px;cursor:pointer;padding:.1rem .35rem;border-radius:8px}
+.sd-more:hover{background:var(--sd-t);color:var(--text)}
+.sd-add{display:flex;align-items:center;gap:.5rem;margin-top:.6rem;padding:.55rem .8rem;border-radius:14px;background:var(--off);box-shadow:var(--sunk)}
+.sd-add input,.sd-add select{border:0;background:transparent;font:inherit;color:var(--text);outline:none}
+.sd-add input{flex:1;min-width:0;font-size:.95rem}
+.sd-add select{font-size:.78rem;color:var(--muted);max-width:110px}
+.sd-empty{text-align:center;color:var(--muted);padding:1.3rem .5rem;font-size:.9rem}
+.sd-sub{font-size:.76rem;color:var(--muted);font-weight:700;margin:.7rem 0 .1rem}
+/* المؤقت */
+.sd-timer{text-align:center}
+.sd-ring{position:relative;width:min(220px,70%);margin:.2rem auto .9rem}
+.sd-ring svg{display:block;width:100%;height:auto;transform:rotate(-90deg)}
+.sd-ring .bg{stroke:var(--border)}
+.sd-ring .fg{stroke:var(--sd-a);transition:stroke-dashoffset .9s linear}
+.sd-ring .in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.sd-ring .lf{color:var(--sd-a);font-size:1.4rem;line-height:1}
+.sd-ring .tm{font-size:clamp(2rem,6vw,2.7rem);font-weight:300;letter-spacing:1px;color:var(--text);font-variant-numeric:tabular-nums;direction:ltr}
+.sd-ring .lb{font-size:.7rem;letter-spacing:.25em;color:var(--muted);font-weight:600}
+.sd-go{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;min-width:62%;border:0;border-radius:999px;background:var(--sd-a);color:#fff;font:inherit;font-weight:700;letter-spacing:.12em;padding:.75rem 1.4rem;cursor:pointer;box-shadow:0 6px 14px var(--sd-t)}
+.sd-go.ghost{background:transparent;color:var(--sd-a);box-shadow:inset 0 0 0 1.5px var(--sd-a);min-width:0}
+.sd-tbtns{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap}
+.sd-durs{display:flex;gap:.35rem;justify-content:center;margin-bottom:.7rem}
+.sd-durs button{border:1px solid var(--border);background:transparent;border-radius:999px;font:inherit;font-size:.74rem;font-weight:700;color:var(--muted);padding:.2rem .7rem;cursor:pointer}
+.sd-durs button.on{background:var(--sd-t);color:var(--sd-a);border-color:transparent}
+.sd-on{font-size:.78rem;color:var(--muted);margin:.7rem 0 0;display:flex;gap:.4rem;align-items:center;justify-content:center;flex-wrap:wrap}
+.sd-on select{border:1px solid var(--border);border-radius:10px;background:var(--off);font:inherit;font-size:.78rem;color:var(--text);padding:.2rem .4rem;max-width:200px}
+/* التقدّم */
+.sd-pg{display:flex;justify-content:space-between;align-items:center;font-weight:600;color:var(--text);margin-bottom:.7rem}
+.sd-pg span{font-variant-numeric:tabular-nums;color:var(--muted)}
+.sd-bar{height:10px;border-radius:99px;background:var(--off);box-shadow:var(--sunk);overflow:hidden}
+.sd-bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--sd-a2),var(--sd-a));transition:width .5s}
+/* المفاتيح */
+.sd-tg{display:flex;align-items:center;gap:.7rem;padding:.65rem 0;border-bottom:1px solid var(--border);cursor:pointer}
+.sd-tg:last-child{border-bottom:0;padding-bottom:0}.sd-tg:first-child{padding-top:0}
+.sd-tg span{flex:1;font-weight:500;color:var(--text)}
+.sd-tg em{font-style:normal;width:22px;text-align:center}
+.sd-sw{position:relative;flex:none;width:46px;height:26px;border-radius:99px;background:var(--border);transition:.2s}
+.sd-sw::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:.2s}
+.sd-tg[aria-checked="true"] .sd-sw{background:var(--sd-a)}
+.sd-tg[aria-checked="true"] .sd-sw::after{inset-inline-start:23px}
+.sd.deep .sd-hide{display:none}
+@media(max-width:760px){.sd{grid-template-columns:minmax(0,1fr)}.sd-col{display:contents}.sd-o1{order:1}.sd-o2{order:2}.sd-o3{order:3}.sd-o4{order:4}.sd-o5{order:5}}
 html[data-theme="dark"]{color-scheme:dark;
   --gold:#d8b27a;--rose:#c99486;--rose-d:#e3a998;--sage:#8fb09a;--sage-d:#7aa086;--sage-dd:#a9cdb3;
   --dark:#141210;--off:#1a1714;--surface:#1f1b18;--border:#3a322b;--text:#e9e0d3;--muted:#a3978a;--white:#f6efe4;
@@ -4190,10 +4268,10 @@ async function delFile(t,fid){
 const fSize=b=>b>1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB';
 
 // ── حالة الواجهة ──
-const V={view:'list',q:'',st:'open',pc:'all',who:'all',due:'all',cl:'all',sort:'due',cal:todayISO().slice(0,7),open:null,isNew:false,rep:'week',ref:todayISO(),aq:'',apc:'all',qd:'today',qp:'none',qtx:'',fopen:false,selMode:false,sum:'day',qtype:'',tyEdit:null};
+const V={view:'day',day:todayISO(),dm:todayISO().slice(0,7),tg:{done:true,notif:false,deep:false},fdur:25,q:'',st:'open',pc:'all',who:'all',due:'all',cl:'all',sort:'due',cal:todayISO().slice(0,7),open:null,isNew:false,rep:'week',ref:todayISO(),aq:'',apc:'all',qd:'today',qp:'none',qtx:'',fopen:false,selMode:false,sum:'day',qtype:'',tyEdit:null};
 const SEL=new Set();
-try{const s=JSON.parse(localStorage.getItem('ss_tasks_ui')||'{}');['view','sort','st','sum'].forEach(k=>{if(s[k])V[k]=s[k]})}catch(e){}
-const saveUI=()=>{try{localStorage.setItem('ss_tasks_ui',JSON.stringify({view:['list','done','cal','board'].includes(V.view)?V.view:'list',sort:V.sort,st:V.st,sum:V.sum}))}catch(e){}};
+try{const s=JSON.parse(localStorage.getItem('ss_tasks_ui2')||'{}');['view','sort','st','sum','fdur'].forEach(k=>{if(s[k])V[k]=s[k]});if(s.tg)Object.assign(V.tg,s.tg)}catch(e){}
+const saveUI=()=>{try{localStorage.setItem('ss_tasks_ui2',JSON.stringify({view:['day','list','done','cal','board'].includes(V.view)?V.view:'day',sort:V.sort,st:V.st,sum:V.sum,tg:V.tg,fdur:V.fdur}))}catch(e){}};
 
 // ── تطبيع البحث (عربي) ──
 const norm=s=>String(s||'').toLowerCase().replace(/[\u064B-\u0652\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
@@ -4527,17 +4605,113 @@ function doneV(){
   return `<div class="td-donehead"><p class="pr-hint" style="margin:0">${A_('اضغط ✓ لإعادة أي مهمة إلى القائمة.','Tap ✓ to move a task back to the list.')}</p>${old.length?`<button class="btn-sm" data-tk-archdone>🗄 ${A_(`أرشفة المنجزة قبل اليوم وأمس (${old.length})`,`Archive older completed (${old.length})`)}</button>`:''}</div>`+
    (L.length?H.filter(([k])=>G2[k]).map(([k,l])=>`<section class="td-grp"><h3>✓ ${l}<small>${G2[k].length}</small></h3><div class="td-list">${G2[k].map(t=>todoRow(t,'done')).join('')}</div></section>`).join(''):noRes(A_('لا توجد مهام منجزة بعد.','No completed tasks yet.')));
 }
+// ═════════════ «اليوم»: تقويم · قائمة اليوم · مؤقت التركيز · التقدّم · مفاتيح ═════════════
+const dIso=t=>t.doneAt?todayISO(new Date(t.doneAt)):'';
+function dayTasks(day){
+  const td=todayISO(),A=T().filter(t=>!t.archived);
+  const open=A.filter(t=>t.status!=='done'&&(t.due===day||(day===td&&(isOverdue(t)||(t.due&&t.due<td))))).sort(byDatePr);
+  const loose=day===td?A.filter(t=>t.status!=='done'&&!t.due).sort(byDatePr):[];
+  const done=A.filter(t=>t.status==='done'&&(dIso(t)===day||(t.due===day&&!t.doneAt))).sort((a,b)=>(a.doneAt||'').localeCompare(b.doneAt||''));
+  return{open,loose,done};
+}
+function sdRow(t){
+  const done=t.status==='done',od=!done&&isOverdue(t),y=t.type&&tyOf(t.type),m=[];
+  if(od)m.push(`<span class="od">${A_('متأخرة','Overdue')} · ${escH(fD(t.due))}</span>`);
+  if(t.dueT)m.push('🕒 '+escH(t.dueT));
+  if(y)m.push(escH(y.name));
+  if(t.who)m.push(escH(t.who));
+  if(running(t))m.push(`<span style="color:var(--sd-a)">⏱ ${fMin(mins(t))}</span>`);
+  return `<div class="sd-row${done?' done':''}"><button type="button" class="sd-ck" data-tk-done="${t.id}" aria-label="${done?A_('إعادة فتح','Reopen'):A_('تم','Mark done')}">${CHK}</button>
+  <div class="sd-tx" data-tk-open="${t.id}"><b>${escH(t.title||A_('بدون عنوان','Untitled'))}</b>${m.length?`<small>${m.join(' · ')}</small>`:''}</div>
+  ${t.pr!=='none'||t.color?`<i class="sd-dot" style="background:${colorOf(t)}" title="${prL(t.pr)}"></i>`:''}<button type="button" class="sd-more" data-tk-open="${t.id}" aria-label="${A_('التفاصيل','Details')}">⋯</button></div>`;
+}
+function sdCal(){
+  const [y,mo]=V.dm.split('-').map(Number),first=new Date(y,mo-1,1),n=new Date(y,mo,0).getDate(),td=todayISO();
+  const cnt={},od={};T().forEach(t=>{if(t.archived||t.status==='done'||!t.due||t.due.slice(0,7)!==V.dm)return;cnt[t.due]=(cnt[t.due]||0)+1;if(isOverdue(t))od[t.due]=1});
+  const wd=[...Array(7)].map((_,i)=>new Date(2026,10,1+i).toLocaleDateString(loc(),{weekday:'short'}));   // 1 نوفمبر 2026 = أحد
+  let cells='';for(let i=0;i<first.getDay();i++)cells+='<span></span>';
+  for(let d=1;d<=n;d++){const iso=V.dm+'-'+String(d).padStart(2,'0');cells+=`<button type="button" class="${iso===V.day?'on':''}${iso===td?' td':''}" data-sd-day="${iso}" aria-label="${escH(dayName(iso))}${cnt[iso]?' — '+cnt[iso]+' '+A_('مهام','tasks'):''}">${d}${cnt[iso]?`<i class="${od[iso]?'od':''}"></i>`:''}</button>`}
+  const prev=A_('›','‹'),next=A_('‹','›');
+  return `<div class="sd-c sd-hide sd-o4"><div class="sd-h"><b>${escH(first.toLocaleDateString(loc(),{month:'long',year:'numeric'}))}</b><span><button type="button" class="sd-ib" data-sd-m="-1" aria-label="${A_('الشهر السابق','Previous month')}">${prev}</button><button type="button" class="sd-ib" data-sd-m="1" aria-label="${A_('الشهر التالي','Next month')}">${next}</button></span></div>
+  <div class="sd-cal">${wd.map(w=>`<span class="wd">${escH(w)}</span>`).join('')}${cells}</div></div>`;
+}
+// مؤقت التركيز: يُسجّل الوقت على المهمة المختارة (نفس سجل «الوقت المستغرق»)
+let FOC=null;try{FOC=JSON.parse(localStorage.getItem('ss_focus')||'null')}catch(e){}
+const saveFoc=()=>{try{FOC?localStorage.setItem('ss_focus',JSON.stringify(FOC)):localStorage.removeItem('ss_focus')}catch(e){}};
+const focLeft=()=>!FOC?V.fdur*60000:FOC.end?Math.max(0,FOC.end-Date.now()):FOC.left;
+const mmss=ms=>{const s=Math.ceil(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
+const RC=2*Math.PI*52;
+function sdTimer(cands){
+  const dur=FOC?FOC.dur:V.fdur*60000,left=focLeft(),run=!!(FOC&&FOC.end),ft=FOC&&FOC.task?T().find(t=>t.id===FOC.task):null;
+  const sel=FOC?(ft?`<b style="color:var(--text)">${escH(ft.title)}</b>`:''):(cands.length?`<select data-sd-ftask aria-label="${A_('المهمة','Task')}"><option value="">${A_('بدون مهمة','No task')}</option>${cands.map(t=>`<option value="${t.id}"${t.id===V.ftask?' selected':''}>${escH(t.title)}</option>`).join('')}</select>`:'');
+  return `<div class="sd-c sd-timer sd-o3">${FOC?'':`<div class="sd-durs" role="group" aria-label="${A_('المدة','Duration')}">${[15,25,50].map(m=>`<button type="button" class="${V.fdur===m?'on':''}" data-sd-dur="${m}">${m} ${A_('د','min')}</button>`).join('')}</div>`}
+  <div class="sd-ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="bg" cx="60" cy="60" r="52" fill="none" stroke-width="7"/><circle class="fg" id="sd-fg" cx="60" cy="60" r="52" fill="none" stroke-width="7" stroke-linecap="round" stroke-dasharray="${RC.toFixed(1)}" stroke-dashoffset="${(RC*(left/dur)).toFixed(1)}"/></svg>
+   <div class="in"><span class="lf">🌿</span><span class="tm" id="sd-clock" role="timer">${mmss(left)}</span><span class="lb">${run?A_('تركيز','FOCUS'):FOC?A_('متوقف','PAUSED'):A_('تركيز','FOCUS')}</span></div></div>
+  <div class="sd-tbtns">${run?`<button type="button" class="sd-go" data-sd-focus="pause">❚❚ ${A_('إيقاف مؤقت','PAUSE')}</button>`:`<button type="button" class="sd-go" data-sd-focus="${FOC?'resume':'start'}">▶ ${FOC?A_('متابعة','RESUME'):A_('ابدأ','START')}</button>`}${FOC?`<button type="button" class="sd-go ghost" data-sd-focus="reset" aria-label="${A_('إنهاء','Stop')}">■</button>`:''}</div>
+  ${sel?`<div class="sd-on">${A_('على:','On:')} ${sel}</div>`:''}</div>`;
+}
+function focus(act){
+  if(act==='start'){const t=V.ftask&&T().find(x=>x.id===V.ftask);FOC={dur:V.fdur*60000,end:Date.now()+V.fdur*60000,task:t?t.id:null};if(t)startTimer(t);if(V.tg.notif&&window.Notification&&Notification.permission==='default')Notification.requestPermission()}
+  else if(act==='pause'&&FOC){FOC.left=focLeft();FOC.end=null;const t=T().find(x=>x.id===FOC.task);if(t){stopTimer(t);persist()}}
+  else if(act==='resume'&&FOC){FOC.end=Date.now()+FOC.left;const t=T().find(x=>x.id===FOC.task);if(t)startTimer(t)}
+  else if(act==='reset'&&FOC){const t=T().find(x=>x.id===FOC.task);if(t){stopTimer(t);persist()}FOC=null}
+  saveFoc();render();
+}
+function focusDone(){
+  const t=FOC&&T().find(x=>x.id===FOC.task);if(t){stopTimer(t);persist()}FOC=null;saveFoc();
+  const msg=A_('🌿 انتهت جلسة التركيز — خذ استراحة قصيرة','🌿 Focus session done — take a short break');note(msg);
+  try{const a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.frequency.value=660;g.gain.setValueAtTime(.18,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+1.2);o.connect(g).connect(a.destination);o.start();o.stop(a.currentTime+1.2)}catch(e){}
+  if(V.tg.notif&&window.Notification&&Notification.permission==='granted')try{new Notification(B_name(),{body:msg})}catch(e){}
+  render();
+}
+setInterval(()=>{if(!FOC||!FOC.end)return;const left=focLeft();if(left<=0){focusDone();return}
+  const c=G('sd-clock'),f=G('sd-fg');if(c)c.textContent=mmss(left);if(f)f.setAttribute('stroke-dashoffset',(RC*(left/FOC.dur)).toFixed(1))},1000);
+function dayV(){
+  const td=todayISO(),isT=V.day===td,D0=dayTasks(V.day),tot=D0.open.length+D0.done.length,dn=D0.done.length;
+  const cands=[...D0.open,...D0.loose];if(V.ftask&&!cands.some(t=>t.id===V.ftask))V.ftask='';if(!V.ftask&&cands[0])V.ftask=cands[0].id;
+  const title=isT?A_('اليوم','Today'):V.day===addD(td,1)?A_('غدًا','Tomorrow'):escH(dayName(V.day));
+  const list=(D0.open.length||D0.loose.length||(V.tg.done&&dn))?
+    D0.open.map(sdRow).join('')+(D0.loose.length?`<div class="sd-sub">${A_('بدون تاريخ','No date')}</div>`+D0.loose.map(sdRow).join(''):'')+(V.tg.done&&dn?D0.done.map(sdRow).join(''):'')
+    :`<div class="sd-empty">${dn?A_('🎉 أنجزت كل مهام هذا اليوم','🎉 All done for this day'):A_('لا مهام في هذا اليوم — أضف واحدة بالأسفل','Nothing planned — add one below')}</div>`;
+  const tg=(k,ic,l)=>`<div class="sd-tg" role="switch" tabindex="0" aria-checked="${!!V.tg[k]}" data-sd-tog="${k}"><em aria-hidden="true">${ic}</em><span>${l}</span><i class="sd-sw" aria-hidden="true"></i></div>`;
+  return `<div class="sd${V.tg.deep?' deep':''}">
+  <div class="sd-col">${sdCal()}
+   <div class="sd-c sd-o1"><div class="sd-h"><span><b>${title}</b>${isT?` <small>${escH(new Date().toLocaleDateString(loc(),{weekday:'long',day:'numeric',month:'long'}))}</small>`:''}</span><span>${isT?'':`<button type="button" class="sd-ib" data-sd-day="${td}" style="width:auto;padding:0 .7rem;border-radius:99px;font-size:.78rem;font-weight:700" >${A_('اليوم','Today')}</button>`}<button type="button" class="sd-ib sd-plus" data-sd-plus aria-label="${A_('إضافة مهمة','Add task')}">+</button></span></div>
+    <div class="sd-list">${list}</div>
+    <form class="sd-add" data-sd-add autocomplete="off"><span style="color:var(--sd-a);font-weight:700">+</span><input name="t" id="sd-in" placeholder="${A_('أضف مهمة… ثم Enter','Add a task… then Enter')}" maxlength="200" aria-label="${A_('مهمة جديدة','New task')}">${TY().length?`<select name="y" aria-label="${A_('نوع المهمة','Task type')}"><option value="">${A_('النوع','Type')}</option>${TY().map(y=>`<option value="${y.id}">${escH(y.name)}</option>`).join('')}</select>`:''}</form></div>
+  </div>
+  <div class="sd-col sd-r">${sdTimer(cands)}
+   <div class="sd-c sd-hide sd-o2"><div class="sd-pg">${isT?A_('إنجاز اليوم','Daily progress'):A_('إنجاز هذا اليوم','Progress for this day')}<span dir="ltr">${dn} / ${tot}</span></div><div class="sd-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${tot}" aria-valuenow="${dn}"><i style="width:${tot?(dn/tot*100).toFixed(1):0}%"></i></div></div>
+   <div class="sd-c sd-o5">${tg('done','✓',A_('إظهار المنجزة','Show completed'))}${tg('notif','🔔',A_('تنبيه عند انتهاء التركيز','Notify when focus ends'))}${tg('deep','🌙',A_('تركيز عميق (إخفاء الباقي)','Deep focus (hide the rest)'))}</div>
+  </div></div>`;
+}
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-sd-day],[data-sd-m],[data-sd-focus],[data-sd-dur],[data-sd-tog],[data-sd-plus]');if(!el)return;const d=el.dataset;
+  if(d.sdDay){V.day=d.sdDay;V.dm=d.sdDay.slice(0,7);render();return}
+  if(d.sdM){const x=new Date(V.dm+'-01T00:00');x.setMonth(x.getMonth()+(+d.sdM));V.dm=todayISO(x).slice(0,7);render();return}
+  if(d.sdFocus){focus(d.sdFocus);return}
+  if(d.sdDur){V.fdur=+d.sdDur;saveUI();render();return}
+  if(d.sdTog){const k=d.sdTog;V.tg[k]=!V.tg[k];if(k==='notif'&&V.tg.notif&&window.Notification&&Notification.permission==='default')Notification.requestPermission();saveUI();render();return}
+  if(d.sdPlus!==undefined){const i=G('sd-in');if(i)i.focus();return}
+});
+document.addEventListener('keydown',e=>{const el=e.target.closest&&e.target.closest('[data-sd-tog]');if(el&&(e.key===' '||e.key==='Enter')){e.preventDefault();el.click()}});
+document.addEventListener('change',e=>{if(e.target.matches&&e.target.matches('[data-sd-ftask]')){V.ftask=e.target.value;}});
+document.addEventListener('submit',e=>{const f=e.target;if(!f.matches||!f.matches('[data-sd-add]'))return;e.preventDefault();
+  const y=f.y?tyOf(f.y.value):null,ti=f.t.value.trim()||(y?y.name:'');if(!ti){f.t.focus();return}
+  const o={title:ti,due:V.day};if(y){o.type=y.id;o.who=y.who||'';if(y.days!==''&&y.days!=null){o.start=V.day;o.days=String(y.days);o.due=addD(V.day,+y.days)}}
+  newTask(o);persist();render();const i=G('sd-in');if(i)i.focus();note(A_('✓ أُضيفت المهمة','✓ Task added'))});
 function render(){
   const R=G('tasks-root');if(!R)return;
   const page=G('page-tasks');if(!page||!page.classList.contains('active')){renderHome();return}
   const nDone=T().filter(t=>!t.archived&&t.status==='done').length,nOpen=T().filter(t=>!t.archived&&t.status!=='done').length,nArch=T().filter(t=>t.archived).length;
-  const main=[['list','☰ '+A_('المهام','Tasks'),nOpen],['done','✓ '+A_('المنجزة','Done'),nDone]];
+  const main=[['day','☀ '+A_('اليوم','Today'),''],['list','☰ '+A_('كل المهام','All tasks'),nOpen],['done','✓ '+A_('المنجزة','Done'),nDone]];
   const more=[['types','⚙ '+A_('لوحة التحكم','Control panel')],['cal','📅 '+A_('التقويم','Calendar')],['board','▦ '+A_('اللوحة','Board')],['archive','🗄 '+A_('الأرشيف','Archive')+(nArch?` (${nArch})`:'')],['reports','📊 '+A_('التقارير','Reports')]];
   const ae=document.activeElement,fid=ae&&(ae.id||(ae.dataset&&ae.dataset.tkQt!==undefined?'__qt':'')),pos=ae&&ae.selectionStart;
   let h=`<div class="td-head"><h2>${A_('مهامي','My tasks')}</h2><div class="td-tabs" role="tablist">${main.map(([k,l,n])=>`<button type="button" role="tab" aria-selected="${V.view===k}" class="${V.view===k?'on':''}" data-tk-view="${k}">${l} <small>${n}</small></button>`).join('')}</div>
     <div class="td-links" role="group" aria-label="${A_('عروض أخرى','Other views')}">${more.map(([k,l])=>`<button type="button" class="${V.view===k?'on':''}" data-tk-view="${k}">${l}</button>`).join('')}</div></div>`;
   {const L=lostTasks();if(L.tasks.length)h+=`<div class="card" style="margin-bottom:.8rem;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;border:1px solid var(--danger)"><b style="flex:1;min-width:200px">⚠ ${A_(`وُجدت ${L.tasks.length} مهمة في النسخة الاحتياطية غير موجودة الآن`,`${L.tasks.length} task(s) found in the backup that are missing now`)}</b><button class="btn-gold" type="button" data-tk-recover>↺ ${A_('استعادة المهام','Restore tasks')}</button></div>`}
-  if(V.view==='list')h+=summaryH()+addH()+toolH()+bulkBar(false)+todoV();
+  if(V.view==='day')h+=dayV();
+  else if(V.view==='list')h+=summaryH()+addH()+toolH()+bulkBar(false)+todoV();
   else if(V.view==='done')h+=toolH()+bulkBar(false)+doneV();
   else if(V.view==='board'||V.view==='cal')h+=filtersH()+legend()+(V.view==='board'?boardV():calV());
   else if(V.view==='types')h+=typesV();
