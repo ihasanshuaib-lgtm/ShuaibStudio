@@ -943,6 +943,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 @media(max-width:560px){#nt .bh-clock .bh-sub{font-size:9px}#nt .bh-time{font-size:15px}}
 </style>
 <script src="theme.js" data-mode="class"></script>
+<script src="motion.js" defer></script>
 </head>
 <body id="nt" class="light-mode">
 
@@ -2108,6 +2109,7 @@ sendWhatsapp.addEventListener('click', ()=>{
   const msg = buildMessage();
   if(!msg) return;
   submitBooking();
+  if(window.MX && activeCategory !== 'weddings') MX.done(sendWhatsapp, 'تم تجهيز رسالة الحجز');   // علامة صح متحركة (إن فُعّلت من الإعدادات)؛ الأعراس لها رسالة البركة
   const url = `https://wa.me/${STUDIO_WHATSAPP}?text=${encodeURIComponent(msg)}`;
   // رسالة «الله يطرح البركة» تظهر في الأعراس فقط؛ بقية الأنواع تفتح واتساب مباشرة
   if(activeCategory === 'weddings') showBlessingThenGo(url);
@@ -2118,6 +2120,7 @@ sendEmail.addEventListener('click', ()=>{
   const msg = buildMessage();
   if(!msg) return;
   submitBooking();
+  if(window.MX) MX.done(sendEmail, 'تم تجهيز رسالة الحجز');
   const subject = encodeURIComponent('طلب حجز جديد - شعيب استوديو');
   const body = encodeURIComponent(msg);
   window.location.href = `mailto:${STUDIO_EMAIL}?subject=${subject}&body=${body}`;

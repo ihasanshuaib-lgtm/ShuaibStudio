@@ -52,19 +52,24 @@
       for(var i = 1; i <= 8; i++) out += KIDS.split(',').map(function(k){ return k.replace('>*', '>*:nth-child(' + i + ')'); }).join(',') + '{animation:stIn ' + ms(460) + ' ' + EASE + ' ' + ms(40 + i * 45) + ' backwards}\n';
     }
     var BTN = '.btn-gold,.btn-outline,.btn-sm,.td-new,.td-fab,.sd-go,.confirm-btn,.whatsapp-btn,.tb-go,.bless-go,.ig-link,.wa-link,.category,.st-it,.th-pre button,.sa-stat,.td-tabs button,.nav-links button,.sd-plus,.jump-btn';
-    var bs = function(sel, d){ return BTN.split(',').map(function(b){ return b + sel; }).join(',') + '{' + d + '}\n'; };
+    var bs = function(sel, d){ var r = BTN.split(',').map(function(b){ return b + sel; }).join(',') + '{' + d + '}\n';
+      return sel === ':hover' ? '@media (hover:hover){' + r + '}\n' : r; };   // لا تأثيرات «مرور» على شاشات اللمس
     if(t.mBtn === 'none') out += bs('', 'transition:none !important') + bs(':hover', 'transform:none !important') + bs(':active', 'transform:none !important');
     else if(t.mBtn){
-      out += bs('', 'transition:transform ' + ms(180) + ' ' + EASE + ',box-shadow ' + ms(220) + ' ease,filter ' + ms(180) + ' ease,background-color ' + ms(180) + ' ease !important;will-change:transform');
+      out += bs('', 'transition:transform ' + ms(180) + ' ' + EASE + ',box-shadow ' + ms(220) + ' ease,filter ' + ms(180) + ' ease,background-color ' + ms(180) + ' ease !important');
       if(t.mBtn === 'lift') out += bs(':hover', 'transform:translateY(-2px) !important;box-shadow:var(--float,0 8px 18px rgba(0,0,0,.12)) !important') + bs(':active', 'transform:translateY(0) scale(.98) !important;transition-duration:' + ms(80) + ' !important');
       if(t.mBtn === 'scale') out += bs(':hover', 'transform:scale(1.04) !important') + bs(':active', 'transform:scale(.95) !important;transition-duration:' + ms(80) + ' !important');
       if(t.mBtn === 'glow') out += bs(':hover', 'box-shadow:0 0 0 3px color-mix(in srgb,var(--gold,#9a6f66) 28%,transparent),var(--lift-sm,0 2px 6px rgba(0,0,0,.1)) !important;filter:brightness(1.04)') + bs(':active', 'transform:scale(.97) !important');
       if(t.mBtn === 'press') out += bs(':hover', 'filter:brightness(1.05)') + bs(':active', 'transform:scale(.94) !important;transition-duration:' + ms(70) + ' !important');
     }
     var CARD = '.card,.sd-c,.sa-g,.bz-kpi,.package,.service,.sess';
-    if(t.mCard === 'lift') out += CARD.split(',').map(function(c){ return P + c; }).join(',') + '{transition:transform ' + ms(240) + ' ' + EASE + ',box-shadow ' + ms(240) + ' ease}\n' +
+    if(t.mCard === 'lift') out += '@media (hover:hover){' + CARD.split(',').map(function(c){ return P + c; }).join(',') + '{transition:transform ' + ms(240) + ' ' + EASE + ',box-shadow ' + ms(240) + ' ease}\n' +
       CARD.split(',').map(function(c){ return P + c + ':hover'; }).join(',') + '{transform:translateY(-3px);box-shadow:var(--float,0 10px 24px rgba(0,0,0,.12))}\n' +
-      '.st-main>section.card:hover,.page.active>section.card:only-child:hover{transform:none}\n';
+      '.st-main>section.card:hover,.page.active>section.card:only-child:hover{transform:none}}\n';
+    // انتقالات بين الصفحات (View Transitions API) — يجب أن تكون في <head> قبل أول رسم، لذا هنا لا في motion.js
+    var X = t.mx || {};
+    if(X.viewTrans) out += '@view-transition{navigation:auto}\n::view-transition-old(root){animation:mxVtO ' + ms(220) + ' ease both}\n::view-transition-new(root){animation:mxVtI ' + ms(320) + ' ' + EASE + ' both}\n' +
+      '@keyframes mxVtO{to{opacity:0}}\n@keyframes mxVtI{from{opacity:0;transform:translateY(10px)}}\nhtml{scroll-behavior:smooth}\nsection[id],[id^="sec-"]{scroll-margin-top:84px}\n';
     if(out) out = '@media (prefers-reduced-motion:no-preference){\n' + out + '}\n';
     return out;
   }
@@ -136,13 +141,32 @@
     return st;
   }
   var current = null;
-  function apply(t){ current = t || null; el().textContent = css(current); }
+  function apply(t){ current = t || null; el().textContent = css(current);
+    try{ document.dispatchEvent(new CustomEvent('sitetheme')); }catch(e){} }   // motion.js يعيد التهيئة
   function cache(t){ try{ t ? localStorage.setItem(KEY, JSON.stringify(t)) : localStorage.removeItem(KEY); }catch(e){} }
 
   var cached = null;
   try{ cached = JSON.parse(localStorage.getItem(KEY) || 'null'); }catch(e){}
   apply(cached);
   document.addEventListener('DOMContentLoaded', function(){ apply(current); });
+
+  // شاشة تحميل بالشعار: أول زيارة في الجلسة فقط، للصفحات العامة، حدّ أقصى ثانية واحدة
+  (function preloader(t){
+    if(!t || !t.mx || !t.mx.preloader) return;
+    if(/(^|\/)(main|staff|salary_report|login)\.html$/i.test(location.pathname)) return;
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    try{ if(sessionStorage.getItem('mx-pre')) return; sessionStorage.setItem('mx-pre', '1'); }catch(e){ return; }
+    var de = document.documentElement, st = document.createElement('style');
+    de.classList.add('mx-pl'); st.id = 'mx-pl-css';
+    st.textContent = 'html.mx-pl::before{content:"";position:fixed;inset:0;z-index:2147483646;background:var(--bg,#efebe6);transition:opacity .3s ease}' +
+      'html.mx-pl::after{content:"";position:fixed;left:50%;top:50%;width:92px;height:110px;margin:-55px 0 0 -46px;z-index:2147483647;background:url(logo.png) center/contain no-repeat;animation:mxPl .7s cubic-bezier(.22,1,.36,1) both;transition:opacity .25s ease}' +
+      '@keyframes mxPl{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}html.mx-pl-out::before,html.mx-pl-out::after{opacity:0}';
+    (document.head || de).appendChild(st);
+    var end = function(){ if(!de.classList.contains('mx-pl') || de.classList.contains('mx-pl-out')) return; de.classList.add('mx-pl-out');
+      setTimeout(function(){ de.classList.remove('mx-pl', 'mx-pl-out'); if(st.parentNode) st.parentNode.removeChild(st); }, 320); };
+    window.addEventListener('load', function(){ setTimeout(end, 150); });
+    setTimeout(end, 650);   // 650 + 320 للتلاشي ≤ ثانية
+  })(cached);
 
   function fetchRemote(){
     var c = window.SB;

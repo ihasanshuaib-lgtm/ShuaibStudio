@@ -1038,6 +1038,18 @@ html[data-theme="dark"] .st-nav{border-color:rgba(255,255,255,.05)}
 .th-cr div{display:flex;justify-content:space-between;gap:.5rem;padding:.35rem .55rem;border-radius:9px;background:var(--off)}
 .th-cr b.ok{color:var(--success)}.th-cr b.bad{color:var(--danger)}
 /* الحركة */
+.mx-grp{margin-top:1rem}
+.mx-grp>h5{margin:0 0 .4rem;font-size:.82rem;color:var(--muted);font-weight:800;letter-spacing:.02em}
+.mx-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.45rem}
+.mx-tg{display:flex;align-items:flex-start;gap:.7rem;width:100%;text-align:start;border:1px solid var(--border);background:transparent;border-radius:14px;padding:.6rem .7rem;font:inherit;color:var(--text);cursor:pointer}
+.mx-tg:hover{background:var(--off)}
+.mx-tg[aria-checked="true"]{border-color:var(--sage-d);background:var(--off)}
+.mx-tg span{flex:1;min-width:0}.mx-tg b{display:block;font-size:.85rem}.mx-tg small{display:block;font-size:.72rem;color:var(--muted);line-height:1.45;margin-top:.1rem}
+.mx-tg em{display:inline-block;font-style:normal;font-size:.62rem;font-weight:800;padding:.05rem .45rem;border-radius:99px;background:var(--border);color:var(--muted);margin-top:.3rem}
+.mx-sw{flex:none;position:relative;width:40px;height:23px;border-radius:99px;background:var(--border);margin-top:.1rem;transition:background .2s}
+.mx-sw::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:inset-inline-start .2s}
+.mx-tg[aria-checked="true"] .mx-sw{background:var(--sage-d)}.mx-tg[aria-checked="true"] .mx-sw::after{inset-inline-start:20px}
+.mx-pre{display:flex;gap:.45rem;flex-wrap:wrap;align-items:center;margin:.2rem 0 .3rem}
 .mo-opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.5rem}
 .mo-opts button{display:flex;flex-direction:column;gap:.15rem;align-items:flex-start;text-align:start;border:1px solid var(--border);background:transparent;border-radius:14px;padding:.6rem .7rem;font:inherit;cursor:pointer;color:var(--text)}
 .mo-opts button b{font-size:.85rem}.mo-opts button small{font-size:.7rem;color:var(--muted);line-height:1.35}
@@ -1212,6 +1224,7 @@ html.locked body>*:not(#gate){display:none !important}
 #gate-err{min-height:1.2rem;margin-top:.6rem;font-size:.82rem;color:var(--danger,#c25c5c)}
 </style>
 <script src="theme.js"></script>
+<script src="motion.js" defer></script>
 </head>
 <body>
 <div id="gate" role="dialog" aria-modal="true" aria-label="تسجيل الدخول">
@@ -3931,11 +3944,53 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
   if(d.thSeg){thSet(d.thSeg,d.v,true);return}
   if(d.thSave!==undefined){if(TH_PREV)thCommit(TH_PREV);note(A_('✓ حُفظ الثيم','✓ Theme saved'));return}
   if(d.thCancel!==undefined){TH_PREV=null;if(window.SiteTheme){window.SiteTheme.preview=false;window.SiteTheme.apply(thSaved())}renderSettings();return}
-  if(d.thReset!==undefined){if(confirm(A_('الرجوع إلى الثيم الأصلي في كل الصفحات؟','Go back to the original theme on every page?'))){const o=thSaved()||{},m={on:false};['mPage','mBtn','mCard','mSpeed'].forEach(k=>{if(o[k])m[k]=o[k]});thCommit(Object.keys(m).length>1?m:null)}return}
+  if(d.thReset!==undefined){if(confirm(A_('الرجوع إلى الثيم الأصلي في كل الصفحات؟','Go back to the original theme on every page?'))){const o=thSaved()||{},m={on:false};['mPage','mBtn','mCard','mSpeed','mx'].forEach(k=>{if(o[k])m[k]=o[k]});thCommit(Object.keys(m).length>1?m:null)}return}
 });
 // ── الحركة والانتقالات (ضمن siteTheme: mPage, mBtn, mCard, mSpeed — تعمل حتى لو لم تُفعَّل الألوان) ──
 const MO_PAGE=[['','الافتراضي','Default','كما هو الآن','As it is now'],['none','بدون حركة','None','ظهور فوري','Instant'],['fade','تلاشي','Fade','ظهور ناعم تدريجي','Soft fade-in'],['up','انزلاق للأعلى','Slide up','يصعد قليلًا مع الظهور','Rises slightly'],['side','انزلاق جانبي','Slide in','يدخل من الجانب','Enters from the side'],['zoom','تكبير','Zoom','يتكبّر بلطف','Gentle scale-in'],['blur','ضبابي','Blur','من ضبابي إلى واضح','Blur to sharp']];
 const MO_BTN=[['','الافتراضي','Default','كما هو الآن','As it is now'],['none','بدون','None','بلا أي حركة','No motion'],['lift','رفع','Lift','يرتفع مع ظل','Rises with a shadow'],['scale','تكبير','Grow','يكبر قليلًا','Grows slightly'],['glow','توهّج','Glow','هالة بلون التمييز','Accent halo'],['press','ضغط','Press','ينضغط عند النقر','Presses on tap']];
+// المزايا المتقدمة (motion.js): [المفتاح، الاسم ع/E، الوصف ع/E، أين]
+const MX_W={pub:['صفحة الحجز والصور والبوابة','Public pages'],all:['كل الصفحات','All pages'],dash:['لوحة التحكم','Dashboard'],ph:['صفحة «المزيد من الصور»','Photos page']};
+const MX_FEAT=[
+ ['الظهور عند التمرير','Scroll reveals',[
+  ['reveal','ظهور العناوين والنصوص','Fade-up headings','تظهر وترتفع قليلًا عند الوصول إليها، مرة واحدة فقط','Fade in and rise once when reached','pub'],
+  ['stagger','ظهور متتابع','Stagger','الباقات والخدمات والأنواع والصور تظهر واحدة تلو الأخرى','Packages, services and photos appear one by one','pub'],
+  ['scaleIn','الأيقونات والشارات','Icons & badges','تكبر بلطف من 90% مع الظهور','Gently scale in from 90%','pub'],
+  ['imgMask','كشف صور الأعمال','Image mask reveal','الصورة تنكشف من الأسفل للأعلى','Wipes in from bottom to top','pub'],
+  ['skeleton','تحميل الصور','Image loading','لمعان أثناء التحميل ثم ظهور ناعم من الضبابية','Shimmer while loading, then blur-up','pub'],
+  ['splitText','عنوان الصفحة كلمة كلمة','Word-by-word title','العنوان الرئيسي يظهر كلمة بعد كلمة (بدون تقطيع الحروف)','Headline appears word by word','pub'],
+  ['highlight','خط تحت العناوين','Title underline','خط بلون الأزرار يُرسم من اليمين لليسار تحت عناوين الأقسام','Underline draws right-to-left','pub']]],
+ ['التنقّل','Navigation',[
+  ['progress','شريط تقدّم القراءة','Scroll progress','شريط رفيع أعلى الصفحة يمتلئ مع النزول','Thin bar fills as you scroll','all'],
+  ['toTop','زر الرجوع للأعلى','Back to top','يظهر بعد النزول 600px','Appears after 600px','all'],
+  ['smartHeader','الشريط العلوي الذكي','Smart header','يختفي عند النزول ويعود عند الصعود، مع ظل وضبابية','Hides on scroll down, returns on scroll up','dash'],
+  ['viewTrans','انتقال ناعم بين الصفحات','Page transitions','تلاشٍ ناعم عند الانتقال بين صفحات الموقع + تمرير ناعم للروابط','Smooth cross-page fade + smooth anchors','all'],
+  ['preloader','شاشة التحميل بالشعار','Logo preloader','أول زيارة في الجلسة فقط، أقل من ثانية','First visit per session, under 1s','pub']]],
+ ['اللمس','Touch',[
+  ['tap','ضغط الأزرار','Tap feedback','الأزرار والبطاقات تنضغط ثم ترتد (على الجوال)','Buttons and cards press and spring back','all'],
+  ['ripple','موجة اللمس','Ripple','موجة دائرية تخرج من مكان اللمس على الأزرار','Circular ripple from the touch point','all'],
+  ['haptic','اهتزاز خفيف','Haptic tap','اهتزاز قصير عند الأزرار الرئيسية (أندرويد)','Short vibration on main buttons (Android)','all'],
+  ['fab','زر واتساب عائم','WhatsApp button','زر ثابت أسفل الشاشة ينبض كل 4 ثوانٍ ويتوقف بعد أول ضغطة','Floating button pulses every 4s until tapped','pub'],
+  ['ctaBar','شريط «احجز الآن»','Book-now bar','يصعد من الأسفل في صفحة الصور وصفحة السيلفي بعد النزول','Slides up on the photos & selfie pages','pub']]],
+ ['الصور والوسائط','Media',[
+  ['lightbox','العارض المتحرك','Animated lightbox','الصورة تكبر من مكانها وتعود إليه عند الإغلاق (التكبير بإصبعين والسحب للأسفل يعملان دائمًا)','Opens from and closes back to the thumbnail','ph'],
+  ['kenBurns','تكبير بطيء للغلاف','Ken Burns','صورة الغلاف في بوابة العميل تكبر ببطء (8 ثوانٍ)','Slow zoom on the client-portal cover','pub'],
+  ['video','الفيديو عند الظهور','Video in view','يعمل صامتًا عند ظهوره ويتوقف خارج الشاشة','Plays muted in view, pauses out of view','pub']]],
+ ['النماذج والتنبيهات','Forms & feedback',[
+  ['focusGlow','توهّج الحقل','Focus glow','إطار الحقل يتلوّن بلون الأزرار عند الكتابة','Field border glows on focus','all'],
+  ['toastAnim','الإشعارات من الأعلى','Top toasts','تنزل من الأعلى، وتُسحب للأعلى لإغلاقها','Slide down from the top, swipe up to dismiss','all'],
+  ['success','علامة نجاح متحركة','Success check','بعد إرسال الحجز: دائرة تحميل في الزر ثم علامة صح تُرسم','Spinner in the button, then a drawn checkmark','pub']]],
+ ['لوحة التحكم','Dashboard',[
+  ['bottomSheet','نوافذ من الأسفل','Bottom sheet','نافذة المهمة على الجوال تصعد من الأسفل وتُسحب للأسفل لإغلاقها','Task window slides up on phones, swipe down to close','dash'],
+  ['countUp','عدّ الأرقام','Count up','أرقام البطاقات تعدّ من الصفر عند ظهورها (مرة لكل قيمة)','Stat numbers count up when shown','dash']]]
+];
+const MX_REC=MX_FEAT.flatMap(g=>g[2].map(f=>f[0])).filter(k=>k!=='preloader');
+function mxCard(t){
+  const X=t.mx||{},n=Object.keys(X).filter(k=>X[k]).length;
+  return `<div class="th-sec"><h4>✨ ${A_('مزايا متقدمة','Advanced features')} <small>${A_(`— مفعّل ${n} من ${MX_REC.length+1}`,`— ${n} of ${MX_REC.length+1} on`)}</small></h4>
+   <div class="mx-pre"><button type="button" class="btn-sm" data-mx-all="rec">⭐ ${A_('تفعيل المجموعة الموصى بها','Turn on the recommended set')}</button><button type="button" class="btn-sm" data-mx-all="none">${A_('إيقاف الكل','Turn all off')}</button><span class="pr-hint" style="margin:0">${A_('كل الحركات خفيفة (أقل من 0.6 ثانية) وتتوقف تلقائيًا لمن فعّل «تقليل الحركة».','All motion is light (under 0.6s) and turns off for “reduce motion”.')}</span></div>
+   ${MX_FEAT.map(([gar,gen,L])=>`<div class="mx-grp"><h5>${A_(gar,gen)}</h5><div class="mx-list">${L.map(([k,ar,en,dar,den,w])=>`<button type="button" class="mx-tg" role="switch" aria-checked="${!!X[k]}" data-mx="${k}"><i class="mx-sw" aria-hidden="true"></i><span><b>${A_(ar,en)}</b><small>${A_(dar,den)}</small><em>${A_(...MX_W[w])}</em></span></button>`).join('')}</div></div>`).join('')}</div>`;
+}
 function motionCard(){
   const t=thCur(),opt=(k,L)=>`<div class="mo-opts">${L.map(([v,ar,en,dar,den])=>`<button type="button" class="${(t[k]||'')===v?'on':''}" data-mo="${k}" data-v="${v}"><b>${A_(ar,en)}</b><small>${A_(dar,den)}</small></button>`).join('')}</div>`;
   const seg=(k,opts)=>`<div class="th-seg" role="group">${opts.map(([v,ar,en])=>`<button type="button" class="${(t[k]||'')===v?'on':''}" data-mo="${k}" data-v="${v}">${A_(ar,en)}</button>`).join('')}</div>`;
@@ -3944,6 +3999,7 @@ function motionCard(){
    <div class="th-sec"><h4>📄 ${A_('دخول الصفحات','Page entrance')} <small>${A_('— عند فتح صفحة أو التنقل بين الأقسام','— when a page opens or you switch sections')}</small></h4>${opt('mPage',MO_PAGE)}</div>
    <div class="th-sec"><h4>🔘 ${A_('الأزرار','Buttons')} <small>${A_('— عند المرور والضغط','— on hover and press')}</small></h4>${opt('mBtn',MO_BTN)}</div>
    <div class="th-sec"><h4>🗂 ${A_('البطاقات','Cards')}</h4><div class="th-row"><span>${A_('عند المرور','On hover')}</span>${seg('mCard',[['','ثابتة','Still'],['lift','ترتفع قليلًا','Lift slightly']])}<span>${A_('سرعة الحركة','Speed')}</span>${seg('mSpeed',[['fast','سريعة','Fast'],['','عادية','Normal'],['slow','هادئة','Calm']])}</div></div>
+   ${mxCard(t)}
   </div>
   <aside class="mo-stage" aria-label="${A_('تجربة','Try it')}"><div class="pr-hint" style="margin:0;font-weight:700">👆 ${A_('جرّب هنا: مرّر على الزر والبطاقة','Try it: hover the button and card')}</div>
    <div class="card" id="mo-demo"><h5 style="margin:0 0 .3rem;color:var(--white)">${A_('باقة الذكريات','Memories package')}</h5><p style="margin:0 0 .8rem;font-size:.82rem;color:var(--muted)">${A_('تصوير فوتوغرافي احترافي','Professional photography')}</p><div class="row"><button type="button" class="btn-gold" tabindex="-1">${A_('اختيار','Select')}</button><button type="button" class="btn-outline" tabindex="-1">${A_('تفاصيل','Details')}</button></div></div>
@@ -3951,6 +4007,11 @@ function motionCard(){
   <div id="mo-bar" ${TH_PREV?'':'hidden'} style="position:sticky;bottom:.6rem;z-index:5;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:1rem;padding:.65rem .85rem;border-radius:14px;background:var(--card-g);box-shadow:var(--lift)"><b style="flex:1;font-size:.86rem">👁 ${A_('هذه معاينة — احفظ لتطبيقها على كل الصفحات','This is a preview — save to apply it everywhere')}</b><button type="button" class="btn-gold" data-th-save>💾 ${A_('حفظ','Save')}</button><button type="button" class="btn-outline" data-th-cancel>${A_('إلغاء','Discard')}</button></div>`);
 }
 function moPlay(){const c=G('mo-demo');if(!c)return;c.classList.remove('st-enter');void c.offsetWidth;c.classList.add('st-enter')}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-mx],[data-mx-all]');if(!b)return;
+  const t={...thCur()},X={...(t.mx||{})};
+  if(b.dataset.mxAll){Object.keys(X).forEach(k=>delete X[k]);if(b.dataset.mxAll==='rec')MX_REC.forEach(k=>X[k]=true)}
+  else{const k=b.dataset.mx;if(X[k])delete X[k];else X[k]=true}
+  if(Object.keys(X).length)t.mx=X;else delete t.mx;thPreview(t);renderSettings()});
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-mo],[data-mo-play]');if(!b)return;
   if(b.dataset.moPlay!==undefined){moPlay();return}
   const t={...thCur()};const k=b.dataset.mo,v=b.dataset.v;if(v)t[k]=v;else delete t[k];thPreview(t);renderSettings();if(k==='mPage')setTimeout(moPlay,30)});
