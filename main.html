@@ -433,7 +433,8 @@ details.card summary{color:var(--white)}
 .work-log-table tr:hover td{background:rgba(185,139,128,.07)}
 
 /* BOOKING iframe bg */
-#booking-iframe{background:#efebe6}
+#booking-iframe{background:#efebe6;min-height:0!important;height:calc(100vh - 80px);height:calc(100dvh - 80px)}
+#page-booking.active{padding:0!important;max-width:none!important;margin:0!important}
 
 /* MODALS */
 .inv-preview,.slip-preview{background:rgba(74,66,59,.5);backdrop-filter:blur(8px)}
@@ -1702,19 +1703,24 @@ function showPage(p){
   if(p==='archive'){ renderArchive(); const nb=document.querySelector('.nav-links button[data-page="clients"]'); if(nb)nb.classList.add('active'); window.scrollTo(0,0); }
   if(p==='staff'){ renderStFlt(); renderStaff(); }
   if(p==='payroll') PR.render();
-  if(p==='booking'){
-    const f=document.getElementById('booking-iframe');
-    try{ f.style.height=Math.max(f.contentWindow.document.body.scrollHeight,2000)+'px'; }catch(e){}
-  }
+  if(p==='booking'){ window.scrollTo(0,0); fitBooking(); }
   if(p==='tasks') TK.render();
   BZ.renderPage(p);
 }
+// صفحة الحجز داخل إطار: الإطار يملأ الشاشة تحت الشريط العلوي فيكون هناك تمرير واحد فقط (داخل صفحة الحجز)
+// (كان ارتفاعه يُضبط مرة واحدة فيطول المحتوى بعد اختيار الباقة → تمريران متداخلان «عالقان»)
+function fitBooking(){
+  const f=document.getElementById('booking-iframe'),pg=document.getElementById('page-booking');
+  if(!f||!pg||!pg.classList.contains('active'))return;
+  const top=f.getBoundingClientRect().top+window.scrollY,vh=(window.visualViewport&&visualViewport.height)||innerHeight;
+  f.style.height=Math.max(320,Math.round(vh-top))+'px';
+}
+window.addEventListener('resize',fitBooking);
+if(window.visualViewport)visualViewport.addEventListener('resize',fitBooking);
 window.addEventListener('message',e=>{
   const f=document.getElementById('booking-iframe');
   if(!f||e.source!==f.contentWindow)return;
-  if(e.data&&e.data.type==='booking-height')
-    f.style.height=e.data.height+'px';
-  else if(e.data&&e.data.type==='booking-created')
+  if(e.data&&e.data.type==='booking-created')
     onBookingCreated(e.data.booking);
 });
 // حجز جديد → جلسة في التكاليف + شريط إشعار بزر «فتح الجلسة»
