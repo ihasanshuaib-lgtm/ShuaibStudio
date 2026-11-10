@@ -3640,17 +3640,21 @@ const dcList=()=>B.cfg.discounts||(B.cfg.discounts=[]);
 const dcNorm=c=>String(c||'').trim().toLowerCase().replace(/\s+/g,'');
 // ── الباقات والخدمات لصفحة الحجز: القيم الافتراضية في catalog-data.js، والتعديلات في B.cfg.catalog ({cats}) ──
 // تُنسخ إلى Supabase site_config/catalog فتقرؤها index.html. الحذف لا يغيّر معرّفات البقية.
-let CT_CAT='weddings',CT_ERR='',CT_SENT=null,CT_BUSY=false,CT_T=0;
+const rsSafe=()=>{if(document.getElementById('page-settings')?.classList.contains('active')&&!document.activeElement?.closest?.('#settings-root'))renderSettings()};
+let CT_DRAFT=null,CT_CAT='weddings',CT_ERR='',CT_SENT=null,CT_BUSY=false,CT_T=0;
 const CT_DEF=()=>window.CATEGORIES_DEFAULT||{};
 const ctView=()=>window.applyCatalog?window.applyCatalog(CT_DEF(),B.cfg.catalog||null):CT_DEF();
-function ctWork(){   // نسخة قابلة للتعديل لكل الأنواع (تُنشأ عند أول تعديل)
-  if(!B.cfg.catalog||!B.cfg.catalog.cats){const V0=ctView(),cats={};Object.keys(V0).forEach(k=>{cats[k]={packages:V0[k].packages||[],services:V0[k].services||[]};if(V0[k].custom)cats[k].perHour=V0[k].custom.perHour});B.cfg.catalog={cats}}
-  const C=B.cfg.catalog.cats,V0=ctView();Object.keys(V0).forEach(k=>{if(!C[k])C[k]={packages:V0[k].packages||[],services:V0[k].services||[]}});
-  return C;
+// التعديلات تُكتب في مسودة (CT_DRAFT) ولا تُحفظ ولا تُرفع إلا بزر «💾 حفظ التعديلات»
+function ctWork(){
+  if(!CT_DRAFT){const V0=ctView(),cats={};Object.keys(V0).forEach(k=>{cats[k]={packages:JSON.parse(JSON.stringify(V0[k].packages||[])),services:JSON.parse(JSON.stringify(V0[k].services||[]))};if(V0[k].custom)cats[k].perHour=V0[k].custom.perHour});CT_DRAFT=cats}
+  return CT_DRAFT;
 }
+const ctShown=()=>CT_DRAFT?window.applyCatalog(CT_DEF(),{cats:CT_DRAFT}):ctView();
+const ctDirty=()=>!!CT_DRAFT&&JSON.stringify(window.applyCatalog(CT_DEF(),{cats:CT_DRAFT}))!==JSON.stringify(ctView());
+function ctMark(){const b=G('ct-bar');if(b)b.hidden=!ctDirty()}
 const ctId=(pre,L)=>{let i;do{i=pre+Math.random().toString(36).slice(2,7)}while(L.some(x=>x.id===i));return i};
 function catalogCard(){
-  const V0=ctView(),keys=Object.keys(V0);if(!keys.length)return '';
+  const V0=ctShown(),keys=Object.keys(V0);if(!keys.length)return '';
   if(!V0[CT_CAT])CT_CAT=keys[0];
   const c=V0[CT_CAT],P=c.packages||[],S=c.services||[],D0=CT_DEF()[CT_CAT]||{};
   const changed=JSON.stringify([P,S,c.custom&&c.custom.perHour])!==JSON.stringify([D0.packages||[],D0.services||[],D0.custom&&D0.custom.perHour]);
@@ -3666,6 +3670,7 @@ function catalogCard(){
   <div class="ct-cats" role="tablist">${keys.map(k=>`<button type="button" role="tab" aria-selected="${k===CT_CAT}" class="${k===CT_CAT?'on':''}" data-ct-cat="${k}">${escH((V0[k].icon||'')+' '+V0[k].name)}</button>`).join('')}</div>
   ${c.custom?`<label style="display:flex;flex-direction:column;gap:.3rem;font-size:.74rem;color:var(--muted);font-weight:600;max-width:260px">${A_('سعر الساعة لكل مصوّر (د.ب)','Hourly rate per photographer (BHD)')}<input class="bz-in" type="number" min="1" step="any" data-ct-ph value="${escH(c.custom.perHour)}"></label><p class="pr-hint">${A_('سعر «الباقة المخصّصة» = الساعات × عدد المصورين × هذا السعر.','Custom package price = hours × photographers × this rate.')}</p>`:`<div class="ct-h"><span>📸 ${A_('الباقات','Packages')} <small class="pr-hint">(${P.length})</small></span><button type="button" class="btn-sm" data-ct-add="p">+ ${A_('باقة','Package')}</button></div>${pk||`<p class="pr-hint">—</p>`}`}
   <div class="ct-h"><span>✨ ${A_('الخدمات الإضافية','Extra services')} <small class="pr-hint">(${S.length})</small></span><button type="button" class="btn-sm" data-ct-add="s">+ ${A_('خدمة','Service')}</button></div>${sv||`<p class="pr-hint">—</p>`}
+  <div id="ct-bar" ${ctDirty()?'':'hidden'} style="position:sticky;bottom:.6rem;z-index:5;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:.8rem;padding:.6rem .8rem;border-radius:14px;background:var(--card-g);box-shadow:var(--lift)"><b style="flex:1;font-size:.86rem">✎ ${A_('لديك تعديلات غير محفوظة','You have unsaved changes')}</b><button type="button" class="btn-gold" data-ct-save>💾 ${A_('حفظ التعديلات','Save changes')}</button><button type="button" class="btn-outline" data-ct-cancel>${A_('إلغاء','Discard')}</button></div>
   <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-top:.6rem"><p class="pr-hint" style="margin:0;flex:1">${st}</p>${changed?`<button type="button" class="btn-sm" data-ct-reset>↺ ${A_('استرجاع الأصل لهذا النوع','Restore defaults for this type')}</button>`:''}</div>`);
 }
 async function pushCatalog(){
@@ -3675,12 +3680,21 @@ async function pushCatalog(){
   try{await sbReq('site_config?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'catalog',value:B.cfg.catalog,updated_at:new Date().toISOString()})});CT_SENT=j;CT_ERR=''}
   catch(e){const m=String(e.message||e);CT_ERR=/site_config|42P01|PGRST20/.test(m)?A_('جدول الإعدادات غير موجود — شغّل ملف supabase/site_config.sql في Supabase.','Settings table missing — run supabase/site_config.sql in Supabase.'):m.slice(0,160)}
   CT_BUSY=false;
-  if(document.getElementById('page-settings')?.classList.contains('active')&&!document.activeElement?.closest?.('#settings-root'))renderSettings();
+  rsSafe();
 }
-const ctSave=(rr)=>{persist();if(rr)renderSettings();clearTimeout(CT_T);CT_T=setTimeout(pushCatalog,600)};
+const ctSave=(rr)=>{if(rr)renderSettings();else ctMark()};   // تعديل المسودة فقط
+function ctCommit(){
+  if(!CT_DRAFT)return;
+  const bad=Object.values(CT_DRAFT).some(c=>[...(c.packages||[]),...(c.services||[])].some(x=>!String(x.name||'').trim()||!(+x.price>=0)));
+  if(bad){note(A_('تأكد أن لكل باقة وخدمة اسمًا وسعرًا صحيحًا','Every package and service needs a name and a valid price'));return}
+  B.cfg.catalog={cats:CT_DRAFT};CT_DRAFT=null;persist();renderSettings();clearTimeout(CT_T);CT_T=setTimeout(pushCatalog,300);
+  note(A_('✓ حُفظت الأسعار','✓ Prices saved'));
+}
 document.addEventListener('click',e=>{
-  const b=e.target.closest&&e.target.closest('[data-ct-cat],[data-ct-add],[data-ct-del],[data-ct-up],[data-ct-reset]');if(!b)return;const d=b.dataset;
+  const b=e.target.closest&&e.target.closest('[data-ct-cat],[data-ct-add],[data-ct-del],[data-ct-up],[data-ct-reset],[data-ct-save],[data-ct-cancel]');if(!b)return;const d=b.dataset;
   if(d.ctCat){CT_CAT=d.ctCat;renderSettings();return}
+  if(d.ctSave!==undefined){ctCommit();return}
+  if(d.ctCancel!==undefined){if(confirm(A_('تجاهل كل التعديلات غير المحفوظة؟','Discard all unsaved changes?'))){CT_DRAFT=null;renderSettings()}return}
   const C=ctWork(),c=C[CT_CAT];
   if(d.ctAdd){const L=d.ctAdd==='p'?c.packages:c.services;L.push(d.ctAdd==='p'?{id:ctId('n',L),name:A_('باقة جديدة','New package'),icon:'📸',price:0,desc:''}:{id:ctId('x',L),name:A_('خدمة جديدة','New service'),price:0});ctSave(true);
     setTimeout(()=>{const x=document.querySelectorAll(`[data-ct="${d.ctAdd}"][data-f="name"]`);const l=x[x.length-1];if(l){l.focus();l.select()}},30);return}
@@ -3688,15 +3702,17 @@ document.addEventListener('click',e=>{
   if(d.ctUp){const [t,i]=d.ctUp.split(':'),L=t==='p'?c.packages:c.services,n=+i;if(n>0){[L[n-1],L[n]]=[L[n],L[n-1]];ctSave(true)}return}
   if(d.ctReset!==undefined){if(!confirm(A_('إرجاع باقات وخدمات هذا النوع إلى الأصل؟','Restore this type’s packages and services to the defaults?')))return;const D0=CT_DEF()[CT_CAT];C[CT_CAT]={packages:JSON.parse(JSON.stringify(D0.packages||[])),services:JSON.parse(JSON.stringify(D0.services||[]))};if(D0.custom)C[CT_CAT].perHour=D0.custom.perHour;ctSave(true);return}
 });
-document.addEventListener('change',e=>{const x=e.target,d=x.dataset||{};
-  if(d.ctPh!==undefined){const v=+x.value;if(!(v>0)){note(A_('أدخل سعرًا أكبر من صفر','Enter a price above zero'));return}ctWork()[CT_CAT].perHour=v;ctSave(true);return}
+function ctField(e){const x=e.target,d=x.dataset||{};
+  if(d.ctPh!==undefined){const v=+x.value;if(v>0)ctWork()[CT_CAT].perHour=v;ctMark();return}
   if(!d.ct)return;const c=ctWork()[CT_CAT],L=d.ct==='p'?c.packages:c.services,it=L[+d.i];if(!it)return;const f=d.f;
-  if(f==='price'){const v=+x.value;if(!(v>=0)||x.value===''){x.value=it.price;note(A_('السعر غير صالح','Invalid price'));return}it.price=Math.round(v*1000)/1000}
+  if(f==='price'){it.price=x.value===''?'':Math.round(+x.value*1000)/1000}
   else if(f==='perUnit'){if(x.checked)it.perUnit=true;else delete it.perUnit}
-  else if(f==='name'){const v=x.value.trim();if(!v){x.value=it.name;return}it.name=v}
-  else{const v=x.value.trim();if(v)it[f]=v;else delete it[f]}
-  ctSave(false);
-});
+  else if(f==='name'){it.name=x.value}
+  else{const v=x.value;if(v.trim())it[f]=v;else delete it[f]}
+  ctMark();
+}
+document.addEventListener('input',ctField);
+document.addEventListener('change',e=>{if(e.target.matches&&e.target.matches('[data-ct][type=checkbox]'))ctField(e)});
 function discountCard(){
   const L=dcList();
   return card('🏷 '+A_('كودات الخصم (صفحة الحجز)','Discount codes (booking page)'),`<p class="pr-hint">${A_('يكتب الزبون الكود في صفحة الحجز فيُخصم المقدار من المجموع. الكود لا يفرّق بين الحروف الكبيرة والصغيرة.','Customers type the code on the booking page to get the discount. Codes are not case-sensitive.')}</p>
@@ -3721,7 +3737,7 @@ async function pushDiscounts(){
     DC_SENT=j;DC_ERR='';
   }catch(e){const m=String(e.message||e);DC_ERR=/discount_codes|42P01|PGRST20/.test(m)?A_('جدول الكودات غير موجود — شغّل ملف supabase/discounts.sql في Supabase.','Codes table missing — run supabase/discounts.sql in Supabase.'):m.slice(0,160)}
   DC_BUSY=false;
-  if(G('settings-root')&&document.getElementById('page-settings')?.classList.contains('active'))renderSettings();
+  rsSafe();
 }
 const dcSave=()=>{persist();renderSettings();setTimeout(pushDiscounts,300)};
 document.addEventListener('submit',e=>{const f=e.target;if(!f.matches||!f.matches('[data-dc-add]'))return;e.preventDefault();
