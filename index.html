@@ -339,6 +339,7 @@
   .field input::placeholder{color:#5c5246;}
   .field input[type="date"],
   .field input[type="time"]{color-scheme:light;}
+  .t12-hint{font-size:13px;color:var(--text-dim);margin-top:4px;text-align:right;font-weight:600}
   body:not(.light-mode) .field input[type="date"],
   body:not(.light-mode) .field input[type="time"]{color-scheme:dark;}
   @media(max-width:560px){.info-card{grid-template-columns:1fr;}}
@@ -1095,6 +1096,10 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 </div>
 
 <script>
+// تنسيق الوقت 12 ساعة: "17:05" ← "5:05 PM" (يُترك أي نص آخر كما هو)
+function t12(v){var m=/^(\d{1,2}):(\d{2})/.exec(String(v==null?'':v).trim());if(!m)return v==null?'':String(v);var h=+m[1],ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+m[2]+' '+ap}
+function d12(d){d=new Date(d);return isNaN(d)?'':t12(d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'))}
+
 // ============================================================
 // كل نوع تصوير له: id, name, icon, packages[], services[]
 // لإضافة باقات/خدمات لأي نوع، عبّي المصفوفات بنفس شكل "أعراس"
@@ -1363,7 +1368,7 @@ function renderInfoCard(){
     </div>
     <div class="field">
       <label>${info.timeLabel}</label>
-      <input type="time" id="custTime" value="${oldTime}"><div class="field-err"></div>
+      <input type="time" id="custTime" value="${oldTime}" oninput="var h=document.getElementById('custTime12');if(h)h.textContent=this.value?'🕒 '+t12(this.value):''"><div class="t12-hint" id="custTime12" dir="ltr">${oldTime?'🕒 '+t12(oldTime):''}</div><div class="field-err"></div>
     </div>
     ${extraHtml}
     <div class="field full">
@@ -2197,7 +2202,7 @@ function buildMessage(){
     `الاسم: ${name}`,
     `الهاتف: ${phone}`,
     `تاريخ التصوير: ${date}`,
-    `وقت التصوير: ${time}`,
+    `وقت التصوير: ${t12(time)}`,
     ...extraLines,
     ``,
     `الباقة: ${selectedPackage.icon} ${selectedPackage.name} - ${selectedPackage.price} BD`

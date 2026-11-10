@@ -1074,6 +1074,11 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb{background:#3a322b}
 @media print{html[data-theme="dark"] body{background:#fff !important}}
 
 </style>
+<script>
+// تنسيق الوقت 12 ساعة: "17:05" ← "5:05 PM" (يُترك أي نص آخر كما هو)
+function t12(v){var m=/^(\d{1,2}):(\d{2})/.exec(String(v==null?'':v).trim());if(!m)return v==null?'':String(v);var h=+m[1],ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+m[2]+' '+ap}
+function d12(d){d=new Date(d);return isNaN(d)?'':t12(d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'))}
+</script>
 <script>try{var _th=localStorage.getItem('ss_theme');if(_th==='dark'||(!_th&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
 <script>try{if(!localStorage.getItem('ss_sb'))document.documentElement.classList.add('locked')}catch(e){document.documentElement.classList.add('locked')}</script>
 <style>
@@ -1633,7 +1638,7 @@ function renderHomePh(){
   const rows=PR.photographerSummary(HP),fd=d=>d.slice(8)+'/'+d.slice(5,7)+'/'+d.slice(0,4);
   const tot=rows.reduce((q,r)=>q+r.total,0),cnt=rows.reduce((q,r)=>q+r.count,0);
   b.innerHTML=`<div class="card-title">👥 ${A_('ملخص المصورين','Photographers summary')} <small style="color:var(--muted);font-weight:400">· ${per}</small></div>`+
-    (rows.length?rows.map(r=>`<details class="hp-row"><summary><b>${escH(r.name)}</b><span class="hp-n">${r.count} ${A_('تصوير','shoot(s)')}</span><span class="hp-amt">BHD ${r.total.toFixed(3)}</span></summary><ul class="hp-dates">${r.dates.map(x=>`<li><span>${fd(x.d)}${x.t?' · '+escH(x.t):''}</span><span class="hp-sn">${escH(x.n||'—')}</span><b>${x.a.toFixed(3)}</b></li>`).join('')}</ul></details>`).join('')+
+    (rows.length?rows.map(r=>`<details class="hp-row"><summary><b>${escH(r.name)}</b><span class="hp-n">${r.count} ${A_('تصوير','shoot(s)')}</span><span class="hp-amt">BHD ${r.total.toFixed(3)}</span></summary><ul class="hp-dates">${r.dates.map(x=>`<li><span>${fd(x.d)}${x.t?' · '+escH(t12(x.t)):''}</span><span class="hp-sn">${escH(x.n||'—')}</span><b>${x.a.toFixed(3)}</b></li>`).join('')}</ul></details>`).join('')+
       `<div class="hp-tot"><span>${A_('المجموع','Total')}</span><span>${cnt} ${A_('تصوير','shoot(s)')}</span><b>BHD ${tot.toFixed(3)}</b></div>`:
       `<p class="pr-hint">${A_('لا توجد تصويرات مسندة لمصورين في هذه الفترة.','No shoots assigned to photographers in this period.')}</p>`);
 }
@@ -2548,7 +2553,7 @@ function render(){applyStatic();renderTop();viewMain();renderSet();renderSchedul
 function sessTxt(s){
   const en=lang==='en',[y,m,d]=s.d.split('-').map(Number),w=WDF[en?'en':'ar'][new Date(y,m-1,d).getDay()];
   const ps=[...new Set(s.lines.filter(l=>l.p).map(l=>l.p))].map(pName),eq=eqList(s).map(e=>e.n);
-  const out=[tr('cDay')+': '+w,tr('cDate')+': '+d+'/'+m+'/'+y,tr('cTime')+': '+(s.t||'')+(s.te?' - '+s.te:''),tr('cName')+': '+(s.n||''),tr('cPhs')+': '+ps.join(en?', ':'، '),tr('cCnt')+': '+ps.length];
+  const out=[tr('cDay')+': '+w,tr('cDate')+': '+d+'/'+m+'/'+y,tr('cTime')+': '+t12(s.t||'')+(s.te?' - '+t12(s.te):''),tr('cName')+': '+(s.n||''),tr('cPhs')+': '+ps.join(en?', ':'، '),tr('cCnt')+': '+ps.length];
   if(eq.length)out.push(tr('cEq')+': '+eq.join(en?', ':'، '));
   return out.join('\n');
 }
@@ -2610,7 +2615,7 @@ function srHtml(){
     <div class="pr-meta"><span>${A_('عدد المصورين','Photographers')} <b>${rows.length}</b></span><span>${A_('عدد التصويرات','Shoots')} <b>${sh.size}</b></span><span>${A_('إجمالي المبالغ','Total amount')} <b>${f3(all)}</b></span><span>${tr('printDate')} <b>${fmtD(TD)}</b></span></div>`;
   if(!rows.length)return h+`<p class="pr-hint">${A_('لا توجد تصويرات مسندة لمصورين في هذه الفترة.','No shoots assigned to photographers in this period.')}</p></div></article>`;
   if(rows.length>1)h+=`<section><h3>${A_('الملخص','Summary')}</h3><table><thead><tr><th>${tr('photographer')}</th><th>${A_('عدد التصويرات','Shoots')}</th><th>${tr('amount')}</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.name)}</td><td>${r.sess.size}</td><td>${f3(r.total)}</td></tr>`).join('')}</tbody><tfoot><tr><td>${tr('total')}</td><td>${sh.size}</td><td>${f3(all)}</td></tr></tfoot></table></section>`;
-  h+=rows.map(r=>`<section><h3>${esc(r.name)} — ${A_('عدد التصويرات','Shoots')} ${r.sess.size}</h3><table><thead><tr><th>#</th><th>${tr('date')}</th><th>${tr('thSession')}</th><th>${tr('role')}</th><th>${tr('amount')}</th></tr></thead><tbody>${r.items.map((x,i)=>`<tr><td>${i+1}</td><td>${fmtD(x.d)}${x.t?' · '+esc(x.t):''}</td><td>${x.n?esc(x.n):'—'}${x.loc?' <small>('+esc(x.loc)+')</small>':''}</td><td>${esc(x.r)}</td><td>${f3(x.a)}</td></tr>`).join('')}</tbody><tfoot><tr><td colspan="4">${tr('total')}</td><td>${f3(r.total)}</td></tr></tfoot></table></section>`).join('');
+  h+=rows.map(r=>`<section><h3>${esc(r.name)} — ${A_('عدد التصويرات','Shoots')} ${r.sess.size}</h3><table><thead><tr><th>#</th><th>${tr('date')}</th><th>${tr('thSession')}</th><th>${tr('role')}</th><th>${tr('amount')}</th></tr></thead><tbody>${r.items.map((x,i)=>`<tr><td>${i+1}</td><td>${fmtD(x.d)}${x.t?' · '+esc(t12(x.t)):''}</td><td>${x.n?esc(x.n):'—'}${x.loc?' <small>('+esc(x.loc)+')</small>':''}</td><td>${esc(x.r)}</td><td>${f3(x.a)}</td></tr>`).join('')}</tbody><tfoot><tr><td colspan="4">${tr('total')}</td><td>${f3(r.total)}</td></tr></tfoot></table></section>`).join('');
   return h+'</div></article>';
 }
 function showStaffReport(){
@@ -2647,7 +2652,7 @@ const scList=()=>S.sessions.filter(s=>s.d&&(!SC.ph||hasPh(s,SC.ph))&&(!SC.pk||s.
 const phNames=s=>[...new Set(s.lines.filter(l=>l.p).map(l=>l.p))].map(pName);
 function scCard(s){
   const eq=eqList(s),pk=pkgName(s),lines=s.lines.filter(l=>l.p);
-  return `<article class="sc-sess">${conflictH(s)}<div class="sc-top"><span class="sc-time">${s.t?esc(s.t)+(s.te?'–'+esc(s.te):''):'—'}</span><b>${s.n?esc(s.n):tr('noName')}</b>${pk?`<em class="pr-nx">${esc(pk)}</em>`:''}</div>`+
+  return `<article class="sc-sess">${conflictH(s)}<div class="sc-top"><span class="sc-time">${s.t?esc(t12(s.t))+(s.te?'–'+esc(t12(s.te)):''):'—'}</span><b>${s.n?esc(s.n):tr('noName')}</b>${pk?`<em class="pr-nx">${esc(pk)}</em>`:''}</div>`+
   (lines.length?`<div class="sc-line">👥 ${lines.map(l=>`${esc(pName(l.p))}${l.r?` <small>(${esc(rName(l.r))})</small>`:''}`).join(' · ')}</div>`:'')+
   (eq.length?`<div class="sc-line">🎒 ${eq.map(e=>`<span class="eq-chip on ro">${esc(e.n)}</span>`).join('')}</div>`:'')+
   `<div class="pr-acts"><button class="btn-sm" data-cp="${s.id}">${tr('copy')}</button><button class="btn-sm" data-sopen="${s.id}">${tr('openPay')}</button></div></article>`;
@@ -2658,7 +2663,7 @@ function renderSchedule(){
   const Ls=scList(),ym=SC.y+'-'+pad(SC.m),lead=new Date(SC.y,SC.m-1,1).getDay(),nd=new Date(SC.y,SC.m,0).getDate(),by={};
   Ls.filter(s=>s.d.slice(0,7)==ym).forEach(s=>(by[s.d]||(by[s.d]=[])).push(s));
   let c=WD().map(w=>`<div class="pr-wh">${w}</div>`).join('')+'<div class="pr-cd off"></div>'.repeat(lead);
-  for(let d=1;d<=nd;d++){const k=ym+'-'+pad(d),A=by[k]||[];c+=`<button class="pr-cd${k==TD?' today':''}${k==SC.sel?' sel':''}" data-scday="${k}"><span class="pr-dn">${d}</span>${A.slice(0,2).map(s=>`<i class="pr-ev">${s.t?esc(s.t)+' ':''}${esc(s.n||'—')}</i>`).join('')}${A.length>2?`<i class="pr-ev">+${A.length-2}</i>`:''}${A.length?`<b class="pr-cnt">${A.length}</b>`:''}</button>`}
+  for(let d=1;d<=nd;d++){const k=ym+'-'+pad(d),A=by[k]||[];c+=`<button class="pr-cd${k==TD?' today':''}${k==SC.sel?' sel':''}" data-scday="${k}"><span class="pr-dn">${d}</span>${A.slice(0,2).map(s=>`<i class="pr-ev">${s.t?esc(t12(s.t))+' ':''}${esc(s.n||'—')}</i>`).join('')}${A.length>2?`<i class="pr-ev">+${A.length-2}</i>`:''}${A.length?`<b class="pr-cnt">${A.length}</b>`:''}</button>`}
   const up=Ls.filter(s=>s.d>=TD).slice(0,12),day=Ls.filter(s=>s.d==SC.sel);
   const po=[['',tr('fAll')],...staffList.map(t=>[t.id,t.name])],ko=[['',tr('fAll')],...S.pkgs.map(k=>[k.id,k.n])];
   root.innerHTML=
@@ -2666,7 +2671,7 @@ function renderSchedule(){
   `<div class="sc-grid"><div><section class="pr-card"><div class="pr-cal">${c}</div></section>`+
   `<h2 class="pr-h2">${fmtD(SC.sel)} · ${wdOf(SC.sel)}</h2>`+(day.length?day.map(scCard).join(''):`<p class="pr-hint">${tr('dayEmpty')}</p>`)+`<button class="btn-gold pr-newbtn" data-newday="${SC.sel}">${tr('newDay')}</button></div>`+
   `<aside><section class="pr-card"><h2 class="pr-h2">📅 ${tr('upTitle')}${up.length?` <span class="pr-pill">${up.length}</span>`:''}</h2>`+
-  (up.length?`<p class="pr-hint">${tr('upHint')}</p><div class="pr-upl">${up.map((s,i)=>`<div class="pr-upw"><button class="pr-upi${i?'':' next'}" data-cp="${s.id}"><span class="pr-ud"><b>${+s.d.slice(8)}</b>${wdOf(s.d)}</span><span class="pr-un2">${esc(s.n||'—')}${s.t?` <small>${esc(s.t)}</small>`:''}${i?'':`<em class="pr-nx" style="margin-inline-start:.4rem">${tr('nearest')}</em>`}${phNames(s).length?`<small class="sc-sub">${phNames(s).map(esc).join('، ')}</small>`:''}</span><span class="pr-cd2">${dlab(dl(s.d))}</span></button><button class="pr-upg" data-scgo="${s.d}" title="${tr('goCal')}" aria-label="${tr('goCal')}">🗓</button></div>`).join('')}</div>`:`<p class="pr-hint">${tr('upNone')}</p>`)+
+  (up.length?`<p class="pr-hint">${tr('upHint')}</p><div class="pr-upl">${up.map((s,i)=>`<div class="pr-upw"><button class="pr-upi${i?'':' next'}" data-cp="${s.id}"><span class="pr-ud"><b>${+s.d.slice(8)}</b>${wdOf(s.d)}</span><span class="pr-un2">${esc(s.n||'—')}${s.t?` <small>${esc(t12(s.t))}</small>`:''}${i?'':`<em class="pr-nx" style="margin-inline-start:.4rem">${tr('nearest')}</em>`}${phNames(s).length?`<small class="sc-sub">${phNames(s).map(esc).join('، ')}</small>`:''}</span><span class="pr-cd2">${dlab(dl(s.d))}</span></button><button class="pr-upg" data-scgo="${s.d}" title="${tr('goCal')}" aria-label="${tr('goCal')}">🗓</button></div>`).join('')}</div>`:`<p class="pr-hint">${tr('upNone')}</p>`)+
   `</section></aside></div>`;
 }
 
@@ -2919,7 +2924,7 @@ async function sbSync(manual){
       await sbReq('bookings?id=in.('+rows.map(r=>r.id).join(',')+')',{method:'PATCH',body:JSON.stringify({imported:true}),headers:{Prefer:'return=minimal'}});
       PR.render();
     }
-    sbMsg=A_(`آخر مزامنة: ${new Date().toLocaleTimeString()} — ${n} حجز جديد`,`Last sync: ${new Date().toLocaleTimeString()} — ${n} new booking(s)`);
+    sbMsg=A_(`آخر مزامنة: ${d12(new Date())} — ${n} حجز جديد`,`Last sync: ${d12(new Date())} — ${n} new booking(s)`);
     if(n){renderClients();updateStats();BZ.bookingBanner(n,firstC,first)}
   }catch(e){sbMsg=A_('تعذّرت المزامنة: ','Sync failed: ')+String(e.message||e).slice(0,160)}
   await BZ.pullPortal();
@@ -3000,7 +3005,7 @@ async function syncPush(){
       if(rv&&rv.data&&rv.data.ss_tasks){const loc=localStorage.getItem('ss_tasks'),m=mergeTasksJSON(loc,rv.data.ss_tasks);if(m!==loc){localStorage.setItem('ss_tasks',m);TK.reload()}}}catch(e){}
     const ts=lts()||Date.now();
     await sbReq('app_state?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'pay',value:{ts,data:syncSnapshot()},updated_at:new Date().toISOString()})});
-    syncMsg=A_('☁ تم الحفظ سحابيًا ','☁ Saved to cloud ')+new Date().toLocaleTimeString();
+    syncMsg=A_('☁ تم الحفظ سحابيًا ','☁ Saved to cloud ')+d12(new Date());
     await pushSchedule();
     await BZ.pushPortals();await BZ.pushDiscounts();
   }catch(e){syncMsg=A_('تعذّر الحفظ السحابي (البيانات محفوظة في هذا المتصفح): ','Cloud save failed (data is kept in this browser): ')+String(e.message||e).slice(0,140)}
@@ -3062,7 +3067,7 @@ async function syncPull(){
       localStorage.setItem('ss_ts',String(keep?Date.now():r.ts));   // إن بقي عندنا ما ليس في السحابة يُرفع بعد إعادة التحميل
       location.reload();
     }else if(r.ts<lts()){ await syncPush(); }
-    else{syncMsg=A_('☁ البيانات متزامنة ','☁ In sync ')+new Date().toLocaleTimeString();await pushSchedule();await BZ.pushPortals();await BZ.pushDiscounts();sbRender()}
+    else{syncMsg=A_('☁ البيانات متزامنة ','☁ In sync ')+d12(new Date());await pushSchedule();await BZ.pushPortals();await BZ.pushDiscounts();sbRender()}
   }catch(e){syncMsg=A_('تعذّرت المزامنة السحابية: ','Cloud sync failed: ')+String(e.message||e).slice(0,140);sbRender()}
 }
 window.addEventListener('focus',()=>syncPull());
@@ -3863,7 +3868,7 @@ function bookingCards(c){
   return P.map(i=>{const s=PR.data().sessions.find(x=>x.id===i.sessId||x.inv===i.id),dep=Math.round(i.grand/2*1000)/1000;
     return `<section class="card" style="border:1.5px solid var(--focus);box-shadow:var(--lift),var(--focus-ring);margin-top:1rem">
     <div class="card-title" style="display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;align-items:center"><span>📥 ${A_('حجز جديد بانتظار التأكيد','New booking awaiting confirmation')}</span><span class="bz-health h-warn"><i></i>${A_('بانتظار العربون','Awaiting deposit')}</span></div>
-    <div class="pr-sum" style="gap:.4rem 1.1rem;font-size:.86rem;margin-bottom:.7rem">${s?`<span>📅 <b>${escH(s.d||'—')}</b>${s.t?' · '+escH(s.t):''}</span><span>📸 <b>${escH(stripN(c,s.n))}</b></span>${s.loc?`<span>📍 ${escH(s.loc)}</span>`:''}`:''}<span>${A_('الإجمالي','Total')} <b>${f3(i.grand)}</b></span><span>${A_('العربون 50%','Deposit 50%')} <b>${f3(dep)}</b></span></div>
+    <div class="pr-sum" style="gap:.4rem 1.1rem;font-size:.86rem;margin-bottom:.7rem">${s?`<span>📅 <b>${escH(s.d||'—')}</b>${s.t?' · '+escH(t12(s.t)):''}</span><span>📸 <b>${escH(stripN(c,s.n))}</b></span>${s.loc?`<span>📍 ${escH(s.loc)}</span>`:''}`:''}<span>${A_('الإجمالي','Total')} <b>${f3(i.grand)}</b></span><span>${A_('العربون 50%','Deposit 50%')} <b>${f3(dep)}</b></span></div>
     <details style="margin-bottom:.7rem"><summary class="pr-lnk" style="cursor:pointer">${A_('تفاصيل الطلب','Request details')}</summary><ul style="margin:.5rem 0;padding-inline-start:1.1rem;font-size:.84rem">${(i.items||[]).map(it=>`<li>${escH(it.desc)}${it.qty>1?' × '+it.qty:''} — ${f3(it.qty*it.unit-(it.disc||0))}</li>`).join('')}</ul><div class="pr-hint" style="white-space:pre-line;margin:0">${escH(i.notes||'')}</div></details>
     <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center"><label style="display:flex;gap:.4rem;align-items:center;font-size:.8rem;color:var(--muted);font-weight:700">${A_('العربون المستلم','Deposit received')}<input class="bz-in" type="number" step="0.001" min="0" id="bkdep-${i.id}" value="${f3(dep)}" style="width:110px"></label>
     <button class="btn-gold" data-bz="h-bkok" data-id="${i.id}">✓ ${A_('تأكيد الحجز','Confirm booking')}</button>
@@ -3883,8 +3888,8 @@ async function bookingAct(a,id){
     save();updateStats();renderHub();note(A_('✓ تم تأكيد الحجز','✓ Booking confirmed'));
   }else if(a==='h-bkwa'){
     const dep=f3(inv.grand/2),co=B.cfg.company&&B.cfg.company!=='Shuaib Studio'?B.cfg.company:A_('شعيب استوديو','Shuaib Studio');
-    const m=A_(`مرحبًا ${c.name} 🌷\nوصلنا طلب حجزك في ${co}${s?` بتاريخ ${s.d}${s.t?' الساعة '+s.t:''}`:''}.\nالإجمالي: ${f3(inv.grand)} د.ب\nلتأكيد الموعد يرجى دفع العربون (50%): ${dep} د.ب\n\nشكرًا لاختيارك لنا 📸`,
-      `Hi ${c.name} 🌷\nWe received your booking request at ${co}${s?` for ${s.d}${s.t?' at '+s.t:''}`:''}.\nTotal: ${f3(inv.grand)} BHD\nTo confirm the date, please pay the 50% deposit: ${dep} BHD\n\nThank you for choosing us 📸`);
+    const m=A_(`مرحبًا ${c.name} 🌷\nوصلنا طلب حجزك في ${co}${s?` بتاريخ ${s.d}${s.t?' الساعة '+t12(s.t):''}`:''}.\nالإجمالي: ${f3(inv.grand)} د.ب\nلتأكيد الموعد يرجى دفع العربون (50%): ${dep} د.ب\n\nشكرًا لاختيارك لنا 📸`,
+      `Hi ${c.name} 🌷\nWe received your booking request at ${co}${s?` for ${s.d}${s.t?' at '+t12(s.t):''}`:''}.\nTotal: ${f3(inv.grand)} BHD\nTo confirm the date, please pay the 50% deposit: ${dep} BHD\n\nThank you for choosing us 📸`);
     window.open('https://wa.me/'+waPhone(c.phone)+'?text='+encodeURIComponent(m),'_blank');
   }else if(a==='h-bkno'){
     if(!confirm(A_('إلغاء طلب الحجز؟ ستُحذف الجلسة والفاتورة المسودة (يبقى العميل في القائمة).','Cancel this booking request? The session and draft invoice will be removed (the client stays).')))return;
@@ -4010,7 +4015,7 @@ function renderHub(){
     <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--border)"><button class="btn-sm" data-bz="pt-regen" data-id="${c.id}">↻ ${A_('رابط جديد (يلغي القديم)','New link (revokes old)')}</button><button class="btn-sm danger" data-bz="pt-off" data-id="${c.id}">⏻ ${A_('إيقاف البوابة','Turn off portal')}</button></div>`)
     +`<p class="pr-hint" style="margin-top:.9rem">🔒 ${A_('لا يرى العميل: أجور الفريق، التكاليف، الأرباح، المسودات، أو أي عميل آخر.','Hidden from the client: team pay, costs, profit, drafts and other clients.')}</p></section>`;
   R.innerHTML=h;
-  if(on&&logged)sbReq('client_portal?token=eq.'+encodeURIComponent(P.token)+'&select=last_seen').then(r=>r.json()).then(r=>{const e=G('pt-seen');if(e)e.innerHTML=A_('آخر فتح','Last opened')+': <b>'+(r[0]&&r[0].last_seen?escH(new Date(r[0].last_seen).toLocaleString(loc(),{dateStyle:'medium',timeStyle:'short'})):A_('لم يُفتح بعد','not yet'))+'</b>'}).catch(()=>{});
+  if(on&&logged)sbReq('client_portal?token=eq.'+encodeURIComponent(P.token)+'&select=last_seen').then(r=>r.json()).then(r=>{const e=G('pt-seen');if(e)e.innerHTML=A_('آخر فتح','Last opened')+': <b>'+(r[0]&&r[0].last_seen?escH(new Date(r[0].last_seen).toLocaleDateString(loc(),{dateStyle:'medium'})+' '+d12(r[0].last_seen)):A_('لم يُفتح بعد','not yet'))+'</b>'}).catch(()=>{});
 }
 async function hubAct(a,b){
   const c=hubClient();if(!c)return;const id=b.dataset.id;
@@ -4185,7 +4190,7 @@ const uid=()=>'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const nowISO=()=>new Date().toISOString();
 const loc=()=>lang==='ar'?'ar-BH-u-nu-latn':'en-GB';
 const fD=d=>d?new Date(String(d).slice(0,10)+'T00:00').toLocaleDateString(loc(),{day:'numeric',month:'short',year:'numeric'}):'—';
-const fDT=d=>d?new Date(d).toLocaleString(loc(),{dateStyle:'medium',timeStyle:'short'}):'—';
+const fDT=d=>d?new Date(d).toLocaleDateString(loc(),{dateStyle:'medium'})+' '+d12(d):'—';
 const pct=x=>Math.round((+x||0)*100)+'%';
 
 // ── الأولويات والحالات ──
@@ -4313,7 +4318,7 @@ function row(t,arch){
     <input type="checkbox" class="tk-ck" data-tk-sel="${t.id}"${SEL.has(t.id)?' checked':''} aria-label="${A_('تحديد','Select')}">
     ${arch?'':`<button type="button" class="tk-done" data-tk-done="${t.id}" aria-label="${t.status==='done'?A_('إعادة فتح','Reopen'):A_('إكمال','Complete')}">${t.status==='done'?'✓':''}</button>`}
     <div class="tk-main"><div class="tk-title">${escH(t.title||A_('بدون عنوان','Untitled'))}</div>
-      <div class="tk-meta">${t.due?`<span class="${od?'tk-od':''}">📅 ${escH(fD(t.due))}${t.dueT?' '+escH(t.dueT):''}${od?' · '+A_('متأخرة','Overdue'):''}</span>`:''}${t.who?`<span>👤 ${escH(t.who)}</span>`:''}${cl?`<span>📂 ${escH(cl.name)}</span>`:''}${(t.files||[]).length?`<span>📎 ${t.files.length}</span>`:''}${m||running(t)?`<span${running(t)?' class="tk-run"':''}>⏱ ${fMin(m)}</span>`:''}${arch&&t.archivedAt?`<span>🗄 ${escH(fD(t.archivedAt))}</span>`:''}</div></div>
+      <div class="tk-meta">${t.due?`<span class="${od?'tk-od':''}">📅 ${escH(fD(t.due))}${t.dueT?' '+escH(t12(t.dueT)):''}${od?' · '+A_('متأخرة','Overdue'):''}</span>`:''}${t.who?`<span>👤 ${escH(t.who)}</span>`:''}${cl?`<span>📂 ${escH(cl.name)}</span>`:''}${(t.files||[]).length?`<span>📎 ${t.files.length}</span>`:''}${m||running(t)?`<span${running(t)?' class="tk-run"':''}>⏱ ${fMin(m)}</span>`:''}${arch&&t.archivedAt?`<span>🗄 ${escH(fD(t.archivedAt))}</span>`:''}</div></div>
     <span class="tk-pill" style="background:${tint(c)};color:var(--white)"><i class="tk-dot" style="background:${c}"></i>${t.color?A_('مخصص','Custom'):prL(t.pr)}</span>
     <span class="tk-st tk-st-${t.status}">${stL(t.status)}</span>
     <div class="tk-acts">${arch?`<button class="btn-sm" data-tk-restore="${t.id}">↺ ${A_('استعادة','Restore')}</button><button class="btn-sm danger" data-tk-purge="${t.id}" aria-label="${A_('حذف نهائي','Delete permanently')}">✕</button>`:`<button class="btn-sm" data-tk-arch="${t.id}" aria-label="${A_('أرشفة','Archive')}" title="${A_('أرشفة','Archive')}">🗄</button>`}</div></div>`;
@@ -4525,13 +4530,13 @@ const CHK='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="c
 function todoRow(t,bk){
   const c=colorOf(t),cl=clients.find(x=>x.id===t.clientId),done=t.status==='done',m=mins(t);
   const meta=[];
-  if(done){const dd=new Date(t.doneAt),old=Date.now()-dd<6*864e5;meta.push('✓ '+escH(dd.toLocaleString(loc(),old?{weekday:'short',hour:'numeric',minute:'2-digit'}:{day:'numeric',month:'short',year:'numeric'})))}
+  if(done){const dd=new Date(t.doneAt),old=Date.now()-dd<6*864e5;meta.push('✓ '+escH(old?dd.toLocaleDateString(loc(),{weekday:'short'})+' '+d12(dd):dd.toLocaleDateString(loc(),{day:'numeric',month:'short',year:'numeric'})))}
   else{
     if(t.type&&tyOf(t.type))meta.push('🏷 '+escH(tyOf(t.type).name));
     if(t.start)meta.push('🚀 '+escH(fD(t.start)));
     if(t.days!==''&&t.days!=null)meta.push('⏳ '+escH(t.days)+' '+A_('يوم','days'));
     if(t.due&&bk!=='today'&&bk!=='tomorrow')meta.push(`<span${bk==='overdue'?' class="tk-od"':''}>📅 ${escH(dayName(t.due))}</span>`);
-    if(t.dueT)meta.push('🕒 '+escH(t.dueT));
+    if(t.dueT)meta.push('🕒 '+escH(t12(t.dueT)));
     if(t.status==='doing')meta.push(`<span class="td-doing">▶ ${A_('قيد التنفيذ','In progress')}</span>`);
   }
   if(t.who)meta.push('👤 '+escH(t.who));
@@ -4617,7 +4622,7 @@ function dayTasks(day){
 function sdRow(t){
   const done=t.status==='done',od=!done&&isOverdue(t),y=t.type&&tyOf(t.type),m=[];
   if(od)m.push(`<span class="od">${A_('متأخرة','Overdue')} · ${escH(fD(t.due))}</span>`);
-  if(t.dueT)m.push('🕒 '+escH(t.dueT));
+  if(t.dueT)m.push('🕒 '+escH(t12(t.dueT)));
   if(y)m.push(escH(y.name));
   if(t.who)m.push(escH(t.who));
   if(running(t))m.push(`<span style="color:var(--sd-a)">⏱ ${fMin(mins(t))}</span>`);
@@ -4788,7 +4793,7 @@ async function xls(btn){
   const P=per(V.rep,V.ref),S=stats(P);
   const head=[A_('العنوان','Title'),A_('الحالة','Status'),A_('الأولوية','Priority'),A_('اللون','Color'),A_('الموعد','Due'),A_('المسؤول','Owner'),A_('العميل','Client'),A_('أُنشئت','Created'),A_('أُنجزت','Completed'),A_('متأخرة','Overdue'),A_('مؤرشفة','Archived'),A_('الدقائق','Minutes'),A_('المرفقات','Attachments'),A_('الوصف','Description')];
   const s0=Date.parse(P.from+'T00:00:00'),e0=Date.parse(P.to+'T23:59:59.999');
-  const rows=S.active.concat(S.archIn.filter(t=>!S.active.includes(t))).map(t=>[t.title,t.doneAt&&Date.parse(t.doneAt)<=e0?stL('done'):stL(statusAt(t,Math.min(e0,Date.now()))||'todo'),prL(t.pr),colorOf(t),t.due+(t.dueT?' '+t.dueT:''),t.who,(clients.find(c=>c.id===t.clientId)||{}).name||'',t.created.slice(0,16).replace('T',' '),t.doneAt?t.doneAt.slice(0,16).replace('T',' '):'',S.overdue.includes(t)?A_('نعم','Yes'):'',t.archivedAt?t.archivedAt.slice(0,10):'',mins(t,s0,e0),(t.files||[]).length,t.desc]);
+  const rows=S.active.concat(S.archIn.filter(t=>!S.active.includes(t))).map(t=>[t.title,t.doneAt&&Date.parse(t.doneAt)<=e0?stL('done'):stL(statusAt(t,Math.min(e0,Date.now()))||'todo'),prL(t.pr),colorOf(t),t.due+(t.dueT?' '+t12(t.dueT):''),t.who,(clients.find(c=>c.id===t.clientId)||{}).name||'',t.created.slice(0,16).replace('T',' '),t.doneAt?t.doneAt.slice(0,16).replace('T',' '):'',S.overdue.includes(t)?A_('نعم','Yes'):'',t.archivedAt?t.archivedAt.slice(0,10):'',mins(t,s0,e0),(t.files||[]).length,t.desc]);
   const sum=[[A_('التقرير','Report'),P.kind==='week'?A_('أسبوعي','Weekly'):A_('شهري','Monthly')],[A_('الفترة','Period'),P.from+' → '+P.to],[A_('تاريخ الإنشاء','Generated'),new Date().toLocaleString(loc())],[],
     [A_('إجمالي المهام','Total tasks'),S.active.length],[A_('المكتملة','Completed'),S.doneIn.length],[A_('غير المكتملة','Incomplete'),S.incomplete.length],[A_('قيد التنفيذ','In progress'),S.doing.length],[A_('المتأخرة','Overdue'),S.overdue.length],[A_('عاجلة وعالية','Urgent & high'),S.hi.length],[A_('المؤرشفة','Archived'),S.archIn.length],[A_('نسبة الإنجاز','Completion rate'),pct(S.rate)],[A_('الوقت المسجّل (دقائق)','Time logged (min)'),S.totalMin],[],
     [A_('حسب الأولوية','By priority')],...PK.map(k=>[prL(k),S.byPr[k]]),[],[A_('حسب الحالة','By status')],...SK.map(k=>[stL(k),S.bySt[k]]),[],[A_('حسب اليوم','By day'),A_('أُضيفت','Created'),A_('أُنجزت','Completed')],...S.days.map(d=>[d.iso,d.created,d.done])];
@@ -5014,7 +5019,7 @@ function build(){
     push('invoices',i.id,(i.number||'—')+' · '+(i.client||''),[i.client,i.date,money(i.grand)+' '+A('د.ب','BD')].filter(Boolean).join(' · '),[i.number,i.client],{nd:digs(i.number),pd:phoneD(i.phone),badge:b})});
   const B=BZ.bdata();
   (B.quotes||[]).forEach(q=>push('quotes',q.id,(q.number||'—')+' · '+(q.client||''),[q.client,q.date,q.status].filter(Boolean).join(' · '),[q.number,q.client],{nd:digs(q.number),pd:phoneD(q.phone)}));
-  PR.data().sessions.forEach(s=>push('sessions',s.id,s.n||'—',[s.d,s.t,s.loc].filter(Boolean).join(' · '),[s.n,s.loc]));
+  PR.data().sessions.forEach(s=>push('sessions',s.id,s.n||'—',[s.d,t12(s.t),s.loc].filter(Boolean).join(' · '),[s.n,s.loc]));
   staffList.forEach(s=>push('staff',s.id,s.name||'—',s.role||'',[s.name,s.role],{pd:phoneD(s.phone)}));
   (B.expenses||[]).forEach(x=>push('expenses',x.id,x.note||x.sub||x.cat||'—',[x.date,money(x.amt)+' '+A('د.ب','BD'),x.cat].filter(Boolean).join(' · '),[x.note,x.sub,x.cat]));
   (B.equipment||[]).forEach(x=>push('equipment',x.id,x.name||'—',x.serial||'',[x.name,x.serial]));

@@ -304,6 +304,10 @@ details.inv{padding:0}
 <div id="print"></div>
 
 <script>
+// تنسيق الوقت 12 ساعة: "17:05" ← "5:05 PM" (يُترك أي نص آخر كما هو)
+function t12(v){var m=/^(\d{1,2}):(\d{2})/.exec(String(v==null?'':v).trim());if(!m)return v==null?'':String(v);var h=+m[1],ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+m[2]+' '+ap}
+function d12(d){d=new Date(d);return isNaN(d)?'':t12(d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'))}
+
 (()=>{
 const SB=window.SB||{};
 const tok=(location.hash.match(/c=([\w-]{20,})/)||[])[1]||'';
@@ -459,14 +463,14 @@ function render(){
     ?`<figure class="hero" style="margin-top:0"><img src="${photo}" alt="${esc(D.name||'')}"><figcaption class="cap"><small>${T('welcome')}</small><h1>${T('hello')} <span>${esc(D.first||'')}</span> 👋</h1></figcaption></figure>`
     :`<header><img class="brand-logo" src="logo.png" alt="" width="110" onerror="this.remove()"><h1>${T('hello')} <span>${esc(D.first||'')}</span> 👋</h1><p class="sub">${T('sub')}</p></header>`;
   h+=previewH(S);
-  if(up&&on('next')){const n=daysTo(up.d);h+=`<div class="card next"><div class="datebox"><b>${pd(up.d).getDate()}</b><span>${esc(pd(up.d).toLocaleDateString(loc(),{month:'short'}))}</span></div><div><div class="kicker">${T('next')}</div><h3>${esc(up.n||up.pk||'')}</h3><div class="meta"><span>📅 ${esc(fD(up.d,{weekday:'long',day:'numeric',month:'long'}))}</span>${up.t?`<span>🕒 ${esc(up.t)}${up.te?'–'+esc(up.te):''}</span>`:''}${up.loc?`<span>📍 ${esc(up.loc)}</span>`:''}</div><span class="count">${n===0?T('today'):n===1?T('tomorrow'):T('inDays').replace('{n}',n)}</span></div></div>`}
+  if(up&&on('next')){const n=daysTo(up.d);h+=`<div class="card next"><div class="datebox"><b>${pd(up.d).getDate()}</b><span>${esc(pd(up.d).toLocaleDateString(loc(),{month:'short'}))}</span></div><div><div class="kicker">${T('next')}</div><h3>${esc(up.n||up.pk||'')}</h3><div class="meta"><span>📅 ${esc(fD(up.d,{weekday:'long',day:'numeric',month:'long'}))}</span>${up.t?`<span>🕒 ${esc(t12(up.t))}${up.te?'–'+esc(t12(up.te)):''}</span>`:''}${up.loc?`<span>📍 ${esc(up.loc)}</span>`:''}</div><span class="count">${n===0?T('today'):n===1?T('tomorrow'):T('inDays').replace('{n}',n)}</span></div></div>`}
   const chipDue=on('due')&&(on('invoices')||typeof D.due==='number')?`<button type="button" class="chip"${on('invoices')?' data-open="sec-det"':' style="cursor:default"'}><span>${T('due')}</span><b class="${due>0.0005?'due':'ok'}">${due>0.0005?f3(due):'✓'}</b>${due>0.0005?` <small class="muted">${T('cur')}</small>`:`<small class="muted" style="display:block">${T('allPaid')}</small>`}</button>`:'',chipSes=on('sessions')?`<div class="chip"><span>${T('sessions')}</span><b>${S.length}</b></div>`:'';
   if(chipDue||chipSes)h+=`<div class="sum">${chipDue}${chipSes}</div>`;
   if(pendQ.length)h+=`<div class="alert"><span>📄 ${T('pendingQ')}</span><button class="btn btn-sage" style="padding:8px 14px;font-size:14px" data-go="sec-q">${T('view')}</button></div>`;
 
   // الصور والفيديوهات
   h+=secTitle(T('media'),S.length||'');
-  h+=S.length?S.slice().sort((a,b)=>(b.d+b.t).localeCompare(a.d+a.t)).map(s=>{const g=safeUrl(s.gal);return `<article class="card"><div class="ph"><div><h3>${esc(s.n||s.pk||'—')}</h3><div class="meta">${esc(fD(s.d))}${s.t?' · '+esc(s.t):''}${s.loc?' · 📍 '+esc(s.loc):''}</div></div>${s.pk&&s.pk!==s.n?`<span class="pill p-mute">${esc(s.pk)}</span>`:''}</div>${stepper(s.stage)}
+  h+=S.length?S.slice().sort((a,b)=>(b.d+b.t).localeCompare(a.d+a.t)).map(s=>{const g=safeUrl(s.gal);return `<article class="card"><div class="ph"><div><h3>${esc(s.n||s.pk||'—')}</h3><div class="meta">${esc(fD(s.d))}${s.t?' · '+esc(t12(s.t)):''}${s.loc?' · 📍 '+esc(s.loc):''}</div></div>${s.pk&&s.pk!==s.n?`<span class="pill p-mute">${esc(s.pk)}</span>`:''}</div>${stepper(s.stage)}
     <div class="dline">${s.due&&s.stage!=='delivered'?`<span class="muted">⏳ ${T('delivery')}: <b style="color:var(--text)">${esc(fD(s.due))}</b></span>`:'<span></span>'}${g?`<a class="btn btn-sage" href="${esc(g)}" target="_blank" rel="noopener noreferrer">🖼 ${T('gallery')}</a>`:(s.stage!=='booked'?`<span class="gal-wait">${T('galleryWait')}</span>`:'')}</div></article>`}).join(''):`<div class="card empty">${T('noProjects')}</div>`;
 
   if(Q.length){
@@ -487,7 +491,7 @@ function render(){
 
   const wa=String(st.wa||'').replace(/\D/g,''),ig=String(st.insta||'').replace(/^@/,'').replace(/[^\w.]/g,''),waMsg=encodeURIComponent(T('waHi').replace('{n}',D.name||''));
   h+=`<footer class="site-foot">${ig?`<a class="ig-link" href="https://www.instagram.com/${ig}/" target="_blank" rel="noopener noreferrer">${IG}<span>${T('follow')} <b dir="ltr">@${esc(ig)}</b></span></a>`:''}${wa?`<a class="ig-link wa-link" href="https://wa.me/${wa}?text=${waMsg}" target="_blank" rel="noopener noreferrer">${WA}<span>${T('chat')} <b dir="ltr">${esc(wa.replace(/^973/,''))}</b></span></a>`:''}</footer>`;
-  if(D.updated)h+=`<div class="upd">${T('updated')}: ${esc(new Date(D.updated).toLocaleString(loc(),{dateStyle:'medium',timeStyle:'short'}))}</div>`;
+  if(D.updated)h+=`<div class="upd">${T('updated')}: ${esc(new Date(D.updated).toLocaleDateString(loc(),{dateStyle:'medium'})+' '+d12(D.updated))}</div>`;
   if(wa)h+=`<a class="fab" href="https://wa.me/${wa}?text=${waMsg}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">${WA}</a>`;
   $('app').innerHTML=h;
   placeBeam();

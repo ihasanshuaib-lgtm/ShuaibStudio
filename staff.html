@@ -7,7 +7,11 @@
 <title>شعيب استوديو | جدول التصوير للموظفين</title>
 <script src="supabase-config.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script>try{if(!localStorage.getItem('ss_staff_auth'))document.documentElement.classList.add('locked')}catch(e){document.documentElement.classList.add('locked')}</script>
+<script>
+// تنسيق الوقت 12 ساعة: "17:05" ← "5:05 PM" (يُترك أي نص آخر كما هو)
+function t12(v){var m=/^(\d{1,2}):(\d{2})/.exec(String(v==null?'':v).trim());if(!m)return v==null?'':String(v);var h=+m[1],ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+m[2]+' '+ap}
+function d12(d){d=new Date(d);return isNaN(d)?'':t12(d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'))}
+try{if(!localStorage.getItem('ss_staff_auth'))document.documentElement.classList.add('locked')}catch(e){document.documentElement.classList.add('locked')}</script>
 <style>
 :root{
   /* نفس ثيم بقية الصفحات: Soft UI بيج · سيج · وردي */
@@ -245,7 +249,7 @@ async function load(){
     const rows=await req('staff_schedule?key=eq.sched&select=value');
     const v=rows[0]&&rows[0].value;
     sessions=(v&&v.sessions)||[];tasks=(v&&v.tasks)||{};team=(v&&v.team)||[];loaded=true;
-    G('status').textContent='آخر تحديث: '+new Date().toLocaleTimeString('ar');
+    G('status').textContent='آخر تحديث: '+d12(new Date());
   }catch(e){G('status').textContent='تعذّر التحميل';}
   render();
 }
@@ -257,7 +261,7 @@ const wdOf=d=>WD[new Date(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8)).getDay()];
 const dl=d=>Math.round((Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8))-Date.UTC(+TD.slice(0,4),+TD.slice(5,7)-1,+TD.slice(8)))/864e5);
 const when=n=>n==0?'اليوم':n==1?'غدًا':n==2?'بعد يومين':'بعد '+n+' أيام';
 function card(s){
-  return `<div class="sess"><div>${s.t?`<span class="t">${esc(s.t)}</span>`:''}<b>${esc(s.n||'بدون اسم')}</b>${s.pk?`<span class="pk">${esc(s.pk)}</span>`:''}</div>`+
+  return `<div class="sess"><div>${s.t?`<span class="t">${esc(t12(s.t))}</span>`:''}<b>${esc(s.n||'بدون اسم')}</b>${s.pk?`<span class="pk">${esc(s.pk)}</span>`:''}</div>`+
   (s.loc?`<div class="ln">📍 ${esc(s.loc)}</div>`:'')+
   ((s.ph||[]).length?`<div class="ln">👥 ${s.ph.map(esc).join('، ')}</div>`:'')+
   ((s.eq||[]).length?`<div class="ln">🎒 ${s.eq.map(esc).join('، ')}</div>`:'')+`</div>`;
@@ -278,7 +282,7 @@ function render(){
   let c=WD.map(w=>`<div class="wh">${w.slice(0,3)}</div>`).join('')+'<div class="cd off"></div>'.repeat(lead);
   for(let d=1;d<=nd;d++){
     const k=ym+'-'+pad(d),A=by[k]||[];
-    c+=`<button type="button" class="cd${k==TD?' today':''}${k==st.sel?' sel':''}" data-day="${k}"><span class="dn">${d}</span>${A.slice(0,2).map(s=>`<i class="ev">${s.t?esc(s.t)+' ':''}${esc(s.n||'—')}</i>`).join('')}${A.length>2?`<i class="ev">+${A.length-2}</i>`:''}${A.length?`<b class="cnt">${A.length}</b>`:''}</button>`;
+    c+=`<button type="button" class="cd${k==TD?' today':''}${k==st.sel?' sel':''}" data-day="${k}"><span class="dn">${d}</span>${A.slice(0,2).map(s=>`<i class="ev">${s.t?esc(t12(s.t))+' ':''}${esc(s.n||'—')}</i>`).join('')}${A.length>2?`<i class="ev">+${A.length-2}</i>`:''}${A.length?`<b class="cnt">${A.length}</b>`:''}</button>`;
   }
   G('cal').innerHTML=c;
   const day=L.filter(s=>s.d==st.sel);
@@ -286,7 +290,7 @@ function render(){
   G('day-list').innerHTML=day.length?day.map(card).join(''):`<p class="hint">${loaded?'لا توجد تصويرات في هذا اليوم.':'جارٍ التحميل…'}</p>`;
   // القادم
   const up=L.filter(s=>s.d>=TD).slice(0,12);
-  G('upcoming').innerHTML=up.length?up.map(s=>`<button type="button" class="up" data-up="${s.d}|${s.t||''}|${esc(s.n||'')}"><span class="ud"><b>${+s.d.slice(8)}</b>${wdOf(s.d)}</span><span class="um">${esc(s.n||'—')}${s.t?` <small>🕒 ${esc(s.t)}</small>`:''}${s.loc?`<small>📍 ${esc(s.loc)}</small>`:''}${(s.ph||[]).length?`<small>${s.ph.map(esc).join('، ')}</small>`:''}</span><span class="when">${when(dl(s.d))}</span></button>`).join(''):`<p class="hint">${loaded?'لا توجد تصويرات قادمة.':'جارٍ التحميل…'}</p>`;
+  G('upcoming').innerHTML=up.length?up.map(s=>`<button type="button" class="up" data-up="${s.d}|${s.t||''}|${esc(s.n||'')}"><span class="ud"><b>${+s.d.slice(8)}</b>${wdOf(s.d)}</span><span class="um">${esc(s.n||'—')}${s.t?` <small>🕒 ${esc(t12(s.t))}</small>`:''}${s.loc?`<small>📍 ${esc(s.loc)}</small>`:''}${(s.ph||[]).length?`<small>${s.ph.map(esc).join('، ')}</small>`:''}</span><span class="when">${when(dl(s.d))}</span></button>`).join(''):`<p class="hint">${loaded?'لا توجد تصويرات قادمة.':'جارٍ التحميل…'}</p>`;
   taskList();
   report();
 }
@@ -325,7 +329,7 @@ function report(){
     (!st.rm&&L.length?`<h2>حسب الشهر</h2><div class="scroll"><table><thead><tr><th>الشهر</th><th>عدد التصويرات</th></tr></thead><tbody>${Object.keys(mm).map(Number).sort((a,b)=>a-b).map(m=>`<tr><td>${MON[m-1]}</td><td>${mm[m]}</td></tr>`).join('')}</tbody></table></div>`:'')+
     (!st.ph&&rows.length?`<h2 style="margin-top:12px">حسب المصوّر</h2><div class="scroll"><table><thead><tr><th>المصوّر</th><th>عدد التصويرات</th></tr></thead><tbody>${rows.map(([n,c])=>`<tr><td>${esc(n)}</td><td>${c}</td></tr>`).join('')}</tbody></table></div>`:'')+
     `<h2 style="margin-top:12px">قائمة التصويرات</h2>`+
-    (L.length?`<div class="scroll"><table><thead><tr><th>#</th><th>التاريخ</th><th>الوقت</th><th>التصوير</th><th>المصورون</th></tr></thead><tbody>${L.map((s,i)=>`<tr><td>${i+1}</td><td>${fmt(s.d)}</td><td>${esc(s.t||'—')}</td><td>${esc(s.n||'—')}${s.pk?' <small>('+esc(s.pk)+')</small>':''}</td><td>${(s.ph||[]).map(esc).join('، ')||'—'}</td></tr>`).join('')}</tbody></table></div>`:`<p class="hint">لا توجد تصويرات في هذه الفترة.</p>`);
+    (L.length?`<div class="scroll"><table><thead><tr><th>#</th><th>التاريخ</th><th>الوقت</th><th>التصوير</th><th>المصورون</th></tr></thead><tbody>${L.map((s,i)=>`<tr><td>${i+1}</td><td>${fmt(s.d)}</td><td>${esc(s.t?t12(s.t):'—')}</td><td>${esc(s.n||'—')}${s.pk?' <small>('+esc(s.pk)+')</small>':''}</td><td>${(s.ph||[]).map(esc).join('، ')||'—'}</td></tr>`).join('')}</tbody></table></div>`:`<p class="hint">لا توجد تصويرات في هذه الفترة.</p>`);
 }
 
 // ── events ──
