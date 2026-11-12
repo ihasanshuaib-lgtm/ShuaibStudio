@@ -1464,7 +1464,7 @@ html.locked body>*:not(#gate){display:none !important}
 <div class="page" id="page-staff">
   <div class="section-header">
     <h2 id="staff-page-title">Staff Management</h2>
-    <div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn-outline" onclick="PR.showStaffReport()" id="staff-rep-btn">📄 تقارير</button><button class="btn-gold" onclick="showAddStaffForm()" id="add-staff-btn">+ Add Staff</button></div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn-outline" onclick="window.open('learn.html','_blank','noopener')" id="learn-btn">📚 التعليم</button><button class="btn-outline" onclick="PR.showStaffReport()" id="staff-rep-btn">📄 تقارير</button><button class="btn-gold" onclick="showAddStaffForm()" id="add-staff-btn">+ Add Staff</button></div>
   </div>
   <div id="staff-form" style="display:none">
     <div class="card">
@@ -1688,6 +1688,7 @@ function applyLang(){
   document.getElementById('staff-page-title').textContent = t('staffPageTitle');
   document.getElementById('add-staff-btn').textContent    = t('addStaffBtn');
   document.getElementById('staff-rep-btn').textContent    = A_('📄 تقارير','📄 Reports');
+  {const lb=document.getElementById('learn-btn');if(lb)lb.textContent=A_('📚 التعليم','📚 Learning');}
   document.getElementById('add-staff-title').textContent  = t('addStaffTitle');
   document.getElementById('lbl-sfname').textContent  = t('lblSfname');
   document.getElementById('lbl-sfrole').textContent  = t('lblSfrole');
@@ -2429,7 +2430,7 @@ function delTask(id,i){
 
 // ═════════════ صفحة الموظف (employee.html#t=<رمز>) — مثل بوابة العميل ═════════════
 // m.portal = {on, token, show:{...}}؛ البيانات تُرفع إلى جدول staff_portal (supabase/staff_portal.sql) ويقرؤها الموظف بالرمز فقط.
-const SP_SHOW=[['up','📅','التصويرات القادمة','Upcoming shoots'],['pay','💰','الراتب الشهري (الإجمالي، الخصم، السلف، الصافي)','Monthly pay'],['amounts','🧾','مبلغ كل تصوير','Amount per shoot'],['past','🗂','التصويرات السابقة','Past shoots'],['team','👥','زملاء التصوير','Teammates'],['equip','🎒','معدات كل تصوير','Equipment per shoot'],['tasks','📝','المهام المسندة إليه','Assigned tasks']];
+const SP_SHOW=[['up','📅','التصويرات القادمة','Upcoming shoots'],['pay','💰','الراتب الشهري (الإجمالي، الخصم، السلف، الصافي)','Monthly pay'],['amounts','🧾','مبلغ كل تصوير','Amount per shoot'],['past','🗂','التصويرات السابقة','Past shoots'],['team','👥','زملاء التصوير','Teammates'],['equip','🎒','معدات كل تصوير','Equipment per shoot'],['tasks','📝','المهام المسندة إليه','Assigned tasks'],['learn','📚','صفحة التعليم (قراءة الدروس وإضافة دروس)','Learning page (read & add lessons)']];
 const spShow=m=>{const s=(m.portal&&m.portal.show)||{},o={};SP_SHOW.forEach(x=>o[x[0]]=s[x[0]]!==false);return o};
 const staffPortalUrl=t=>{const u=new URL('employee.html',location.href);u.search='';u.hash='t='+t;return u.href};
 const spToken=()=>{const a=new Uint8Array(18);crypto.getRandomValues(a);return btoa(String.fromCharCode(...a)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};

@@ -9,7 +9,7 @@
   var D = document, W = window, E = 'cubic-bezier(.22,1,.36,1)', SPRING = 'cubic-bezier(.34,1.56,.64,1)';
   var RM = W.matchMedia ? W.matchMedia('(prefers-reduced-motion: reduce)') : null;
   var reduced = function(){ return !!(RM && RM.matches); };
-  var DASH = /(^|\/)(main|staff|salary_report)\.html$/i.test(location.pathname) || !!D.getElementById('settings-root');
+  var DASH = /(^|\/)(main|staff|salary_report|learn|employee)\.html$/i.test(location.pathname) || !!D.getElementById('settings-root');
   var S = {};
   var on = function(k){ return !!S[k] && !reduced(); };
   var $$ = function(sel, root){ try{ return Array.prototype.slice.call((root || D).querySelectorAll(sel)); }catch(e){ return []; } };
