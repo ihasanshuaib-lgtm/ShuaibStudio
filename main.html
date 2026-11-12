@@ -1046,6 +1046,21 @@ html[data-theme="dark"] .st-nav{border-color:rgba(255,255,255,.05)}
 .th-cr div{display:flex;justify-content:space-between;gap:.5rem;padding:.35rem .55rem;border-radius:9px;background:var(--off)}
 .th-cr b.ok{color:var(--success)}.th-cr b.bad{color:var(--danger)}
 /* الحركة */
+.sp-ov{position:fixed;inset:0;z-index:320;background:rgba(30,24,20,.45);display:flex;align-items:center;justify-content:center;padding:1rem}
+.sp-box{width:min(620px,100%);max-height:92vh;display:flex;flex-direction:column;background:var(--off);border-radius:22px;box-shadow:var(--float);overflow:hidden}
+.sp-head{display:flex;align-items:center;gap:.8rem;padding:1rem 1.1rem;border-bottom:1px solid var(--border)}
+.sp-head b{display:block;font-size:1.02rem;color:var(--white)}.sp-head small{color:var(--muted);font-size:.8rem}
+.sp-body{padding:1.1rem;overflow:auto;overscroll-behavior:contain}
+.sp-switch{display:flex;gap:.6rem;align-items:center;font-weight:700;padding:.75rem .9rem;border-radius:14px;background:var(--card-g);box-shadow:var(--sunk);cursor:pointer}
+.sp-switch input{width:18px;height:18px}
+.sp-link{margin-top:.9rem;display:grid;gap:.6rem}.sp-btns{display:flex;gap:.45rem;flex-wrap:wrap}.sp-btns a{text-decoration:none;display:inline-flex;align-items:center}
+.sp-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.5rem;margin-top:1rem}
+.sp-sum div{padding:.6rem .7rem;border-radius:12px;background:var(--card-g);box-shadow:var(--lift-sm)}.sp-sum span{display:block;font-size:.72rem;color:var(--muted)}.sp-sum b{font-size:.92rem;color:var(--white)}
+.sp-h4{margin:1.1rem 0 .5rem;font-weight:800;font-size:.88rem;color:var(--white)}
+.sp-show{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:.4rem}
+.sp-show label{display:flex;gap:.5rem;align-items:center;padding:.5rem .65rem;border-radius:11px;border:1px solid var(--border);font-size:.84rem;cursor:pointer}
+.btn-sm.sp-on{border-color:var(--sage-d);color:var(--sage-dd)}
+@media(max-width:640px){.sp-ov{align-items:flex-end;padding:0}.sp-box{border-radius:22px 22px 0 0;max-height:94vh}}
 .mx-grp{margin-top:1rem}
 .mx-grp>h5{margin:0 0 .4rem;font-size:.82rem;color:var(--muted);font-weight:800;letter-spacing:.02em}
 .mx-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.45rem}
@@ -2395,6 +2410,7 @@ function renderStaff(){
         <div style="display:flex;gap:.35rem"><input id="tk-${s.id}" placeholder="${A_('مثال: تعديل صور، مونتاج العرس','e.g. photo editing, wedding montage')}" onkeydown="if(event.key==='Enter'){event.preventDefault();addTask(${s.id})}" style="flex:1;min-width:0;padding:.35rem .55rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.8rem"><button class="btn-sm" type="button" onclick="addTask(${s.id})">${A_('إضافة','Add')}</button></div>
       </div>
       <div class="staff-actions">
+        <button class="btn-sm${s.portal&&s.portal.on?' sp-on':''}" onclick="openStaffPortal(${s.id})">🔗 ${A_('صفحة الموظف','Staff page')}</button>
         <button class="btn-sm" onclick="editStaff(${s.id})">${A_('تعديل','Edit')}</button>
         <button class="btn-sm danger" onclick="deleteStaff(${s.id})">${t('removeBtn')}</button>
       </div>
@@ -2410,8 +2426,82 @@ function delTask(id,i){
   const m=staffList.find(x=>x.id===id);if(!m||!m.tasks)return;
   m.tasks.splice(i,1);save();renderStaff();
 }
+
+// ═════════════ صفحة الموظف (employee.html#t=<رمز>) — مثل بوابة العميل ═════════════
+// m.portal = {on, token, show:{...}}؛ البيانات تُرفع إلى جدول staff_portal (supabase/staff_portal.sql) ويقرؤها الموظف بالرمز فقط.
+const SP_SHOW=[['up','📅','التصويرات القادمة','Upcoming shoots'],['pay','💰','الراتب الشهري (الإجمالي، الخصم، السلف، الصافي)','Monthly pay'],['amounts','🧾','مبلغ كل تصوير','Amount per shoot'],['past','🗂','التصويرات السابقة','Past shoots'],['team','👥','زملاء التصوير','Teammates'],['equip','🎒','معدات كل تصوير','Equipment per shoot'],['tasks','📝','المهام المسندة إليه','Assigned tasks']];
+const spShow=m=>{const s=(m.portal&&m.portal.show)||{},o={};SP_SHOW.forEach(x=>o[x[0]]=s[x[0]]!==false);return o};
+const staffPortalUrl=t=>{const u=new URL('employee.html',location.href);u.search='';u.hash='t='+t;return u.href};
+const spToken=()=>{const a=new Uint8Array(18);crypto.getRandomValues(a);return btoa(String.fromCharCode(...a)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
+function staffPortalData(m){
+  const SH=spShow(m),P=PR.staffPortal(m.id),C=BZ.cfg(),nm=String(m.name||'').trim();
+  const one=x=>({d:x.d,t:x.t,te:x.te,n:x.n,loc:x.loc,pk:x.pk,role:x.role,team:SH.team?x.team:[],eq:SH.equip?x.eq:[],a:SH.amounts?x.a:null});
+  let tasks=[];
+  if(SH.tasks){
+    tasks=(m.tasks||[]).map(t=>({t:String(t)}));
+    try{TK.data().tasks.filter(t=>!t.archived&&t.status!=='done'&&String(t.who||'').trim()===nm).forEach(t=>tasks.push({t:t.title,due:t.due||'',st:t.status}))}catch(e){}
+  }
+  return{name:nm,first:nm.split(/\s+/)[0]||nm,role:m.role||'',show:SH,feePct:P.feePct,
+    studio:{name:C.company||'',phone:C.phone||'',wa:String(C.wa||'').replace(/\D/g,''),insta:String(C.insta||'').replace(/^@/,'')},
+    up:SH.up?P.up.map(one):[],past:SH.past?P.past.map(one):[],pay:SH.pay?P.pay:[],tasks};
+}
+let SPSENT={},SPERR='',SPBUSY=false;
+async function pushStaffPortals(force){
+  if(typeof sbAuth==='undefined'||!sbAuth||!sbCfg().key||SPBUSY)return;
+  const now=new Date().toISOString(),rows=[];
+  staffList.forEach(m=>{const P=m.portal;if(!P||!P.on||!P.token)return;const d=staffPortalData(m),j=JSON.stringify(d);if(!force&&SPSENT[P.token]===j)return;rows.push({r:{token:P.token,staff_id:String(m.id),data:{...d,updated:now},updated_at:now},j})});
+  if(!rows.length)return;SPBUSY=true;
+  try{await sbReq('staff_portal?on_conflict=token',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(rows.map(x=>x.r))});rows.forEach(x=>SPSENT[x.r.token]=x.j);SPERR=''}
+  catch(e){const m=String(e.message||e);SPERR=/staff_portal|42P01|PGRST20/.test(m)?A_('جدول صفحات الموظفين غير موجود — شغّل ملف supabase/staff_portal.sql في Supabase مرة واحدة.','Staff pages table missing — run supabase/staff_portal.sql in Supabase once.'):m.slice(0,160)}
+  SPBUSY=false;
+}
+const spDrop=t=>(typeof sbAuth!=='undefined'&&sbAuth&&t)?sbReq('staff_portal?token=eq.'+encodeURIComponent(t),{method:'DELETE',headers:{Prefer:'return=minimal'}}).catch(()=>{}):Promise.resolve();
+const spPhone=p=>{let d=String(p||'').replace(/\D/g,'');if(d.length===8)d='973'+d;return d};
+let SP_ID=null;
+async function openStaffPortal(id){SP_ID=id;await drawStaffPortal();}
+function closeStaffPortal(){SP_ID=null;const o=document.getElementById('sp-ov');if(o)o.remove();document.body.classList.remove('tk-lock')}
+async function drawStaffPortal(){
+  const m=staffList.find(x=>x.id===SP_ID);if(!m){closeStaffPortal();return}
+  let o=document.getElementById('sp-ov');if(!o){o=document.createElement('div');o.id='sp-ov';o.className='sp-ov';o.addEventListener('click',e=>{if(e.target===o)closeStaffPortal()});document.body.appendChild(o)}
+  document.body.classList.add('tk-lock');
+  const P=m.portal||{},on=!!(P.on&&P.token),SH=spShow(m),url=on?staffPortalUrl(P.token):'',ph=spPhone(m.phone),sb=typeof sbAuth!=='undefined'&&!!sbAuth;
+  const D=on?staffPortalData(m):null,next=D&&D.up[0],mo=D&&D.pay.find(x=>x.ym===todayISO().slice(0,7));
+  const wa=`${A_(`أهلًا ${m.name} 👋\nهذه صفحتك الخاصة في ${BZ.cfg().company||'شعيب استوديو'}: مواعيد التصوير وتفاصيلها وراتبك.\n`,`Hi ${m.name} 👋\nYour personal page at ${BZ.cfg().company||'Shuaib Studio'}: shoots and pay.\n`)}${url}`;
+  o.innerHTML=`<div class="sp-box" role="dialog" aria-modal="true" aria-labelledby="sp-h">
+   <div class="sp-head"><div class="staff-avatar" style="margin:0;width:46px;height:46px">${escH(m.name).split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase()}</div><div style="flex:1;min-width:0"><b id="sp-h">${A_('صفحة الموظف','Staff page')} — ${escH(m.name)}</b><small>${escH(m.role||'')}</small></div><button class="modal-close" style="position:static" onclick="closeStaffPortal()" aria-label="${A_('إغلاق','Close')}">✕</button></div>
+   <div class="sp-body">
+    <label class="sp-switch"><input type="checkbox" ${on?'checked':''} onchange="spToggle(this.checked)"> <span>${A_('تفعيل صفحة خاصة لهذا الموظف','Enable a private page for this employee')}</span></label>
+    ${on?`<div class="sp-link"><input class="bz-in" readonly value="${escH(url)}" onclick="this.select()" dir="ltr"><div class="sp-btns">
+      <button class="btn-gold" type="button" onclick="spCopy()">📋 ${A_('نسخ الرابط','Copy link')}</button>
+      ${ph?`<a class="btn-outline" href="https://wa.me/${ph}?text=${encodeURIComponent(wa)}" target="_blank" rel="noopener">💬 ${A_('إرسال واتساب','Send on WhatsApp')}</a>`:''}
+      <a class="btn-outline" href="${escH(url)}" target="_blank" rel="noopener">👁 ${A_('فتح الصفحة','Open page')}</a>
+      <button class="btn-sm" type="button" onclick="spRegen()" title="${A_('الرابط القديم يتوقف عن العمل','The old link stops working')}">♻ ${A_('رابط جديد','New link')}</button></div></div>
+     <div class="sp-sum"><div><span>${A_('التصوير القادم','Next shoot')}</span><b>${next?escH(new Date(next.d+'T00:00').toLocaleDateString(lang==='ar'?'ar-BH-u-nu-latn':'en-GB',{weekday:'short',day:'numeric',month:'short'}))+(next.t?' · '+escH(t12(next.t)):''):'—'}</b></div><div><span>${A_('القادمة','Upcoming')}</span><b>${D.up.length}</b></div>${mo?`<div><span>${A_('صافي هذا الشهر','Net this month')}</span><b>${mo.net.toFixed(3)}</b></div>`:''}<div><span>${A_('آخر فتح','Last opened')}</span><b id="sp-seen">…</b></div></div>
+     <div class="sp-h4">${A_('ما يظهر للموظف','What the employee sees')}</div>
+     <div class="sp-show">${SP_SHOW.map(([k,ic,ar,en])=>`<label><input type="checkbox" ${SH[k]?'checked':''} onchange="spSet('${k}',this.checked)"> ${ic} ${A_(ar,en)}</label>`).join('')}</div>`:`<p class="pr-hint">${A_('عند التفعيل يحصل الموظف على رابط خاص (لا يحتاج اسم مستخدم) يعرض مواعيد تصويره وتفاصيلها وراتبه الشهري. يمكنك اختيار ما يظهر وإيقاف الرابط في أي وقت.','When enabled, the employee gets a private link (no login) with their shoots, details and monthly pay. Choose what shows and turn it off anytime.')}</p>`}
+    <p class="pr-hint" style="margin:.8rem 0 0">${!sb?A_('⚠ سجّل الدخول للحساب السحابي حتى تعمل الصفحة.','⚠ Sign in to the cloud account so the page works.'):SPERR?'⚠ '+escH(SPERR):on?A_('☁ الصفحة تتحدّث تلقائيًا مع كل تعديل في الجلسات والرواتب.','☁ The page updates automatically with every change.'):''}</p>
+   </div></div>`;
+  if(on&&sb){try{const r=await (await sbReq('staff_portal?token=eq.'+encodeURIComponent(P.token)+'&select=last_seen')).json(),e=document.getElementById('sp-seen');if(e)e.textContent=r[0]&&r[0].last_seen?new Date(r[0].last_seen).toLocaleDateString(lang==='ar'?'ar-BH-u-nu-latn':'en-GB',{day:'numeric',month:'short'})+' '+d12(r[0].last_seen):A_('لم يُفتح بعد','Not yet')}catch(e){const x=document.getElementById('sp-seen');if(x)x.textContent='—'}}
+}
+async function spToggle(v){
+  const m=staffList.find(x=>x.id===SP_ID);if(!m)return;
+  m.portal=m.portal||{};
+  if(v){if(!m.portal.token)m.portal.token=spToken();m.portal.on=true;save();renderStaff();await pushStaffPortals(true)}
+  else{m.portal.on=false;spDrop(m.portal.token);delete SPSENT[m.portal.token];save();renderStaff()}
+  drawStaffPortal();
+}
+async function spSet(k,v){const m=staffList.find(x=>x.id===SP_ID);if(!m||!m.portal)return;m.portal.show=m.portal.show||{};m.portal.show[k]=!!v;save();await pushStaffPortals(true);drawStaffPortal()}
+async function spRegen(){
+  const m=staffList.find(x=>x.id===SP_ID);if(!m||!m.portal)return;
+  if(!confirm(A_('إنشاء رابط جديد؟ الرابط القديم سيتوقف عن العمل.','Create a new link? The old one will stop working.')))return;
+  spDrop(m.portal.token);delete SPSENT[m.portal.token];m.portal.token=spToken();save();await pushStaffPortals(true);drawStaffPortal();note(A_('✓ أُنشئ رابط جديد','✓ New link created'));
+}
+function spCopy(){const m=staffList.find(x=>x.id===SP_ID);if(!m||!m.portal)return;const u=staffPortalUrl(m.portal.token);
+  (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>note(A_('✓ نُسخ الرابط','✓ Link copied'))).catch(()=>{const i=document.querySelector('.sp-link input');if(i){i.select();document.execCommand('copy');note(A_('✓ نُسخ الرابط','✓ Link copied'))}})}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&SP_ID!=null)closeStaffPortal()});
 function deleteStaff(id){
   if(!confirm(lang==='ar'?'حذف هذا الموظف؟':'Remove staff member?'))return;
+  {const m=staffList.find(x=>x.id===id);if(m&&m.portal&&m.portal.token)spDrop(m.portal.token)}
   staffList=staffList.filter(s=>s.id!==id);
   save();renderStaff();updateStats();PR.render();
 }
@@ -3026,8 +3116,22 @@ function openStaffReport(id){
   goPay();
   showRep(String(id));
 }
+// بيانات «صفحة الموظف» (employee.html): تصويراته القادمة/السابقة (مع مبلغه ودوره) + راتب آخر 12 شهرًا (إجمالي − خصم الصندوق − السلف = الصافي)
+function staffPortal(id){
+  const up=[],past=[];
+  S.sessions.filter(s=>s.d&&hasPh(s,id)).sort(byD).forEach(s=>{
+    const mine=s.lines.filter(l=>l.p==id),a=mine.reduce((q,l)=>q+(+l.a||0),0);
+    const o={d:s.d,t:s.t||'',te:s.te||'',n:s.n||'',loc:s.loc||'',pk:pkgName(s)||'',role:[...new Set(mine.map(l=>rName(l.r)))].join('، '),a,
+      team:[...new Set(s.lines.filter(l=>l.p&&l.p!=id&&stf(l.p)).map(l=>pName(l.p)))],eq:eqList(s).map(e=>e.n)};
+    (s.d>=TD?up:past).push(o);
+  });
+  const yms=[...new Set([TD.slice(0,7),...S.sessions.filter(s=>s.d&&hasPh(s,id)).map(s=>s.d.slice(0,7))])].sort().reverse().slice(0,12);
+  const pay=yms.map(ym=>{const r=agg(ym).rows.find(x=>x.id==id)||{tot:0,fee:0,adv:+((S.adv[ym]||{})[id])||0,cnt:0};
+    return{ym,gross:r.tot,fee:r.fee,adv:r.adv,net:r.tot-r.fee-r.adv,cnt:r.cnt}}).filter(p=>p.gross||p.adv||p.ym===TD.slice(0,7));
+  return{up,past:past.reverse().slice(0,80),pay,feePct:+S.cfg.fee||0};
+}
 bind();
-return{data:()=>S,persist,sessPrice,eqFee,spay,pkgName,conflicts,render,renderSchedule,periodStats,fromInvoice,openStaffReport,closeReport,openSession,newOn,addBooking,scheduleSnapshot,totals,photographerSummary,showStaffReport};
+return{data:()=>S,persist,sessPrice,eqFee,spay,pkgName,conflicts,render,renderSchedule,periodStats,fromInvoice,openStaffReport,closeReport,openSession,newOn,addBooking,scheduleSnapshot,totals,photographerSummary,showStaffReport,staffPortal};
 })();
 
 // ── حجوزات الزبائن (Supabase): تسجيل دخول صاحب الاستوديو ثم تحويل الحجوزات الجديدة إلى جلسات في التكاليف ──
@@ -3154,7 +3258,7 @@ async function syncPush(){
     await sbReq('app_state?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'pay',value:{ts,data:syncSnapshot()},updated_at:new Date().toISOString()})});
     syncMsg=A_('☁ تم الحفظ سحابيًا ','☁ Saved to cloud ')+d12(new Date());
     await pushSchedule();
-    await BZ.pushPortals();await BZ.pullSiteCfg();
+    await BZ.pushPortals();await pushStaffPortals();await BZ.pullSiteCfg();
   }catch(e){syncMsg=A_('تعذّر الحفظ السحابي (البيانات محفوظة في هذا المتصفح): ','Cloud save failed (data is kept in this browser): ')+String(e.message||e).slice(0,140)}
   syncPushing=false;sbRender();
 }
@@ -3214,7 +3318,7 @@ async function syncPull(){
       localStorage.setItem('ss_ts',String(keep?Date.now():r.ts));   // إن بقي عندنا ما ليس في السحابة يُرفع بعد إعادة التحميل
       location.reload();
     }else if(r.ts<lts()){ await syncPush(); }
-    else{syncMsg=A_('☁ البيانات متزامنة ','☁ In sync ')+d12(new Date());await pushSchedule();await BZ.pushPortals();await BZ.pullSiteCfg();sbRender()}
+    else{syncMsg=A_('☁ البيانات متزامنة ','☁ In sync ')+d12(new Date());await pushSchedule();await BZ.pushPortals();await pushStaffPortals();await BZ.pullSiteCfg();sbRender()}
   }catch(e){syncMsg=A_('تعذّرت المزامنة السحابية: ','Cloud sync failed: ')+String(e.message||e).slice(0,140);sbRender()}
 }
 window.addEventListener('focus',()=>syncPull());

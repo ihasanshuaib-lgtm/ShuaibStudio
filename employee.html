@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>صفحتي — شعيب استوديو</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* صفحة الموظف الخاصة (employee.html#t=<رمز>) — البيانات من Supabase عبر staff_portal_get. نفس متغيرات Soft UI لبقية الصفحات (يعمل معها theme.js) */
+:root{
+  --bg:#efebe6;--dark:#efebe6;--off:#e8e2db;--border:#ddd5cb;--text:#5a524b;--muted:#8a8178;--white:#4a423b;
+  --gold:#9a6f66;--sage:#93ad98;--sage-d:#789680;--sage-dd:#66826e;--danger:#b86a63;--success:#5f8a6c;
+  --sh-l:#ffffff;--sh-d:#d3cbc1;--lift:6px 6px 14px var(--sh-d),-6px -6px 14px var(--sh-l);--lift-sm:3px 3px 8px var(--sh-d),-3px -3px 8px var(--sh-l);
+  --float:10px 12px 24px #cfc6bb,-8px -8px 18px #fff;--sunk:inset 3px 3px 7px #d6cec4,inset -3px -3px 7px #fbf9f6;
+  --card-g:linear-gradient(145deg,#f4f0eb,#e7e1d9);--btn-sage:linear-gradient(145deg,#9fb8a4,#86a08b);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;color:var(--text);line-height:1.6;
+  background:radial-gradient(ellipse at 50% 0%,#f6f3ef 0%,#efebe6 55%,#e8e2db 100%) fixed;padding-bottom:max(28px,env(safe-area-inset-bottom))}
+.wrap{max-width:860px;margin:0 auto;padding:22px max(16px,env(safe-area-inset-right)) 10px max(16px,env(safe-area-inset-left))}
+.top{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.av{width:58px;height:58px;flex:none;border-radius:18px;display:grid;place-items:center;font-weight:800;font-size:1.25rem;color:#fff;background:var(--btn-sage);box-shadow:var(--lift-sm)}
+.top h1{margin:0;font-size:clamp(1.3rem,4.5vw,1.7rem);color:var(--white);line-height:1.3}
+.top p{margin:2px 0 0;color:var(--muted);font-size:.86rem}
+.chip{display:inline-block;padding:2px 10px;border-radius:99px;background:var(--off);box-shadow:var(--sunk);font-size:.75rem;font-weight:700;color:var(--text);margin-inline-start:6px}
+.card{background:var(--card-g);border:1px solid rgba(255,255,255,.7);border-radius:22px;box-shadow:var(--lift);padding:18px;margin-bottom:16px}
+.card h2{margin:0 0 12px;font-size:1.05rem;color:var(--white);display:flex;align-items:center;gap:8px}
+.card h2 small{margin-inline-start:auto;font-weight:600;color:var(--muted);font-size:.78rem}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.kpi{padding:12px 14px;border-radius:18px;background:var(--card-g);box-shadow:var(--lift-sm);border:1px solid rgba(255,255,255,.6)}
+.kpi b{display:block;font-size:1.35rem;color:var(--white);line-height:1.2;font-variant-numeric:tabular-nums}
+.kpi span{font-size:.76rem;color:var(--muted);font-weight:600}
+.next{position:relative;overflow:hidden}
+.next .cd{display:inline-block;padding:3px 12px;border-radius:99px;background:var(--btn-sage);color:#fff;font-weight:800;font-size:.8rem;margin-bottom:8px}
+.next h3{margin:0 0 4px;font-size:1.2rem;color:var(--white)}
+.when{font-weight:700;color:var(--text)}
+.meta{display:grid;gap:6px;margin:12px 0 4px;font-size:.9rem}
+.meta div{display:flex;gap:8px;align-items:flex-start}.meta i{font-style:normal;width:22px;flex:none;text-align:center}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;border:1px solid rgba(255,255,255,.4);border-radius:12px;padding:9px 14px;font:inherit;font-weight:700;font-size:.86rem;cursor:pointer;background:var(--btn-sage);color:#fff;box-shadow:var(--lift-sm)}
+.btn.ghost{background:var(--card-g);color:var(--text);border-color:var(--border)}
+.list{display:flex;flex-direction:column}
+.row{display:flex;gap:12px;align-items:flex-start;padding:12px 2px;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:0}
+.date{flex:none;width:54px;text-align:center;border-radius:14px;padding:6px 0;background:var(--off);box-shadow:var(--sunk)}
+.date b{display:block;font-size:1.25rem;color:var(--white);line-height:1.1}.date small{font-size:.68rem;color:var(--muted);font-weight:700}
+.row .tx{flex:1;min-width:0}.row .tx b{display:block;color:var(--white);font-size:.95rem}
+.row .tx small{display:block;color:var(--muted);font-size:.78rem;line-height:1.55}
+.row .am{flex:none;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;font-size:.92rem}
+.months{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none}.months::-webkit-scrollbar{display:none}
+.months button{flex:none;border:1px solid var(--border);background:transparent;border-radius:99px;padding:6px 12px;font:inherit;font-size:.8rem;font-weight:700;color:var(--muted);cursor:pointer}
+.months button.on{background:var(--btn-sage);color:#fff;border-color:transparent}
+.pay{display:grid;gap:8px}
+.pay div{display:flex;justify-content:space-between;gap:10px;padding:9px 12px;border-radius:12px;background:var(--off)}
+.pay div span{color:var(--muted);font-size:.86rem}.pay div b{font-variant-numeric:tabular-nums}
+.pay .net{background:var(--btn-sage);color:#fff}.pay .net span{color:rgba(255,255,255,.88)}.pay .net b{font-size:1.15rem}
+.neg{color:var(--danger)}
+details.past{border-top:1px solid var(--border)}details.past:first-of-type{border-top:0}
+details.past summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:8px;padding:10px 2px;font-weight:700;color:var(--white)}
+details.past summary::-webkit-details-marker{display:none}
+details.past summary small{color:var(--muted);font-weight:600}
+details.past summary::after{content:"▾";color:var(--muted);transition:transform .2s}details.past[open] summary::after{transform:rotate(180deg)}
+.task{display:flex;gap:10px;align-items:flex-start;padding:9px 2px;border-bottom:1px solid var(--border)}.task:last-child{border-bottom:0}
+.task i{font-style:normal}.task small{display:block;color:var(--muted);font-size:.76rem}
+.empty{text-align:center;color:var(--muted);padding:14px 6px;font-size:.9rem}
+.foot{text-align:center;color:var(--muted);font-size:.78rem;margin-top:8px}
+.foot a{color:var(--sage-dd);font-weight:700;text-decoration:none}
+.state{max-width:440px;margin:18vh auto 0;text-align:center;padding:0 20px}
+.state .card{padding:28px 22px}
+.sk{border-radius:22px;background:var(--card-g);box-shadow:var(--lift-sm);height:120px;margin-bottom:16px;position:relative;overflow:hidden}
+.sk::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(100%);animation:sh 1.2s linear infinite}
+@keyframes sh{to{transform:translateX(-100%)}}
+@media(max-width:520px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis .kpi:last-child{grid-column:1/-1}.card{padding:15px;border-radius:18px}}
+@media (orientation:landscape) and (max-height:540px){.wrap{max-width:980px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid2>.card{margin-bottom:0}}
+@media(min-width:900px){.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}.grid2>.card{margin-bottom:16px}}
+@media(prefers-reduced-motion:reduce){.sk::after{animation:none}}
+@media print{body{background:#fff}.acts,.months,.foot{display:none}.card,.kpi{box-shadow:none;border:1px solid #ddd}}
+</style>
+<script src="supabase-config.js"></script>
+<script src="theme.js"></script>
+<script src="motion.js" defer></script>
+</head>
+<body>
+<div class="wrap" id="app" aria-live="polite"><div class="sk"></div><div class="sk"></div><div class="sk" style="height:220px"></div></div>
+<script>
+(function(){
+'use strict';
+const G=id=>document.getElementById(id),app=G('app');
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const t12=v=>{const m=/^(\d{1,2}):(\d{2})/.exec(String(v||''));if(!m)return v||'';let h=+m[1];const ap=h>=12?'PM':'AM';h=h%12||12;return '‎'+h+':'+m[2]+' '+ap+'‎'};
+const LOC='ar-BH-u-nu-latn',dt=d=>new Date(d+'T00:00');
+const fD=(d,o)=>dt(d).toLocaleDateString(LOC,o||{weekday:'long',day:'numeric',month:'long'});
+const money=n=>(+n||0).toFixed(3)+' د.ب';
+const today=(()=>{const x=new Date();return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')})();
+const days=d=>Math.round((dt(d)-dt(today))/864e5);
+const when=d=>{const n=days(d);return n===0?'اليوم':n===1?'غدًا':n===2?'بعد يومين':n<=10?`بعد ${n} أيام`:`بعد ${n} يومًا`};
+const ymL=ym=>new Date(ym+'-01T00:00').toLocaleDateString(LOC,{month:'long',year:'numeric'});
+const token=(new URLSearchParams(location.hash.slice(1)).get('t')||'').trim();
+let D=null,M='';
+
+function state(ic,title,msg){app.innerHTML=`<div class="state"><div class="card"><div style="font-size:2.4rem">${ic}</div><h2 style="justify-content:center;margin:.4rem 0">${title}</h2><p style="color:var(--muted);margin:0">${msg}</p></div></div>`}
+async function load(quiet){
+  const c=window.SB;
+  if(!token){state('🔗','الرابط غير مكتمل','افتح الرابط الذي أرسله لك الاستوديو كما هو.');return}
+  if(!c||!c.key){state('⚙️','الخدمة غير مفعّلة','تواصل مع الاستوديو.');return}
+  try{
+    const r=await fetch(c.url+'/rest/v1/rpc/staff_portal_get',{method:'POST',headers:{apikey:c.key,Authorization:'Bearer '+c.key,'Content-Type':'application/json'},body:JSON.stringify({t:token})});
+    const j=await r.json();
+    if(!r.ok||!j||j.error){if(!quiet)state('🔒','هذا الرابط غير صالح','ربما أُوقف أو تغيّر. اطلب من الاستوديو رابطًا جديدًا.');return}
+    const s=JSON.stringify(j);if(D&&s===JSON.stringify(D))return;D=j;render();
+  }catch(e){if(!quiet&&!D)state('📶','تعذّر الاتصال','تأكد من الإنترنت ثم أعد فتح الصفحة.')}
+}
+function mapUrl(loc){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(loc)}
+function ics(s){
+  const p=x=>String(x).padStart(2,'0'),d=s.d.replace(/-/g,''),st=(s.t||'09:00').slice(0,5);
+  let [h,m]=st.split(':').map(Number),e=(s.te||'').slice(0,5);if(!e){const x=new Date(2000,0,1,h+3,m);e=p(x.getHours())+':'+p(x.getMinutes())}
+  const clean=v=>String(v||'').replace(/[\\;,]/g,' ').replace(/\n/g,' ');
+  const body=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Shuaib Studio//Staff//AR','BEGIN:VEVENT','UID:'+d+st.replace(':','')+'-'+Math.random().toString(36).slice(2)+'@shuaib-studio',
+    'DTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z','DTSTART:'+d+'T'+st.replace(':','')+'00','DTEND:'+d+'T'+e.replace(':','')+'00',
+    'SUMMARY:📸 '+clean(s.n||'تصوير'),'LOCATION:'+clean(s.loc),'DESCRIPTION:'+clean([s.pk,s.role].filter(Boolean).join(' — ')),
+    'BEGIN:VALARM','TRIGGER:-PT2H','ACTION:DISPLAY','DESCRIPTION:تذكير بالتصوير','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([body],{type:'text/calendar'}));a.download='shoot-'+s.d+'.ics';document.body.appendChild(a);a.click();a.remove();
+}
+function meta(s,full){
+  const L=[];
+  if(s.t)L.push(['🕒',t12(s.t)+(s.te?' – '+t12(s.te):'')]);
+  if(s.loc)L.push(['📍',full?`<a href="${mapUrl(s.loc)}" target="_blank" rel="noopener" style="color:inherit">${esc(s.loc)}</a>`:esc(s.loc)]);
+  if(s.pk)L.push(['📦',esc(s.pk)]);
+  if(s.role)L.push(['🎬','دورك: '+esc(s.role)]);
+  if(s.team&&s.team.length)L.push(['👥','معك: '+s.team.map(esc).join('، ')]);
+  if(s.eq&&s.eq.length)L.push(['🎒',s.eq.map(esc).join('، ')]);
+  return L;
+}
+const rowH=(s,i)=>`<div class="row"><div class="date"><b>${+s.d.slice(8)}</b><small>${esc(dt(s.d).toLocaleDateString(LOC,{month:'short'}))}</small></div>
+  <div class="tx"><b>${esc(s.n||'تصوير')}</b><small>${esc(fD(s.d,{weekday:'long'}))}${s.d>=today?' · '+when(s.d):''}</small>${meta(s,false).map(([ic,v])=>`<small>${ic} ${v}</small>`).join('')}</div>
+  ${s.a!=null?`<div class="am">${(+s.a).toFixed(3)}</div>`:''}</div>`;
+function render(){
+  const SH=D.show||{},up=D.up||[],past=D.past||[],pay=D.pay||[],next=up[0];
+  document.title=`صفحة ${D.first||D.name} — ${D.studio&&D.studio.name||'شعيب استوديو'}`;
+  if(!M||!pay.some(p=>p.ym===M))M=(pay[0]||{}).ym||'';
+  const cur=pay.find(p=>p.ym===today.slice(0,7));
+  const monthCnt=[...up,...past].filter(s=>s.d.slice(0,7)===today.slice(0,7)).length;
+  const ini=String(D.name||'').split(/\s+/).map(x=>x[0]||'').join('').slice(0,2);
+  let h=`<div class="top"><div class="av" aria-hidden="true">${esc(ini)}</div><div><h1>أهلًا ${esc(D.first||D.name)} 👋</h1><p>${esc(D.studio&&D.studio.name||'شعيب استوديو')}${D.role?`<span class="chip">${esc(D.role)}</span>`:''}</p></div></div>`;
+  h+=`<div class="kpis"><div class="kpi"><b>${up.length}</b><span>تصوير قادم</span></div><div class="kpi"><b>${monthCnt}</b><span>تصويرات هذا الشهر</span></div>${SH.pay&&cur?`<div class="kpi"><b>${cur.net.toFixed(3)}</b><span>صافي هذا الشهر (د.ب)</span></div>`:`<div class="kpi"><b>${past.length}</b><span>تصويرات سابقة</span></div>`}</div>`;
+  if(SH.up){
+    h+=next?`<section class="card next"><span class="cd">⏳ ${when(next.d)}</span><h3>${esc(next.n||'تصوير')}</h3><div class="when">${esc(fD(next.d))}</div>
+      <div class="meta">${meta(next,true).map(([ic,v])=>`<div><i>${ic}</i><span>${v}</span></div>`).join('')}${next.a!=null?`<div><i>🧾</i><span>مبلغك: <b>${money(next.a)}</b></span></div>`:''}</div>
+      <div class="acts"><button class="btn" type="button" data-ics="0">📅 أضف إلى التقويم</button>${next.loc?`<a class="btn ghost" href="${mapUrl(next.loc)}" target="_blank" rel="noopener">🗺 الخريطة</a>`:''}</div></section>`
+      :`<section class="card"><h2>📅 التصويرات القادمة</h2><div class="empty">لا توجد تصويرات قادمة حاليًا 🌿</div></section>`;
+  }
+  h+='<div class="grid2">';
+  if(SH.up&&up.length>1)h+=`<section class="card"><h2>📅 التصويرات القادمة <small>${up.length-1}</small></h2><div class="list">${up.slice(1).map((s,i)=>rowH(s,i+1)+`<div class="acts" style="margin:-4px 0 8px"><button class="btn ghost" type="button" data-ics="${i+1}" style="padding:5px 10px;font-size:.76rem">📅 للتقويم</button></div>`).join('')}</div></section>`;
+  if(SH.pay&&pay.length){
+    const P=pay.find(p=>p.ym===M)||pay[0],ms=[...up,...past].filter(s=>s.d.slice(0,7)===P.ym).sort((a,b)=>a.d.localeCompare(b.d));
+    h+=`<section class="card"><h2>💰 الراتب</h2><div class="months" role="tablist">${pay.map(p=>`<button type="button" role="tab" aria-selected="${p.ym===P.ym}" class="${p.ym===P.ym?'on':''}" data-ym="${p.ym}">${esc(ymL(p.ym))}</button>`).join('')}</div>
+     <div class="pay"><div><span>عدد التصويرات</span><b>${P.cnt}</b></div><div><span>الإجمالي</span><b>${money(P.gross)}</b></div>
+     ${P.fee?`<div><span>خصم الصندوق (${+D.feePct||0}%)</span><b class="neg">− ${money(P.fee)}</b></div>`:''}${P.adv?`<div><span>السلف</span><b class="neg">− ${money(P.adv)}</b></div>`:''}
+     <div class="net"><span>الصافي</span><b>${money(P.net)}</b></div></div>
+     ${ms.length&&ms.some(s=>s.a!=null)?`<div class="list" style="margin-top:10px">${ms.map(s=>rowH({...s,team:[],eq:[]})).join('')}</div>`:''}</section>`;
+  }
+  if((D.tasks||[]).length)h+=`<section class="card"><h2>📝 المهام <small>${D.tasks.length}</small></h2>${D.tasks.map(t=>`<div class="task"><i>${t.st==='doing'?'▶':'○'}</i><div><b style="font-weight:600">${esc(t.t)}</b>${t.due?`<small>📅 ${esc(fD(t.due,{day:'numeric',month:'short'}))}${t.due<today?' · <span class="neg">متأخرة</span>':''}</small>`:''}</div></div>`).join('')}</section>`;
+  if(SH.past){
+    const G2={};past.forEach(s=>(G2[s.d.slice(0,7)]=G2[s.d.slice(0,7)]||[]).push(s));
+    const ks=Object.keys(G2).sort().reverse();
+    h+=`<section class="card"><h2>🗂 التصويرات السابقة <small>${past.length}</small></h2>${ks.length?ks.map((k,i)=>`<details class="past"${i===0?' open':''}><summary>${esc(ymL(k))}<small>${G2[k].length} تصوير${G2[k].some(s=>s.a!=null)?' · '+G2[k].reduce((q,s)=>q+(+s.a||0),0).toFixed(3)+' د.ب':''}</small></summary><div class="list">${G2[k].map(s=>rowH(s)).join('')}</div></details>`).join(''):'<div class="empty">لا توجد تصويرات سابقة بعد.</div>'}</section>`;
+  }
+  h+='</div>';
+  const st=D.studio||{};
+  h+=`<p class="foot">${D.updated?'آخر تحديث: '+esc(new Date(D.updated).toLocaleDateString(LOC,{day:'numeric',month:'short'}))+' '+t12(new Date(D.updated).toTimeString().slice(0,5))+' · ':''}${st.wa?`<a href="https://wa.me/${esc(st.wa)}" target="_blank" rel="noopener">💬 تواصل مع الاستوديو</a>`:''}</p>`;
+  app.innerHTML=h;
+  app.querySelectorAll('[data-ics]').forEach(b=>b.addEventListener('click',()=>ics(up[+b.dataset.ics])));
+  app.querySelectorAll('[data-ym]').forEach(b=>b.addEventListener('click',()=>{M=b.dataset.ym;render()}));
+}
+load();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)load(true)});
+setInterval(()=>{if(!document.hidden)load(true)},60000);
+})();
+</script>
+</body>
+</html>
