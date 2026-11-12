@@ -67,7 +67,9 @@
   var io = null, seen = (typeof WeakSet === 'function') ? new WeakSet() : null;
   function reveal(el){ el.classList.add('mx-in'); if(io) io.unobserve(el); setTimeout(function(){ el.style.willChange = ''; }, 900); }
   function watch(el, cls, delay){
-    if(!el || (seen && seen.has(el))) return; if(seen) seen.add(el);
+    if(!el || (seen && seen.has(el))) return;
+    if(el.closest && el.closest('.cf,.cf-c')) return;   // معرض بوابة العميل (Flow): بلا أي حركة إضافية
+    if(seen) seen.add(el);
     el.classList.add(cls); if(delay) el.style.setProperty('--mx-d', delay + 'ms'); el.style.willChange = 'transform,opacity';
     if(!io) return reveal(el);
     io.observe(el);
@@ -81,9 +83,9 @@
     if(on('stagger')) PUB_LIST.forEach(function(p){ $$(p[0], root).concat(root.matches && root.matches(p[0]) ? [root] : []).forEach(function(box){
       $$(p[1], box).forEach(function(it, i){ if(it.parentElement && it.parentElement.closest(p[0]) === box){ it.classList.add('mx-st'); watch(it, 'mx-h', Math.min(i, 10) * 80); } }); }); });
     if(on('scaleIn')) $$('.badge,.section-title .num,.category .icon,.pkg-badge,.popular-badge,.package .badge', root).forEach(function(el, i){ watch(el, 'mx-s', (i % 6) * 60); });
-    if(on('imgMask')) $$('#grid img,.hero img,.pv img,.cf-c img', root).forEach(function(im, i){ watch(im, 'mx-m', (i % 6) * 70); });
+    if(on('imgMask')) $$('#grid img,.hero img', root).forEach(function(im, i){ watch(im, 'mx-m', (i % 6) * 70); });   // ليس معرض بوابة العميل (.cf) — يبقى بسيطًا
     if(on('highlight')) $$('.section-title h2', root).forEach(function(h){ watch(h, 'mx-hl'); });
-    if(on('skeleton') || on('reveal')) $$('#grid img,.pv img,.hero img', root).forEach(function(im){
+    if(on('skeleton') || on('reveal')) $$('#grid img,.hero img', root).forEach(function(im){
       if(im.dataset.mxB) return; im.dataset.mxB = 1;
       var box = on('skeleton') ? im.parentElement : null;
       if(im.complete && im.naturalWidth) return;   // محمّلة مسبقًا: لا داعي
