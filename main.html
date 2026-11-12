@@ -979,7 +979,7 @@ html[data-theme="dark"] .td-mb::after{background:#2a2521}
 .st-top h2{margin:0;font-size:1.7rem;color:var(--white)}
 .st-top p{margin:.25rem 0 0;color:var(--muted);font-size:.88rem}
 .st-wrap{display:grid;grid-template-columns:260px minmax(0,1fr);gap:1.4rem;align-items:start}
-.st-nav{position:sticky;top:calc(var(--nav-h,72px) + 14px);max-height:calc(100vh - var(--nav-h,72px) - 28px);max-height:calc(100dvh - var(--nav-h,72px) - 28px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;background:var(--card-g);border:1px solid rgba(255,255,255,.6);border-radius:20px;box-shadow:var(--lift-sm);padding:.8rem .6rem}
+.st-nav{position:static;align-self:start;background:var(--card-g);border:1px solid rgba(255,255,255,.6);border-radius:20px;box-shadow:var(--lift-sm);padding:.8rem .6rem}
 html[data-theme="dark"] .st-nav{border-color:rgba(255,255,255,.05)}
 .st-find{display:flex;align-items:center;gap:.4rem;margin:0 .2rem .6rem;padding:.45rem .7rem;border-radius:12px;background:var(--off);box-shadow:var(--sunk)}
 .st-find input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:.85rem;color:var(--text);outline:none}
@@ -994,14 +994,19 @@ html[data-theme="dark"] .st-nav{border-color:rgba(255,255,255,.05)}
 .st-it.on small{color:rgba(255,255,255,.85)}
 .st-main{min-width:0;min-height:calc(100vh - var(--nav-h,72px) - 140px)}
 .st-main>section.card{margin:0;padding:clamp(1rem,2.4vw,1.6rem)}
-.st-sh{position:sticky;top:calc(var(--nav-h,72px) + 2px);z-index:4;background:var(--card-g);margin:-.4rem -.4rem 1.1rem;padding:.4rem .4rem 1rem;border-radius:14px 14px 0 0}
+
 .st-main>section.card.st-off{display:none}
 .st-main>section.card>.card-title{display:none}
 .st-sh{display:flex;align-items:center;gap:.8rem;padding-bottom:1rem;margin-bottom:1.1rem;border-bottom:1px solid var(--border)}
 .st-sh .st-ic{width:46px;height:46px;flex:none;display:grid;place-items:center;border-radius:14px;background:var(--off);box-shadow:var(--sunk);font-size:1.35rem}
 .st-sh h3{margin:0;font-size:1.2rem;color:var(--white)}
 .st-sh p{margin:.15rem 0 0;font-size:.82rem;color:var(--muted)}
-@media(max-width:860px),(orientation:landscape) and (max-height:540px){.st-wrap{grid-template-columns:minmax(0,1fr)}.st-main{min-height:0}.st-sh{position:static;margin:0 0 1rem}.th-demo,.mo-stage{position:static}.st-nav{position:sticky;top:calc(var(--nav-h,72px) + 6px);z-index:6;max-height:none;overflow-y:hidden;overflow-x:auto;display:flex;gap:.35rem;overflow-x:auto;padding:.5rem;border-radius:16px;scrollbar-width:none}.st-nav::-webkit-scrollbar{display:none}.st-find,.st-grp,.st-it small{display:none}.st-it{width:auto;flex:none;white-space:nowrap;padding:.45rem .7rem}.st-it i{width:24px;height:24px;font-size:.85rem}}
+/* القائمة دائمًا عمود جانبي (يمين بالعربية، يسار بالإنجليزية — يتبع dir) */
+.st-wrap{grid-template-areas:"nav main"}.st-nav{grid-area:nav}.st-main{grid-area:main}
+@media(max-width:1000px),(orientation:landscape) and (max-height:540px){.st-wrap{grid-template-columns:210px minmax(0,1fr);gap:1rem}.st-main{min-height:0}.st-it{padding:.5rem}.st-it i{width:26px;height:26px;font-size:.9rem}.st-it small{display:none}.st-find{display:none}.st-grp{margin:.5rem .5rem .2rem}}
+@media(max-width:600px) and (orientation:portrait){.st-wrap{grid-template-columns:70px minmax(0,1fr);gap:.6rem}.st-nav{padding:.45rem .3rem;border-radius:16px}.st-grp{display:none}
+  .st-it{flex-direction:column;gap:.2rem;padding:.45rem .15rem;text-align:center;border-radius:12px}.st-it i{width:30px;height:30px;font-size:1rem;margin:0 auto}.st-it b{font-size:.6rem;font-weight:700;line-height:1.25}
+  .st-sh{gap:.6rem}.st-sh .st-ic{width:38px;height:38px;font-size:1.1rem}.st-sh h3{font-size:1.02rem}.st-main>section.card{padding:.9rem}.st-top h2{font-size:1.35rem}}
 /* الثيم */
 .th-sec{margin-top:1.3rem}
 .th-sec>h4{margin:0 0 .6rem;font-size:.95rem;color:var(--white);display:flex;align-items:center;gap:.4rem}
@@ -1030,7 +1035,7 @@ html[data-theme="dark"] .st-nav{border-color:rgba(255,255,255,.05)}
 .th-row select{max-width:280px}
 .th-range{display:flex;align-items:center;gap:.7rem}.th-range input{flex:1;max-width:260px;accent-color:var(--sage-d)}
 .th-range output{font-weight:800;color:var(--text);min-width:3.2em;direction:ltr}
-.th-demo{position:sticky;top:calc(var(--nav-h,72px) + 80px);border-radius:20px;padding:1rem;background:var(--dark);box-shadow:var(--sunk);border:1px solid var(--border)}
+.th-demo{position:static;border-radius:20px;padding:1rem;background:var(--dark);box-shadow:var(--sunk);border:1px solid var(--border)}
 .th-demo .card{margin:0;padding:1rem}
 .th-demo h5{margin:0 0 .35rem;font-size:1rem;color:var(--white)}
 .th-demo p{margin:0 0 .7rem;font-size:.82rem;color:var(--text)}
@@ -1057,7 +1062,7 @@ html[data-theme="dark"] .st-nav{border-color:rgba(255,255,255,.05)}
 .mo-opts button{display:flex;flex-direction:column;gap:.15rem;align-items:flex-start;text-align:start;border:1px solid var(--border);background:transparent;border-radius:14px;padding:.6rem .7rem;font:inherit;cursor:pointer;color:var(--text)}
 .mo-opts button b{font-size:.85rem}.mo-opts button small{font-size:.7rem;color:var(--muted);line-height:1.35}
 .mo-opts button.on{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold);background:var(--off)}
-.mo-stage{position:sticky;top:calc(var(--nav-h,72px) + 80px);border-radius:20px;padding:1rem;background:var(--dark);box-shadow:var(--sunk);border:1px solid var(--border);display:grid;gap:.8rem}
+.mo-stage{position:static;border-radius:20px;padding:1rem;background:var(--dark);box-shadow:var(--sunk);border:1px solid var(--border);display:grid;gap:.8rem}
 .mo-stage .card{margin:0;padding:1rem}
 .mo-stage .row{display:flex;gap:.5rem;flex-wrap:wrap}
 @media(max-width:1100px){.th-layout{grid-template-columns:minmax(0,1fr)}.th-demo{position:static}}
@@ -4089,7 +4094,7 @@ function renderSettings(){
   const inp=(k,l,type,extra)=>`<label>${l}<input class="bz-in" data-bc="${k}" type="${type||'text'}" value="${escH(C[k])}"${extra||''}></label>`;
   const sel=(k,l,opts)=>`<label>${l}<select class="bz-in" data-bc="${k}">${opts.map(([v,t2])=>`<option value="${v}"${String(C[k])===String(v)?' selected':''}>${t2}</option>`).join('')}</select></label>`;
   R.innerHTML=`<div class="st-top"><div><h2>⚙️ ${A_('الإعدادات','Settings')}</h2><p>${A_('إدارة بيانات الاستوديو، صفحة الحجز، والمظهر — التعديلات تُحفظ سحابيًا.','Manage studio details, the booking page and the look — changes sync to the cloud.')}</p></div></div>
-  <div class="st-wrap"><nav class="st-nav" aria-label="${A_('أقسام الإعدادات','Settings sections')}"></nav><div class="st-main">
+  <div class="st-wrap"><aside class="st-nav" role="navigation" aria-label="${A_('أقسام الإعدادات','Settings sections')}"></aside><div class="st-main">
   ${card('🏢 '+A_('بيانات الشركة (تظهر على الفواتير وعروض الأسعار)','Company details (shown on invoices & quotations)'),`<div class="bz-form">${inp('company',A_('اسم الشركة','Company name'))}${inp('cr',A_('رقم السجل التجاري (CR)','CR number'))}${inp('vatNo',A_('رقم التسجيل الضريبي','VAT registration no.'))}${inp('addr',A_('العنوان','Address'))}${inp('phone',A_('الهاتف','Phone'),'tel')}${inp('email',A_('البريد الإلكتروني','Email'),'email')}${inp('wa',A_('واتساب الاستوديو (لبوابة العميل)','Studio WhatsApp (client portal)'),'tel')}${inp('insta',A_('حساب إنستغرام','Instagram handle'))}</div><label style="display:flex;flex-direction:column;gap:.3rem;font-size:.74rem;color:var(--muted);font-weight:600">${A_('التنبيه في آخر صفحة العميل','Notice at the end of the client page')}<input class="bz-in" data-bc="portalNote" value="${escH(C.portalNote||'')}"></label>`)}
   ${card('🧾 '+A_('الضريبة والترقيم','Tax & numbering'),`<label class="ck" style="display:flex;gap:.5rem;align-items:center;margin-bottom:.8rem;font-weight:600"><input type="checkbox" data-bc="vatOn"${C.vatOn?' checked':''}> ${A_('تفعيل ضريبة القيمة المضافة على الفواتير وعروض الأسعار','Charge VAT on invoices & quotations')}</label><div class="bz-form">${inp('vat',A_('نسبة الضريبة %','VAT rate %'),'number',' min="0" step="0.1"')}<label>${A_('العملة','Currency')}<input class="bz-in" value="BHD" disabled></label>${inp('invPrefix',A_('بادئة رقم الفاتورة','Invoice prefix'))}${inp('quotePrefix',A_('بادئة رقم عرض السعر','Quotation prefix'))}${inp('dueDays',A_('مهلة السداد (أيام)','Payment terms (days)'),'number',' min="0"')}${inp('validDays',A_('صلاحية عرض السعر (أيام)','Quotation validity (days)'),'number',' min="0"')}</div><p class="pr-hint">${A_('في البحرين التسجيل في الضريبة إلزامي عند تجاوز الإيرادات السنوية 37,500 د.ب. فعّلها فقط إذا كنت مسجّلًا، وأدخل رقم التسجيل ليظهر «TAX INVOICE».','In Bahrain VAT registration is mandatory above BHD 37,500 annual revenue. Enable it only if you are registered, and enter the registration number so invoices show “TAX INVOICE”.')}</p>`)}
   ${catalogCard()}
