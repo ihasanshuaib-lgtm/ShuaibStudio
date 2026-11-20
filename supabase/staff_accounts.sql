@@ -122,3 +122,14 @@ revoke all on function public.staff_acc_list(), public.staff_acc_save(text,text,
 grant execute on function public.staff_acc_list(), public.staff_acc_save(text,text,text,text,boolean),
   public.staff_acc_delete(text) to authenticated;
 grant execute on function public.staff_login(text,text), public.staff_sched(text), public.staff_logout(text) to anon, authenticated;
+
+-- ── لشاشة الدخول: أسماء الحسابات المفعّلة فقط ليختار الموظف اسمه (بدون أي بيانات أخرى) ──
+create or replace function public.staff_login_names()
+returns json
+language sql stable security definer set search_path = public as $$
+  select coalesce(json_agg(json_build_object('u', username, 'n', coalesce(nullif(display_name, ''), username))
+           order by coalesce(nullif(display_name, ''), username)), '[]'::json)
+  from staff_accounts where active
+$$;
+revoke all on function public.staff_login_names() from public;
+grant execute on function public.staff_login_names() to anon, authenticated;

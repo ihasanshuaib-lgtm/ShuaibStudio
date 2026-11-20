@@ -85,6 +85,11 @@ html.locked .wrap{display:none}
 .gate-card input{width:100%;margin-bottom:10px;padding:.75rem .9rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);outline:none}
 .gate-card input:focus{border-color:var(--accent)}
 .gate-card .btn{width:100%;padding:.8rem}
+#gate-names:not([hidden]){display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px}
+#gate-names p{flex-basis:100%;margin:0 0 2px}
+.gate-card #gate-names .btn{width:auto;flex:1 1 calc(50% - 8px);min-width:110px;padding:.7rem .6rem;font-size:.95rem}
+.gate-card #gate-names .btn.on{background:var(--btn-sage,var(--accent));color:#fff;border-color:transparent;box-shadow:0 0 0 3px rgba(147,173,152,.45)}
+#gate-type{background:none;border:0;color:var(--dim);font-size:.78rem;text-decoration:underline;cursor:pointer;margin-top:10px}
 #gate-err{min-height:1.2rem;margin-top:8px;font-size:.82rem;color:var(--danger)}
 
 /* ===== Soft UI overrides (نفس بقية الصفحات) ===== */
@@ -146,10 +151,12 @@ th,td{border-bottom:1px solid var(--line)}
   <form class="gate-card" id="gate-form">
     <h1>شعيب استوديو</h1>
     <p>جدول التصوير للموظفين — سجّل الدخول</p>
+    <div id="gate-names" role="group" aria-label="اختر اسمك" hidden></div>
     <input id="gate-user" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" dir="ltr" placeholder="اسم المستخدم" required>
     <input id="gate-pass" type="password" autocomplete="current-password" dir="ltr" placeholder="كلمة السر" required>
     <button class="btn pri" type="submit" id="gate-btn">دخول</button>
     <div id="gate-err" role="alert"></div>
+    <button type="button" id="gate-type" hidden>كتابة اسم المستخدم بدلًا من ذلك</button>
   </form>
 </div>
 
@@ -261,7 +268,7 @@ async function load(){
     let v;
     if(auth.tok){
       const j=await rpc('staff_sched',{p_tok:auth.tok});
-      if(!j){saveAuth(null);sessions=[];loaded=false;G('gate-err').textContent='انتهت الجلسة أو تغيّرت كلمة السر — سجّل الدخول من جديد.';return}
+      if(!j){saveAuth(null);sessions=[];loaded=false;G('gate-err').textContent='انتهت الجلسة أو تغيّرت كلمة السر — سجّل الدخول من جديد.';loadNames();return}
       v=j.value;if(j.name&&j.name!==auth.name){auth.name=j.name;saveAuth(auth)}
     }else{
       const rows=await req('staff_schedule?key=eq.sched&select=value');
@@ -378,12 +385,13 @@ G('modal').addEventListener('click',e=>{if(e.target.id==='modal')G('modal').clas
 document.addEventListener('keydown',e=>{if(e.key==='Escape')G('modal').classList.remove('show')});
 G('print').addEventListener('click',()=>window.print());
 G('refresh').addEventListener('click',load);
-G('logout').addEventListener('click',()=>{if(auth&&auth.tok)rpc('staff_logout',{p_tok:auth.tok}).catch(()=>{});saveAuth(null);sessions=[];loaded=false});
+G('logout').addEventListener('click',()=>{if(auth&&auth.tok)rpc('staff_logout',{p_tok:auth.tok}).catch(()=>{});saveAuth(null);sessions=[];loaded=false;loadNames()});
 G('gate-form').addEventListener('submit',async e=>{
   e.preventDefault();
   const btn=G('gate-btn'),err=G('gate-err');btn.disabled=true;err.textContent='';
   if(!cfg().key){err.textContent='لم يُضبط مفتاح Supabase (supabase-config.js).';btn.disabled=false;return}
   const u=G('gate-user').value.trim(),pw=digits(G('gate-pass').value);
+  if(!u){err.textContent='اختر اسمك أولًا.';btn.disabled=false;return}
   try{
     let a=null,old=u.includes('@');
     if(!old)try{
@@ -393,15 +401,31 @@ G('gate-form').addEventListener('submit',async e=>{
     }catch(x){if(!x.missing)throw x;old=true}   // الدالة غير موجودة بعد → الحساب القديم
     if(!a&&old)a=await token({email:toEmail(u),password:pw},'password').catch(()=>null);
     if(!a)throw new Error('bad');
-    saveAuth(a);G('gate-pass').value='';err.textContent='';load();
+    saveAuth(a);try{localStorage.setItem('ss_staff_last',u.toLowerCase())}catch(x){}G('gate-pass').value='';err.textContent='';load();
   }catch(x){err.textContent='اسم المستخدم أو كلمة السر غير صحيحة.'}
   btn.disabled=false;
 });
+// شاشة الدخول: أزرار بأسماء الفريق (rpc/staff_login_names) — إن لم تتوفر يبقى حقل الكتابة
+let namesOn=false;
+function pickName(u){G('gate-user').value=u;G('gate-names').querySelectorAll('button[data-u]').forEach(b=>{const on=b.dataset.u===u;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)})}
+function typeMode(on){namesOn=!on;G('gate-names').hidden=on;G('gate-user').hidden=!on;G('gate-user').required=on;G('gate-type').hidden=on;if(on){G('gate-user').value='';G('gate-user').focus()}}
+async function loadNames(){
+  if(!cfg().key||auth)return;
+  try{
+    const L=await rpc('staff_login_names',{});if(!Array.isArray(L)||!L.length)return;
+    let last='';try{last=localStorage.getItem('ss_staff_last')||''}catch(e){}
+    G('gate-names').innerHTML='<p>اختر اسمك</p>'+L.map(a=>`<button class="btn" type="button" data-u="${esc(a.u)}" aria-pressed="false">${esc(a.n||a.u)}</button>`).join('');
+    typeMode(false);G('gate-user').value='';
+    if(L.some(a=>a.u===last))pickName(last);
+  }catch(e){}
+}
+G('gate-names').addEventListener('click',e=>{const b=e.target.closest('button[data-u]');if(b){pickName(b.dataset.u);G('gate-err').textContent='';G('gate-pass').focus()}});
+G('gate-type').addEventListener('click',()=>typeMode(true));
 // تحديث تلقائي: كل 15 ثانية والصفحة ظاهرة، وفورًا عند العودة للتبويب
 window.addEventListener('focus',load);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&auth)load()});
 setInterval(()=>{if(auth&&!document.hidden)load()},15000);
-lock();render();if(auth)load();
+lock();render();if(auth)load();else loadNames();
 })();
 </script>
 </body>
