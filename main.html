@@ -3111,7 +3111,12 @@ function totals(){
   return T;
 }
 function scheduleSnapshot(){
-  return S.sessions.filter(s=>s.d).map(s=>({d:s.d,t:s.t||'',n:s.n||'',loc:s.loc||'',pk:pkgName(s),ph:phNames(s),eq:eqList(s).map(e=>e.n)}));
+  // لصفحة الموظفين staff.html — بدون أي أسعار أو مبالغ: الأدوار بأسمائها فقط، والخدمات الإضافية بأسمائها فقط
+  const roleN=id=>(S.roles.find(r=>r.id==id)||{}).n||'';
+  return S.sessions.filter(s=>s.d).map(s=>{
+    const cr={};s.lines.filter(l=>l.p).forEach(l=>{const n=pName(l.p),r=roleN(l.r);(cr[n]||(cr[n]=[]));if(r&&!cr[n].includes(r))cr[n].push(r)});
+    return{id:s.id,d:s.d,t:s.t||'',te:s.te||'',n:s.n||'',loc:s.loc||'',pk:pkgName(s),ph:phNames(s),eq:eqList(s).map(e=>e.n),
+      cr:Object.entries(cr).map(([p,r])=>({p,r})),xs:(s.x||[]).filter(x=>x.k==='svc'&&x.n).map(x=>x.n)}});
 }
 function openStaffReport(id){
   goPay();
