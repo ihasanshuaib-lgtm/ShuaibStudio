@@ -4162,6 +4162,79 @@ async function pullSiteCfg(force){
     if(ch){try{localStorage.setItem('ss_biz',JSON.stringify(B))}catch(e){}rsSafe()}
   }catch(e){}
 }
+// ── حسابات فريق العمل لصفحة الموظفين (staff.html): جدول staff_accounts عبر دوال rpc (supabase/staff_accounts.sql) ──
+// كلمات السر مشفّرة في الخادم (bcrypt) — لا تُقرأ، فقط تُغيَّر. لا تُحفظ في ss_biz ولا في المتصفح.
+let ACC={list:null,err:'',busy:false,t:0};
+const accNorm=v=>String(v||'').trim().toLowerCase();
+const accDig=v=>String(v||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+const accOkUser=u=>u.length>=2&&u.length<=32&&!/[\s@]/.test(u);
+async function accRpc(fn,b){const r=await sbReq('rpc/'+fn,{method:'POST',body:JSON.stringify(b||{})});const t=await r.text();return t?JSON.parse(t):null}
+function accErr(m){m=String(m||'');
+  if(/PGRST202|Could not find the function|staff_acc/.test(m))return A_('دوال الحسابات غير موجودة — شغّل ملف supabase/staff_accounts.sql في Supabase مرة واحدة.','Account functions missing — run supabase/staff_accounts.sql in Supabase once.');
+  if(/username taken/.test(m))return A_('اسم المستخدم مستخدم مسبقًا','Username already taken');
+  if(/bad username/.test(m))return A_('اسم المستخدم من 2 إلى 32 حرفًا بدون مسافات','Username: 2–32 characters, no spaces');
+  if(/short password/.test(m))return A_('كلمة السر 4 أحرف أو أرقام على الأقل','Password must be at least 4 characters');
+  if(/not allowed/.test(m))return A_('هذا لحساب صاحب الاستوديو فقط','Owner account only');
+  return m.slice(0,160)}
+function accDraw(){const a=document.activeElement;if(document.getElementById('page-settings')?.classList.contains('active')&&!(a&&a.closest&&a.closest('#settings-root')&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)))renderSettings()}
+async function accLoad(force){
+  if(typeof sbAuth==='undefined'||!sbAuth||!sbCfg().key||ACC.busy)return;
+  if(!force&&ACC.list&&Date.now()-ACC.t<30000)return;
+  ACC.busy=true;
+  try{ACC.list=(await accRpc('staff_acc_list'))||[];ACC.err='';ACC.t=Date.now()}catch(e){ACC.err=accErr(e.message)}
+  ACC.busy=false;accDraw();
+}
+const accLink=()=>location.href.replace(/[^/]*([?#].*)?$/,'')+'staff.html';
+function accountsCard(){
+  const signed=typeof sbAuth!=='undefined'&&sbAuth;
+  if(signed&&!ACC.list&&!ACC.busy&&!ACC.err)setTimeout(accLoad,0);
+  const L=ACC.list||[],lb='display:flex;flex-direction:column;gap:.3rem;font-size:.74rem;color:var(--muted);font-weight:600';
+  const team=[...new Set(staffList.map(t=>t.name).filter(Boolean))];
+  const row=a=>`<form class="acc-row" data-acc-ed="${escH(a.username)}" autocomplete="off">
+    <label style="${lb};flex:1;min-width:110px">${A_('اسم المستخدم','Username')}<input class="bz-in" name="u" value="${escH(a.username)}" dir="ltr" maxlength="32" autocapitalize="none" spellcheck="false" required></label>
+    <label style="${lb};flex:1.3;min-width:130px">${A_('الاسم الظاهر','Display name')}<input class="bz-in" name="n" value="${escH(a.display_name||'')}" maxlength="60" list="acc-team"></label>
+    <label style="${lb};flex:1;min-width:120px">${A_('كلمة سر جديدة','New password')}<input class="bz-in" name="p" type="text" dir="ltr" autocomplete="new-password" placeholder="${A_('اتركها فارغة','Leave blank')}"></label>
+    <label style="${lb};align-items:center">${A_('مفعّل','Active')}<input type="checkbox" name="a"${a.active!==false?' checked':''} style="width:20px;height:20px"></label>
+    <div style="display:flex;gap:.35rem;align-items:flex-end"><button class="btn-gold" type="submit">💾 ${A_('حفظ','Save')}</button><button class="btn-sm danger" type="button" data-acc-del="${escH(a.username)}" aria-label="${A_('حذف','Delete')}">✕</button></div>
+    <small style="flex-basis:100%;color:var(--muted);font-size:.72rem">${a.last_login?A_('آخر دخول: ','Last sign-in: ')+escH(new Date(a.last_login).toLocaleDateString(lang==='ar'?'ar-BH':'en-GB'))+' · '+escH(d12(new Date(a.last_login))):A_('لم يدخل بعد','Never signed in')}${a.active===false?' · '+A_('⛔ موقوف','⛔ Disabled'):''}</small></form>`;
+  return card('🔐 '+A_('الحسابات والصلاحيات','Accounts & roles'),`<style>.acc-row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:flex-end;padding:.7rem;border:1px solid var(--line,rgba(0,0,0,.08));border-radius:12px;margin-bottom:.5rem}</style>
+  <p class="pr-hint">${A_('لوحة التحكم هذه لحساب صاحب الاستوديو فقط. أضف هنا حسابات فريق العمل (اسم مستخدم + كلمة سر) لصفحة الموظفين، حيث يرون الجدول والمهام بدون الأسعار. يمكنك تغيير الاسم أو كلمة السر أو إيقاف الحساب في أي وقت؛ تغيير كلمة السر أو الإيقاف يُخرج الموظف من كل أجهزته فورًا.','This dashboard is for the owner only. Add team accounts (username + password) for the staff page, where they see the schedule and tasks without prices. Change the name or password or disable an account any time; a new password or disabling signs the person out everywhere.')}</p>
+  <p class="pr-hint" style="margin-top:-.2rem">🔗 ${A_('رابط صفحة الموظفين:','Staff page link:')} <a href="${escH(accLink())}" target="_blank" rel="noopener" dir="ltr">${escH(accLink())}</a></p>
+  <datalist id="acc-team">${team.map(n=>`<option value="${escH(n)}">`).join('')}</datalist>
+  ${!signed?`<p class="pr-hint">${A_('⚠ سجّل الدخول للحساب السحابي لإدارة الحسابات.','⚠ Sign in to the cloud account to manage accounts.')}</p>`:`
+  <h4 style="margin:.6rem 0 .4rem;font-size:.9rem">+ ${A_('حساب جديد','New account')}</h4>
+  <form data-acc-add autocomplete="off" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:.9rem">
+    <label style="${lb};flex:1;min-width:110px">${A_('اسم المستخدم','Username')}<input class="bz-in" name="u" maxlength="32" placeholder="ali" dir="ltr" autocapitalize="none" spellcheck="false" required></label>
+    <label style="${lb};flex:1.3;min-width:130px">${A_('الاسم الظاهر','Display name')}<input class="bz-in" name="n" maxlength="60" list="acc-team" placeholder="${A_('علي','Ali')}"></label>
+    <label style="${lb};flex:1;min-width:120px">${A_('كلمة السر','Password')}<input class="bz-in" name="p" type="text" dir="ltr" autocomplete="new-password" minlength="4" required></label>
+    <button class="btn-gold" type="submit"${ACC.busy?' disabled':''}>+ ${A_('إضافة','Add')}</button></form>
+  <h4 style="margin:.2rem 0 .4rem;font-size:.9rem">${A_('الحسابات','Accounts')} (${L.length}) <button class="btn-sm" type="button" data-acc-reload style="margin-inline-start:.4rem">↻</button></h4>
+  ${ACC.list===null&&!ACC.err?`<p class="pr-hint">${A_('… جارٍ التحميل','… loading')}</p>`:L.length?L.map(row).join(''):`<p class="pr-hint">${A_('لا توجد حسابات بعد','No accounts yet')}</p>`}
+  ${ACC.err?`<p class="pr-hint" style="color:var(--danger,#c0392b)">⚠ ${escH(ACC.err)}</p>`:''}`}`);
+}
+async function accRun(fn,b,ok){
+  if(ACC.busy)return false;ACC.busy=true;let r=true;
+  try{await accRpc(fn,b);ACC.err='';if(ok)note(ok)}catch(e){ACC.err=accErr(e.message);note('⚠ '+ACC.err);r=false}
+  ACC.busy=false;ACC.t=0;await accLoad(true);renderSettings();return r;
+}
+document.addEventListener('submit',async e=>{const f=e.target;if(!f.matches)return;
+  if(f.matches('[data-acc-add]')){e.preventDefault();
+    const u=accNorm(f.u.value),n=f.n.value.trim(),pw=accDig(f.p.value);
+    if(!accOkUser(u)){note(accErr('bad username'));f.u.focus();return}
+    if(pw.length<4){note(accErr('short password'));f.p.focus();return}
+    if(await accRun('staff_acc_save',{p_old:null,p_user:u,p_name:n,p_pass:pw,p_active:true},A_('✓ أُضيف الحساب — نُسخت بيانات الدخول','✓ Account added — sign-in details copied'))){
+      try{navigator.clipboard.writeText(A_(`صفحة الموظفين: ${accLink()}\nاسم المستخدم: ${u}\nكلمة السر: ${pw}`,`Staff page: ${accLink()}\nUsername: ${u}\nPassword: ${pw}`))}catch(x){}}
+    return}
+  if(f.matches('[data-acc-ed]')){e.preventDefault();
+    const old=f.dataset.accEd,u=accNorm(f.u.value),pw=accDig(f.p.value);
+    if(!accOkUser(u)){note(accErr('bad username'));f.u.focus();return}
+    if(pw&&pw.length<4){note(accErr('short password'));f.p.focus();return}
+    accRun('staff_acc_save',{p_old:old,p_user:u,p_name:f.n.value.trim(),p_pass:pw||null,p_active:f.a.checked},pw?A_('✓ حُفظ — كلمة السر تغيّرت','✓ Saved — password changed'):A_('✓ حُفظ','✓ Saved'))}
+});
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-acc-del],[data-acc-reload],[data-st-go="accounts"]');if(!t)return;
+  if(t.dataset.accReload!==undefined){ACC.err='';accLoad(true);return}
+  if(t.dataset.stGo==='accounts'){accLoad();return}
+  const u=t.dataset.accDel;if(confirm(A_(`حذف حساب «${u}»؟ لن يستطيع الدخول بعد الآن.`,`Delete account “${u}”? They will no longer be able to sign in.`)))accRun('staff_acc_delete',{p_user:u},A_('✓ حُذف الحساب','✓ Account deleted'))});
 // ── تخطيط صفحة الإعدادات: قائمة جانبية بالمجموعات، وقسم واحد ظاهر ──
 const ST_META=[
  ['🏢','company','العمل','Business','بيانات الشركة','Company','الاسم، السجل، التواصل','Name, CR, contact'],
@@ -4209,7 +4282,7 @@ function renderSettings(){
   ${themeCard()}
   ${motionCard()}
   ${card('🛍 '+A_('الخدمات والأسعار','Services & prices'),`<p class="pr-hint">${A_('هذه القائمة تظهر في الفواتير وعروض الأسعار. الباقات وأسعار أدوار الفريق في «جلسات التصوير ← الفريق والإعدادات».','This list is used by invoices and quotations. Packages and team role rates live in Session Costs → Team & settings.')}</p>${SERVICES.map((s,i)=>`<div class="svc-ed"><input value="${escH(s.icon||'')}" data-sv="${i}" data-k="icon" aria-label="icon" style="text-align:center"><input value="${escH(s.ar)}" data-sv="${i}" data-k="ar" placeholder="الاسم بالعربي"><input class="hide-sm" value="${escH(s.en)}" data-sv="${i}" data-k="en" placeholder="English name"><input class="hide-sm" value="${escH(s.type)}" data-sv="${i}" data-k="type" placeholder="Type"><input type="number" step="0.001" min="0" value="${+s.unit||0}" data-sv="${i}" data-k="unit" aria-label="${A_('السعر','Price')}"><button type="button" class="remove-row" data-bz="st-svcdel" data-i="${i}" aria-label="${A_('حذف','Delete')}">✕</button></div>`).join('')}<button type="button" class="btn-sm" data-bz="st-svcadd">+ ${A_('خدمة جديدة','New service')}</button>`)}
-  ${card('🔐 '+A_('الحسابات والصلاحيات','Accounts & roles'),`<p class="pr-hint">${A_('لوحة التحكم هذه لحساب صاحب الاستوديو فقط، والمصورون يدخلون صفحة الموظفين (staff.html) ويرون جدولهم ومهامهم بدون الأسعار. كل البيانات تُحفظ سحابيًا تلقائيًا، ويمكنك تنزيل نسخة احتياطية من لوحة التحكم.','This dashboard is for the studio owner account only; photographers sign in to the staff page (staff.html) and see their schedule and tasks without prices. All data syncs to the cloud automatically, and you can download a backup from the dashboard.')}</p>`)}</div></div>`;
+  ${accountsCard()}</div></div>`;
   stLayout(R);
 }
 
