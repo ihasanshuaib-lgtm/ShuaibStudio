@@ -160,7 +160,7 @@ function render(){
     const P=pay.find(p=>p.ym===M)||pay[0],ms=[...up,...past].filter(s=>s.d.slice(0,7)===P.ym).sort((a,b)=>a.d.localeCompare(b.d));
     h+=`<section class="card"><h2>💰 الراتب</h2><div class="months" role="tablist">${pay.map(p=>`<button type="button" role="tab" aria-selected="${p.ym===P.ym}" class="${p.ym===P.ym?'on':''}" data-ym="${p.ym}">${esc(ymL(p.ym))}</button>`).join('')}</div>
      <div class="pay"><div><span>عدد التصويرات</span><b>${P.cnt}</b></div><div><span>الإجمالي</span><b>${money(P.gross)}</b></div>
-     ${P.fee?`<div><span>خصم الصندوق (${+D.feePct||0}%)</span><b class="neg">− ${money(P.fee)}</b></div>`:''}${P.adv?`<div><span>السلف</span><b class="neg">− ${money(P.adv)}</b></div>`:''}
+     ${P.fee?`<div><span>خصم الصندوق (${+D.feePct||0}%)</span><b class="neg">− ${money(P.fee)}</b></div>`:''}${P.adv?`<div><span>الإدارة</span><b class="neg">− ${money(P.adv)}</b></div>`:''}
      <div class="net"><span>الصافي</span><b>${money(P.net)}</b></div></div>
      ${ms.length&&ms.some(s=>s.a!=null)?`<div class="list" style="margin-top:10px">${ms.map(s=>rowH({...s,team:[],eq:[]})).join('')}</div>`:''}</section>`;
   }

@@ -2430,7 +2430,7 @@ function delTask(id,i){
 
 // ═════════════ صفحة الموظف (employee.html#t=<رمز>) — مثل بوابة العميل ═════════════
 // m.portal = {on, token, show:{...}}؛ البيانات تُرفع إلى جدول staff_portal (supabase/staff_portal.sql) ويقرؤها الموظف بالرمز فقط.
-const SP_SHOW=[['up','📅','التصويرات القادمة','Upcoming shoots'],['pay','💰','الراتب الشهري (الإجمالي، الخصم، السلف، الصافي)','Monthly pay'],['amounts','🧾','مبلغ كل تصوير','Amount per shoot'],['past','🗂','التصويرات السابقة','Past shoots'],['team','👥','زملاء التصوير','Teammates'],['equip','🎒','معدات كل تصوير','Equipment per shoot'],['tasks','📝','المهام المسندة إليه','Assigned tasks'],['learn','📚','صفحة التعليم (قراءة الدروس وإضافة دروس)','Learning page (read & add lessons)']];
+const SP_SHOW=[['up','📅','التصويرات القادمة','Upcoming shoots'],['pay','💰','الراتب الشهري (الإجمالي، الخصم، الإدارة، الصافي)','Monthly pay'],['amounts','🧾','مبلغ كل تصوير','Amount per shoot'],['past','🗂','التصويرات السابقة','Past shoots'],['team','👥','زملاء التصوير','Teammates'],['equip','🎒','معدات كل تصوير','Equipment per shoot'],['tasks','📝','المهام المسندة إليه','Assigned tasks'],['learn','📚','صفحة التعليم (قراءة الدروس وإضافة دروس)','Learning page (read & add lessons)']];
 const spShow=m=>{const s=(m.portal&&m.portal.show)||{},o={};SP_SHOW.forEach(x=>o[x[0]]=s[x[0]]!==false);return o};
 const staffPortalUrl=t=>{const u=new URL('employee.html',location.href);u.search='';u.hash='t='+t;return u.href};
 const spToken=()=>{const a=new Uint8Array(18);crypto.getRandomValues(a);return btoa(String.fromCharCode(...a)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
@@ -2534,14 +2534,14 @@ ar:{
  sessPrice:'سعر الجلسة',pkg:'الباقة',noPkg:'بدون باقة',date:'التاريخ',time:'الوقت',sessName:'اسم الجلسة',pickPh:'اختر المصور',
  phTotal:'المصورون',eqTotal:'المعدات',sessNet:'صافي المشروع',noLines:'لا يوجد مصورون — اضغط تعديل لإضافتهم.',
  equipH:'المعدات المستخدمة',noEquip:'لا توجد معدات — أضفها من «الفريق والإعدادات» أسفل الصفحة.',noEqUsed:'لم تُحدَّد معدات',
- dues:'مستحقات المصورين',thSess:'الجلسات',thGross:'الإجمالي',thFee:'الخصم',thAdv:'سلفة',thNet:'الصافي',total:'المجموع',
- formula:'الصافي = الإجمالي − الخصم − السلفة.',
+ dues:'مستحقات المصورين',thSess:'الجلسات',thGross:'الإجمالي',thFee:'الخصم',thAdv:'الإدارة',thNet:'الصافي',total:'المجموع',
+ formula:'الصافي = الإجمالي − الخصم − الإدارة.',
  unassigned:'مبالغ لم تُسند لمصور: {n} (تُخصم من الربح لكنها لا تظهر هنا).',sessCount:'عدد الجلسات',
  months:'الأشهر',month:'الشهر',thProj:'المشاريع',thPhs:'المصورون',noYear:'لا توجد بيانات لهذه السنة.',phYear:'المصورون خلال السنة',sessTot:'مجموع الجلسات',netAfter:'الصافي بعد الخصومات',
  noTeam:'لا يوجد مصورون بعد — أضفهم من صفحة الموظفين ثم اختر لهم دورًا هنا.',
  repTitle:'تقرير الجلسات والمستحقات',repDues:'كشف مستحقات:',yearWord:'سنة',cntSess:'عدد الجلسات:',from:'من:',to:'إلى:',printDate:'تاريخ الطباعة:',
  repFor:'التقرير لـ',repPeriod:'الفترة',allPh:'كل المصورين (تقرير كامل)',print:'🖨 طباعة',sessionsH:'الجلسات',phSummary:'ملخص المصورين',noSessions:'لا توجد جلسات.',thSession:'الجلسة',
- feeLine:'خصم {p}%:',advWord:'سلفة:',netDue:'الصافي المستحق:',
+ feeLine:'خصم {p}%:',advWord:'الإدارة:',netDue:'الصافي المستحق:',
  setSum:'الفريق والمعدات والاشتراكات والإعدادات',team:'الفريق',active:'نشط',teamHint:'غير النشط لا يظهر في الاختيار وتبقى حساباته القديمة. لإضافة أو تعديل المصورين استخدم صفحة الموظفين.',manageStaff:'إدارة الموظفين',
  roles:'الأدوار وأسعارها',addRole:'+ دور جديد',newRole:'دور جديد',roleHint:'السعر هو ما يُدفع للمصور عند إضافة الدور، ويمكن تعديله داخل كل جلسة. «المصور الافتراضي» يُختار تلقائيًا.',noDefault:'بدون افتراضي',
  pkgs:'الباقات وأسعار الأدوار',addPkg:'+ باقة جديدة',newPkg:'باقة جديدة',pkgHint:'اترك الخانة فارغة لاستخدام السعر الافتراضي للدور.',pkgPrice:'سعر الجلسة (اختياري)',
@@ -2567,14 +2567,14 @@ en:{
  sessPrice:'Session price',pkg:'Package',noPkg:'No package',date:'Date',time:'Time',sessName:'Session name',pickPh:'Select photographer',
  phTotal:'Photographers',eqTotal:'Equipment',sessNet:'Project net',noLines:'No photographers — press Edit to add them.',
  equipH:'Equipment used',noEquip:'No equipment yet — add it in "Team, equipment & settings" below.',noEqUsed:'No equipment selected',
- dues:'Photographer dues',thSess:'Sessions',thGross:'Gross',thFee:'Deduction',thAdv:'Advance',thNet:'Net',total:'Total',
- formula:'Net = Gross − Deduction − Advance.',
+ dues:'Photographer dues',thSess:'Sessions',thGross:'Gross',thFee:'Deduction',thAdv:'Management',thNet:'Net',total:'Total',
+ formula:'Net = Gross − Deduction − Management.',
  unassigned:'Amounts not assigned to a photographer: {n} (deducted from profit but not shown here).',sessCount:'Sessions',
  months:'Months',month:'Month',thProj:'Projects',thPhs:'Photographers',noYear:'No data for this year.',phYear:'Photographers this year',sessTot:'Sessions total',netAfter:'Net after deductions',
  noTeam:'No photographers yet — add them from the Staff page, then assign roles here.',
  repTitle:'Sessions & dues report',repDues:'Dues statement:',yearWord:'Year',cntSess:'Sessions:',from:'From:',to:'To:',printDate:'Print date:',
  repFor:'Report for',repPeriod:'Period',allPh:'All photographers (full report)',print:'🖨 Print',sessionsH:'Sessions',phSummary:'Photographers summary',noSessions:'No sessions.',thSession:'Session',
- feeLine:'Deduction {p}%:',advWord:'Advance:',netDue:'Net due:',
+ feeLine:'Deduction {p}%:',advWord:'Management:',netDue:'Net due:',
  setSum:'Team, equipment, subscriptions & settings',team:'Team',active:'Active',teamHint:'Inactive members are hidden from selection; their past records stay. To add or edit photographers use the Staff page.',manageStaff:'Manage staff',
  roles:'Roles & rates',addRole:'+ New role',newRole:'New role',roleHint:'The price is what the photographer is paid when the role is added; it can be edited inside each session. The "default photographer" is selected automatically.',noDefault:'No default',
  pkgs:'Packages & role rates',addPkg:'+ New package',newPkg:'New package',pkgHint:"Leave a box empty to use the role's default price.",pkgPrice:'Session price (optional)',
