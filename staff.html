@@ -109,7 +109,13 @@ select:focus,input:focus{outline:2px solid rgba(90,167,232,.55)}
 .grp-h .tag{font-size:.72rem;color:#fff;background:var(--today);border-radius:999px;padding:.05rem .55rem}
 .item{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;width:100%;text-align:start;border:1px solid #fff;background:var(--card-g);box-shadow:var(--lift-sm);border-radius:16px;padding:12px;margin-bottom:10px;transition:transform .15s}
 .item:hover{transform:translateY(-1px)}
-.item.mine{box-shadow:var(--lift-sm),inset -4px 0 0 var(--mine)}
+.item.mine{background:linear-gradient(145deg,#e3ede5,#d3e2d7);border-color:#fff;box-shadow:var(--lift-sm),inset -5px 0 0 var(--mine)}
+.item.mine .tm{color:#4f6e57}
+.item.mine .it-b b::after{content:'📸 عليك التصوير';display:inline-block;margin-inline-start:8px;font-size:.68rem;font-weight:700;color:#fff;background:var(--mine);border-radius:999px;padding:.08rem .55rem;vertical-align:middle}
+.item.other{opacity:.9}
+.up-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.76rem;color:var(--dim);margin:0 2px 12px}
+.up-legend span{display:inline-flex;align-items:center;gap:6px}
+.up-legend i{width:14px;height:14px;border-radius:4px;display:inline-block}
 .item.past{opacity:.82}
 .tm{text-align:center;font-weight:700;font-size:.9rem;line-height:1.25}
 .tm small{display:block;font-weight:500;font-size:.72rem;color:var(--dim)}
@@ -161,11 +167,13 @@ th{font-size:.74rem;color:var(--dim);font-weight:600}
 #modal{display:none;position:fixed;inset:0;z-index:90;align-items:center;justify-content:center;padding:16px;background:rgba(74,66,59,.45);backdrop-filter:blur(8px)}
 #modal.show{display:flex}
 .m-card{width:min(560px,100%);max-height:92vh;overflow:auto;background:var(--bg);border:1px solid #fff;box-shadow:var(--lift);border-radius:22px}
-.m-head{padding:20px 20px 16px;background:var(--btn-sage);color:#fff;border-radius:22px 22px 0 0;position:relative}
+.m-head{padding:20px 20px 16px;background:var(--btn-sage);color:#fff;border-radius:22px 22px 0 0;position:sticky;top:0;z-index:2;touch-action:none}
+.m-grip{display:none;width:44px;height:5px;border-radius:9px;background:rgba(255,255,255,.7);margin:-8px auto 10px}
 .m-head small{font-size:.8rem;opacity:.95}
 .m-head h3{font-size:1.25rem;line-height:1.4;margin:4px 0 6px}
 .m-head .when{display:inline-block;font-size:.78rem;font-weight:700;background:rgba(255,255,255,.22);border-radius:999px;padding:.15rem .7rem}
-.m-x{position:absolute;top:12px;inset-inline-end:12px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.22);color:#fff;font-size:1.1rem}
+.m-x{position:absolute;top:12px;inset-inline-end:12px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.28);color:#fff;font-size:1.25rem;font-weight:700}
+.m-close2{width:100%;margin-top:10px}
 .m-body{padding:16px 20px 20px}
 .m-sec{margin-bottom:16px}
 .m-sec h4{font-size:.78rem;color:var(--dim);font-weight:600;margin-bottom:6px}
@@ -179,12 +187,10 @@ th{font-size:.74rem;color:var(--dim);font-weight:600}
 .crew .a{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:.85rem;font-weight:700;color:#fff;background:var(--dim);flex-shrink:0}
 .crew .me .a{background:var(--mine)}
 .crew small{color:var(--dim);font-size:.78rem;display:block}
-.chk{display:flex;align-items:center;gap:10px;padding:7px 4px;font-size:.93rem;cursor:pointer}
-.chk input{width:19px;height:19px;accent-color:#789680}
-.chk.done span{text-decoration:line-through;color:var(--dim)}
 .m-acts{display:flex;gap:8px;flex-wrap:wrap}
 .m-acts .btn{flex:1 1 140px}
-@media(max-width:560px){#modal{align-items:flex-end;padding:0}.m-card{border-radius:22px 22px 0 0;max-height:94vh}.m-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){#modal{align-items:flex-end;padding:0}.m-card{border-radius:22px 22px 0 0;max-height:86vh;overscroll-behavior:contain;transition:transform .2s}.m-grip{display:block}.m-body{padding-bottom:calc(20px + env(safe-area-inset-bottom))}}
+html.m-open,html.m-open body{overflow:hidden}
 
 /* ── شاشة الدخول ── */
 #gate{display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at 50% 0%,#f6f3ef 0%,#efebe6 55%,#e8e2db 100%)}
@@ -388,13 +394,14 @@ function curPh(){if(st.ph==null){if(!loaded)return '';st.ph=me()}return st.ph||'
 const has=(s,n)=>(s.ph||[]).includes(n);
 const list=()=>{const p=curPh();return sessions.filter(s=>!p||has(s,p)).sort(byT)};
 const rolesOf=(s,n)=>((s.cr||[]).find(c=>c.p===n)||{}).r||[];
-const isMine=s=>{const m=me();return !!m&&has(s,m)};
+const tgt=()=>curPh()||me();   // المصوّر الذي تُميَّز جلساته بلون مختلف
+const isMine=s=>{const t=tgt();return !!t&&has(s,t)};
 
 // ── بطاقة جلسة في القوائم ──
 function item(s,opt){
   const i=sessions.indexOf(s),p=curPh()||me(),r=p?rolesOf(s,p):[];
   const others=(s.ph||[]).filter(n=>n!==p);
-  return `<button type="button" class="item${isMine(s)?' mine':''}${opt&&opt.past?' past':''}" data-s="${i}">
+  return `<button type="button" class="item${isMine(s)?' mine':(tgt()?' other':'')}${opt&&opt.past?' past':''}" data-s="${i}">
     <span class="tm">${s.t?esc(t12(s.t)).replace(' ','<small>')+'</small>':'<small>الوقت</small>—'}</span>
     <span class="it-b"><b>${esc(s.n||'بدون اسم')}</b>
       <span class="meta">${s.loc?`<span>📍 ${esc(s.loc)}</span>`:''}${s.te?`<span>⏱ حتى ${esc(t12(s.te))}</span>`:''}${s.pk?`<span>📦 ${esc(s.pk)}</span>`:''}</span>
@@ -447,7 +454,10 @@ function render(){
   G('tabs').querySelectorAll('[data-tab]').forEach(b=>{const on=b.dataset.tab===st.tab;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);
     const n=b.dataset.tab==='up'?up.length:0;b.innerHTML=b.innerHTML.replace(/<span class="n">.*<\/span>/,'')+(n?`<span class="n">${n}</span>`:'')});
   document.querySelectorAll('[data-view]').forEach(v=>v.hidden=v.id!=='v-'+st.tab);
-  G('up-list').innerHTML=grouped(up)||`<p class="hint">${loaded?'لا توجد تصويرات قادمة '+esc(who)+'.':'جارٍ التحميل…'}</p>`;
+  // «القادمة»: تواريخ كل الفريق دائمًا، وجلسات المصوّر (أنت أو المختار) بلون مختلف
+  const upAll=sessions.filter(s=>s.d>=TD).sort(byT),T=tgt();
+  G('up-list').innerHTML=upAll.length?(T?`<div class="up-legend"><span><i style="background:linear-gradient(145deg,#e3ede5,#d3e2d7);box-shadow:inset -3px 0 0 var(--mine)"></i> ${T===m?'تصويرك':'تصوير '+esc(T)}</span><span><i style="background:var(--card-g);box-shadow:var(--lift-sm)"></i> بقية الفريق</span></div>`:'')+grouped(upAll)
+    :`<p class="hint">${loaded?'لا توجد تصويرات قادمة.':'جارٍ التحميل…'}</p>`;
   G('past-list').innerHTML=past.length?grouped(past.slice(0,80),{past:1,desc:1})+(past.length>80?`<p class="hint">يُعرض آخر 80 تصويرًا — للباقي استخدم «التقرير».</p>`:''):`<p class="hint">${loaded?'لا توجد تصويرات سابقة.':'جارٍ التحميل…'}</p>`;
   calendar(L);taskList();report();
 }
@@ -512,15 +522,13 @@ function report(){
 }
 
 // ── تفاصيل الجلسة: المرجع الكامل للمصوّر ──
-let prep={};try{prep=JSON.parse(ls('ss_staff_prep')||'{}')}catch(e){}
 const sKey=s=>s.id||(s.d+'|'+(s.t||'')+'|'+(s.n||''));
 const maps=q=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q);
 function showDetails(s){
   const m=me(),n=dl(s.d),k=sKey(s);
   const crew=(s.cr&&s.cr.length?s.cr:(s.ph||[]).map(p=>({p,r:[]})));
   const box=(l,v)=>v?`<div class="m-box"><span>${l}</span><b>${v}</b></div>`:'';
-  const P=prep[k]||{};
-  G('m-card').innerHTML=`<div class="m-head"><small>${wdOf(s.d)} · ${fmt(s.d)}</small><h3>${esc(s.n||'بدون اسم')}</h3><span class="when">${esc(n>=0?countdown(s):when(n))}</span><button class="m-x" type="button" id="m-close" aria-label="إغلاق">✕</button></div>
+  G('m-card').innerHTML=`<div class="m-head" id="m-head"><div class="m-grip" aria-hidden="true"></div><small>${wdOf(s.d)} · ${fmt(s.d)}</small><h3>${esc(s.n||'بدون اسم')}</h3><span class="when">${esc(n>=0?countdown(s):when(n))}</span><button class="m-x" type="button" id="m-close" aria-label="إغلاق">✕</button></div>
   <div class="m-body">
     <div class="m-sec"><div class="m-grid">
       ${box('🕒 الوقت',s.t?esc(tRange(s)):'غير محدد')}
@@ -529,23 +537,32 @@ function showDetails(s){
     <div class="m-sec"><h4>📍 المكان</h4>${s.loc?`<div class="m-box" style="display:flex;align-items:center;justify-content:space-between;gap:10px"><b>${esc(s.loc)}</b><a class="btn sm" href="${maps(s.loc)}" target="_blank" rel="noopener">🗺 الخريطة</a></div>`:`<p class="hint" style="padding:0">لم يُحدَّد المكان بعد — اسأل الإدارة.</p>`}</div>
     <div class="m-sec"><h4>👥 فريق التصوير (${crew.length})</h4>${crew.length?`<div class="crew">${crew.map(c=>`<div class="${c.p===m?'me':''}"><span class="a">${esc(ini(c.p))}</span><span><b>${esc(c.p)}${c.p===m?' (أنت)':''}</b>${c.r&&c.r.length?`<small>${c.r.map(esc).join('، ')}</small>`:''}</span></div>`).join('')}</div>`:`<p class="hint" style="padding:0">لم يُحدَّد المصورون بعد.</p>`}</div>
     ${(s.xs||[]).length?`<div class="m-sec"><h4>➕ خدمات إضافية مطلوبة</h4><div class="chips">${s.xs.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</div></div>`:''}
-    <div class="m-sec"><h4>🎒 قائمة التجهيز ${(s.eq||[]).length?'— علّم ما جهّزته':''}</h4>
-      ${[...(s.eq||[]),'بطاريات مشحونة','كروت ذاكرة فارغة'].map((x,i)=>`<label class="chk${P[i]?' done':''}"><input type="checkbox" data-prep="${i}"${P[i]?' checked':''}><span>${esc(x)}</span></label>`).join('')}
-    </div>
+    ${(s.eq||[]).length?`<div class="m-sec"><h4>🎒 المعدات</h4><div class="chips">${s.eq.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</div></div>`:''}
     <div class="m-acts">
       <button class="btn pri" type="button" id="m-ics">📅 أضف إلى تقويم الجوال</button>
       <button class="btn" type="button" id="m-copy">📋 نسخ التفاصيل</button>
       <button class="btn" type="button" id="m-cal">🗓 عرض في التقويم</button>
     </div>
+    <button class="btn m-close2" type="button" id="m-close2">إغلاق</button>
   </div>`;
-  G('modal').classList.add('show');
-  G('m-close').onclick=closeM;
-  G('m-cal').onclick=()=>{closeM();st.tab='cal';ls('ss_staff_tab','cal');st.y=+s.d.slice(0,4);st.m=+s.d.slice(5,7);st.sel=s.d;render();G('v-cal').scrollIntoView({behavior:'smooth',block:'start'})};
+  openM();
+  G('m-close').onclick=closeM;G('m-close2').onclick=closeM;
+  G('m-cal').onclick=()=>{closeM();st.tab='cal';ls('ss_staff_tab','cal');st.y=+s.d.slice(0,4);st.m=+s.d.slice(5,7);st.sel=s.d;render();setTimeout(()=>G('v-cal').scrollIntoView({behavior:'smooth',block:'start'}),120)};
   G('m-ics').onclick=()=>ics(s);
   G('m-copy').onclick=async()=>{const t=textOf(s);try{await navigator.clipboard.writeText(t);G('m-copy').textContent='✓ نُسخت'}catch(e){prompt('انسخ التفاصيل:',t)}};
-  G('m-card').querySelectorAll('[data-prep]').forEach(c=>c.onchange=()=>{const P=prep[k]||(prep[k]={});if(c.checked)P[c.dataset.prep]=1;else delete P[c.dataset.prep];if(!Object.keys(P).length)delete prep[k];ls('ss_staff_prep',JSON.stringify(prep));c.closest('.chk').classList.toggle('done',c.checked)});
 }
-const closeM=()=>G('modal').classList.remove('show');
+// فتح/إغلاق النافذة: زر ✕ كبير ثابت أعلاها، زر «إغلاق» أسفلها، الضغط خارجها، Esc، زر الرجوع في الجوال، والسحب للأسفل
+let mOpen=false;
+function openM(){G('modal').classList.add('show');document.documentElement.classList.add('m-open');G('m-card').scrollTop=0;G('m-card').style.transform='';
+  if(!mOpen){mOpen=true;try{history.pushState({ssm:1},'')}catch(e){}}}
+function hideM(){G('modal').classList.remove('show');document.documentElement.classList.remove('m-open');G('m-card').style.transform='';mOpen=false}
+const closeM=()=>{if(!mOpen)return hideM();if(history.state&&history.state.ssm){history.back()}else hideM()};
+window.addEventListener('popstate',()=>{if(mOpen)hideM()});
+(function(){let y0=null,dy=0;const C=G('m-card');
+  C.addEventListener('touchstart',e=>{if(!e.target.closest('#m-head')&&C.scrollTop>0){y0=null;return}y0=e.touches[0].clientY;dy=0;C.style.transition='none'},{passive:true});
+  C.addEventListener('touchmove',e=>{if(y0==null)return;dy=e.touches[0].clientY-y0;if(dy>0){C.style.transform='translateY('+dy+'px)';if(e.cancelable)e.preventDefault()}},{passive:false});
+  C.addEventListener('touchend',()=>{if(y0==null)return;C.style.transition='';if(dy>90)closeM();else C.style.transform='';y0=null});
+})();
 function textOf(s){
   const crew=(s.cr&&s.cr.length?s.cr:(s.ph||[]).map(p=>({p,r:[]}))).map(c=>c.p+(c.r&&c.r.length?' ('+c.r.join('، ')+')':'')).join('، ');
   return ['📸 '+(s.n||'تصوير'),'📅 '+wdOf(s.d)+' '+fmt(s.d),s.t?'🕒 '+tRange(s).replace(/‎/g,''):'',s.loc?'📍 '+s.loc+'\n'+maps(s.loc):'',s.pk?'📦 '+s.pk:'',crew?'👥 '+crew:'',(s.eq||[]).length?'🎒 '+s.eq.join('، '):'',(s.xs||[]).length?'➕ '+s.xs.join('، '):''].filter(Boolean).join('\n');
