@@ -85,10 +85,7 @@ html.locked .wrap{display:none}
 .gate-card input{width:100%;margin-bottom:10px;padding:.75rem .9rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);outline:none}
 .gate-card input:focus{border-color:var(--accent)}
 .gate-card .btn{width:100%;padding:.8rem}
-#gate-names:not([hidden]){display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px}
-#gate-names p{flex-basis:100%;margin:0 0 2px}
-.gate-card #gate-names .btn{width:auto;flex:1 1 calc(50% - 8px);min-width:110px;padding:.7rem .6rem;font-size:.95rem}
-.gate-card #gate-names .btn.on{background:var(--btn-sage,var(--accent));color:#fff;border-color:transparent;box-shadow:0 0 0 3px rgba(147,173,152,.45)}
+#gate-names{width:100%;margin-bottom:10px;padding:.75rem .9rem;font-size:1rem;font-family:inherit;cursor:pointer}
 #gate-type{background:none;border:0;color:var(--dim);font-size:.78rem;text-decoration:underline;cursor:pointer;margin-top:10px}
 #gate-err{min-height:1.2rem;margin-top:8px;font-size:.82rem;color:var(--danger)}
 
@@ -151,7 +148,7 @@ th,td{border-bottom:1px solid var(--line)}
   <form class="gate-card" id="gate-form">
     <h1>شعيب استوديو</h1>
     <p>جدول التصوير للموظفين — سجّل الدخول</p>
-    <div id="gate-names" role="group" aria-label="اختر اسمك" hidden></div>
+    <select id="gate-names" aria-label="اختر اسمك" hidden></select>
     <input id="gate-user" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" dir="ltr" placeholder="اسم المستخدم" required>
     <input id="gate-pass" type="password" autocomplete="current-password" dir="ltr" placeholder="كلمة السر" required>
     <button class="btn pri" type="submit" id="gate-btn">دخول</button>
@@ -407,19 +404,19 @@ G('gate-form').addEventListener('submit',async e=>{
 });
 // شاشة الدخول: أزرار بأسماء الفريق (rpc/staff_login_names) — إن لم تتوفر يبقى حقل الكتابة
 let namesOn=false;
-function pickName(u){G('gate-user').value=u;G('gate-names').querySelectorAll('button[data-u]').forEach(b=>{const on=b.dataset.u===u;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)})}
+function pickName(u){G('gate-user').value=u;G('gate-names').value=u}
 function typeMode(on){namesOn=!on;G('gate-names').hidden=on;G('gate-user').hidden=!on;G('gate-user').required=on;G('gate-type').hidden=on;if(on){G('gate-user').value='';G('gate-user').focus()}}
 async function loadNames(){
   if(!cfg().key||auth)return;
   try{
     const L=await rpc('staff_login_names',{});if(!Array.isArray(L)||!L.length)return;
     let last='';try{last=localStorage.getItem('ss_staff_last')||''}catch(e){}
-    G('gate-names').innerHTML='<p>اختر اسمك</p>'+L.map(a=>`<button class="btn" type="button" data-u="${esc(a.u)}" aria-pressed="false">${esc(a.n||a.u)}</button>`).join('');
+    G('gate-names').innerHTML='<option value="" disabled selected>— اختر اسمك —</option>'+L.map(a=>`<option value="${esc(a.u)}">${esc(a.n||a.u)}</option>`).join('');
     typeMode(false);G('gate-user').value='';
     if(L.some(a=>a.u===last))pickName(last);
   }catch(e){}
 }
-G('gate-names').addEventListener('click',e=>{const b=e.target.closest('button[data-u]');if(b){pickName(b.dataset.u);G('gate-err').textContent='';G('gate-pass').focus()}});
+G('gate-names').addEventListener('change',e=>{pickName(e.target.value);G('gate-err').textContent='';G('gate-pass').focus()});
 G('gate-type').addEventListener('click',()=>typeMode(true));
 // تحديث تلقائي: كل 15 ثانية والصفحة ظاهرة، وفورًا عند العودة للتبويب
 window.addEventListener('focus',load);
