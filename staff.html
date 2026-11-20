@@ -454,10 +454,10 @@ function render(){
   G('tabs').querySelectorAll('[data-tab]').forEach(b=>{const on=b.dataset.tab===st.tab;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);
     const n=b.dataset.tab==='up'?up.length:0;b.innerHTML=b.innerHTML.replace(/<span class="n">.*<\/span>/,'')+(n?`<span class="n">${n}</span>`:'')});
   document.querySelectorAll('[data-view]').forEach(v=>v.hidden=v.id!=='v-'+st.tab);
-  // «القادمة»: تواريخ كل الفريق دائمًا، وجلسات المصوّر (أنت أو المختار) بلون مختلف
-  const upAll=sessions.filter(s=>s.d>=TD).sort(byT),T=tgt();
-  G('up-list').innerHTML=upAll.length?(T?`<div class="up-legend"><span><i style="background:linear-gradient(145deg,#e3ede5,#d3e2d7);box-shadow:inset -3px 0 0 var(--mine)"></i> ${T===m?'تصويرك':'تصوير '+esc(T)}</span><span><i style="background:var(--card-g);box-shadow:var(--lift-sm)"></i> بقية الفريق</span></div>`:'')+grouped(upAll)
-    :`<p class="hint">${loaded?'لا توجد تصويرات قادمة.':'جارٍ التحميل…'}</p>`;
+  // «القادمة»: في «تصويراتي» أو مصوّر محدد ← جلساته فقط؛ في «كل الفريق» ← كل التواريخ وجلساتك بلون مختلف
+  const upAll=p?up:sessions.filter(s=>s.d>=TD).sort(byT),T=tgt();
+  G('up-list').innerHTML=upAll.length?(!p&&T?`<div class="up-legend"><span><i style="background:linear-gradient(145deg,#e3ede5,#d3e2d7);box-shadow:inset -3px 0 0 var(--mine)"></i> ${T===m?'تصويرك':'تصوير '+esc(T)}</span><span><i style="background:var(--card-g);box-shadow:var(--lift-sm)"></i> بقية الفريق</span></div>`:'')+grouped(upAll)
+    :`<p class="hint">${loaded?'لا توجد تصويرات قادمة '+esc(who)+'.':'جارٍ التحميل…'}</p>`;
   G('past-list').innerHTML=past.length?grouped(past.slice(0,80),{past:1,desc:1})+(past.length>80?`<p class="hint">يُعرض آخر 80 تصويرًا — للباقي استخدم «التقرير».</p>`:''):`<p class="hint">${loaded?'لا توجد تصويرات سابقة.':'جارٍ التحميل…'}</p>`;
   calendar(L);taskList();report();
 }
