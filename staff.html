@@ -145,9 +145,8 @@ th,td{border-bottom:1px solid var(--line)}
 <div id="gate" role="dialog" aria-modal="true" aria-label="تسجيل الدخول">
   <form class="gate-card" id="gate-form">
     <h1>شعيب استوديو</h1>
-    <p>جدول التصوير للموظفين — سجّل الدخول</p>
-    <input id="gate-user" type="text" autocomplete="username" autocapitalize="none" placeholder="اسم المستخدم" required>
-    <input id="gate-pass" type="password" autocomplete="current-password" placeholder="كلمة المرور" required>
+    <p>جدول التصوير للموظفين — أدخل رمز الدخول</p>
+    <input id="gate-pass" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="current-password" placeholder="الرمز" required style="text-align:center;letter-spacing:.5em;font-size:1.3rem" autofocus>
     <button class="btn pri" type="submit" id="gate-btn">دخول</button>
     <div id="gate-err" role="alert"></div>
   </form>
@@ -218,6 +217,9 @@ const now=new Date(),TD=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.
 const AK='ss_staff_auth';
 // اسم المستخدم → بريد Supabase (يُقبل البريد الكامل أيضًا)
 const USERS={staff:'staff@shuaib-studio.com'};
+// الدخول برمز فقط: Supabase يشترط 6 أحرف على الأقل، فيُضاف للرمز بادئة ثابتة
+// (كلمة مرور مستخدم staff@shuaib-studio.com في Supabase = 'shuaib' + الرمز)
+const pinPass=p=>'shuaib'+String(p||'').trim().replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
 const toEmail=u=>{u=String(u||'').trim().toLowerCase();return u.includes('@')?u:(USERS[u]||u+'@shuaib-studio.com')};
 
 let auth=null;try{auth=JSON.parse(localStorage.getItem(AK)||'null')}catch(e){}
@@ -367,9 +369,9 @@ G('gate-form').addEventListener('submit',async e=>{
   const btn=G('gate-btn'),err=G('gate-err');btn.disabled=true;err.textContent='';
   if(!cfg().key){err.textContent='لم يُضبط مفتاح Supabase (supabase-config.js).';btn.disabled=false;return}
   try{
-    saveAuth(await token({email:toEmail(G('gate-user').value),password:G('gate-pass').value},'password'));
+    saveAuth(await token({email:USERS.staff,password:pinPass(G('gate-pass').value)},'password'));
     G('gate-pass').value='';load();
-  }catch(x){err.textContent='اسم المستخدم أو كلمة المرور غير صحيحة.'}
+  }catch(x){err.textContent='الرمز غير صحيح.'}
   btn.disabled=false;
 });
 // تحديث تلقائي: كل 15 ثانية والصفحة ظاهرة، وفورًا عند العودة للتبويب
