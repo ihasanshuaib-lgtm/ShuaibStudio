@@ -1812,13 +1812,19 @@ function showPage(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   pg.classList.add('active');
   document.querySelectorAll('.nav-links button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));
+  try{sessionStorage.setItem('ss_page',p)}catch(e){}   // بعد أي تحديث للصفحة نرجع لنفس القسم بدل لوحة التحكم
+  renderPageContent(p);
+  if(p==='archive'||p==='booking')window.scrollTo(0,0);
+}
+// إعادة رسم محتوى القسم فقط (بدون تبديل الصفحة أو إعادة حركة الدخول) — تُستخدم أيضًا عند وصول تحديثات من جهاز آخر
+function renderPageContent(p){
   if(p==='home'){ updateStats(); PR.renderSchedule(); }
   if(p==='invoices') renderInvoices();
   if(p==='clients'){ renderClients(); }
-  if(p==='archive'){ renderArchive(); const nb=document.querySelector('.nav-links button[data-page="clients"]'); if(nb)nb.classList.add('active'); window.scrollTo(0,0); }
+  if(p==='archive'){ renderArchive(); const nb=document.querySelector('.nav-links button[data-page="clients"]'); if(nb)nb.classList.add('active'); }
   if(p==='staff'){ renderStFlt(); renderStaff(); }
   if(p==='payroll') PR.render();
-  if(p==='booking'){ window.scrollTo(0,0); fitBooking(); }
+  if(p==='booking') fitBooking();
   if(p==='tasks') TK.render();
   BZ.renderPage(p);
 }
@@ -3286,7 +3292,7 @@ function staffPortal(id){
   return{up,past:past.reverse().slice(0,80),pay,feePct:+S.cfg.fee||0};
 }
 bind();
-return{data:()=>S,persist,sessPrice,eqFee,spay,pkgName,conflicts,render,renderSchedule,periodStats,fromInvoice,openStaffReport,closeReport,openSession,newOn,addBooking,scheduleSnapshot,totals,photographerSummary,showStaffReport,staffPortal};
+return{data:()=>S,reload:()=>{try{S=norm(JSON.parse(localStorage.getItem(KEY)))}catch(e){S=norm()}},persist,sessPrice,eqFee,spay,pkgName,conflicts,render,renderSchedule,periodStats,fromInvoice,openStaffReport,closeReport,openSession,newOn,addBooking,scheduleSnapshot,totals,photographerSummary,showStaffReport,staffPortal};
 })();
 
 // ── حجوزات الزبائن (Supabase): تسجيل دخول صاحب الاستوديو ثم تحويل الحجوزات الجديدة إلى جلسات في التكاليف ──
@@ -3441,16 +3447,47 @@ function syMergeAll(loc,rem,B){
 const syBase=()=>+localStorage.getItem('ss_base')||0;
 function sySetBase(ts,data){try{localStorage.setItem('ss_base',String(ts));localStorage.setItem('ss_base_idx',JSON.stringify(syIdxOf(data)))}catch(e){}}
 function syBaseIdx(){try{return JSON.parse(localStorage.getItem('ss_base_idx')||'{}')||{}}catch(e){return{}}}
+// مقارنة بالمعنى لا بالنص: نفس البيانات بترتيب مفاتيح مختلف = متساوية (كان اختلاف الترتيب يجعل جهازين يرفعان ويعيدان التحميل بالتناوب كل 30 ثانية)
+const syCanonV=v=>Array.isArray(v)?v.map(syCanonV):v&&typeof v==='object'?Object.keys(v).sort().reduce((o,k)=>(o[k]=syCanonV(v[k]),o),{}):v;
+function syCanon(k,x){if(x==null)return null;try{if(k==='ss_tasks')x=mergeTasksJSON(x,x);return JSON.stringify(syCanonV(JSON.parse(x)))}catch(e){return String(x)}}
+const sySame=(k,a,b)=>syCanon(k,a)===syCanon(k,b);
+// تطبيق البيانات القادمة من جهاز آخر في نفس الصفحة بدون إعادة تحميل (كانت الصفحة تتحدّث وترجع للوحة التحكم).
+// لا يُطبَّق أثناء الكتابة أو مع نافذة مفتوحة أو تعديلات إعدادات غير محفوظة — يُؤجَّل حتى تنتهي.
+let SY_PEND=false;
+function syBusyUI(){
+  const a=document.activeElement;
+  if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&!a.closest('nav'))return true;
+  if(document.body.classList.contains('tk-lock'))return true;
+  if([...document.querySelectorAll('.modal-close')].some(b=>b.offsetParent!==null))return true;
+  if(['ct-bar','th-bar'].some(id=>{const e=document.getElementById(id);return e&&!e.hidden&&e.offsetParent!==null}))return true;
+  return false;
+}
+function syRefresh(){
+  if(syBusyUI()){SY_PEND=true;return}
+  SY_PEND=false;
+  try{
+    invoices=JSON.parse(localStorage.getItem('ss_invoices')||'[]');staffList=JSON.parse(localStorage.getItem('ss_staff')||'[]');
+    workLog=JSON.parse(localStorage.getItem('ss_worklog')||'[]');clients=JSON.parse(localStorage.getItem('ss_clients')||'[]');
+    const sv=JSON.parse(localStorage.getItem('ss_services')||'null');if(Array.isArray(sv)&&sv.length)SERVICES=sv;
+    PR.reload();BZ.reload();
+  }catch(e){location.reload();return}
+  const y=window.scrollY,pg=document.querySelector('.page.active'),cur=pg?pg.id.replace(/^page-/,''):'home';
+  try{TK.reload();renderPageContent(cur);if(cur!=='home')updateStats();}catch(e){console.error(e)}
+  try{sbRender()}catch(e){}
+  requestAnimationFrame(()=>window.scrollTo(0,y));
+}
+setInterval(()=>{if(SY_PEND&&!syBusyUI())syRefresh()},2000);
 // تعارض: ادمج نسخة السحابة مع المحلية سجلًا سجلًا ثم ارفع الناتج (نسخة المحلية قبل الدمج تُحفظ في ss_backup_before_sync)
 async function syConflict(r){
   const loc=syncSnapshot();try{localStorage.setItem('ss_backup_before_sync',JSON.stringify(loc))}catch(e){}
   const m=syMergeAll(loc,r.data,syBase()?syBaseIdx():{}),ts=Math.max(Date.now(),(+r.ts||0)+1);
   await sbReq('app_state?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'pay',value:{ts,data:m},updated_at:new Date().toISOString()})});
-  const diff=SYNC_KEYS.some(k=>(m[k]==null?null:m[k])!==(loc[k]==null?null:loc[k]));
+  const diff=SYNC_KEYS.some(k=>!sySame(k,m[k],loc[k]));
   SYNC_KEYS.forEach(k=>m[k]==null?localStorage.removeItem(k):localStorage.setItem(k,m[k]));
   localStorage.setItem('ss_ts',String(ts));sySetBase(ts,m);
-  if(diff){location.reload();return true}
-  syncMsg=A_('☁ تم الدمج والحفظ سحابيًا ','☁ Merged & saved ')+d12(new Date());return false;
+  syncMsg=A_('☁ تم الدمج والحفظ سحابيًا ','☁ Merged & saved ')+d12(new Date());
+  if(diff)syRefresh();
+  return false;
 }
 var syncTimer=0,syncPushing=false,syncMsg="";
 const lts=()=>+localStorage.getItem('ss_ts')||0;
@@ -3468,7 +3505,7 @@ async function syncPush(){
   try{
     // قبل الرفع: إن تغيّرت السحابة من جهاز آخر منذ آخر مزامنة هنا ← دمج سجلًا سجلًا بدل الكتابة فوقها (كان هذا يمحو جلسات/عملاء أُضيفوا من جهاز آخر)
     const rr=await (await sbReq('app_state?key=eq.pay&select=value')).json(),rv=rr[0]&&rr[0].value;
-    if(rv&&rv.data&&+rv.ts!==syBase()){if(await syConflict(rv)){syncPushing=false;return}}
+    if(rv&&rv.data&&+rv.ts!==syBase()){await syConflict(rv)}
     else{
       const ts=lts()||Date.now(),snap=syncSnapshot();
       await sbReq('app_state?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'pay',value:{ts,data:snap},updated_at:new Date().toISOString()})});
@@ -3532,12 +3569,14 @@ async function syncPull(){
       let keep=false;
       SYNC_KEYS.forEach(k=>{
         if(!(k in r.data)){if(localStorage.getItem(k))keep=true;return}   // صفحة قديمة رفعت بدون هذا المفتاح: لا تمسحه
-        if(k==='ss_tasks'&&r.data[k]!=null){const loc=localStorage.getItem(k),m=mergeTasksJSON(loc,r.data[k]);localStorage.setItem(k,m);if(m!==r.data[k])keep=true;return}
+        if(k==='ss_tasks'&&r.data[k]!=null){const loc=localStorage.getItem(k),m=mergeTasksJSON(loc,r.data[k]);localStorage.setItem(k,m);if(!sySame(k,m,r.data[k]))keep=true;return}
         r.data[k]==null?localStorage.removeItem(k):localStorage.setItem(k,r.data[k]);
       });
       sySetBase(rts,r.data);
-      localStorage.setItem('ss_ts',String(keep?Date.now():rts));   // إن بقي عندنا ما ليس في السحابة يُرفع بعد إعادة التحميل
-      location.reload();
+      localStorage.setItem('ss_ts',String(keep?Date.now():rts));   // إن بقي عندنا ما ليس في السحابة يُرفع
+      syncMsg=A_('☁ وصلت تحديثات من جهاز آخر ','☁ Updates from another device ')+d12(new Date());
+      syRefresh();
+      if(keep){clearTimeout(syncTimer);syncTimer=setTimeout(syncPush,1500)}
     }else if(dirty){ await syncPush(); }
     else{if(!base)sySetBase(rts,syncSnapshot());syncMsg=A_('☁ البيانات متزامنة ','☁ In sync ')+d12(new Date());await pushSchedule();await BZ.pushPortals();await pushStaffPortals();await BZ.pullSiteCfg();sbRender()}
   }catch(e){syncMsg=A_('تعذّرت المزامنة السحابية: ','Cloud sync failed: ')+String(e.message||e).slice(0,140);sbRender()}
@@ -5022,7 +5061,7 @@ document.addEventListener('change',e=>{
   if(d.bc==='theme')applyTheme();
 });
 
-return{bdata:()=>B,eqSync,ensurePortal,pvCleanup,fromBooking,bookingBanner,openClient,markRet,clearRet,back,pushPortals,pushDiscounts,pushCatalog,pushTheme,pullSiteCfg,pullPortal,portalPanel,portalDrop,clientOpts,stageOpts,dvLine,cfg,vatOf,dueFrom,applyTheme,toggleTheme,applyLang,renderPage,renderHome,newQuote,editQuote,viewQuote,waQuote,toInvoice,advisor};
+return{bdata:()=>B,reload:()=>{B=load();if(!Array.isArray(B.cfg.discounts))B.cfg.discounts=[{code:'m10',pct:10,on:true},{code:'f15',pct:15,on:true}]},eqSync,ensurePortal,pvCleanup,fromBooking,bookingBanner,openClient,markRet,clearRet,back,pushPortals,pushDiscounts,pushCatalog,pushTheme,pullSiteCfg,pullPortal,portalPanel,portalDrop,clientOpts,stageOpts,dvLine,cfg,vatOf,dueFrom,applyTheme,toggleTheme,applyLang,renderPage,renderHome,newQuote,editQuote,viewQuote,waQuote,toInvoice,advisor};
 })();
 
 
@@ -5896,6 +5935,8 @@ return{render,renderHome,reload,lost:lostTasks,data:()=>D};
 document.getElementById('inv-date').value=new Date().toISOString().split('T')[0];
 BZ.applyTheme();
 applyLang();
+// الرجوع لآخر قسم كان مفتوحًا في هذا التبويب (بعد التحديث)
+try{const lp=sessionStorage.getItem('ss_page');if(lp&&lp!=='home'&&document.querySelector(`.nav-links button[data-page="${lp}"]`))showPage(lp)}catch(e){}
 sbRender();sbSync();syncPull();
 </script>
 <!-- ═════════════ 🔍 البحث الشامل / Global search ═════════════ -->
