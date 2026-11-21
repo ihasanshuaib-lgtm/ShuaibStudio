@@ -130,6 +130,38 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,12,10,0.96);backdrop-fi
 .inv-print-bar{padding:1rem 2.5rem;background:#f5f8fc;border-top:1px solid #dce8f5;display:flex;gap:0.75rem;align-items:center}
 
 /* STAFF */
+.st-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;margin:0 0 1.1rem}
+.st-box{display:flex;flex-direction:column;gap:.15rem;padding:.75rem .95rem;border-radius:16px;background:var(--card-g,#f4f0ea);border:1px solid rgba(255,255,255,.85);box-shadow:var(--lift-sm)}
+.st-box span{font-size:.78rem;color:var(--muted);font-weight:600}.st-box b{font-size:1.4rem;color:var(--text);line-height:1.2}.st-box small{font-size:.72rem;color:var(--muted)}
+.st-box.warn{cursor:pointer;background:#f8e6e1}.st-box.warn b{color:#a4493a}.st-box.warn:hover{transform:translateY(-1px)}
+.st-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-bottom:2rem}
+.st-card{display:flex;flex-direction:column;gap:.75rem;padding:1rem;border-radius:18px;background:var(--card-g,#f4f0ea);border:1px solid rgba(255,255,255,.85);box-shadow:var(--lift-sm);border-top:4px solid var(--c)}
+.st-card.off{opacity:.6}
+.st-h{display:flex;align-items:center;gap:.7rem}
+.st-av{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--c);color:#fff;font-weight:800;font-size:1rem}
+.st-id{flex:1;min-width:0;display:flex;flex-direction:column}.st-id b{font-size:1.05rem;color:var(--text)}.st-id span{font-size:.78rem;color:var(--muted)}.st-id em{font-style:normal;color:var(--danger)}.st-pt{font-style:normal;color:var(--sage-dd,#66826e)}
+.st-ct{display:flex;align-items:center;gap:.25rem}
+.st-next{display:flex;flex-direction:column;gap:.1rem;padding:.6rem .75rem;border-radius:12px;background:color-mix(in srgb,var(--c) 12%,transparent)}
+.st-next span{font-size:.72rem;color:var(--muted);font-weight:600}.st-next b{font-size:.92rem;color:var(--text)}.st-next small{font-size:.76rem;color:var(--muted)}
+.st-next.none{background:rgba(0,0,0,.03)}
+.st-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;text-align:center}
+.st-nums div{padding:.45rem .2rem;border-radius:12px;background:#ece7e0;box-shadow:var(--sunk)}.st-nums b{display:block;font-size:.95rem;color:var(--text)}.st-nums span{font-size:.68rem;color:var(--muted)}
+.st-meta{display:flex;flex-wrap:wrap;gap:.3rem .9rem;font-size:.78rem;color:var(--muted)}
+.st-tasks{border-top:1px dashed var(--border);padding-top:.6rem}
+.st-th{display:flex;align-items:center;justify-content:space-between;font-size:.8rem;color:var(--muted);font-weight:600}.st-th b{background:var(--c);color:#fff;border-radius:999px;padding:0 .45rem;font-size:.7rem}
+.st-add{border:0;background:none;color:var(--sage-dd,#66826e);font:inherit;font-weight:700;font-size:.8rem;cursor:pointer;padding:.2rem .3rem}
+.st-tasks ul{list-style:none;margin:.4rem 0 0;padding:0;display:flex;flex-direction:column;gap:.25rem}
+.st-tasks li{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text);padding:.25rem .1rem}
+.st-done{flex:none;width:20px;height:20px;border-radius:50%;border:2px solid var(--c);background:none;cursor:pointer;padding:0}.st-done:hover{background:var(--c)}
+.st-tasks li span{flex:1;min-width:0}.st-x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:1rem;opacity:.5}.st-x:hover{opacity:1;color:var(--danger)}
+.st-tkin{display:flex;gap:.35rem;margin-top:.45rem}.st-tkin[hidden]{display:none}
+.st-tkin input{flex:1;min-width:0;padding:.45rem .6rem;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font:inherit;font-size:.84rem}
+.st-f{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:auto}.st-f .btn-sm{flex:1 1 auto;white-space:nowrap;padding-inline:.6rem}
+.st-empty{text-align:center;padding:3rem 1rem;color:var(--muted);line-height:2.4}
+#staff-form{position:fixed;inset:0;z-index:300;background:rgba(30,24,18,.38);place-items:center;padding:1rem;overflow:auto}
+#staff-form>.card{width:min(620px,100%);margin:0;max-height:calc(100vh - 2rem);overflow:auto}
+@media(max-width:560px){.st-grid{grid-template-columns:1fr}.st-sum{display:flex;overflow-x:auto;gap:.5rem;scrollbar-width:none}.st-box{flex:none;min-width:120px;padding:.55rem .8rem}.st-box b{font-size:1.15rem}#staff-form{place-items:end center;padding:0}#staff-form>.card{border-radius:20px 20px 0 0;max-height:90vh}}
+html[data-theme="dark"] .st-nums div{background:#181513}html[data-theme="dark"] .st-box.warn{background:#3a2420}
 .staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:1.2rem;margin-bottom:2rem}
 .staff-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;transition:border-color 0.2s}
 .staff-card:hover{border-color:var(--gold)}
@@ -1632,8 +1664,8 @@ html.locked body>*:not(#gate){display:none !important}
     <h2 id="staff-page-title">Staff Management</h2>
     <div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn-outline" onclick="window.open('learn.html','_blank','noopener')" id="learn-btn">📚 التعليم</button><button class="btn-outline" onclick="PR.showStaffReport()" id="staff-rep-btn">📄 تقارير</button><button class="btn-gold" onclick="showAddStaffForm()" id="add-staff-btn">+ Add Staff</button></div>
   </div>
-  <div id="staff-form" style="display:none">
-    <div class="card">
+  <div id="staff-form" style="display:none" onclick="if(event.target===this)hideStaffForm()" onkeydown="if(event.key==='Escape')hideStaffForm();if(event.key==='Enter'&&event.target.tagName==='INPUT')saveStaff()">
+    <div class="card" role="dialog" aria-modal="true" aria-labelledby="add-staff-title">
       <div class="card-title" id="add-staff-title">Add Staff Member</div>
       <div class="form-grid">
         <div class="form-group"><label id="lbl-sfname">Full Name</label><input id="sf-name" /></div>
@@ -1655,7 +1687,7 @@ html.locked body>*:not(#gate){display:none !important}
     </div>
   </div>
   <div class="flt" id="st-flt"></div>
-  <div class="staff-grid" id="staff-container">
+  <div id="staff-container">
     <div style="text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem;grid-column:1/-1" id="staff-empty">No staff added yet.</div>
   </div>
 </div>
@@ -1743,7 +1775,7 @@ const T = {
     saveInvBtn:'Save Invoice',cancelInvBtn:'Cancel',
     lblNotes:'Notes (dates, sessions, etc.)',
     invEmpty:'No invoices yet. Create your first one.',
-    staffPageTitle:'Staff Management',addStaffBtn:'+ Add Staff',
+    staffPageTitle:'Team',addStaffBtn:'+ Add Staff',
     addStaffTitle:'Add Staff Member',
     lblSfname:'Employee name',lblSfrole:'Position',lblSfrate:'Wage (BHD)',lblSfphone:'Phone',lblSfequip:'Equipment owned',
     saveStaffBtn:'Save',cancelStaffBtn:'Cancel',staffEmpty:'No staff added yet.',
@@ -1777,7 +1809,7 @@ const T = {
     saveInvBtn:'حفظ الفاتورة',cancelInvBtn:'إلغاء',
     lblNotes:'ملاحظات (التواريخ، الجلسات، إلخ)',
     invEmpty:'لا توجد فواتير بعد.',
-    staffPageTitle:'إدارة الموظفين',addStaffBtn:'+ إضافة موظف',
+    staffPageTitle:'فريق العمل',addStaffBtn:'+ إضافة موظف',
     addStaffTitle:'إضافة موظف',
     lblSfname:'اسم الموظف',lblSfrole:'المنصب',lblSfrate:'الأجر (BD)',lblSfphone:'رقم الهاتف',lblSfequip:'المعدات التي يملكها',
     saveStaffBtn:'حفظ',cancelStaffBtn:'إلغاء',staffEmpty:'لا يوجد موظفون بعد.',
@@ -1964,7 +1996,7 @@ function renderStFlt(){
   const dirty=SF.q||SF.role!=='all';
   document.getElementById('st-flt').innerHTML=
     fSearch('st-q',SF.q,A_('ابحث بالاسم أو الهاتف…','Search name or phone…'))+
-    fChips('sr',[['all',A_('الكل','All')],...roles.map(r=>[r,escH(r)])],SF.role)+fReset('st-reset',dirty);
+    fChips('sr',[['all',A_('الكل','All')],...roles.map(r=>[r,escH(stRole(r))])],SF.role)+fReset('st-reset',dirty);
 }
 
 // ── STATS ────────────────────────────────────────────
@@ -2669,19 +2701,20 @@ let editingStaffId=null;
 function showAddStaffForm(){
   editingStaffId=null;
   ['sf-name','sf-phone','sf-equip','sf-rate'].forEach(i=>document.getElementById(i).value='');
-  document.getElementById('staff-form').style.display='block';
+  document.getElementById('add-staff-title').textContent=t('addStaffTitle');
+  document.getElementById('staff-form').style.display='grid';document.getElementById('sf-name').focus();
 }
 function hideStaffForm(){editingStaffId=null;document.getElementById('staff-form').style.display='none';}
 function editStaff(id){
   const m=staffList.find(x=>x.id===id);if(!m)return;
   editingStaffId=id;
   document.getElementById('sf-name').value=m.name||'';
-  document.getElementById('sf-role').value=m.role||'';
+  {const rs=document.getElementById('sf-role');let ri=ST_ROLES_EN.indexOf(m.role);if(ri<0)ri=ST_ROLES_AR.indexOf(m.role);if(ri>=0)rs.selectedIndex=ri;else rs.value=m.role||''}   // الدور قد يكون محفوظًا بالعربي أو الإنجليزي
   document.getElementById('sf-phone').value=m.phone||'';
   document.getElementById('sf-equip').value=m.equip||'';
   document.getElementById('sf-rate').value=m.rate||'';
-  document.getElementById('staff-form').style.display='block';
-  document.getElementById('staff-form').scrollIntoView({behavior:'smooth',block:'center'});
+  document.getElementById('add-staff-title').textContent=A_('تعديل بيانات ','Edit ')+m.name;
+  document.getElementById('staff-form').style.display='grid';document.getElementById('sf-name').focus();
 }
 function saveStaff(){
   const n=document.getElementById('sf-name').value.trim();
@@ -2693,39 +2726,58 @@ function saveStaff(){
   save();hideStaffForm();
   renderStaff();updateStats();PR.render();
 }
+// ── صفحة فريق العمل: ملخص، بطاقة مرتبة لكل موظف (التصوير القادم، أرقام الشهر، المهام)، والإجراءات النادرة في ⋯ ──
+const ST_ROLES_EN=['Photographer','Videographer','Editor','Assistant','Drone Operator','Other'],ST_ROLES_AR=['مصور','مصور فيديو','مونتير','مساعد','مشغل درون','أخرى'];
+const stRole=r=>{let i=ST_ROLES_EN.indexOf(r);if(i<0)i=ST_ROLES_AR.indexOf(r);return i<0?(r||''):(lang==='en'?ST_ROLES_EN:ST_ROLES_AR)[i]};
+const ST_C=['#6f9a7c','#b47a68','#6f86b3','#c0954f','#9475ae','#4f9a9c','#c0718c','#86864f'];   // نفس ألوان المصورين في جلسات التصوير
+const stCol=id=>{const i=staffList.findIndex(x=>x.id===id);return ST_C[(i<0?7:i)%ST_C.length]};
+const stOn=s=>s.on!==0&&s.on!==false;
+function stToggle(id){const m=staffList.find(x=>x.id===id);if(!m)return;m.on=stOn(m)?0:1;save();renderStaff();PR.render()}
+function stTaskDone(id,i){const m=staffList.find(x=>x.id===id);if(!m||!m.tasks)return;const k=m.tasks[i];m.tasks.splice(i,1);save();renderStaff();note(A_('✓ أُنجزت: ','✓ Done: ')+k)}
+function stTaskOpen(id){const b=document.getElementById('tkw-'+id);if(b){b.hidden=false;const i=document.getElementById('tk-'+id);if(i)i.focus()}}
 function renderStaff(){
   const c=document.getElementById('staff-container');
-  if(!staffList.length){c.innerHTML=`<div style="text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem;grid-column:1/-1">${t('staffEmpty')}</div>`;return;}
+  if(!staffList.length){c.innerHTML=`<div class="st-empty">👥 ${t('staffEmpty')}<br><button class="btn-gold" onclick="showAddStaffForm()">${t('addStaffBtn')}</button></div>`;return;}
+  let SS=[];try{SS=PR.data().sessions}catch(e){}
+  const TD_=todayISO(),ym=TD_.slice(0,7),tot=(()=>{try{return PR.totals()}catch(e){return{}}})();
+  const nextOf=id=>SS.filter(s=>s.d&&s.d>=TD_&&s.lines.some(l=>l.p==id)).sort((a,b)=>(a.d+(a.t||'')).localeCompare(b.d+(b.t||'')));
+  const act=staffList.filter(stOn),monthSes=SS.filter(s=>s.d&&s.d.slice(0,7)===ym),
+    noPh=monthSes.filter(s=>s.d>=TD_&&!s.lines.some(l=>l.p)).length,
+    wages=act.reduce((q,s)=>q+((tot[s.id]||{}).month||0),0),tasks=staffList.reduce((q,s)=>q+(s.tasks||[]).length,0);
   const q=SF.q.trim().toLowerCase();
-  const list=staffList.filter(s=>(SF.role==='all'||s.role===SF.role)&&(!q||String(s.name).toLowerCase().includes(q)||String(s.phone||'').toLowerCase().includes(q)));
-  c.innerHTML=list.length?list.map(s=>`
-    <div class="staff-card">
-      <div class="staff-avatar">${escH(s.name).split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase()}</div>
-      <div class="staff-name">${escH(s.name)}</div>
-      <div class="staff-role">${escH(s.role||'—')}</div>
-      <div style="font-size:0.82rem;color:var(--muted);margin-top:0.3rem">📞 ${escH(s.phone||'—')}</div>
-      <div style="font-size:0.82rem;color:var(--muted);margin-top:0.3rem">🎒 ${escH(s.equip||'—')}</div>
-      <div class="staff-rate" style="margin-top:0.4rem">${A_('الأجر','Wage')}: BHD ${(+s.rate||0).toFixed(3)}</div>
-      ${(()=>{const q=(PR.totals()[s.id])||{all:0,month:0,cnt:0};return `<div style="margin-top:.55rem;padding:.5rem .65rem;border-radius:10px;background:var(--surface);border:1px solid var(--border);font-size:.82rem">
-        <div>💰 ${A_('مجموع المبلغ','Total amount')}: <b style="color:var(--gold)">BHD ${q.all.toFixed(3)}</b></div>
-        <div style="color:var(--muted)">${A_('هذا الشهر','This month')}: BHD ${q.month.toFixed(3)} · ${q.cnt} ${A_('جلسة','session(s)')}</div></div>`})()}
-      <div style="margin-top:.55rem;font-size:.82rem">
-        <div style="color:var(--muted);margin-bottom:.25rem">📝 ${A_('المهام','Tasks')}</div>
-        <div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.4rem">${(s.tasks||[]).map((k,i)=>`<span style="display:inline-flex;align-items:center;gap:.3rem;padding:.15rem .55rem;border-radius:999px;background:var(--surface);border:1px solid var(--border)">${escH(k)}<button type="button" onclick="delTask(${s.id},${i})" aria-label="${A_('حذف','Remove')}" style="background:none;border:0;cursor:pointer;color:var(--muted)">×</button></span>`).join('')||`<span style="color:var(--muted)">—</span>`}</div>
-        <div style="display:flex;gap:.35rem"><input id="tk-${s.id}" placeholder="${A_('مثال: تعديل صور، مونتاج العرس','e.g. photo editing, wedding montage')}" onkeydown="if(event.key==='Enter'){event.preventDefault();addTask(${s.id})}" style="flex:1;min-width:0;padding:.35rem .55rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.8rem"><button class="btn-sm" type="button" onclick="addTask(${s.id})">${A_('إضافة','Add')}</button></div>
+  const list=staffList.filter(s=>(SF.role==='all'||s.role===SF.role)&&(!q||String(s.name).toLowerCase().includes(q)||String(s.phone||'').replace(/\D/g,'').includes(q.replace(/\D/g,'')||'§')))
+    .sort((a,b)=>(stOn(b)?1:0)-(stOn(a)?1:0));
+  const box=(ic,l,v,sub,cls,on)=>`<div class="st-box${cls?' '+cls:''}"${on?` role="button" tabindex="0" onclick="${on}"`:''}><span>${ic} ${l}</span><b>${v}</b>${sub?`<small>${sub}</small>`:''}</div>`;
+  const head=`<div class="st-sum">${box('👥',A_('الفريق النشط','Active team'),act.length,staffList.length>act.length?(staffList.length-act.length)+' '+A_('غير نشط','inactive'):'')}${box('📸',A_('تصويرات هذا الشهر','Shoots this month'),monthSes.length)}${box('💰',A_('أجور هذا الشهر','Wages this month'),wages.toFixed(3),A_('د.ب','BD'))}${box('📝',A_('مهام مفتوحة','Open tasks'),tasks)}${noPh?box('⚠',A_('جلسات قادمة بلا مصوّر','Upcoming without photographer'),noPh,A_('اضغط لإسنادها','Tap to assign'),'warn',"PR.showNoPh()"):''}</div>`;
+  const card=s=>{
+    const on=stOn(s),Q=tot[s.id]||{all:0,month:0,cnt:0},nx=nextOf(s.id),n0=nx[0],mc=monthSes.filter(x=>x.lines.some(l=>l.p==s.id)).length;
+    const wa=String(s.phone||'').replace(/\D/g,''),wl=wa?'https://wa.me/'+(wa.length===8?'973'+wa:wa):'';
+    const tk=s.tasks||[];
+    return `<article class="st-card${on?'':' off'}" style="--c:${stCol(s.id)}">
+      <header class="st-h">
+        <span class="st-av">${escH(initials(s.name)||'?')}</span>
+        <div class="st-id"><b>${escH(s.name)}</b><span>${escH(stRole(s.role)||'—')}${on?'':` · <em>${A_('غير نشط','Inactive')}</em>`}${s.portal&&s.portal.on?` · <i class="st-pt">● ${A_('صفحته مفعّلة','Page on')}</i>`:''}</span></div>
+        <div class="st-ct">${wl?`<a class="cl-q" href="${wl}" target="_blank" rel="noopener" title="WhatsApp" aria-label="WhatsApp ${escH(s.name)}">💬</a><a class="cl-q" href="tel:${escH(wa)}" title="${A_('اتصال','Call')}" aria-label="${A_('اتصال','Call')} ${escH(s.name)}">📞</a>`:''}
+          <details class="cl-more" onclick="event.stopPropagation()" ontoggle="if(this.open)document.querySelectorAll('.cl-more[open]').forEach(d=>{if(d!==this)d.open=false})"><summary aria-label="${A_('خيارات','Options')}">⋯</summary><div class="cl-menu">
+            <button onclick="editStaff(${s.id})">✎ ${A_('تعديل البيانات','Edit details')}</button>
+            <button onclick="stToggle(${s.id})">${on?'⏸ '+A_('إيقاف (لا يظهر في اختيار المصورين)','Deactivate'):'▶ '+A_('تفعيل','Activate')}</button>
+            <button class="dz" onclick="deleteStaff(${s.id})">✕ ${A_('حذف الموظف','Delete')}</button></div></details></div>
+      </header>
+      <div class="st-next${n0?'':' none'}">${n0?`<span>📅 ${A_('التصوير القادم','Next shoot')}</span><b>${escH(n0.n||'—')}</b><small>${escH(clD(n0.d))}${n0.t?' · '+escH(t12(n0.t)):''}${n0.loc?' · 📍 '+escH(n0.loc):''}${nx.length>1?` · +${nx.length-1} ${A_('أخرى','more')}`:''}</small>`:`<span>📅 ${A_('لا تصويرات قادمة','No upcoming shoots')}</span>`}</div>
+      <div class="st-nums"><div><b>${mc}</b><span>${A_('تصويرات الشهر','Shoots this month')}</span></div><div><b>${Q.month.toFixed(3)}</b><span>${A_('أجر الشهر','Month pay')}</span></div><div><b>${Q.all.toFixed(3)}</b><span>${A_('المجموع الكلي','All time')}</span></div></div>
+      ${s.equip||s.phone||+s.rate?`<div class="st-meta">${s.phone?`<span dir="ltr">📞 ${escH(s.phone)}</span>`:''}${s.equip?`<span>🎒 ${escH(s.equip)}</span>`:''}${+s.rate?`<span>💵 ${A_('الأجر','Wage')} ${(+s.rate).toFixed(3)}</span>`:''}</div>`:''}
+      <div class="st-tasks"><div class="st-th"><span>📝 ${A_('المهام','Tasks')}${tk.length?` <b>${tk.length}</b>`:''}</span><button type="button" class="st-add" onclick="stTaskOpen(${s.id})">+ ${A_('مهمة','Task')}</button></div>
+        ${tk.length?`<ul>${tk.map((k,i)=>`<li><button type="button" class="st-done" onclick="stTaskDone(${s.id},${i})" title="${A_('تمت — إزالة','Done — remove')}" aria-label="${A_('تمت','Done')}: ${escH(k)}"></button><span>${escH(k)}</span><button type="button" class="st-x" onclick="delTask(${s.id},${i})" aria-label="${A_('حذف','Remove')}">×</button></li>`).join('')}</ul>`:''}
+        <div class="st-tkin" id="tkw-${s.id}" hidden><input id="tk-${s.id}" placeholder="${A_('مثال: تعديل صور، مونتاج العرس','e.g. photo editing, wedding montage')}" onkeydown="if(event.key==='Enter'){event.preventDefault();addTask(${s.id})}if(event.key==='Escape')this.parentNode.hidden=true"><button class="btn-sm" type="button" onclick="addTask(${s.id})">${A_('إضافة','Add')}</button></div>
       </div>
-      <div class="staff-actions">
-        <button class="btn-sm${s.portal&&s.portal.on?' sp-on':''}" onclick="openStaffPortal(${s.id})">🔗 ${A_('صفحة الموظف','Staff page')}</button>
-        <button class="btn-sm" onclick="editStaff(${s.id})">${A_('تعديل','Edit')}</button>
-        <button class="btn-sm danger" onclick="deleteStaff(${s.id})">${t('removeBtn')}</button>
-      </div>
-    </div>`).join(''):noRes(A_('لا يوجد موظفون بهذا الفلتر.','No staff match this filter.'));
+      <footer class="st-f"><button class="btn-sm${s.portal&&s.portal.on?' sp-on':''}" onclick="openStaffPortal(${s.id})">🔗 ${A_('صفحة الموظف','Staff page')}</button><button class="btn-sm" onclick="PR.showStaffReport('${s.id}')">📄 ${A_('تقرير','Report')}</button><button class="btn-sm" onclick="editStaff(${s.id})">✎ ${A_('تعديل','Edit')}</button></footer>
+    </article>`};
+  c.innerHTML=head+(list.length?`<div class="st-grid">${list.map(card).join('')}</div>`:noRes(A_('لا يوجد موظفون بهذا الفلتر.','No staff match this filter.')));
 }
 function addTask(id){
   const m=staffList.find(x=>x.id===id),i=document.getElementById('tk-'+id);if(!m||!i)return;
   const parts=i.value.split(/[،,]/).map(x=>x.trim()).filter(Boolean);if(!parts.length)return;
-  m.tasks=[...(m.tasks||[]),...parts];save();renderStaff();
-  const n=document.getElementById('tk-'+id);if(n)n.focus();
+  m.tasks=[...(m.tasks||[]),...parts];save();renderStaff();stTaskOpen(id);
 }
 function delTask(id,i){
   const m=staffList.find(x=>x.id===id);if(!m||!m.tasks)return;
@@ -3180,8 +3232,9 @@ function srHtml(){
   h+=rows.map(r=>`<section><h3>${esc(r.name)} — ${A_('عدد التصويرات','Shoots')} ${r.sess.size}</h3><table><thead><tr><th>#</th><th>${tr('date')}</th><th>${tr('thSession')}</th><th>${tr('role')}</th><th>${tr('amount')}</th></tr></thead><tbody>${r.items.map((x,i)=>`<tr><td>${i+1}</td><td>${fmtD(x.d)}${x.t?' · '+esc(t12(x.t)):''}</td><td>${x.n?esc(x.n):'—'}${x.loc?' <small>('+esc(x.loc)+')</small>':''}</td><td>${esc(x.r)}</td><td>${f3(x.a)}</td></tr>`).join('')}</tbody><tfoot><tr><td colspan="4">${tr('total')}</td><td>${f3(r.total)}</td></tr></tfoot></table></section>`).join('');
   return h+'</div></article>';
 }
-function showStaffReport(){
+function showStaffReport(ph){
   if(!SR.init){[SR.from,SR.to]=srMonth(0);SR.init=true}
+  if(typeof ph==='string')SR.ph=ph;
   G('pr-rep').innerHTML=srHtml();G('pr-rep-modal').classList.add('show');G('pr-rep-modal').scrollTop=0;
 }
 function showRep(p){REP={p:p||''};G('pr-rep').innerHTML=repH();G('pr-rep-modal').classList.add('show');G('pr-rep-modal').scrollTop=0}
@@ -3467,7 +3520,7 @@ function staffPortal(id){
   return{up,past:past.reverse().slice(0,80),pay,feePct:+S.cfg.fee||0};
 }
 bind();
-return{data:()=>S,reload:()=>{try{S=norm(JSON.parse(localStorage.getItem(KEY)))}catch(e){S=norm()}},persist,sessPrice,eqFee,spay,pkgName,conflicts,render,renderSchedule,periodStats,fromInvoice,openStaffReport,closeReport,openSession,newOn,addBooking,scheduleSnapshot,totals,photographerSummary,showStaffReport,staffPortal};
+return{showNoPh:()=>{F={ph:'__none',pk:'',q:''};V.y=now.getFullYear();V.m=now.getMonth()+1;goPay();render()},data:()=>S,reload:()=>{try{S=norm(JSON.parse(localStorage.getItem(KEY)))}catch(e){S=norm()}},persist,sessPrice,eqFee,spay,pkgName,conflicts,render,renderSchedule,periodStats,fromInvoice,openStaffReport,closeReport,openSession,newOn,addBooking,scheduleSnapshot,totals,photographerSummary,showStaffReport,staffPortal};
 })();
 
 // ── حجوزات الزبائن (Supabase): تسجيل دخول صاحب الاستوديو ثم تحويل الحجوزات الجديدة إلى جلسات في التكاليف ──
