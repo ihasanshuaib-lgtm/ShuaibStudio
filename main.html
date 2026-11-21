@@ -1976,7 +1976,7 @@ function exportInvoicesCsv(){
 function renderBackupBox(){
   const b=document.getElementById('bk-box');if(!b)return;
   let last='';try{last=localStorage.getItem('ss_last_backup')||''}catch(e){}
-  b.innerHTML=`<div class="card-title">🗂 ${A_('نسخة احتياطية كاملة','Full backup')}</div><p class="pr-hint">${A_('ملف واحد فيه كل البيانات (الفواتير، العروض، العملاء، الموظفون، الجلسات، المصروفات، المعدات، المهام، الإعدادات). يُنصح بتنزيله أسبوعيًا.','One file with all data (invoices, clients, staff, sessions, services). Download it weekly.')} ${last?A_('آخر نسخة: ','Last backup: ')+last:A_('لم تُنزَّل نسخة بعد.','No backup downloaded yet.')}</p><div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn-gold" type="button" onclick="downloadBackup()">⬇ ${A_('تنزيل النسخة','Download backup')}</button><label class="btn-outline" style="cursor:pointer">⬆ ${A_('استعادة من ملف','Restore from file')}<input type="file" accept="application/json,.json" hidden onchange="restoreBackup(this.files[0]);this.value=''"></label></div>`;
+  b.innerHTML=`<div class="card-title">🗂 ${A_('نسخة احتياطية كاملة','Full backup')}</div><p class="pr-hint">${A_('ملف واحد فيه كل البيانات (الفواتير، العروض، العملاء، الموظفون، الجلسات، المصروفات، المعدات، المهام، الإعدادات). يُنصح بتنزيله أسبوعيًا.','One file with all data (invoices, clients, staff, sessions, services). Download it weekly.')} ${last?A_('آخر نسخة: ','Last backup: ')+last:A_('لم تُنزَّل نسخة بعد.','No backup downloaded yet.')}</p><div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn-gold" type="button" onclick="downloadBackup()">⬇ ${A_('تنزيل النسخة','Download backup')}</button><label class="btn-outline" style="cursor:pointer">⬆ ${A_('استعادة من ملف','Restore from file')}<input type="file" accept="application/json,.json" hidden onchange="restoreBackup(this.files[0]);this.value=''"></label><button class="btn-outline" type="button" onclick="recoverScan()">🛟 ${A_('البحث عن بيانات مفقودة','Find missing data')}</button></div>`;
 }
 function downloadBackup(){
   dlFile('shuaib-studio-backup-'+todayISO()+'.json',JSON.stringify({app:'shuaib-studio',v:1,at:new Date().toISOString(),data:syncSnapshot()}),'application/json');
@@ -1993,6 +1993,63 @@ function restoreBackup(f){
     localStorage.setItem('ss_ts',String(Date.now()));location.reload();
   };
   r.readAsText(f);
+}
+
+// ── 🛟 البحث عن بيانات مفقودة واسترجاعها ──
+// المصادر: (1) نسخة هذا المتصفح قبل آخر مزامنة (ss_backup_before_sync) (2) صفحات بوابات العملاء في السحابة (client_portal: الاسم + الجلسات)
+// (3) حجوزات صفحة الحجز آخر 90 يومًا (bookings) التي لا توجد لها جلسة. لا يُسترجع شيء إلا بعد اختيارك.
+const rcF3=x=>(+x||0).toFixed(3);
+let RCV=null;
+async function recoverScan(){
+  RCV={busy:true,items:[]};recoverDraw();
+  const P=PR.data(),cIds=new Set(clients.map(c=>String(c.id))),sIds=new Set(P.sessions.map(s=>String(s.id))),iIds=new Set(invoices.map(i=>String(i.id))),bks=new Set(P.sessions.map(s=>s.bk).filter(Boolean));
+  const items=[],seen=new Set(),add=(k,src,v,label,sub)=>{const id=k+':'+String(v.id!=null?v.id:label);if(seen.has(id))return;seen.add(id);items.push({k,src,v,label,sub,on:true})};
+  const pj=(x,d)=>{try{return JSON.parse(x||'null')||d}catch(e){return d}};
+  try{const b=pj(localStorage.getItem('ss_backup_before_sync'),{});
+    pj(b.ss_clients,[]).forEach(c=>{if(c&&c.id!=null&&!cIds.has(String(c.id)))add('c','backup',c,c.name||'—',c.phone||'')});
+    (pj(b.ss_payroll,{}).sessions||[]).forEach(s=>{if(s&&s.id&&!sIds.has(String(s.id))&&(s.n||s.d))add('s','backup',s,s.n||'—',[s.d,t12(s.t||'')].filter(Boolean).join(' · '))});
+    pj(b.ss_invoices,[]).forEach(i=>{if(i&&i.id!=null&&!iIds.has(String(i.id)))add('i','backup',i,(i.number?'#'+i.number+' ':'')+(i.client||''),[i.date,i.grand!=null?rcF3(i.grand)+' BD':''].filter(Boolean).join(' · '))});
+  }catch(e){}
+  if(typeof sbAuth!=='undefined'&&sbAuth){
+    try{const rows=await (await sbReq('client_portal?select=client_id,data')).json();
+      (rows||[]).forEach(r=>{const d=r.data||{},cid=String(r.client_id||''),nm=String(d.name||'').trim();if(!cid)return;
+        if(!cIds.has(cid)&&nm)add('c','portal',{id:/^\d+$/.test(cid)?+cid:cid,name:nm,custid:'',phone:'',iban:'',addr:'',email:'',company:'',notes:''},nm,'');
+        (d.sessions||[]).forEach(x=>{if(x&&x.id&&!sIds.has(String(x.id)))add('s','portal',{id:x.id,d:x.d||'',t:x.t||'',te:x.te||'',n:nm+(x.n?' — '+x.n:''),loc:x.loc||'',p:'',lines:[],eq:[],x:[],cid},nm+(x.n?' — '+x.n:''),[x.d,t12(x.t||''),x.loc].filter(Boolean).join(' · '))});
+      })}catch(e){}
+    try{const since=new Date(Date.now()-90*864e5).toISOString(),rows=await (await sbReq('bookings?select=id,payload,created_at&created_at=gte.'+encodeURIComponent(since)+'&order=created_at.desc')).json();
+      (rows||[]).forEach(r=>{const b=r.payload||{},key=b.key||[b.date,b.time,b.name,b.category,b.total].join('|');if(b.date&&!bks.has(key))add('b','booking',Object.assign({id:'bk'+r.id},b),[b.name,b.category].filter(Boolean).join(' — '),[b.date,t12(b.time||''),b.total!=null?rcF3(b.total)+' BD':''].filter(Boolean).join(' · '))})}catch(e){}
+  }
+  RCV={busy:false,items};recoverDraw();
+}
+function recoverClose(){RCV=null;const o=document.getElementById('rcv-ov');if(o)o.remove();document.body.classList.remove('tk-lock')}
+function recoverDraw(){
+  if(!RCV){recoverClose();return}
+  let o=document.getElementById('rcv-ov');if(!o){o=document.createElement('div');o.id='rcv-ov';o.className='sp-ov';o.addEventListener('click',e=>{if(e.target===o)recoverClose()});document.body.appendChild(o)}
+  document.body.classList.add('tk-lock');
+  const G={c:A_('👤 عملاء','👤 Clients'),s:A_('📸 جلسات تصوير','📸 Sessions'),i:A_('🧾 فواتير','🧾 Invoices'),b:A_('📥 حجوزات من صفحة الحجز','📥 Booking-page requests')};
+  const SRC={backup:A_('نسخة هذا المتصفح','this browser’s backup'),portal:A_('بوابة العميل','client portal'),booking:A_('سجل الحجوزات','bookings log')};
+  const L=RCV.items,n=L.filter(x=>x.on).length;
+  const body=RCV.busy?`<p class="pr-hint">⏳ ${A_('جارٍ البحث في النسخة المحلية والسحابة…','Searching local backup and cloud…')}</p>`
+    :!L.length?`<p class="pr-hint">✅ ${A_('لم يُعثر على أي عميل أو جلسة أو فاتورة مفقودة في المصادر المتاحة. جرّب «🛟» من الجهاز الذي أضفت منه البيانات (نسخته المحلية قد تحتفظ بها).','Nothing missing was found. Try 🛟 on the device where you added the data (its local copy may still have it).')}</p>`
+    :Object.keys(G).map(k=>{const R=L.map((x,i)=>[x,i]).filter(([x])=>x.k===k);if(!R.length)return'';
+      return `<h4 style="margin:.9rem 0 .4rem">${G[k]} <small>(${R.length})</small></h4>`+R.map(([x,i])=>`<label style="display:flex;gap:.6rem;align-items:flex-start;padding:.5rem .6rem;border:1px solid var(--border);border-radius:10px;margin-bottom:.35rem;cursor:pointer"><input type="checkbox" data-rcv="${i}" ${x.on?'checked':''} style="margin-top:.2rem"><span style="flex:1;min-width:0"><b>${escH(x.label)}</b>${x.sub?`<br><small>${escH(x.sub)}</small>`:''}<br><small style="opacity:.7">${A_('المصدر: ','Source: ')}${SRC[x.src]}</small></span></label>`).join('')}).join('');
+  o.innerHTML=`<div class="sp-box" role="dialog" aria-modal="true" aria-labelledby="rcv-h" style="max-width:560px">
+    <div class="sp-head"><div style="flex:1;min-width:0"><b id="rcv-h">🛟 ${A_('البحث عن بيانات مفقودة','Find missing data')}</b><small>${A_('اختر ما تريد إرجاعه — لا يُحذف أو يُستبدل أي شيء موجود.','Pick what to bring back — nothing existing is replaced.')}</small></div><button class="modal-close" style="position:static" onclick="recoverClose()" aria-label="${A_('إغلاق','Close')}">✕</button></div>
+    <div style="overflow:auto;max-height:60vh">${body}</div>
+    ${!RCV.busy&&L.length?`<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem"><button class="btn-gold" type="button" onclick="recoverApply()" ${n?'':'disabled'}>↩ ${A_('استرجاع المحدد','Restore selected')} (${n})</button><button class="btn-outline" type="button" onclick="recoverClose()">${A_('إلغاء','Cancel')}</button></div><p class="pr-hint" style="margin-top:.5rem">${A_('الجلسات المسترجعة من بوابة العميل تعود بالتاريخ والوقت والمكان والاسم فقط (البوابة لا تحفظ الأسعار والمصورين) — راجعها وأكمل الناقص.','Sessions restored from the client portal come back with date, time, place and name only — review and complete them.')}</p>`:''}
+  </div>`;
+}
+document.addEventListener('change',e=>{const c=e.target.closest&&e.target.closest('[data-rcv]');if(!c||!RCV)return;RCV.items[+c.dataset.rcv].on=c.checked;recoverDraw()});
+function recoverApply(){
+  if(!RCV)return;const P=PR.data(),sel=RCV.items.filter(x=>x.on);let n=0;
+  sel.filter(x=>x.k==='c').forEach(x=>{if(!clients.some(c=>String(c.id)===String(x.v.id))){clients.push(x.v);n++}});
+  sel.filter(x=>x.k==='i').forEach(x=>{if(!invoices.some(i=>String(i.id)===String(x.v.id))){invoices.push(x.v);n++}});
+  sel.filter(x=>x.k==='s').forEach(x=>{if(!P.sessions.some(s=>String(s.id)===String(x.v.id))){const s=Object.assign({lines:[],eq:[],x:[]},x.v);P.sessions.push(s);n++}});
+  save();PR.persist();
+  sel.filter(x=>x.k==='b').forEach(x=>{const b=Object.assign({},x.v);delete b.id;const r=PR.addBooking(b,true);if(r){BZ.fromBooking(b,r.id,r.isNew);if(r.isNew)n++}});
+  recoverClose();
+  try{renderClients();updateStats();PR.render();renderInvoices()}catch(e){}
+  note(A_(`✓ تم استرجاع ${n} عنصر`,`✓ Restored ${n} item(s)`));
 }
 
 // ── services editor (names & prices, saved) ──────────
@@ -2701,7 +2758,7 @@ function norm(o){
     n.eq=Array.isArray(n.eq)?n.eq:[];
     n.x=Array.isArray(n.x)?n.x:[];            // بنود إضافية: {id,k:'svc'|'ded',n,a}
     n.lines=n.lines.map(l=>{const c={...l};delete c.e;return c});
-    return n}).filter(s=>s.n||+s.p||s.lines.length||s.eq.length||s.inv||s.bk);   // حذف الجلسات الفارغة بلا عنوان (بقايا الضغط المتكرر)
+    return n}).filter(s=>s.n||+s.p||s.lines.length||s.eq.length||s.inv||s.bk||s.cid||s.loc||s.pk||s.t||s.te||(s.x||[]).length);   // حذف الجلسات الفارغة بلا عنوان (بقايا الضغط المتكرر)
   const cfg=Object.assign({fee:1,reserve:5},o.cfg);delete cfg.learn;delete cfg.eq;
   return{roles:o.roles||defRoles(),pkgs:o.pkgs||defPkgs(),equip:o.equip||defEquip(),subs:o.subs||[],cfg,sessions:ss,adv:o.adv||{}};
 }
@@ -3336,6 +3393,65 @@ function mergeTasksJSON(a,b){
   return JSON.stringify(Object.assign(base,{tasks,types:[...TYm.values()],del,days:DYm}));
 }
 const SYNC_KEYS=['ss_invoices','ss_staff','ss_worklog','ss_clients','ss_payroll','ss_services','ss_biz','ss_tasks'];
+// ── دمج ثلاثي آمن لكل البيانات (بدل «آخر لقطة تمسح الكل») ──
+// ss_base = وقت نسخة السحابة التي رآها هذا الجهاز آخر مرة، ss_base_idx = بصمة كل سجل فيها (بالمعرّف).
+// عند التعارض (السحابة تغيّرت من جهاز آخر وهذا الجهاز فيه تعديلات لم تُرفع): يُدمج سجلًا سجلًا —
+// الجديد في أي طرف يبقى، المعدَّل في طرف واحد يأخذ تعديله، والمحذوف يُحذف فقط إن لم يُعدَّل بعد ذلك.
+const SYH=v=>{const s=JSON.stringify(v===undefined?null:v);let h=5381;for(let i=0;i<s.length;i++)h=(h*33^s.charCodeAt(i))|0;return (h>>>0).toString(36)+s.length.toString(36)};
+const SYrec=a=>Array.isArray(a)&&a.length>0&&a.every(x=>x&&typeof x==='object'&&!Array.isArray(x)&&x.id!=null&&x.id!=='');
+const SYobj=o=>o&&typeof o==='object'&&!Array.isArray(o);
+function syIndex(v,p,out,dep){
+  if(SYrec(v)){out[p]='[R]';v.forEach(r=>out[p+'#'+r.id]=SYH(r));return out}
+  if(SYobj(v)&&dep<3){out[p]='{O}';Object.keys(v).forEach(k=>syIndex(v[k],p+'.'+k,out,dep+1));return out}
+  out[p]=SYH(v);return out;
+}
+function syMergeVal(l,r,p,B,dep){
+  const rArr=SYrec(r)||(Array.isArray(r)&&!r.length&&SYrec(l)),lArr=SYrec(l)||(Array.isArray(l)&&!l.length&&SYrec(r));
+  if(rArr&&lArr){
+    const known=B[p]==='[R]',L=new Map(l.map(x=>[String(x.id),x])),R=new Map(r.map(x=>[String(x.id),x])),out=[];
+    r.forEach(x=>{const id=String(x.id),bh=B[p+'#'+id],y=L.get(id);
+      if(y){const hl=SYH(y),hr=SYH(x);out.push(hl!==hr&&known&&bh!==undefined&&hr===bh?y:x)}
+      else if(!(known&&bh!==undefined&&SYH(x)===bh))out.push(x);   // حُذف هنا وما تغيّر في السحابة ← يبقى محذوفًا
+    });
+    l.forEach(x=>{const id=String(x.id);if(R.has(id))return;const bh=B[p+'#'+id];
+      if(!(known&&bh!==undefined&&SYH(x)===bh))out.push(x)});      // جديد هنا (أو عُدّل بعد حذفه في السحابة) ← يبقى
+    return out;
+  }
+  if(SYobj(l)&&SYobj(r)&&dep<3){
+    const o={};new Set([...Object.keys(r),...Object.keys(l)]).forEach(k=>{
+      if(k in r&&k in l)o[k]=syMergeVal(l[k],r[k],p+'.'+k,B,dep+1);else o[k]=k in r?r[k]:l[k]});
+    return o;
+  }
+  const hl=SYH(l),hr=SYH(r),hb=B[p];
+  return hl!==hr&&hb!==undefined&&hr===hb?l:r;                     // تغيّر هنا فقط ← قيمتنا، وإلا قيمة السحابة
+}
+function syIdxOf(data){const o={};SYNC_KEYS.forEach(k=>{if(k==='ss_tasks')return;let v=null;try{v=JSON.parse(data[k]||'null')}catch(e){}syIndex(v,k,o,0)});return o}
+function syMergeAll(loc,rem,B){
+  const out={};
+  SYNC_KEYS.forEach(k=>{
+    const ls=loc[k],rs=rem[k];
+    if(k==='ss_tasks'){out[k]=rs==null?ls:mergeTasksJSON(ls,rs);return}
+    if(rs==null||!(k in rem)){out[k]=ls;return}
+    if(ls==null){out[k]=rs;return}
+    let l,r;try{l=JSON.parse(ls);r=JSON.parse(rs)}catch(e){out[k]=rs;return}
+    out[k]=JSON.stringify(syMergeVal(l,r,k,B,0));
+  });
+  return out;
+}
+const syBase=()=>+localStorage.getItem('ss_base')||0;
+function sySetBase(ts,data){try{localStorage.setItem('ss_base',String(ts));localStorage.setItem('ss_base_idx',JSON.stringify(syIdxOf(data)))}catch(e){}}
+function syBaseIdx(){try{return JSON.parse(localStorage.getItem('ss_base_idx')||'{}')||{}}catch(e){return{}}}
+// تعارض: ادمج نسخة السحابة مع المحلية سجلًا سجلًا ثم ارفع الناتج (نسخة المحلية قبل الدمج تُحفظ في ss_backup_before_sync)
+async function syConflict(r){
+  const loc=syncSnapshot();try{localStorage.setItem('ss_backup_before_sync',JSON.stringify(loc))}catch(e){}
+  const m=syMergeAll(loc,r.data,syBase()?syBaseIdx():{}),ts=Math.max(Date.now(),(+r.ts||0)+1);
+  await sbReq('app_state?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'pay',value:{ts,data:m},updated_at:new Date().toISOString()})});
+  const diff=SYNC_KEYS.some(k=>(m[k]==null?null:m[k])!==(loc[k]==null?null:loc[k]));
+  SYNC_KEYS.forEach(k=>m[k]==null?localStorage.removeItem(k):localStorage.setItem(k,m[k]));
+  localStorage.setItem('ss_ts',String(ts));sySetBase(ts,m);
+  if(diff){location.reload();return true}
+  syncMsg=A_('☁ تم الدمج والحفظ سحابيًا ','☁ Merged & saved ')+d12(new Date());return false;
+}
 var syncTimer=0,syncPushing=false,syncMsg="";
 const lts=()=>+localStorage.getItem('ss_ts')||0;
 var wiping=false;
@@ -3350,12 +3466,15 @@ async function syncPush(){
   if(!localStorage.getItem('ss_pulled'))return;   // لا رفع قبل أول سحب ناجح
   syncPushing=true;
   try{
-    // قبل الرفع: ادمج مهام السحابة (من جهاز آخر) حتى لا تُمسح بنسخة قديمة من هذا الجهاز
-    try{const rr=await (await sbReq('app_state?key=eq.pay&select=value')).json(),rv=rr[0]&&rr[0].value;
-      if(rv&&rv.data&&rv.data.ss_tasks){const loc=localStorage.getItem('ss_tasks'),m=mergeTasksJSON(loc,rv.data.ss_tasks);if(m!==loc){localStorage.setItem('ss_tasks',m);TK.reload()}}}catch(e){}
-    const ts=lts()||Date.now();
-    await sbReq('app_state?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'pay',value:{ts,data:syncSnapshot()},updated_at:new Date().toISOString()})});
-    syncMsg=A_('☁ تم الحفظ سحابيًا ','☁ Saved to cloud ')+d12(new Date());
+    // قبل الرفع: إن تغيّرت السحابة من جهاز آخر منذ آخر مزامنة هنا ← دمج سجلًا سجلًا بدل الكتابة فوقها (كان هذا يمحو جلسات/عملاء أُضيفوا من جهاز آخر)
+    const rr=await (await sbReq('app_state?key=eq.pay&select=value')).json(),rv=rr[0]&&rr[0].value;
+    if(rv&&rv.data&&+rv.ts!==syBase()){if(await syConflict(rv)){syncPushing=false;return}}
+    else{
+      const ts=lts()||Date.now(),snap=syncSnapshot();
+      await sbReq('app_state?on_conflict=key',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({key:'pay',value:{ts,data:snap},updated_at:new Date().toISOString()})});
+      sySetBase(ts,snap);
+      syncMsg=A_('☁ تم الحفظ سحابيًا ','☁ Saved to cloud ')+d12(new Date());
+    }
     await pushSchedule();
     await BZ.pushPortals();await pushStaffPortals();await BZ.pullSiteCfg();
   }catch(e){syncMsg=A_('تعذّر الحفظ السحابي (البيانات محفوظة في هذا المتصفح): ','Cloud save failed (data is kept in this browser): ')+String(e.message||e).slice(0,140)}
@@ -3390,7 +3509,7 @@ async function wipeAll(){
     // 3) مسح المتصفح (ss_ts = وقت التفريغ حتى لا تُستعاد بيانات قديمة)
     SYNC_KEYS.forEach(k=>localStorage.removeItem(k));
     localStorage.removeItem('ss_backup_before_sync');
-    localStorage.setItem('ss_ts',String(ts));
+    localStorage.setItem('ss_ts',String(ts));sySetBase(ts,empty);
     location.reload();
   }catch(e){
     wiping=false;
@@ -3401,12 +3520,14 @@ async function syncPull(){
   if(!sbAuth||!sbCfg().key)return;
   try{
     const rows=await (await sbReq('app_state?key=eq.pay&select=value')).json();
-    const r=rows[0]&&rows[0].value,first=!localStorage.getItem('ss_pulled');
+    const r=rows[0]&&rows[0].value;
     localStorage.setItem('ss_pulled','1');
     if(!r||!r.data){ if(SYNC_KEYS.some(k=>localStorage.getItem(k))) await syncPush(); return; }
-    // أول سحب في هذا المتصفح: إن كانت بيانات السحابة أكبر من المحلية نأخذها حتى لو بدت المحلية «أحدث» (تُحفظ نسخة المحلية احتياطيًا)
-    const bigger=first&&r.ts<=lts()&&SYNC_KEYS.reduce((s,k)=>s+String(r.data[k]||'').length,0)>SYNC_KEYS.reduce((s,k)=>s+String(localStorage.getItem(k)||'').length,0);
-    if(r.ts>lts()||bigger){
+    const base=syBase(),rts=+r.ts||0;
+    const changed=base?rts!==base:rts!==lts();          // السحابة تغيّرت منذ آخر مزامنة لهذا الجهاز
+    const dirty=base?lts()>base:lts()>rts;              // هنا تعديلات لم تُرفع
+    if(changed&&dirty){ await syConflict(r); }          // الطرفان تغيّرا ← دمج آمن (لا يضيع شيء)
+    else if(changed){
       try{localStorage.setItem('ss_backup_before_sync',JSON.stringify(syncSnapshot()))}catch(e){}
       let keep=false;
       SYNC_KEYS.forEach(k=>{
@@ -3414,10 +3535,11 @@ async function syncPull(){
         if(k==='ss_tasks'&&r.data[k]!=null){const loc=localStorage.getItem(k),m=mergeTasksJSON(loc,r.data[k]);localStorage.setItem(k,m);if(m!==r.data[k])keep=true;return}
         r.data[k]==null?localStorage.removeItem(k):localStorage.setItem(k,r.data[k]);
       });
-      localStorage.setItem('ss_ts',String(keep?Date.now():r.ts));   // إن بقي عندنا ما ليس في السحابة يُرفع بعد إعادة التحميل
+      sySetBase(rts,r.data);
+      localStorage.setItem('ss_ts',String(keep?Date.now():rts));   // إن بقي عندنا ما ليس في السحابة يُرفع بعد إعادة التحميل
       location.reload();
-    }else if(r.ts<lts()){ await syncPush(); }
-    else{syncMsg=A_('☁ البيانات متزامنة ','☁ In sync ')+d12(new Date());await pushSchedule();await BZ.pushPortals();await pushStaffPortals();await BZ.pullSiteCfg();sbRender()}
+    }else if(dirty){ await syncPush(); }
+    else{if(!base)sySetBase(rts,syncSnapshot());syncMsg=A_('☁ البيانات متزامنة ','☁ In sync ')+d12(new Date());await pushSchedule();await BZ.pushPortals();await pushStaffPortals();await BZ.pullSiteCfg();sbRender()}
   }catch(e){syncMsg=A_('تعذّرت المزامنة السحابية: ','Cloud sync failed: ')+String(e.message||e).slice(0,140);sbRender()}
 }
 window.addEventListener('focus',()=>syncPull());
@@ -5393,7 +5515,7 @@ function dsMigrate(){
       if(x.done){t.status='done';t.doneAt=new Date((x.doneOn||x.date)+'T12:00').toISOString()}ch=true});
     if(r&&r.days&&typeof r.days==='object')Object.keys(r.days).forEach(k=>{if(!D.days[k]&&r.days[k]){D.days[k]=Object.assign({},r.days[k],{u:Date.now()});ch=true}});
   }catch(e){}
-  persist();if(ch)note(A_('✓ نُقلت مهام «ملخص اليوم» القديمة إلى هنا','✓ Old “daily summary” tasks were moved here'));
+  if(ch){persist();note(A_('✓ نُقلت مهام «ملخص اليوم» القديمة إلى هنا','✓ Old “daily summary” tasks were moved here'))}   // بدون تغيير لا حفظ ولا مزامنة
 }
 function dsRow(t,ctx){
   const td=todayISO(),done=t.status==='done',late=!done&&t.due&&t.due<td?dsDiff(t.due,td):0,c=catOf(t.cat),y=t.type&&tyOf(t.type),m=[];
