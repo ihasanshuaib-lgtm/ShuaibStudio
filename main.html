@@ -161,6 +161,51 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,12,10,0.96);backdrop-fi
 .work-log-table tr:hover td{background:rgba(255,255,255,0.02)}
 
 /* CLIENTS */
+.cl-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;margin:0 0 1rem}
+.cl-st{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:.15rem;padding:.75rem .95rem;border-radius:16px;background:var(--card-g,#f4f0ea);border:1px solid rgba(255,255,255,.85);box-shadow:var(--lift-sm);transition:transform .15s,box-shadow .2s}
+.cl-st span{font-size:.78rem;color:var(--muted);font-weight:600}.cl-st b{font-size:1.45rem;color:var(--text);line-height:1.2}.cl-st small{font-size:.74rem;color:var(--muted)}
+.cl-st:hover{transform:translateY(-1px)}.cl-st:focus-visible{box-shadow:var(--focus-ring)}
+.cl-st.on{background:var(--btn-sage,#87a18d);border-color:rgba(255,255,255,.4)}.cl-st.on span,.cl-st.on b,.cl-st.on small{color:#fff}
+.cl-st.warn b{color:var(--danger)}.cl-st.hot b{color:#c07a2c}.cl-st.on.warn b,.cl-st.on.hot b{color:#fff}
+.cl-vt{display:flex;border-radius:999px;overflow:hidden;box-shadow:var(--sunk);background:#ece7e0;align-self:flex-end}
+.cl-vt button{border:0;background:none;font:inherit;font-size:1rem;padding:.45rem .8rem;cursor:pointer;color:var(--muted)}.cl-vt button.on{background:var(--sage-d);color:#fff}
+.cl-az{display:flex;gap:.3rem;overflow-x:auto;padding:.15rem .1rem .55rem;margin-bottom:.4rem;scrollbar-width:thin}
+.cl-az button{flex:none;min-width:34px;height:34px;padding:0 .55rem;border-radius:10px;border:1px solid var(--border);background:var(--card-g,#f4f0ea);font:inherit;font-weight:700;font-size:.85rem;color:var(--text);cursor:pointer}
+.cl-az button.on{background:var(--sage-d);color:#fff;border-color:transparent}
+.cl-count{font-size:.8rem;color:var(--muted);margin:0 .2rem .55rem}
+.cl-lnk{border:0;background:none;font:inherit;color:var(--sage-dd,#66826e);font-weight:700;cursor:pointer;padding:0}
+.cl-list{border-radius:16px;background:var(--card-g,#f4f0ea);border:1px solid rgba(255,255,255,.85);box-shadow:var(--lift-sm);overflow:visible}
+.cl-g{padding:.35rem 1rem;font-weight:800;color:var(--sage-dd,#66826e);font-size:.85rem;background:rgba(0,0,0,.03);border-top:1px solid var(--border)}
+.cl-row{display:grid;grid-template-columns:40px minmax(140px,1.6fr) 105px minmax(130px,1fr) 95px minmax(0,1.1fr) 112px;align-items:center;gap:.8rem;padding:.65rem 1rem;border-top:1px solid var(--border);cursor:pointer;transition:background .15s;position:relative}
+.cl-list>.cl-row:first-child,.cl-list>.cl-g:first-child{border-top:0}
+.cl-row:hover,.cl-card:hover{background:rgba(147,173,152,.09)}.cl-row:focus-visible,.cl-card:focus-visible{outline:0;box-shadow:inset var(--focus-ring)}
+.cl-av{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--c);color:#fff;font-weight:700;font-size:.9rem;overflow:hidden}
+.cl-av img{width:100%;height:100%;object-fit:cover}
+.cl-main{display:flex;flex-direction:column;min-width:0}.cl-main b{color:var(--text);font-size:.95rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cl-main small{color:var(--muted);font-size:.74rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cl-phone{font-size:.84rem;color:var(--muted);text-align:end;white-space:nowrap}
+.cl-whn{font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cl-next{color:var(--sage-dd,#66826e);font-weight:700}.cl-last{color:var(--muted)}
+.cl-num{display:flex;flex-direction:column;line-height:1.2}.cl-num b{font-size:.9rem;color:var(--text);direction:ltr;text-align:start}.cl-num small{font-size:.7rem;color:var(--muted)}
+.cl-bs{display:flex;flex-wrap:wrap;gap:.3rem;min-width:0}
+.cl-b{font-size:.7rem;font-weight:700;padding:.15rem .5rem;border-radius:999px;white-space:nowrap}
+.cl-b.due{background:#f6e1dc;color:#a4493a}.cl-b.nb{background:#fbe9cf;color:#9a5c12}.cl-b.pt{background:rgba(120,150,128,.15);color:var(--sage-dd,#66826e)}
+.cl-acts{display:flex;align-items:center;justify-content:flex-end;gap:.25rem}
+.cl-q{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;text-decoration:none;font-size:.95rem;background:#ece7e0;box-shadow:var(--sunk)}
+.cl-q:hover{background:var(--sage-d)}
+.cl-more{position:relative}.cl-more>summary{list-style:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;cursor:pointer;font-size:1.2rem;color:var(--muted);font-weight:800}
+.cl-more>summary::-webkit-details-marker{display:none}.cl-more>summary:hover,.cl-more[open]>summary{background:#ece7e0;color:var(--text)}
+.cl-menu{position:absolute;inset-inline-end:0;top:calc(100% + 4px);z-index:30;min-width:200px;padding:.35rem;border-radius:14px;background:var(--surface,#fff);border:1px solid var(--border);box-shadow:0 12px 32px rgba(0,0,0,.16);display:flex;flex-direction:column}
+.cl-menu button{border:0;background:none;font:inherit;font-size:.86rem;text-align:start;padding:.55rem .7rem;border-radius:10px;cursor:pointer;color:var(--text)}
+.cl-menu button:hover{background:#ece7e0}.cl-menu button.dz{color:var(--danger)}
+.cl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.9rem}
+.cl-card{display:flex;flex-direction:column;gap:.6rem;padding:.9rem 1rem;border-radius:16px;background:var(--card-g,#f4f0ea);border:1px solid rgba(255,255,255,.85);box-shadow:var(--lift-sm);cursor:pointer}
+.cl-card-h{display:flex;align-items:center;gap:.7rem}.cl-card-h .cl-main{flex:1}
+.cl-card-w{font-size:.8rem}.cl-card-f{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}.cl-card-f .cl-bs{flex:1}
+.cl-moreb{display:block;margin:1rem auto 2rem}
+@media(max-width:980px){.cl-row{grid-template-columns:40px minmax(0,1fr) auto 112px;grid-template-areas:"av main num acts" "av whn bs acts"}.cl-row>.cl-av{grid-area:av}.cl-row>.cl-main{grid-area:main}.cl-row>.cl-whn{grid-area:whn}.cl-row>.cl-num{grid-area:num}.cl-row>.cl-bs{grid-area:bs;justify-content:flex-end}.cl-row>.cl-acts{grid-area:acts}.cl-row>.cl-phone{display:none}.cl-row{row-gap:.2rem}}
+@media(max-width:560px){.cl-row{grid-template-columns:40px minmax(0,1fr) auto;grid-template-areas:"av main acts" "av whn acts" "av bs acts";padding:.65rem .75rem;gap:.15rem .6rem}.cl-row>.cl-num{display:none}.cl-row>.cl-bs{justify-content:flex-start}.cl-q{width:32px;height:32px}.cl-row .cl-q[href^="tel"]{display:none}.cl-stats{display:flex;overflow-x:auto;gap:.5rem;padding:.1rem .1rem .4rem;scrollbar-width:none}.cl-st{flex:none;min-width:118px;padding:.55rem .8rem;border-radius:14px}.cl-st b{font-size:1.15rem}}
+html[data-theme="dark"] .cl-q,html[data-theme="dark"] .cl-vt,html[data-theme="dark"] .cl-more>summary:hover,html[data-theme="dark"] .cl-menu button:hover{background:#181513}
+html[data-theme="dark"] .cl-b.due{background:#3a2420;color:#f0a493}html[data-theme="dark"] .cl-b.nb{background:#3a2d18;color:#f0c27a}
 .clients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.1rem;margin-bottom:2rem}
 .client-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;transition:border-color 0.2s;position:relative}
 .client-card:hover{border-color:var(--gold)}
@@ -1907,10 +1952,12 @@ function renderInvFlt(){
     fChips('ip',perChips(),IF.per)+fReset('inv-reset',dirty);
 }
 function renderClFlt(){
-  const dirty=CF.q||CF.w!=='all';
+  const dirty=CF.q||CF.w!=='all'||CF.l;
+  const so=[['recent',A_('آخر نشاط','Latest activity')],['name',A_('الاسم (أ–ي)','Name (A–Z)')],['rev',A_('الأعلى إيرادًا','Top revenue')],['due',A_('الأكثر متبقيًا','Most due')],['new',A_('الأحدث إضافة','Newest')]];
   document.getElementById('cl-flt').innerHTML=
-    fSearch('cl-q',CF.q,A_('ابحث بالاسم أو الهاتف أو الهوية…','Search name, phone or ID…'))+
-    fChips('cw',[['all',A_('الكل','All')],['with',A_('لديهم فواتير','With invoices')],['without',A_('بدون فواتير','No invoices')]],CF.w)+fReset('cl-reset',dirty);
+    fSearch('cl-q',CF.q,A_('ابحث بالاسم أو الهاتف أو الشركة…','Search name, phone or company…'))+
+    `<label class="f-sel"><span>${A_('الترتيب','Sort')}</span><select id="cl-sort">${so.map(([v,l])=>`<option value="${v}"${CU.sort===v?' selected':''}>${l}</option>`).join('')}</select></label>`+
+    `<div class="cl-vt" role="group" aria-label="${A_('طريقة العرض','View')}"><button type="button" data-clv="list" class="${CU.view!=='grid'?'on':''}" aria-pressed="${CU.view!=='grid'}" title="${A_('قائمة','List')}">☰</button><button type="button" data-clv="grid" class="${CU.view==='grid'?'on':''}" aria-pressed="${CU.view==='grid'}" title="${A_('بطاقات','Cards')}">▦</button></div>`+fReset('cl-reset',dirty);
 }
 function renderStFlt(){
   const roles=[...new Set(staffList.map(s=>s.role).filter(Boolean))];
@@ -2269,40 +2316,113 @@ function renderArchive(){
       <div class="client-actions"><button class="btn-gold" style="padding:.5rem 1rem;font-size:.84rem" onclick="event.stopPropagation();BZ.openClient(${cl.id})">📂 ${A_('فتح ملف العميل','Open client file')}</button>${cl.archived?`<button class="btn-sm" onclick="event.stopPropagation();unarchiveClient(${cl.id})">↩ ${A_('إلغاء الأرشفة','Restore')}</button>`:''}</div>
     </div>`}).join('')+'</div>';
 }
+// ── صفحة العملاء: ملخص قابل للضغط، ترتيب، فهرس الحروف، قائمة مختصرة، تحميل تدريجي ──
+let CU={sort:'recent',view:'list'};try{Object.assign(CU,JSON.parse(localStorage.getItem('ss_cl_ui')||'{}'))}catch(e){}
+const cuSave=()=>{try{localStorage.setItem('ss_cl_ui',JSON.stringify(CU))}catch(e){}};
+const CL_STEP=40;
+const clN=s=>String(s||'').toLowerCase().replace(/[ً-ْـ]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+const clLetter=n=>{const x=clN(String(n||'').trim())[0]||'#';return /[a-zء-ي]/.test(x)?x.toUpperCase():'#'};
+const CLC=['#7a9a83','#b0806f','#7d8fb3','#c19a5b','#9a7bb0','#5f9ea0','#c27a92','#8a8a5c','#6d8f9e','#a8865f'];
+const clCol=n=>{let x=0;for(const ch of String(n||''))x=(x*31+ch.charCodeAt(0))|0;return CLC[Math.abs(x)%CLC.length]};
+const CL_MON=[['يناير','Jan'],['فبراير','Feb'],['مارس','Mar'],['أبريل','Apr'],['مايو','May'],['يونيو','Jun'],['يوليو','Jul'],['أغسطس','Aug'],['سبتمبر','Sep'],['أكتوبر','Oct'],['نوفمبر','Nov'],['ديسمبر','Dec']];
+const clD=d=>{if(!d)return'';const m=CL_MON[+d.slice(5,7)-1];return m?`${+d.slice(8,10)} ${A_(m[0],m[1])}${d.slice(0,4)!==todayISO().slice(0,4)?' '+d.slice(0,4):''}`:d};
+const clWa=p=>{let d=String(p||'').replace(/\D/g,'');if(!d)return'';if(d.length===8)d='973'+d;return 'https://wa.me/'+d};
+function clRows(){
+  const T=todayISO(),M=new Map(),byName=new Map();
+  clients.forEach(c=>{M.set(c.id,{c,inv:[],ses:[]});byName.set(String(c.name||'').trim().toLowerCase(),c.id)});
+  invoices.forEach(i=>{const id=i._clientId!=null&&i._clientId!==''?(M.has(i._clientId)?i._clientId:null):byName.get(String(i.client||'').trim().toLowerCase());if(id!=null&&M.has(id))M.get(id).inv.push(i)});
+  let SS=[];try{SS=PR.data().sessions}catch(e){}
+  SS.forEach(s=>{const c=sessClient(s);if(c&&M.has(c.id))M.get(c.id).ses.push(s)});
+  return [...M.values()].map(o=>{
+    const real=o.inv.filter(i=>i.status!=='draft'),rev=real.reduce((q,i)=>q+(+i.grand||0),0),due=real.reduce((q,i)=>q+invRem(i),0);
+    const sd=o.ses.map(s=>s.d).filter(Boolean),fut=sd.filter(d=>d>=T).sort(),past=[...sd.filter(d=>d<T),...o.inv.map(i=>i.date||'').filter(d=>d&&d<=T)].sort();
+    const all=[...sd,...o.inv.map(i=>i.date||'')].filter(Boolean).sort();
+    return{...o,real,rev,due,next:fut[0]||'',last:past.pop()||'',act:all.pop()||'',n:Math.max(o.ses.length,real.length),
+      nb:o.inv.some(i=>i.fromBooking&&i.status==='draft'),L:clLetter(o.c.name)};
+  });
+}
+function clMenu(cl){
+  return `<details class="cl-more" onclick="event.stopPropagation()" ontoggle="if(this.open)document.querySelectorAll('.cl-more[open]').forEach(d=>{if(d!==this)d.open=false})"><summary aria-label="${A_('خيارات','Options')}">⋯</summary><div class="cl-menu">
+    <button onclick="BZ.openClient(${cl.id})">📂 ${A_('فتح ملف العميل','Open client file')}</button>
+    <button onclick="newInvoiceForClient(${cl.id})">🧾 ${A_('فاتورة جديدة','New invoice')}</button>
+    <button onclick="ptControls(${cl.id})">🎛 ${A_('تحكم بالبوابة','Portal controls')}</button>
+    <button onclick="archiveClient(${cl.id})">🗄 ${A_('أرشفة العميل','Archive client')}</button>
+    <button class="dz" onclick="deleteClient(${cl.id})">✕ ${A_('حذف العميل','Delete client')}</button></div></details>`;
+}
+function clAv(cl){return `<span class="cl-av" style="--c:${clCol(cl.name)}">${cl.thumb?`<img src="${escH(cl.thumb)}" alt="">`:escH(initials(cl.name)||'?')}</span>`}
+function clQuick(cl){const w=clWa(cl.phone);return w?`<a class="cl-q" href="${w}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="WhatsApp" aria-label="WhatsApp ${escH(cl.name)}">💬</a><a class="cl-q" href="tel:${escH(String(cl.phone).replace(/[^\d+]/g,''))}" onclick="event.stopPropagation()" title="${A_('اتصال','Call')}" aria-label="${A_('اتصال','Call')} ${escH(cl.name)}">📞</a>`:''}
+function clWhen(r){return r.next?`<span class="cl-next">📅 ${A_('القادمة','Next')} ${clD(r.next)}</span>`:r.last?`<span class="cl-last">${A_('آخر تعامل','Last')} ${clD(r.last)}</span>`:`<span class="cl-last">${A_('لا تعامل بعد','No activity yet')}</span>`}
+function clBadges(r){
+  return (r.due>0.0005?`<span class="cl-b due">${A_('متبقي','Due')} ${r.due.toFixed(3)}</span>`:'')+
+    (r.nb?`<span class="cl-b nb">📥 ${A_('حجز جديد','New booking')}</span>`:'')+
+    (r.c.portal&&r.c.portal.on?`<span class="cl-b pt" title="${A_('البوابة مفعّلة','Portal on')}">● ${A_('البوابة','Portal')}</span>`:'');
+}
+function clRowH(r){
+  const cl=r.c,sub=[cl.company,cl.custid?'#'+cl.custid:''].filter(Boolean).map(escH).join(' · ');
+  return `<div class="cl-row" role="link" tabindex="0" data-clo="${cl.id}">
+    ${clAv(cl)}
+    <span class="cl-main"><b>${escH(cl.name||'—')}</b>${sub?`<small>${sub}</small>`:''}</span>
+    <span class="cl-phone" dir="ltr">${escH(cl.phone||'')}</span>
+    <span class="cl-whn">${clWhen(r)}</span>
+    <span class="cl-num"><b>${r.rev.toFixed(3)}</b><small>${r.n} ${A_('تعامل','deal'+(r.n===1?'':'s'))}</small></span>
+    <span class="cl-bs">${clBadges(r)}</span>
+    <span class="cl-acts">${clQuick(cl)}${clMenu(cl)}</span>
+  </div>`;
+}
+function clCardH(r){
+  const cl=r.c;
+  return `<div class="cl-card" role="link" tabindex="0" data-clo="${cl.id}">
+    <div class="cl-card-h">${clAv(cl)}<span class="cl-main"><b>${escH(cl.name||'—')}</b><small dir="ltr">${escH(cl.phone||cl.company||'')}</small></span>${clMenu(cl)}</div>
+    <div class="cl-card-w">${clWhen(r)}</div>
+    <div class="cl-card-f"><span class="cl-num"><b>${r.rev.toFixed(3)}</b><small>${r.n} ${A_('تعامل','deals')}</small></span><span class="cl-bs">${clBadges(r)}</span><span class="cl-acts">${clQuick(cl)}</span></div>
+  </div>`;
+}
+let CL_FIRST=null;
 function renderClients(){
   const c = document.getElementById('clients-container');
   if(!c) return;
   if(!clients.length){ c.innerHTML = noRes(A_('لا يوجد عملاء بعد. أضف عميلاً جديداً.','No clients yet. Add your first client.')); return; }
-  const q = CF.q.trim().toLowerCase();
-  const list = clients.filter(cl=>{const n=clientInvs(cl).length;
-    return !cl.archived && (CF.w==='all'||(CF.w==='with'?n>0:n===0)) &&
-    (!q||[cl.name,cl.phone,cl.custid,cl.email,cl.company].some(v=>String(v||'').toLowerCase().includes(q)))});
-  if(!list.length){ c.innerHTML = noRes(A_('لا يوجد عملاء بهذا الفلتر.','No clients match this filter.')); return; }
-  c.innerHTML = `<div class="clients-grid">`+list.map(cl=>{
-    const iv=clientInvs(cl),real=iv.filter(i=>i.status!=='draft'),rev=real.reduce((s,i)=>s+(i.grand||0),0),due=real.reduce((s,i)=>s+invRem(i),0),last=iv.map(i=>i.date||'').sort().pop()||'';
-    return `<div class="client-card" style="cursor:pointer" onclick="BZ.openClient(${cl.id})">
-      <div class="client-inv-count">${iv.length} ${A_('فاتورة','inv')}</div>
-      <div class="client-avatar" style="overflow:hidden">${cl.thumb?`<img src="${escH(cl.thumb)}" alt="" style="width:100%;height:100%;object-fit:cover">`:escH(initials(cl.name))}</div>
-      <div class="client-name">${escH(cl.name)}</div>
-      <div class="client-meta">
-        ${cl.company?`<div>🏢 ${escH(cl.company)}</div>`:''}
-        ${cl.custid?`<div>🪪 ${escH(cl.custid)}</div>`:''}
-        ${cl.phone?`<div>📞 ${escH(cl.phone)}</div>`:''}
-        ${cl.email?`<div>✉️ ${escH(cl.email)}</div>`:''}
-        ${cl.iban?`<div style="font-size:0.75rem;color:var(--muted);margin-top:0.2rem">IBAN: ${escH(cl.iban)}</div>`:''}
-        ${cl.notes?`<div style="font-style:italic;margin-top:.2rem">📝 ${escH(cl.notes)}</div>`:''}
-      </div>
-      <div class="pr-sum" style="margin-top:.6rem;font-size:.76rem;gap:.4rem .8rem"><span>${A_('الإيراد','Revenue')} <b>${rev.toFixed(3)}</b></span><span>${A_('المشاريع','Projects')} <b>${real.length}</b></span><span>${A_('آخر حجز','Last booking')} <b>${escH(last||'—')}</b></span>${due>0.0005?`<span>${A_('متبقي','Due')} <b style="color:var(--danger)">${due.toFixed(3)}</b></span>`:''}</div>
-      <div class="client-actions" style="flex-wrap:wrap;align-items:center">
-        <button class="btn-gold" style="padding:.5rem 1rem;font-size:.84rem" onclick="event.stopPropagation();BZ.openClient(${cl.id})">📂 ${A_('فتح ملف العميل','Open client file')}</button>
-        ${invoices.some(i=>i._clientId===cl.id&&i.fromBooking&&i.status==='draft')?`<span class="bz-health h-warn" style="font-size:.72rem"><i></i>📥 ${A_('حجز جديد','New booking')}</span>`:''}
-        ${cl.portal&&cl.portal.on?`<span class="bz-health h-good" style="font-size:.72rem"><i></i>${A_('البوابة','Portal')}</span>`:''}
-        <button class="btn-sm" onclick="event.stopPropagation();ptControls(${cl.id})">🎛 ${A_('تحكم بالبوابة','Portal controls')}</button>
-        <button class="btn-sm" onclick="event.stopPropagation();archiveClient(${cl.id})">🗄 ${A_('أرشفة العميل','Archive client')}</button>
-        <button class="btn-sm danger" style="margin-inline-start:auto" onclick="event.stopPropagation();deleteClient(${cl.id})" aria-label="${A_('حذف','Delete')}">✕</button>
-      </div>
-    </div>`}).join('')+`</div>`;
+  const rows=clRows(),act=rows.filter(r=>!r.c.archived);
+  const k={all:act.length,up:act.filter(r=>r.next).length,due:act.filter(r=>r.due>0.0005).length,nb:act.filter(r=>r.nb).length,none:act.filter(r=>!r.n).length},dueSum=act.reduce((q,r)=>q+r.due,0);
+  if(!['all','up','due','nb','none'].includes(CF.w))CF.w='all';
+  const st=(w,ic,lbl,val,sub,cls)=>`<button type="button" class="cl-st${CF.w===w?' on':''}${cls?' '+cls:''}" data-fg="cw" data-fv="${w}" aria-pressed="${CF.w===w}"><span>${ic} ${lbl}</span><b>${val}</b>${sub?`<small>${sub}</small>`:''}</button>`;
+  let h=`<div class="cl-stats">${st('all','👥',A_('كل العملاء','All clients'),k.all)}${st('up','📅',A_('لديهم جلسة قادمة','Upcoming shoot'),k.up)}${st('due','💰',A_('عليهم مبالغ','Owe money'),k.due,k.due?dueSum.toFixed(3)+' '+A_('د.ب','BD'):'',k.due?'warn':'')}${k.nb?st('nb','📥',A_('حجوزات جديدة','New bookings'),k.nb,'','hot'):''}${st('none','🌱',A_('بلا تعامل بعد','No activity yet'),k.none)}</div>`;
+  const q=clN(CF.q.trim()),qd=clN(CF.q).replace(/\D/g,'');
+  let list=act.filter(r=>(CF.w==='all'||(CF.w==='up'?r.next:CF.w==='due'?r.due>0.0005:CF.w==='nb'?r.nb:!r.n))&&
+    (!q||clN([r.c.name,r.c.company,r.c.custid,r.c.email,r.c.notes].join(' ')).includes(q)||(qd.length>=3&&String(r.c.phone||'').replace(/\D/g,'').includes(qd))));
+  const letters=[...new Set(list.map(r=>r.L))].sort((a,b)=>a.localeCompare(b,'ar'));
+  if(CF.l&&!letters.includes(CF.l))CF.l='';
+  if(act.length>12&&letters.length>1)h+=`<div class="cl-az" role="group" aria-label="${A_('الحرف الأول','First letter')}"><button type="button" data-cll="" class="${CF.l?'':'on'}">${A_('الكل','All')}</button>${letters.map(L=>`<button type="button" data-cll="${escH(L)}" class="${CF.l===L?'on':''}">${escH(L)}</button>`).join('')}</div>`;
+  if(CF.l)list=list.filter(r=>r.L===CF.l);
+  const S=CU.sort,cmpN=(a,b)=>String(a.c.name||'').localeCompare(String(b.c.name||''),'ar');
+  list.sort(S==='name'?cmpN:S==='rev'?(a,b)=>b.rev-a.rev||cmpN(a,b):S==='due'?(a,b)=>b.due-a.due||cmpN(a,b):S==='new'?(a,b)=>(+b.c.id||0)-(+a.c.id||0):
+    (a,b)=>(b.next?1:0)-(a.next?1:0)||(a.next&&b.next?a.next.localeCompare(b.next):0)||String(b.act).localeCompare(String(a.act))||(+b.c.id||0)-(+a.c.id||0));
+  CL_FIRST=list[0]?list[0].c.id:null;
+  if(!list.length){c.innerHTML=h+noRes(A_('لا يوجد عملاء بهذا البحث أو الفلتر.','No clients match this search or filter.'));return}
+  const lim=CF.lim||CL_STEP,shown=list.slice(0,lim);
+  h+=`<div class="cl-count">${A_('عرض','Showing')} ${shown.length} ${A_('من','of')} ${list.length}${archiveList().length?` · <button type="button" class="cl-lnk" onclick="BZ.clearRet();showPage('archive')">🗄 ${A_('الأرشيف','Archive')} (${archiveList().length})</button>`:''}</div>`;
+  if(CU.view==='grid')h+=`<div class="cl-grid">${shown.map(clCardH).join('')}</div>`;
+  else{
+    let prev='';
+    h+=`<div class="cl-list">${shown.map(r=>{let g='';if(S==='name'&&r.L!==prev){prev=r.L;g=`<div class="cl-g">${escH(r.L)}</div>`}return g+clRowH(r)}).join('')}</div>`;
+  }
+  if(list.length>lim)h+=`<button type="button" class="btn-outline cl-moreb" data-clmore="1">${A_('عرض المزيد','Show more')} (${list.length-lim})</button>`;
+  c.innerHTML=h;
 }
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.cl-more'))document.querySelectorAll('.cl-more[open]').forEach(d=>d.open=false);
+  const b=e.target.closest('[data-clv],[data-cll],[data-clmore],[data-clo]');if(!b||!b.closest('#page-clients'))return;
+  if(b.dataset.clv){CU.view=b.dataset.clv;cuSave();renderClFlt();renderClients()}
+  else if(b.dataset.cll!==undefined){CF.l=b.dataset.cll;CF.lim=0;renderClFlt();renderClients()}
+  else if(b.dataset.clmore){CF.lim=(CF.lim||CL_STEP)+CL_STEP;renderClients()}
+  else if(b.dataset.clo&&!e.target.closest('a,button,details'))BZ.openClient(+b.dataset.clo);
+});
+document.addEventListener('keydown',e=>{
+  const t=e.target;
+  if(t.id==='cl-q'&&e.key==='Enter'&&CL_FIRST!=null){e.preventDefault();BZ.openClient(CL_FIRST)}
+  else if(t.dataset&&t.dataset.clo&&(e.key==='Enter'||e.key===' ')&&t===e.target){e.preventDefault();BZ.openClient(+t.dataset.clo)}
+});
+document.addEventListener('change',e=>{if(e.target.id==='cl-sort'){CU.sort=e.target.value;cuSave();renderClients()}});
 
 function newInvoiceForClient(clientId){
   BZ.markRet();
@@ -3652,7 +3772,7 @@ document.addEventListener('click',e=>{
     if(g==='hp'){HP=v;renderHomeFlt();updateStats();}
     else if(g==='is'){IF.st=v;renderInvFlt();renderInvoices();}
     else if(g==='ip'){IF.per=v;renderInvFlt();renderInvoices();}
-    else if(g==='cw'){CF.w=v;renderClFlt();renderClients();}
+    else if(g==='cw'){CF.w=v;CF.lim=0;renderClFlt();renderClients();}
     else if(g==='sr'){SF.role=v;renderStFlt();renderStaff();}
     return;
   }
@@ -3664,7 +3784,7 @@ document.addEventListener('click',e=>{
 document.addEventListener('input',e=>{
   const t=e.target,show=(rid,on)=>{const r=document.getElementById(rid);if(r)r.hidden=!on};
   if(t.id==='inv-q'){IF.q=t.value;renderInvoices();show('inv-reset',IF.q||IF.st!=='all'||IF.per!=='all');}
-  else if(t.id==='cl-q'){CF.q=t.value;renderClients();show('cl-reset',CF.q||CF.w!=='all');}
+  else if(t.id==='cl-q'){CF.q=t.value;CF.lim=0;renderClients();show('cl-reset',CF.q||CF.w!=='all'||CF.l);}
   else if(t.id==='st-q'){SF.q=t.value;renderStaff();show('st-reset',SF.q||SF.role!=='all');}
 });
 
