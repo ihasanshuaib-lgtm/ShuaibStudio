@@ -561,6 +561,35 @@ details.card summary{color:var(--white)}
 @keyframes psIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 .ps-h4{font-size:.78rem;color:var(--muted);font-weight:600;margin:.9rem 0 .35rem}
 @media(max-width:560px){.ps-head{gap:.55rem;padding:.65rem .75rem}.ps-date{min-width:44px}.ps-price small{display:none}}
+/* تنقّل أسهل: أسهم الأشهر، شرائح المصورين، المصورون على بطاقة الجلسة، السابقة/التالية */
+.pm-nav{display:flex;align-items:center;justify-content:center;gap:.6rem;margin:0 0 1rem;flex-wrap:wrap}
+.pm-nav>b{min-width:150px;text-align:center;font-size:1.1rem;color:var(--text)}
+.pm-nav>b small{display:block;font-size:.72rem;color:var(--muted);font-weight:500}
+.pm-btn{all:unset;box-sizing:border-box;cursor:pointer;width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:#ece7e0;box-shadow:var(--lift);font-size:1.3rem;line-height:1;color:var(--text);-webkit-tap-highlight-color:transparent}
+.pm-btn:hover{background:var(--sage-d);color:#fff}.pm-btn:focus-visible{box-shadow:var(--focus-ring)}
+.ph-bar{display:flex;gap:.45rem;overflow-x:auto;padding:.25rem .15rem .55rem;margin:0 0 .6rem;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.ph-chip{all:unset;box-sizing:border-box;cursor:pointer;flex:none;display:inline-flex;align-items:center;gap:.4rem;padding:.35rem .8rem .35rem .45rem;border-radius:999px;background:#ece7e0;box-shadow:var(--sunk);font-size:.85rem;color:var(--text);white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.ph-chip b{font-size:.72rem;min-width:1.3em;text-align:center;padding:.05rem .35rem;border-radius:999px;background:rgba(0,0,0,.07)}
+.ph-chip.on{background:var(--sage-d);color:#fff;box-shadow:var(--lift)}.ph-chip.on b{background:rgba(255,255,255,.25)}
+.ph-chip.warn{color:#a4493a}.ph-chip.warn.on{background:#b5604f;color:#fff}
+.ph-chip:focus-visible{box-shadow:var(--focus-ring)}
+.ph-av{flex:none;width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;color:#fff;font-size:.74rem;font-weight:700;background:var(--c,#999);line-height:1}
+.ps-crew{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.35rem}
+.ps-p{display:inline-flex;align-items:center;gap:.3rem;padding:.12rem .55rem .12rem .2rem;border-radius:999px;background:color-mix(in srgb,var(--c,#999) 15%,transparent);font-size:.76rem;color:var(--text);white-space:nowrap}
+.ps-p .ph-av{width:19px;height:19px;font-size:.62rem}
+.ps-p i{font-style:normal;color:var(--muted);font-size:.7rem}
+.ps-p.none{background:#f6e1dc;color:#a4493a;padding:.12rem .6rem;font-weight:600}
+.ps-sep{display:flex;align-items:center;gap:.6rem;color:var(--sage-dd);font-size:.8rem;font-weight:700;margin:.4rem 0 .7rem}
+.ps-sep::before,.ps-sep::after{content:'';flex:1;height:1px;background:var(--border)}
+.ps.past .ps-date{opacity:.6}
+@media(max-width:700px){#pr-view{display:flex;flex-direction:column}#pr-view>.pr-hero{order:5;margin-top:.4rem}#pr-view>*:not(.pr-hero){order:1}#pr-view>section.pr-card:not(.ps){order:6}#pr-flt .f-sel:has(#pr-fph){display:none}}
+.ps.today .ps-date{background:var(--sage-d)}.ps.today .ps-date b,.ps.today .ps-date i{color:#fff}
+.ps-nav{display:flex;justify-content:space-between;gap:.5rem;margin-top:.9rem;padding-top:.75rem;border-top:1px dashed var(--border)}
+.ps-nav button{max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ps-nav span{flex:1}
+.pr-pdd>summary{cursor:pointer;font-weight:600;color:var(--text);padding:.6rem 0;font-size:.9rem}
+html[data-theme="dark"] .pm-btn,html[data-theme="dark"] .ph-chip{background:#181513}
+html[data-theme="dark"] .ps-p.none{background:#3a2420;color:#f0a493}
 
 /* equipment chips */
 .pr-eqs{display:flex;flex-wrap:wrap;gap:.4rem;margin:.2rem 0}
@@ -2788,7 +2817,18 @@ const spay=s=>s.lines.reduce((q,l)=>q+(+l.a||0),0);
 const eqList=s=>(s.eq||[]).map(id=>S.equip.find(e=>e.id==id)).filter(Boolean);
 const eqFee=s=>eqList(s).reduce((q,e)=>q+(+e.f||0),0);
 const ses=id=>S.sessions.find(x=>x.id==id),ln=(s,id)=>s.lines.find(x=>x.id==id);
-const hasPh=(s,p)=>s.lines.some(l=>l.p==p);
+const hasPh=(s,p)=>p==='__none'?!s.lines.some(l=>l.p):s.lines.some(l=>l.p==p);
+// لون ثابت لكل مصوّر (حسب ترتيبه في فريق العمل) + حرفه الأول
+const PHC=['#6f9a7c','#b47a68','#6f86b3','#c0954f','#9475ae','#4f9a9c','#c0718c','#86864f'];
+const phCol=id=>{const i=staffList.findIndex(t=>String(t.id)===String(id));return PHC[(i<0?7:i)%PHC.length]};
+const phAv=id=>`<span class="ph-av" style="--c:${phCol(id)}" aria-hidden="true">${esc((String(pName(id)).trim()[0])||'?')}</span>`;
+const rShort=r=>rName(r).replace(/^مصوّ?ر\s+/,'');
+function crewH(s){
+  const m=new Map();let miss=0;
+  s.lines.forEach(l=>{if(!l.p){miss++;return}const k=String(l.p);if(!m.has(k))m.set(k,new Set());m.get(k).add(rShort(l.r))});
+  if(!m.size)return `<span class="ps-crew"><span class="ps-p none">⚠ ${A_('لم يُحدَّد مصوّر','No photographer yet')}</span></span>`;
+  return `<span class="ps-crew">${[...m].map(([p,r])=>`<span class="ps-p" style="--c:${phCol(p)}">${phAv(p)}${esc(pName(p))}<i>${esc([...r].join('، '))}</i></span>`).join('')}${miss?`<span class="ps-p none">+${miss} ${A_('بلا اسم','unassigned')}</span>`:''}</span>`;
+}
 
 function agg(ym){
   const Ls=S.sessions.filter(s=>s.d&&s.d.slice(0,7)==ym),C=S.cfg,A=S.adv[ym]||{},P={};let price=0,pay=0,un=0,eqt=0;
@@ -2843,11 +2883,12 @@ const conflictH=s=>{const c=conflicts(s);if(!c.length)return'';return `<div clas
 
 // ── session card (collapsible) ──
 const eqChips=(s,edit)=>S.equip.some(e=>!e.off||(s.eq||[]).includes(e.id))?`<div class="pr-eqs">${edit?S.equip.filter(e=>!e.off||(s.eq||[]).includes(e.id)).map(e=>{const on=(s.eq||[]).includes(e.id);return`<button type="button" class="eq-chip${on?' on':''}" data-eqt="${s.id}" data-eid="${e.id}" aria-pressed="${on}">${esc(e.n)}<b>${f3(e.f)}</b></button>`}).join(''):(eqList(s).map(e=>`<span class="eq-chip on ro">${esc(e.n)}<b>${f3(e.f)}</b></span>`).join('')||`<span class="pr-hint" style="margin:0">${tr('noEqUsed')}</span>`)}</div>`:`<p class="pr-hint">${tr('noEquip')}</p>`;
-function sessCard(s){
+function sessCard(s,i,arr){
+  arr=arr||[];const prv=arr[i-1],nxt=arr[i+1];
   const ed=EDIT.has(s.id),open=ed||OPEN.has(s.id),pay=spay(s),eq=eqFee(s),pr=sessPrice(s)-pay-eq,pk=pkgName(s),cf=conflictH(s);
   const dd=s.d?{d:+s.d.slice(8),m:MON()[+s.d.slice(5,7)-1]}:{d:'—',m:''};
   const sub=[s.t?s.t+(s.te?'–'+s.te:''):'',pk,s.loc?'📍 '+s.loc:''].filter(Boolean).map(esc).join(' · ');
-  const head=`<button type="button" class="ps-head" data-tg="${s.id}" aria-expanded="${open}"><span class="ps-date"><b>${dd.d}</b><i>${dd.m}</i></span><span class="ps-main"><b class="ps-name">${cf?'⚠ ':''}${s.n?esc(s.n):tr('noName')}</b>${sub?`<small>${sub}</small>`:''}</span><span class="ps-price"><span id="prh${s.id}">${f3(sessPrice(s))}</span><small>${tr('cur')}</small></span><span class="ps-chev" aria-hidden="true"></span></button>`;
+  const head=`<button type="button" class="ps-head" data-tg="${s.id}" aria-expanded="${open}"><span class="ps-date"><b>${dd.d}</b><i>${dd.m}</i></span><span class="ps-main"><b class="ps-name">${cf?'⚠ ':''}${s.n?esc(s.n):tr('noName')}</b>${sub?`<small>${sub}</small>`:''}${crewH(s)}</span><span class="ps-price"><span id="prh${s.id}">${f3(sessPrice(s))}</span><small>${tr('cur')}</small></span><span class="ps-chev" aria-hidden="true"></span></button>`;
   let body;
   if(!ed){
     body=cf+(s.lines.length?`<div class="pr-scroll"><table class="pr-t"><thead><tr><th>${tr('role')}</th><th>${tr('photographer')}</th><th>${tr('amount')}</th></tr></thead><tbody>${s.lines.map(l=>`<tr><td>${esc(rName(l.r))}</td><td>${esc(l.p?pName(l.p):'—')}</td><td>${f3(l.a)}</td></tr>`).join('')}</tbody></table></div>`:`<p class="pr-hint">${tr('noLines')}</p>`)+
@@ -2867,21 +2908,30 @@ function sessCard(s){
 <div class="pr-sum"><span>${tr('sessPrice')} <b id="prsp${s.id}"></b></span><span>${tr('phTotal')} <b id="prtp${s.id}"></b></span><span>${tr('eqTotal')} <b id="preq${s.id}"></b></span><span>${tr('sessNet')} <b id="prpr${s.id}"></b></span></div>
 <div class="pr-acts"><button class="btn-gold" style="padding:.5rem 1.1rem" data-ed="${s.id}">${tr('done')}</button><button class="btn-sm danger" data-ds="${s.id}">${tr('del')}</button></div>`;
   }
-  return `<section class="pr-card ps${open?' open':''}${ed?' editing':''}">${head}<div class="ps-body">${body}</div></section>`;
+  const nav=(prv||nxt)?`<div class="ps-nav">${prv?`<button class="btn-sm" data-sgo="${prv.id}" data-cur="${s.id}">${lang==='en'?'←':'→'} ${esc(prv.n||tr('noName'))}</button>`:'<span></span>'}${nxt?`<button class="btn-sm" data-sgo="${nxt.id}" data-cur="${s.id}">${esc(nxt.n||tr('noName'))} ${lang==='en'?'→':'←'}</button>`:'<span></span>'}</div>`:'';
+  return `<section class="pr-card ps${open?' open':''}${ed?' editing':''}${s.d&&s.d<TD?' past':''}${s.d===TD?' today':''}" id="ps-${s.id}">${head}<div class="ps-body">${body}${nav}</div></section>`;
 }
 const detH=rows=>rows.map(r=>`<div class="pr-pd"><div class="pr-ph"><b>${esc(r.n)}</b><span>${tr('sessCount')}: <b>${r.cnt}</b></span></div>${r.det.length?`<div class="pr-scroll"><table class="pr-t"><tbody>${r.det.map(x=>`<tr><td>${fmtD(x.d)}</td><td>${x.n?esc(x.n):'—'}</td><td>${esc(rName(x.r))}</td><td>${f3(x.a)}</td></tr>`).join('')}</tbody></table></div>`:''}</div>`).join('');
 
 function shown(Ls){
   const q=F.q.trim().toLowerCase();
-  return Ls.filter(s=>(!F.ph||hasPh(s,F.ph))&&(!F.pk||s.k==F.pk)&&(!q||(s.n||'').toLowerCase().includes(q)));
+  return Ls.filter(s=>(!F.ph||hasPh(s,F.ph))&&(!F.pk||s.k==F.pk)&&(!q||[s.n,s.loc,...s.lines.map(l=>l.p?pName(l.p):'')].join(' ').toLowerCase().includes(q)));
 }
 function viewMonth(){
   const ym=ymK(),a=agg(ym),A=S.adv[ym]||{},Ls=shown(a.L.slice().sort(byD)),rows=F.ph?a.rows.filter(r=>r.id==F.ph):a.rows;
-  G('pr-view').innerHTML=heroH(MON()[V.m-1]+' '+V.y+' — '+tr('profit'))+
+  const isCur=ym===TD.slice(0,7),cnt={},none=a.L.filter(s=>!s.lines.some(l=>l.p)).length;
+  a.L.forEach(s=>new Set(s.lines.filter(l=>l.p).map(l=>String(l.p))).forEach(p=>cnt[p]=(cnt[p]||0)+1));
+  const chips=`<div class="ph-bar" role="toolbar" aria-label="${tr('fPh')}"><button class="ph-chip${F.ph?'':' on'}" data-phf="" aria-pressed="${!F.ph}">${A_('كل المصورين','All photographers')} <b>${a.L.length}</b></button>`+
+    staffList.filter(t=>cnt[t.id]).sort((x,y)=>cnt[y.id]-cnt[x.id]).map(t=>`<button class="ph-chip${String(F.ph)===String(t.id)?' on':''}" data-phf="${t.id}" aria-pressed="${String(F.ph)===String(t.id)}">${phAv(t.id)}${esc(t.name)} <b>${cnt[t.id]}</b></button>`).join('')+
+    (none?`<button class="ph-chip warn${F.ph==='__none'?' on':''}" data-phf="__none" aria-pressed="${F.ph==='__none'}">⚠ ${A_('بدون مصوّر','No photographer')} <b>${none}</b></button>`:'')+`</div>`;
+  const pv=lang==='en'?'‹':'›',nx=lang==='en'?'›':'‹';
+  let sepDone=!isCur;
+  const cards=Ls.map((s,i)=>{let x='';if(!sepDone&&s.d>=TD){sepDone=true;if(i>0)x=`<div class="ps-sep">${A_('القادمة','Upcoming')}</div>`}return x+sessCard(s,i,Ls)}).join('');
+  G('pr-view').innerHTML=`<div class="pm-nav"><button class="pm-btn" data-mstep="-1" aria-label="${A_('الشهر السابق','Previous month')}">${pv}</button><b>${MON()[V.m-1]} ${V.y}<small>${a.L.length} ${tr('nSess')}</small></b><button class="pm-btn" data-mstep="1" aria-label="${A_('الشهر التالي','Next month')}">${nx}</button>${isCur?'':`<button class="btn-sm" data-mstep="0">${A_('الشهر الحالي','This month')}</button>`}</div>`+heroH(MON()[V.m-1]+' '+V.y+' — '+tr('profit'))+
   (staffList.length?'':`<p class="pr-hint" style="color:var(--gold)">${tr('noTeam')}</p>`)+
   `<div class="ps-bar"><button class="btn-gold" id="pr-newS">${tr('newS')}</button><div class="ps-tools"><span class="pr-pill">${Ls.length} ${tr('nSess')}</span><button class="btn-sm" data-ps="open">${tr('expand')}</button><button class="btn-sm" data-ps="close">${tr('collapse')}</button></div></div>`+
-  (Ls.map(sessCard).join('')||`<p class="pr-hint">${tr('noSess')}</p>`)+
-  (rows.length?`<section class="pr-card"><h2 class="pr-h2">${tr('dues')}</h2><div class="pr-scroll"><table class="pr-t"><thead><tr><th>${tr('photographer')}</th><th>${tr('thSess')}</th><th>${tr('thGross')}</th><th>${tr('thFee')}</th><th>${tr('thAdv')}</th><th>${tr('thNet')}</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.n)}</td><td id="prpc${r.id}"></td><td id="prpt${r.id}"></td><td id="prpf${r.id}"></td><td><input type="number" step="any" data-adv="${r.id}" value="${A[r.id]||''}" placeholder="0"></td><td id="prpn${r.id}" class="pr-b"></td></tr>`).join('')}</tbody><tfoot><tr><td>${tr('total')}</td><td></td><td id="prtp_"></td><td id="prtf_"></td><td id="prta_"></td><td id="prtn_"></td></tr></tfoot></table></div><p class="pr-hint">${tr('formula')}</p><p class="pr-hint" id="pr-unh"></p><div id="pr-pd"></div></section>`:'');
+  (a.L.length?chips:'')+(cards||`<p class="pr-hint">${tr('noSess')}</p>`)+
+  (rows.length?`<section class="pr-card"><h2 class="pr-h2">${tr('dues')}</h2><div class="pr-scroll"><table class="pr-t"><thead><tr><th>${tr('photographer')}</th><th>${tr('thSess')}</th><th>${tr('thGross')}</th><th>${tr('thFee')}</th><th>${tr('thAdv')}</th><th>${tr('thNet')}</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.n)}</td><td id="prpc${r.id}"></td><td id="prpt${r.id}"></td><td id="prpf${r.id}"></td><td><input type="number" step="any" data-adv="${r.id}" value="${A[r.id]||''}" placeholder="0"></td><td id="prpn${r.id}" class="pr-b"></td></tr>`).join('')}</tbody><tfoot><tr><td>${tr('total')}</td><td></td><td id="prtp_"></td><td id="prtf_"></td><td id="prta_"></td><td id="prtn_"></td></tr></tfoot></table></div><p class="pr-hint">${tr('formula')}</p><p class="pr-hint" id="pr-unh"></p><details class="pr-pdd"><summary>📋 ${A_('جلسات كل مصوّر بالتفصيل','Each photographer’s sessions in detail')}</summary><div id="pr-pd"></div></details></section>`:'');
   calc();
 }
 function calc(){
@@ -2910,7 +2960,7 @@ function renderTop(){
   S.sessions.forEach(s=>{if(s.d)cnt[s.d.slice(0,7)]=1});
   const yo=[...ys].sort().map(y=>[y,y]);
   const mo=[[0,tr('fAllYear')],...MON().map((n,i)=>[i+1,n+(cnt[V.y+'-'+pad(i+1)]?' •':'')])];
-  const po=[['',tr('fAll')],...staffList.map(t=>[t.id,t.name])],ko=[['',tr('fAll')],...S.pkgs.map(k=>[k.id,k.n])];
+  const po=[['',tr('fAll')],...staffList.map(t=>[t.id,t.name]),['__none','⚠ '+A_('بدون مصوّر','No photographer')]],ko=[['',tr('fAll')],...S.pkgs.map(k=>[k.id,k.n])];
   const dirty=F.ph||F.pk||F.q;
   G('pr-flt').innerHTML=fSel('pr-ysel',tr('fYear'),yo,V.y)+fSel('pr-msel',tr('fMonth'),mo,V.m)+
     (V.m?fSel('pr-fph',tr('fPh'),po,F.ph)+fSel('pr-fpk',tr('fPkg'),ko,F.pk)+fSearch('pr-fq',F.q,tr('fSearch')):'')+fReset('pr-freset',!!dirty);
@@ -3095,19 +3145,22 @@ function bind(){
     else if(t.id=='pr-fph'){F.ph=v;render()}
     else if(t.id=='pr-fpk'){F.pk=v;render()}
     else if(d.xi){const x=(ses(d.i).x||[]).find(q=>q.id==d.xi);if(x){x[d.xf]=d.xf==='a'?(v===''?'':+v):v;persist();viewMain()}}
-    else if(d.l&&d.lf=='r'){const l=ln(ses(d.i),d.l),r=S.roles.find(x=>x.id==v);l.r=v;if(r){l.a=rateOf(ses(d.i).k,v);if(r.p)l.p=r.p}persist();render()}
-    else if(d.l&&d.lf=='p'){ln(ses(d.i),d.l).p=v;persist();render()}
+    else if(d.l&&d.lf=='r'){const l=ln(ses(d.i),d.l),r=S.roles.find(x=>x.id==v);l.r=v;if(r){l.a=rateOf(ses(d.i).k,v);if(r.p)l.p=r.p}persist();viewMain()}
+    else if(d.l&&d.lf=='p'){ln(ses(d.i),d.l).p=v;persist();viewMain()}
     else if(d.cpick){const c=clients.find(x=>String(x.id)===v),s=ses(d.cpick);if(c&&s){s.n=c.name;s.cid=String(c.id);persist();render()}}
     else if(d.pk){const s=ses(d.pk),o=s.k,pk=S.pkgs.find(x=>x.id==v);s.lines.forEach(l=>{if((+l.a||0)==rateOf(o,l.r))l.a=rateOf(v,l.r)});s.k=v;if(pk&&pk.price!==''&&pk.price!=null&&s.p==='')s.p=+pk.price;persist();render()}
     else if(d.kn||d.rn||d.eqn||d.sbn){render()}
     else if(d.i&&(d.f=='t'||d.f=='te')){viewMain();renderSchedule()}
-    else if(d.i&&d.f=='d'){ses(d.i).d=v;persist();render()}
+    else if(d.i&&d.f=='d'){ses(d.i).d=v;if(v&&V.m&&v.slice(0,7)!==ymK()){V.y=+v.slice(0,4);V.m=+v.slice(5,7)}persist();render();const el=G('ps-'+d.i);if(el)el.scrollIntoView({block:'center'})}   // الجلسة تبقى ظاهرة إذا نُقلت لشهر آخر
     else if(d.ton){const s=stf(d.ton);if(s){s.on=t.checked?1:0;save();render()}}
     else if(d.rp){S.roles.find(x=>x.id==d.rp).p=v;persist()}
   });
   R.addEventListener('click',e=>{
     const b=e.target.closest('button');if(!b)return;const d=b.dataset;
     if(d.m!==undefined){V.m=+d.m;render()}
+    else if(d.mstep!==undefined){const k=+d.mstep;if(!k){V.y=now.getFullYear();V.m=now.getMonth()+1}else{V.m+=k;if(V.m<1){V.m=12;V.y--}if(V.m>12){V.m=1;V.y++}}renderTop();viewMain()}
+    else if(d.phf!==undefined){F.ph=String(F.ph)===d.phf&&d.phf?'':d.phf;renderTop();viewMain()}
+    else if(d.sgo){const c=d.cur;OPEN.delete(c);EDIT.delete(c);OPEN.add(d.sgo);viewMain();const el=G('ps-'+d.sgo);if(el){el.style.scrollMarginTop=(parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'))||70)+12+'px';el.scrollIntoView({block:'start',behavior:'smooth'})}}
     else if(b.id=='pr-freset'){F={ph:'',pk:'',q:''};render()}
     else if(b.id=='pr-repbtn')showRep();
     else if(b.id=='pr-tclose'){G('pr-toast').hidden=true}
@@ -3119,12 +3172,14 @@ function bind(){
       let c=clients.find(x=>x.name.trim().toLowerCase()===nm.toLowerCase());
       if(!c){c={id:Date.now(),name:nm,custid:'',phone:ph,iban:'',addr:'',email:'',company:'',notes:''};clients.push(c);save();try{renderClients();updateClientPicker();BZ.ensurePortal(c.id)}catch(_){}}
       if(s){s.n=c.name;s.cid=String(c.id)}NCL=null;persist();render()}
-    else if(d.tg){const id=d.tg;if(EDIT.has(id)){EDIT.delete(id);OPEN.delete(id)}else OPEN.has(id)?OPEN.delete(id):OPEN.add(id);viewMain()}
+    else if(d.tg){const id=d.tg,y0=b.getBoundingClientRect().top;
+      if(EDIT.has(id)){EDIT.delete(id);OPEN.delete(id)}else if(OPEN.has(id))OPEN.delete(id);else{OPEN.forEach(x=>{if(!EDIT.has(x))OPEN.delete(x)});OPEN.add(id)}   // جلسة واحدة مفتوحة في كل مرة
+      viewMain();const nb=document.querySelector('[data-tg="'+id+'"]');if(nb)window.scrollBy(0,nb.getBoundingClientRect().top-y0)}   // تبقى الجلسة تحت إصبعك بدل أن تقفز الصفحة
     else if(d.ps){const Ls=shown(agg(ymK()).L);Ls.forEach(s=>d.ps=='open'?OPEN.add(s.id):(OPEN.delete(s.id),EDIT.delete(s.id)));viewMain()}
     else if(d.eqt){const s=ses(d.eqt);s.eq=s.eq||[];const i=s.eq.indexOf(d.eid);i<0?s.eq.push(d.eid):s.eq.splice(i,1);persist();viewMain()}
     else if(d.ed){if(EDIT.has(d.ed)){EDIT.delete(d.ed);OPEN.delete(d.ed)}else{EDIT.add(d.ed);OPEN.add(d.ed)};viewMain()}   // «تم» تحفظ وتطوي الجلسة تلقائيًا
     else if(b.id=='pr-newS'){const ym=ymK();newSession(TD.slice(0,7)==ym?TD:ym+'-01')}
-    else if(d.al){const s=ses(d.al),r=S.roles.find(x=>x.id==d.role);s.lines.push({id:uid(),r:r.id,p:r.p||'',a:rateOf(s.k,r.id)});persist();viewMain()}
+    else if(d.al){const s=ses(d.al),r=S.roles.find(x=>x.id==d.role),nl={id:uid(),r:r.id,p:r.p||'',a:rateOf(s.k,r.id)};s.lines.push(nl);persist();viewMain();if(!nl.p){const q=document.querySelector('[data-l="'+nl.id+'"][data-lf="p"]');if(q)q.focus()}}
     else if(d.dl){const s=ses(d.dl);s.lines=s.lines.filter(x=>x.id!=d.l);persist();viewMain()}
     else if(d.ax){const s=ses(d.sid);s.x=s.x||[];s.x.push({id:uid(),k:d.ax,n:'',a:''});persist();viewMain()}
     else if(d.dx){const s=ses(d.dx);s.x=(s.x||[]).filter(q=>q.id!=d.x);persist();viewMain()}
