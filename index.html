@@ -875,6 +875,22 @@ body:not(.light-mode) .total-bar{background:rgba(39,55,65,.94);border-color:#405
 #nt .date-countdown.past{color:#b86a63}
 
 /* ===== blessing overlay ===== */
+.promo-ov{position:fixed;inset:0;z-index:320;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(74,66,59,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:ntFade .3s ease}
+.promo-ov[hidden]{display:none}
+.promo-card{position:relative;width:min(400px,100%);max-height:calc(100vh - 40px);overflow:auto;text-align:center;padding:34px 24px 22px;border-radius:22px;background:var(--card-g);border:1px solid var(--rim);box-shadow:var(--float);animation:ntPop .45s cubic-bezier(.2,.7,.2,1) backwards}
+.promo-x{position:absolute;top:10px;inset-inline-end:10px;width:38px;height:38px;border-radius:50%;border:0;background:var(--bg-soft);box-shadow:var(--lift-sm);color:var(--text-dim);font-size:15px;cursor:pointer}
+.promo-x:focus-visible,.promo-copy:focus-visible,.promo-use:focus-visible{outline:0;box-shadow:var(--focus-ring)}
+.promo-ic{font-size:44px;line-height:1;margin-bottom:8px}
+.promo-card h2{margin:0 0 8px;font-size:22px;color:var(--text);line-height:1.4}
+.promo-card p{margin:0 0 16px;font-size:14.5px;color:var(--text-dim);line-height:1.8;white-space:pre-line}
+.promo-code{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 8px 8px 14px;border:2px dashed var(--gold-light);border-radius:16px;background:var(--bg-soft)}
+.promo-code b{font-size:21px;letter-spacing:.14em;color:var(--gold-light);direction:ltr;font-family:ui-monospace,Menlo,monospace;overflow-wrap:anywhere;text-align:start}
+.promo-copy{flex:none;border:0;border-radius:12px;padding:10px 14px;background:var(--rose-g);color:#fff;font:inherit;font-weight:700;font-size:14px;cursor:pointer;min-width:96px}
+.promo-copy.ok{background:var(--btn-sage)}
+.promo-use{display:block;width:100%;margin-top:12px;border:0;border-radius:14px;padding:13px;background:var(--btn-sage);color:#fff;font:inherit;font-weight:700;font-size:15px;cursor:pointer;box-shadow:var(--lift-sm)}
+.promo-later{display:block;margin:10px auto 0;border:0;background:none;color:var(--text-dim);font:inherit;font-size:13px;cursor:pointer;text-decoration:underline}
+@media(max-width:520px){.promo-ov{align-items:flex-end;padding:0}.promo-card{width:100%;border-radius:22px 22px 0 0;padding-bottom:calc(22px + env(safe-area-inset-bottom))}}
+@media(prefers-reduced-motion:reduce){.promo-ov,.promo-card{animation:none}}
 .bless-ov{display:none;position:fixed;inset:0;z-index:300;align-items:center;justify-content:center;padding:20px;background:rgba(74,66,59,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .bless-ov.show{display:flex;animation:ntFade .35s ease}
 .bless-card{width:min(420px,100%);text-align:center;padding:34px 26px 24px;border-radius:20px;background:var(--card-g);border:1px solid var(--rim);box-shadow:var(--float);animation:ntPop .5s cubic-bezier(.2,.7,.2,1) .05s backwards}
@@ -2293,6 +2309,85 @@ async function loadCatalogRemote(){
   }catch(e){}
 }
 loadCatalogRemote();
+
+// ── النافذة المنبثقة (رسالة + كود خصم) — تُدار من main.html ← الإعدادات ← «📣 النافذة المنبثقة» (site_config/popup) ──
+(function(){
+  const PREVIEW = new URLSearchParams(location.search).get('popup') === 'preview';
+  if(window.top !== window && !PREVIEW) return;          // لا تظهر داخل صفحة «الحجوزات» في لوحة التحكم
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+  const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
+  const ls = (k, v) => { try{ if(v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){ return null; } };
+  const ss = (k, v) => { try{ if(v === undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k, v); }catch(e){ return null; } };
+  async function get(){
+    const c = window.SB;
+    try{
+      if(!c || !c.key) throw 0;
+      const r = await fetch(c.url + '/rest/v1/site_config?key=eq.popup&select=value', {headers:{apikey:c.key, Authorization:'Bearer ' + c.key}});
+      if(!r.ok) throw 0;
+      const rows = await r.json(), v = (rows[0] && rows[0].value) || null;
+      ls('popup-cache', JSON.stringify(v));
+      return v;
+    }catch(e){ try{ return JSON.parse(ls('popup-cache') || 'null'); }catch(x){ return null; } }
+  }
+  function due(P){
+    if(PREVIEW) return true;
+    if(!P || !P.on || !(P.title || P.msg)) return false;
+    if(P.until && P.until < today()) return false;
+    const key = 'popup-seen-' + (P.v || 0), f = P.freq || 'session';
+    if(f === 'always') return true;
+    if(f === 'session') return !ss(key);
+    if(f === 'day') return ls(key) !== today();
+    if(f === 'once') return !ls(key);
+    return true;
+  }
+  function seen(P){ const key = 'popup-seen-' + (P.v || 0); ss(key, '1'); ls(key, today()); }
+  function show(P){
+    if(document.getElementById('promoOv')) return;
+    if(document.querySelector('.bless-ov.show')) { setTimeout(() => show(P), 3000); return; }   // لا تزاحم رسالة البركة
+    seen(P);
+    const code = String(P.code || '').trim(), last = document.activeElement;
+    const ov = document.createElement('div');
+    ov.id = 'promoOv'; ov.className = 'promo-ov';
+    ov.innerHTML = `<div class="promo-card" role="dialog" aria-modal="true" aria-labelledby="promoT">
+      <button type="button" class="promo-x" aria-label="إغلاق">✕</button>
+      <div class="promo-ic" aria-hidden="true">🎁</div>
+      <h2 id="promoT">${esc(P.title || '')}</h2>
+      ${P.msg ? `<p>${esc(P.msg)}</p>` : ''}
+      ${code ? `<div class="promo-code"><b>${esc(code.toUpperCase())}</b><button type="button" class="promo-copy">⧉ ${esc(P.btn || 'نسخ الكود')}</button></div>
+      <button type="button" class="promo-use">استخدم الكود في الحجز ✓</button>` : ''}
+      <button type="button" class="promo-later">${code ? 'لاحقًا' : 'إغلاق'}</button>
+    </div>`;
+    document.body.appendChild(ov);
+    const close = () => { ov.remove(); document.removeEventListener('keydown', key); try{ last && last.focus && last.focus(); }catch(e){} };
+    const key = e => { if(e.key === 'Escape') close(); };
+    document.addEventListener('keydown', key);
+    ov.addEventListener('click', e => { if(e.target === ov || e.target.closest('.promo-x,.promo-later')) close(); });
+    const cp = ov.querySelector('.promo-copy');
+    if(cp) cp.addEventListener('click', async () => {
+      let ok = false;
+      try{ await navigator.clipboard.writeText(code); ok = true; }catch(e){
+        const t = document.createElement('textarea'); t.value = code; t.setAttribute('readonly',''); t.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(t); t.select(); try{ ok = document.execCommand('copy'); }catch(x){} t.remove();
+      }
+      cp.textContent = ok ? '✓ تم النسخ' : code; cp.classList.toggle('ok', ok);
+      setTimeout(() => { if(cp.isConnected){ cp.textContent = '⧉ ' + (P.btn || 'نسخ الكود'); cp.classList.remove('ok'); } }, 2200);
+    });
+    const use = ov.querySelector('.promo-use');
+    if(use) use.addEventListener('click', () => {
+      const i = document.getElementById('discountCode');
+      if(i){ i.value = code; i.dispatchEvent(new Event('input', {bubbles:true})); }
+      close();
+      if(typeof showToast === 'function') showToast('✓ تم وضع الكود — سيظهر الخصم في ملخص الحجز');
+    });
+    setTimeout(() => { const b = ov.querySelector('.promo-copy') || ov.querySelector('.promo-x'); if(b) b.focus(); }, 60);
+  }
+  window.addEventListener('load', async () => {
+    const P = await get();
+    if(PREVIEW && (!P || !(P.title || P.msg))) return;
+    if(!due(P)) return;
+    setTimeout(() => show(P), PREVIEW ? 400 : Math.max(0, Math.min(60, +P.delay || 0)) * 1000);
+  });
+})();
 
 // بعد ظهور الصفحة: سخّن صور بقية الأنواع في الخلفية (فتصبح الفتحات التالية فورية)
 window.addEventListener('load', warmOtherCategories);
