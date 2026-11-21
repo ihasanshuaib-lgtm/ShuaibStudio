@@ -146,6 +146,31 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,12,10,0.96);backdrop-fi
 .st-next.none{background:rgba(0,0,0,.03)}
 .st-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;text-align:center}
 .st-nums div{padding:.45rem .2rem;border-radius:12px;background:#ece7e0;box-shadow:var(--sunk)}.st-nums b{display:block;font-size:.95rem;color:var(--text)}.st-nums span{font-size:.68rem;color:var(--muted)}
+.st-pts{display:flex;align-items:stretch;gap:.4rem}
+.st-pt-b{flex:1;min-width:0;display:flex;align-items:center;gap:.6rem;text-align:start;border:0;cursor:pointer;font:inherit;padding:.5rem .7rem;border-radius:12px;background:linear-gradient(135deg,#fbf1d9,#f6e7c4);color:#6b4f12}
+.st-pt-b:hover{filter:brightness(.98)}.st-star{font-size:1.35rem}
+.st-pt-b span:last-child{display:flex;flex-direction:column;font-size:.8rem;min-width:0}.st-pt-b b{font-size:1.05rem}.st-pt-b i{font-style:normal;font-weight:700}.st-pt-b small{font-size:.7rem;opacity:.8}
+.st-pt-add{flex:none;border:0;border-radius:12px;padding:0 .8rem;background:#c99a3b;color:#fff;font:inherit;font-weight:700;font-size:.82rem;cursor:pointer}.st-pt-add:hover{background:#b7882c}
+.pt-box{max-width:520px;--c:#999;padding:1rem 1.1rem 1.2rem;overflow:auto;display:block}
+.pt-hd{display:flex;align-items:center;gap:.7rem;margin-bottom:.9rem}.pt-hd>div{flex:1;display:flex;flex-direction:column}.pt-hd b{font-size:1.05rem}.pt-hd small{color:var(--muted);font-size:.78rem}
+.pt-cl{border:0;background:#ece7e0;width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:1rem}
+.pt-tot{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.9rem}
+.pt-tot div{padding:.6rem .75rem;border-radius:14px;background:linear-gradient(135deg,#fbf1d9,#f6e7c4);color:#6b4f12;display:flex;flex-direction:column}.pt-tot span{font-size:.74rem}.pt-tot b{font-size:1.5rem;line-height:1.2}.pt-tot small{font-size:.78rem;font-weight:700}
+.pt-add{display:flex;flex-direction:column;gap:.6rem;padding:.8rem;border-radius:14px;background:rgba(0,0,0,.03);border:1px solid var(--border)}
+.pt-step{display:flex;align-items:center;justify-content:center;gap:.5rem}.pt-step button{width:44px;height:44px;border-radius:50%;border:0;background:#ece7e0;box-shadow:var(--lift-sm);font-size:1.4rem;cursor:pointer;color:var(--text)}
+.pt-step input{width:90px;text-align:center;font:inherit;font-size:1.6rem;font-weight:800;border:0;border-radius:12px;padding:.3rem;background:var(--surface,#fff);box-shadow:var(--sunk);color:var(--text)}
+.pt-q,.pt-sug{display:flex;flex-wrap:wrap;gap:.35rem;justify-content:center}
+.pt-q button,.pt-sug button{border:1px solid var(--border);background:var(--card-g,#f4f0ea);border-radius:999px;padding:.35rem .75rem;font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:var(--text)}
+.pt-q button{direction:ltr}.pt-sug b{unicode-bidi:isolate;direction:ltr;display:inline-block}.pt-q button.neg,.pt-sug b{color:#a4493a}.pt-sug b{color:#8a6a1c}.pt-sug b.neg{color:#a4493a}.pt-sug b{font-size:.72rem}
+.pt-in{width:100%;box-sizing:border-box;padding:.6rem .8rem;border-radius:12px;border:1px solid var(--border);background:var(--surface,#fff);color:var(--text);font:inherit;font-size:.9rem}
+.pt-row{display:flex;gap:.6rem;align-items:flex-end;flex-wrap:wrap}.pt-row label{display:flex;flex-direction:column;gap:.2rem;font-size:.74rem;color:var(--muted);flex:1 1 140px}.pt-row .btn-gold{flex:2 1 180px;padding:.7rem 1rem}
+.pt-row .btn-gold:disabled{opacity:.5;cursor:not-allowed}
+.pt-hist{margin-top:.9rem}.pt-hist h4{margin:0 0 .3rem;font-size:.85rem;color:var(--muted)}
+.pt-g{display:flex;justify-content:space-between;font-size:.76rem;font-weight:700;color:var(--muted);padding:.5rem .2rem .2rem;border-bottom:1px solid var(--border)}
+.pt-it{display:flex;align-items:center;gap:.6rem;padding:.45rem .2rem;border-bottom:1px dashed var(--border)}
+.pt-n{flex:none;min-width:42px;text-align:center;font-weight:800;padding:.15rem .4rem;border-radius:999px;background:#fbf1d9;color:#6b4f12}.pt-n.neg{background:#f6e1dc;color:#a4493a}
+.pt-r{flex:1;min-width:0;display:flex;flex-direction:column;font-size:.86rem}.pt-r small{font-size:.72rem;color:var(--muted)}
+html[data-theme="dark"] .st-pt-b,html[data-theme="dark"] .pt-tot div,html[data-theme="dark"] .pt-n{background:#3a3020;color:#f0d79a}html[data-theme="dark"] .pt-step button,html[data-theme="dark"] .pt-cl{background:#181513}
 .st-meta{display:flex;flex-wrap:wrap;gap:.3rem .9rem;font-size:.78rem;color:var(--muted)}
 .st-tasks{border-top:1px dashed var(--border);padding-top:.6rem}
 .st-th{display:flex;align-items:center;justify-content:space-between;font-size:.8rem;color:var(--muted);font-weight:600}.st-th b{background:var(--c);color:#fff;border-radius:999px;padding:0 .45rem;font-size:.7rem}
@@ -2735,6 +2760,47 @@ const stOn=s=>s.on!==0&&s.on!==false;
 function stToggle(id){const m=staffList.find(x=>x.id===id);if(!m)return;m.on=stOn(m)?0:1;save();renderStaff();PR.render()}
 function stTaskDone(id,i){const m=staffList.find(x=>x.id===id);if(!m||!m.tasks)return;const k=m.tasks[i];m.tasks.splice(i,1);save();renderStaff();note(A_('✓ أُنجزت: ','✓ Done: ')+k)}
 function stTaskOpen(id){const b=document.getElementById('tkw-'+id);if(b){b.hidden=false;const i=document.getElementById('tk-'+id);if(i)i.focus()}}
+// ── نظام النقاط: m.points=[{id,n,r,d}] (n موجب = مكافأة، سالب = خصم) · قيمة النقطة من الإعدادات B.cfg.pointValue (الافتراضي 1 د.ب) ──
+const ptVal=()=>{try{const v=BZ.bdata().cfg.pointValue;return v==null||v===''?1:(+v||0)}catch(e){return 1}};
+const ptSum=(m,ym)=>(m.points||[]).filter(x=>!ym||String(x.d||'').slice(0,7)===ym).reduce((q,x)=>q+(+x.n||0),0);
+const ptFmt=n=>'\u200E'+(n>0?'+':n<0?'−':'')+Math.abs(+n||0)+'\u200E';   // LRM حتى لا يظهر «5+» مقلوبًا داخل النص العربي
+let PT_ID=null,PT_N=1;
+const PT_SUG=[['⏰','الالتزام بالوقت',1],['🌟','جودة عمل عالية',2],['🤝','مساعدة الفريق',1],['💪','عمل إضافي',2],['🙌','رضا العميل',2],['⚠','تأخير',-1]];
+function ptOpen(id){PT_ID=id;PT_N=1;ptDraw();setTimeout(()=>{const i=document.getElementById('pt-r');if(i)i.focus()},30)}
+function ptClose(){PT_ID=null;const o=document.getElementById('pt-ov');if(o)o.remove();document.body.classList.remove('tk-lock')}
+function ptDraw(){
+  const m=staffList.find(x=>x.id===PT_ID);if(!m){ptClose();return}
+  let o=document.getElementById('pt-ov');if(!o){o=document.createElement('div');o.id='pt-ov';o.className='sp-ov';o.onclick=e=>{if(e.target===o)ptClose()};document.body.appendChild(o)}
+  document.body.classList.add('tk-lock');
+  const v=ptVal(),ym=todayISO().slice(0,7),mo=ptSum(m,ym),all=ptSum(m),L=(m.points||[]).slice().sort((a,b)=>String(b.d).localeCompare(String(a.d))||(b.id>a.id?1:-1));
+  let g='',hist='';L.forEach(x=>{const k=String(x.d||'').slice(0,7);if(k!==g){g=k;hist+=`<div class="pt-g">${k?clD(k+'-01').replace(/^1 /,''):'—'} <b>${ptFmt(ptSum({points:L.filter(y=>String(y.d||'').slice(0,7)===k)}))}</b></div>`}
+    hist+=`<div class="pt-it"><span class="pt-n ${x.n<0?'neg':''}">${ptFmt(x.n)}</span><span class="pt-r">${escH(x.r||A_('بدون سبب','No reason'))}<small>${escH(clD(x.d))}</small></span><button type="button" class="st-x" onclick="ptDel('${x.id}')" aria-label="${A_('حذف','Delete')}">×</button></div>`});
+  o.innerHTML=`<div class="sp-box pt-box" role="dialog" aria-modal="true" aria-label="${A_('نقاط','Points')} ${escH(m.name)}" style="--c:${stCol(m.id)}">
+    <div class="pt-hd"><span class="st-av">${escH(initials(m.name)||'?')}</span><div><b>⭐ ${A_('نقاط','Points —')} ${escH(m.name)}</b><small>${A_('قيمة النقطة','Point value')}: ${v.toFixed(3)} ${A_('د.ب','BD')} · <button type="button" class="cl-lnk" onclick="ptClose();showPage('settings');setTimeout(()=>{const b=document.querySelector('[data-st-go=points]');if(b)b.click()},60)">${A_('تغيير','Change')}</button></small></div><button type="button" class="pt-cl" onclick="ptClose()" aria-label="${A_('إغلاق','Close')}">✕</button></div>
+    <div class="pt-tot"><div><span>${A_('هذا الشهر','This month')}</span><b>${ptFmt(mo)}</b><small>= ${(mo*v).toFixed(3)} ${A_('د.ب','BD')}</small></div><div><span>${A_('المجموع الكلي','All time')}</span><b>${ptFmt(all)}</b><small>= ${(all*v).toFixed(3)} ${A_('د.ب','BD')}</small></div></div>
+    <div class="pt-add">
+      <div class="pt-step"><button type="button" onclick="ptStep(-1)" aria-label="${A_('أقل','Less')}">−</button><input id="pt-n" type="number" step="1" value="${PT_N}" inputmode="numeric" aria-label="${A_('عدد النقاط','Points')}" oninput="PT_N=parseInt(this.value)||0;ptPrev()"><button type="button" onclick="ptStep(1)" aria-label="${A_('أكثر','More')}">+</button></div>
+      <div class="pt-q">${[1,2,3,5,10].map(n=>`<button type="button" onclick="ptSet(${n})">+${n}</button>`).join('')}<button type="button" class="neg" onclick="ptSet(-1)">−1</button></div>
+      <input id="pt-r" class="pt-in" placeholder="${A_('السبب (اختياري) — مثال: الالتزام بالوقت','Reason (optional) — e.g. punctuality')}" onkeydown="if(event.key==='Enter'){event.preventDefault();ptAdd()}">
+      <div class="pt-sug">${PT_SUG.map(([ic,r,n])=>`<button type="button" onclick="ptSug('${r}',${n})">${ic} ${r} <b${n<0?' class="neg"':''}>${ptFmt(n)}</b></button>`).join('')}</div>
+      <div class="pt-row"><label>${A_('التاريخ','Date')}<input id="pt-d" type="date" class="pt-in" value="${todayISO()}"></label><button type="button" class="btn-gold" id="pt-go" onclick="ptAdd()"></button></div>
+    </div>
+    <div class="pt-hist"><h4>${A_('السجل','History')}</h4>${hist||`<p class="pr-hint">${A_('لا توجد نقاط بعد.','No points yet.')}</p>`}</div>
+  </div>`;
+  ptPrev();
+}
+function ptPrev(){const b=document.getElementById('pt-go');if(!b)return;const n=PT_N,v=ptVal();b.disabled=!n;b.textContent=n<0?`${A_('خصم','Deduct')} ${-n} ${A_('نقطة','pt')} (−${(-n*v).toFixed(3)})`:`${A_('إضافة','Add')} ${n} ${A_('نقطة','pt')} (${(n*v).toFixed(3)} ${A_('د.ب','BD')})`}
+function ptSet(n){PT_N=n;const i=document.getElementById('pt-n');if(i)i.value=n;ptPrev()}
+function ptStep(k){ptSet((PT_N||0)+k)}
+function ptSug(r,n){const i=document.getElementById('pt-r');if(i)i.value=r;ptSet(n)}
+function ptAdd(){
+  const m=staffList.find(x=>x.id===PT_ID);if(!m||!PT_N)return;
+  const r=(document.getElementById('pt-r').value||'').trim(),d=document.getElementById('pt-d').value||todayISO();
+  m.points=[...(m.points||[]),{id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),n:PT_N,r,d}];
+  save();note(`⭐ ${m.name}: ${ptFmt(PT_N)} ${A_('نقطة','pt')}`);PT_N=1;ptDraw();renderStaff();
+}
+function ptDel(pid){const m=staffList.find(x=>x.id===PT_ID);if(!m)return;if(!confirm(A_('حذف هذه النقاط؟','Delete these points?')))return;m.points=(m.points||[]).filter(x=>x.id!==pid);save();ptDraw();renderStaff()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&PT_ID!=null)ptClose()});
 function renderStaff(){
   const c=document.getElementById('staff-container');
   if(!staffList.length){c.innerHTML=`<div class="st-empty">👥 ${t('staffEmpty')}<br><button class="btn-gold" onclick="showAddStaffForm()">${t('addStaffBtn')}</button></div>`;return;}
@@ -2743,12 +2809,13 @@ function renderStaff(){
   const nextOf=id=>SS.filter(s=>s.d&&s.d>=TD_&&s.lines.some(l=>l.p==id)).sort((a,b)=>(a.d+(a.t||'')).localeCompare(b.d+(b.t||'')));
   const act=staffList.filter(stOn),monthSes=SS.filter(s=>s.d&&s.d.slice(0,7)===ym),
     noPh=monthSes.filter(s=>s.d>=TD_&&!s.lines.some(l=>l.p)).length,
-    wages=act.reduce((q,s)=>q+((tot[s.id]||{}).month||0),0),tasks=staffList.reduce((q,s)=>q+(s.tasks||[]).length,0);
+    wages=act.reduce((q,s)=>q+((tot[s.id]||{}).month||0),0),tasks=staffList.reduce((q,s)=>q+(s.tasks||[]).length,0),
+    PV=ptVal(),ptM=staffList.reduce((q,s)=>q+ptSum(s,ym),0),ptTop=staffList.map(s=>[s,ptSum(s,ym)]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1])[0];
   const q=SF.q.trim().toLowerCase();
   const list=staffList.filter(s=>(SF.role==='all'||s.role===SF.role)&&(!q||String(s.name).toLowerCase().includes(q)||String(s.phone||'').replace(/\D/g,'').includes(q.replace(/\D/g,'')||'§')))
     .sort((a,b)=>(stOn(b)?1:0)-(stOn(a)?1:0));
   const box=(ic,l,v,sub,cls,on)=>`<div class="st-box${cls?' '+cls:''}"${on?` role="button" tabindex="0" onclick="${on}"`:''}><span>${ic} ${l}</span><b>${v}</b>${sub?`<small>${sub}</small>`:''}</div>`;
-  const head=`<div class="st-sum">${box('👥',A_('الفريق النشط','Active team'),act.length,staffList.length>act.length?(staffList.length-act.length)+' '+A_('غير نشط','inactive'):'')}${box('📸',A_('تصويرات هذا الشهر','Shoots this month'),monthSes.length)}${box('💰',A_('أجور هذا الشهر','Wages this month'),wages.toFixed(3),A_('د.ب','BD'))}${box('📝',A_('مهام مفتوحة','Open tasks'),tasks)}${noPh?box('⚠',A_('جلسات قادمة بلا مصوّر','Upcoming without photographer'),noPh,A_('اضغط لإسنادها','Tap to assign'),'warn',"PR.showNoPh()"):''}</div>`;
+  const head=`<div class="st-sum">${box('👥',A_('الفريق النشط','Active team'),act.length,staffList.length>act.length?(staffList.length-act.length)+' '+A_('غير نشط','inactive'):'')}${box('📸',A_('تصويرات هذا الشهر','Shoots this month'),monthSes.length)}${box('💰',A_('أجور هذا الشهر','Wages this month'),wages.toFixed(3),A_('د.ب','BD'))}${box('⭐',A_('نقاط هذا الشهر','Points this month'),ptFmt(ptM),(ptM*PV).toFixed(3)+' '+A_('د.ب','BD')+(ptTop?' · 🥇 '+escH(ptTop[0].name):''))}${box('📝',A_('مهام مفتوحة','Open tasks'),tasks)}${noPh?box('⚠',A_('جلسات قادمة بلا مصوّر','Upcoming without photographer'),noPh,A_('اضغط لإسنادها','Tap to assign'),'warn',"PR.showNoPh()"):''}</div>`;
   const card=s=>{
     const on=stOn(s),Q=tot[s.id]||{all:0,month:0,cnt:0},nx=nextOf(s.id),n0=nx[0],mc=monthSes.filter(x=>x.lines.some(l=>l.p==s.id)).length;
     const wa=String(s.phone||'').replace(/\D/g,''),wl=wa?'https://wa.me/'+(wa.length===8?'973'+wa:wa):'';
@@ -2765,6 +2832,7 @@ function renderStaff(){
       </header>
       <div class="st-next${n0?'':' none'}">${n0?`<span>📅 ${A_('التصوير القادم','Next shoot')}</span><b>${escH(n0.n||'—')}</b><small>${escH(clD(n0.d))}${n0.t?' · '+escH(t12(n0.t)):''}${n0.loc?' · 📍 '+escH(n0.loc):''}${nx.length>1?` · +${nx.length-1} ${A_('أخرى','more')}`:''}</small>`:`<span>📅 ${A_('لا تصويرات قادمة','No upcoming shoots')}</span>`}</div>
       <div class="st-nums"><div><b>${mc}</b><span>${A_('تصويرات الشهر','Shoots this month')}</span></div><div><b>${Q.month.toFixed(3)}</b><span>${A_('أجر الشهر','Month pay')}</span></div><div><b>${Q.all.toFixed(3)}</b><span>${A_('المجموع الكلي','All time')}</span></div></div>
+      ${(()=>{const pm=ptSum(s,ym),pa=ptSum(s);return `<div class="st-pts"><button type="button" class="st-pt-b" onclick="ptOpen(${s.id})" title="${A_('سجل النقاط','Points history')}"><span class="st-star">⭐</span><span><b>${ptFmt(pm)}</b> ${A_('نقطة هذا الشهر','pts this month')} <i>= ${(pm*PV).toFixed(3)} ${A_('د.ب','BD')}</i><small>${A_('المجموع','Total')} ${ptFmt(pa)} = ${(pa*PV).toFixed(3)} ${A_('د.ب','BD')}${ptTop&&ptTop[0].id===s.id?' · 🥇 '+A_('الأعلى هذا الشهر','Top this month'):''}</small></span></button><button type="button" class="st-pt-add" onclick="ptOpen(${s.id})" aria-label="${A_('إعطاء نقاط','Give points')} ${escH(s.name)}">+ ${A_('نقاط','Points')}</button></div>`})()}
       ${s.equip||s.phone||+s.rate?`<div class="st-meta">${s.phone?`<span dir="ltr">📞 ${escH(s.phone)}</span>`:''}${s.equip?`<span>🎒 ${escH(s.equip)}</span>`:''}${+s.rate?`<span>💵 ${A_('الأجر','Wage')} ${(+s.rate).toFixed(3)}</span>`:''}</div>`:''}
       <div class="st-tasks"><div class="st-th"><span>📝 ${A_('المهام','Tasks')}${tk.length?` <b>${tk.length}</b>`:''}</span><button type="button" class="st-add" onclick="stTaskOpen(${s.id})">+ ${A_('مهمة','Task')}</button></div>
         ${tk.length?`<ul>${tk.map((k,i)=>`<li><button type="button" class="st-done" onclick="stTaskDone(${s.id},${i})" title="${A_('تمت — إزالة','Done — remove')}" aria-label="${A_('تمت','Done')}: ${escH(k)}"></button><span>${escH(k)}</span><button type="button" class="st-x" onclick="delTask(${s.id},${i})" aria-label="${A_('حذف','Remove')}">×</button></li>`).join('')}</ul>`:''}
@@ -4752,6 +4820,7 @@ const ST_META=[
  ['🏢','company','العمل','Business','بيانات الشركة','Company','الاسم، السجل، التواصل','Name, CR, contact'],
  ['🧾','tax','العمل','Business','الضريبة والترقيم','Tax & numbering','الضريبة وأرقام الفواتير','VAT & invoice numbers'],
  ['🎯','targets','العمل','Business','الأهداف','Targets','الهدف الشهري والسنوي','Monthly & yearly goals'],
+ ['⭐','points','العمل','Business','نظام النقاط','Points system','قيمة النقطة لفريق العمل','Value of a team point'],
  ['🛍','services','العمل','Business','خدمات الفواتير','Invoice services','قائمة الفواتير والعروض','Used in invoices & quotes'],
  ['📦','catalog','صفحة الحجز','Booking page','الباقات والخدمات','Packages & services','الأسعار وما يراه الزبون','Prices customers see'],
  ['🏷','discounts','صفحة الحجز','Booking page','كودات الخصم','Discount codes','الخصومات في صفحة الحجز','Booking-page discounts'],
@@ -4787,6 +4856,7 @@ function renderSettings(){
   <div class="st-wrap"><aside class="st-nav" role="navigation" aria-label="${A_('أقسام الإعدادات','Settings sections')}"></aside><div class="st-main">
   ${card('🏢 '+A_('بيانات الشركة (تظهر على الفواتير وعروض الأسعار)','Company details (shown on invoices & quotations)'),`<div class="bz-form">${inp('company',A_('اسم الشركة','Company name'))}${inp('cr',A_('رقم السجل التجاري (CR)','CR number'))}${inp('vatNo',A_('رقم التسجيل الضريبي','VAT registration no.'))}${inp('addr',A_('العنوان','Address'))}${inp('phone',A_('الهاتف','Phone'),'tel')}${inp('email',A_('البريد الإلكتروني','Email'),'email')}${inp('wa',A_('واتساب الاستوديو (لبوابة العميل)','Studio WhatsApp (client portal)'),'tel')}${inp('insta',A_('حساب إنستغرام','Instagram handle'))}</div><label style="display:flex;flex-direction:column;gap:.3rem;font-size:.74rem;color:var(--muted);font-weight:600">${A_('التنبيه في آخر صفحة العميل','Notice at the end of the client page')}<input class="bz-in" data-bc="portalNote" value="${escH(C.portalNote||'')}"></label>`)}
   ${card('🧾 '+A_('الضريبة والترقيم','Tax & numbering'),`<label class="ck" style="display:flex;gap:.5rem;align-items:center;margin-bottom:.8rem;font-weight:600"><input type="checkbox" data-bc="vatOn"${C.vatOn?' checked':''}> ${A_('تفعيل ضريبة القيمة المضافة على الفواتير وعروض الأسعار','Charge VAT on invoices & quotations')}</label><div class="bz-form">${inp('vat',A_('نسبة الضريبة %','VAT rate %'),'number',' min="0" step="0.1"')}<label>${A_('العملة','Currency')}<input class="bz-in" value="BHD" disabled></label>${inp('invPrefix',A_('بادئة رقم الفاتورة','Invoice prefix'))}${inp('quotePrefix',A_('بادئة رقم عرض السعر','Quotation prefix'))}${inp('dueDays',A_('مهلة السداد (أيام)','Payment terms (days)'),'number',' min="0"')}${inp('validDays',A_('صلاحية عرض السعر (أيام)','Quotation validity (days)'),'number',' min="0"')}</div><p class="pr-hint">${A_('في البحرين التسجيل في الضريبة إلزامي عند تجاوز الإيرادات السنوية 37,500 د.ب. فعّلها فقط إذا كنت مسجّلًا، وأدخل رقم التسجيل ليظهر «TAX INVOICE».','In Bahrain VAT registration is mandatory above BHD 37,500 annual revenue. Enable it only if you are registered, and enter the registration number so invoices show “TAX INVOICE”.')}</p>`)}
+  ${card('⭐ '+A_('نظام النقاط','Points system'),`<p class="pr-hint" style="margin-top:0">${A_('تعطي كل موظف نقاطًا حسب اجتهاده من صفحة «فريق العمل» (زر «+ نقاط» في بطاقته)، وتُحسب قيمتها هنا: النقاط × قيمة النقطة.','Give each team member points for their effort from the Team page ("+ Points" on their card); their value is points × point value.')}</p><div class="bz-form"><label>${A_('قيمة النقطة الواحدة (د.ب)','Value of one point (BHD)')}<input class="bz-in" data-bc="pointValue" type="number" min="0" step="any" value="${escH(C.pointValue==null||C.pointValue===''?1:C.pointValue)}" oninput="const e=document.getElementById('pt-ex');if(e)e.textContent=(10*(+this.value||0)).toFixed(3)"></label></div><p class="pr-hint">${A_('مثال: 10 نقاط =','Example: 10 points =')} <b id="pt-ex">${(10*ptVal()).toFixed(3)}</b> ${A_('د.ب','BHD')}. ${A_('تغيير القيمة يُعيد حساب كل النقاط (السابقة والجديدة) بالقيمة الجديدة.','Changing the value recalculates all points (past and new) at the new value.')}</p>`)}
   ${catalogCard()}
   ${discountCard()}
   ${card('🎯 '+A_('الأهداف والحساب','Targets & calculations'),`<div class="bz-form">${sel('targetBasis',A_('الهدف مبني على','Target is based on'),[['profit',A_('الربح','Profit')],['revenue',A_('الإيراد','Revenue')]])}${inp('monthTarget',A_('الهدف الشهري (د.ب)','Monthly target (BHD)'),'number',' min="0" step="any"')}${inp('yearTarget',A_('الهدف السنوي (د.ب)','Annual target (BHD)'),'number',' min="0" step="any"')}${sel('revSrc',A_('مصدر الإيرادات في التقارير','Revenue source for reports'),[['invoices',A_('الفواتير','Invoices')],['sessions',A_('أسعار الجلسات','Session prices')]])}${inp('workDays',A_('أيام العمل في الأسبوع (للإشغال)','Working days / week (occupancy)'),'number',' min="1" max="7"')}</div><p class="pr-hint">${A_('اختر مصدرًا واحدًا للإيرادات حتى لا تُحسب الجلسة مرتين (مرة كفاتورة ومرة كجلسة).','Pick one revenue source so a job isn\'t counted twice (as an invoice and as a session).')}</p>`)}
