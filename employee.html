@@ -34,6 +34,15 @@ body{margin:0;min-height:100vh;font-family:'IBM Plex Sans Arabic',system-ui,sans
 .kpi{padding:12px 14px;border-radius:18px;background:var(--card-g);box-shadow:var(--lift-sm);border:1px solid rgba(255,255,255,.6)}
 .kpi b{display:block;font-size:1.35rem;color:var(--white);line-height:1.2;font-variant-numeric:tabular-nums}
 .kpi span{font-size:.76rem;color:var(--muted);font-weight:600}
+.kpis.k4{grid-template-columns:repeat(4,minmax(0,1fr))}@media(max-width:560px){.kpis.k4{grid-template-columns:1fr 1fr}}
+.kpi.kpt{background:linear-gradient(135deg,#fbf1d9,#f3e2bc)}.kpi.kpt b{color:#6b4f12}.kpi.kpt span{color:#8a6a1c}
+.pts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pts div{padding:12px 14px;border-radius:16px;background:linear-gradient(135deg,#fbf1d9,#f3e2bc);color:#6b4f12;display:flex;flex-direction:column}
+.pts span{font-size:.75rem;font-weight:600}.pts b{font-size:1.6rem;line-height:1.2}.pts small{font-weight:700;font-size:.8rem}
+.ptv{margin:10px 2px 4px;font-size:.78rem;color:var(--muted)}
+.ptg{display:flex;justify-content:space-between;font-size:.78rem;font-weight:800;color:var(--muted);padding:12px 2px 4px;border-bottom:1px solid var(--border)}
+.pti{display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px dashed var(--border)}
+.ptn{flex:none;min-width:44px;text-align:center;font-weight:800;padding:2px 8px;border-radius:99px;background:#fbf1d9;color:#6b4f12}.ptn.neg{background:#f6e1dc;color:#b86a63}
+.ptr{flex:1;min-width:0;display:flex;flex-direction:column;font-size:.88rem}.ptr small{font-size:.72rem;color:var(--muted)}
 .next{position:relative;overflow:hidden}
 .next .cd{display:inline-block;padding:3px 12px;border-radius:99px;background:var(--btn-sage);color:#fff;font-weight:800;font-size:.8rem;margin-bottom:8px}
 .next h3{margin:0 0 4px;font-size:1.2rem;color:var(--white)}
@@ -74,7 +83,7 @@ details.past summary::after{content:"▾";color:var(--muted);transition:transfor
 .sk{border-radius:22px;background:var(--card-g);box-shadow:var(--lift-sm);height:120px;margin-bottom:16px;position:relative;overflow:hidden}
 .sk::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(100%);animation:sh 1.2s linear infinite}
 @keyframes sh{to{transform:translateX(-100%)}}
-@media(max-width:520px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis .kpi:last-child{grid-column:1/-1}.card{padding:15px;border-radius:18px}}
+@media(max-width:520px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis:not(.k4) .kpi:last-child{grid-column:1/-1}.card{padding:15px;border-radius:18px}}
 @media (orientation:landscape) and (max-height:540px){.wrap{max-width:980px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid2>.card{margin-bottom:0}}
 @media(min-width:900px){.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}.grid2>.card{margin-bottom:16px}}
 @media(prefers-reduced-motion:reduce){.sk::after{animation:none}}
@@ -146,7 +155,8 @@ function render(){
   const monthCnt=[...up,...past].filter(s=>s.d.slice(0,7)===today.slice(0,7)).length;
   const ini=String(D.name||'').split(/\s+/).map(x=>x[0]||'').join('').slice(0,2);
   let h=`<div class="top"><div class="av" aria-hidden="true">${esc(ini)}</div><div><h1>أهلًا ${esc(D.first||D.name)} 👋</h1><p>${esc(D.studio&&D.studio.name||'شعيب استوديو')}${D.role?`<span class="chip">${esc(D.role)}</span>`:''}</p></div></div>`;
-  h+=`<div class="kpis"><div class="kpi"><b>${up.length}</b><span>تصوير قادم</span></div><div class="kpi"><b>${monthCnt}</b><span>تصويرات هذا الشهر</span></div>${SH.pay&&cur?`<div class="kpi"><b>${cur.net.toFixed(3)}</b><span>صافي هذا الشهر (د.ب)</span></div>`:`<div class="kpi"><b>${past.length}</b><span>تصويرات سابقة</span></div>`}</div>`;
+  const PT=SH.points!==false&&D.points?D.points:null,pf=n=>'\u200E'+(n>0?'+':n<0?'−':'')+Math.abs(+n||0)+'\u200E';
+  h+=`<div class="kpis${PT?' k4':''}"><div class="kpi"><b>${up.length}</b><span>تصوير قادم</span></div><div class="kpi"><b>${monthCnt}</b><span>تصويرات هذا الشهر</span></div>${SH.pay&&cur?`<div class="kpi"><b>${cur.net.toFixed(3)}</b><span>صافي هذا الشهر (د.ب)</span></div>`:`<div class="kpi"><b>${past.length}</b><span>تصويرات سابقة</span></div>`}${PT?`<div class="kpi kpt"><b>⭐ ${pf(PT.all)}</b><span>نقاطك = ${money(PT.all*PT.v)}</span></div>`:''}</div>`;
   if(SH.learn!==false)h+=`<a class="card" href="learn.html#t=${encodeURIComponent(token)}" style="display:flex;align-items:center;gap:14px;text-decoration:none;padding:14px 18px"><span style="font-size:1.8rem;width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:var(--off);box-shadow:var(--sunk);flex:none">📚</span><span style="flex:1"><b style="display:block;color:var(--white);font-size:1.02rem">التعليم</b><small style="color:var(--muted)">إعدادات الكاميرا، المونتاج، تعديل الصور ونصائح الفريق — وأضف دروسك</small></span><span style="color:var(--muted);font-size:1.3rem">‹</span></a>`;
   if(SH.up){
     h+=next?`<section class="card next"><span class="cd">⏳ ${when(next.d)}</span><h3>${esc(next.n||'تصوير')}</h3><div class="when">${esc(fD(next.d))}</div>
@@ -163,6 +173,12 @@ function render(){
      ${P.fee?`<div><span>خصم الصندوق (${+D.feePct||0}%)</span><b class="neg">− ${money(P.fee)}</b></div>`:''}${P.adv?`<div><span>الإدارة</span><b class="neg">− ${money(P.adv)}</b></div>`:''}
      <div class="net"><span>الصافي</span><b>${money(P.net)}</b></div></div>
      ${ms.length&&ms.some(s=>s.a!=null)?`<div class="list" style="margin-top:10px">${ms.map(s=>rowH({...s,team:[],eq:[]})).join('')}</div>`:''}</section>`;
+  }
+  if(PT){
+    const G3={};(PT.list||[]).forEach(x=>{const k=String(x.d||'').slice(0,7);(G3[k]=G3[k]||[]).push(x)});
+    h+=`<section class="card"><h2>⭐ نقاطي</h2><div class="pts"><div><span>هذا الشهر</span><b>${pf(PT.month)}</b><small>= ${money(PT.month*PT.v)}</small></div><div><span>المجموع</span><b>${pf(PT.all)}</b><small>= ${money(PT.all*PT.v)}</small></div></div>
+      <p class="ptv">قيمة النقطة الواحدة: ${money(PT.v)}</p>
+      ${Object.keys(G3).length?Object.keys(G3).sort().reverse().map(k=>`<div class="ptg">${esc(k?ymL(k):'—')}<b>${pf(G3[k].reduce((q,x)=>q+x.n,0))}</b></div>${G3[k].map(x=>`<div class="pti"><span class="ptn${x.n<0?' neg':''}">${pf(x.n)}</span><span class="ptr">${esc(x.r||'—')}<small>${esc(x.d?fD(x.d,{day:'numeric',month:'short'}):'')}</small></span></div>`).join('')}`).join(''):'<div class="empty">لا توجد نقاط بعد — اجتهادك يُكافأ 🌟</div>'}</section>`;
   }
   if((D.tasks||[]).length)h+=`<section class="card"><h2>📝 المهام <small>${D.tasks.length}</small></h2>${D.tasks.map(t=>`<div class="task"><i>${t.st==='doing'?'▶':'○'}</i><div><b style="font-weight:600">${esc(t.t)}</b>${t.due?`<small>📅 ${esc(fD(t.due,{day:'numeric',month:'short'}))}${t.due<today?' · <span class="neg">متأخرة</span>':''}</small>`:''}</div></div>`).join('')}</section>`;
   if(SH.past){

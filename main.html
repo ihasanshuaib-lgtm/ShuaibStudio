@@ -134,24 +134,45 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,12,10,0.96);backdrop-fi
 .st-box{display:flex;flex-direction:column;gap:.15rem;padding:.75rem .95rem;border-radius:16px;background:var(--card-g,#f4f0ea);border:1px solid rgba(255,255,255,.85);box-shadow:var(--lift-sm)}
 .st-box span{font-size:.78rem;color:var(--muted);font-weight:600}.st-box b{font-size:1.4rem;color:var(--text);line-height:1.2}.st-box small{font-size:.72rem;color:var(--muted)}
 .st-box.warn{cursor:pointer;background:#f8e6e1}.st-box.warn b{color:#a4493a}.st-box.warn:hover{transform:translateY(-1px)}
-.st-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-bottom:2rem}
-.st-card{display:flex;flex-direction:column;gap:.75rem;padding:1rem;border-radius:18px;background:var(--card-g,#f4f0ea);border:1px solid rgba(255,255,255,.85);box-shadow:var(--lift-sm);border-top:4px solid var(--c)}
-.st-card.off{opacity:.6}
-.st-h{display:flex;align-items:center;gap:.7rem}
-.st-av{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--c);color:#fff;font-weight:800;font-size:1rem}
-.st-id{flex:1;min-width:0;display:flex;flex-direction:column}.st-id b{font-size:1.05rem;color:var(--text)}.st-id span{font-size:.78rem;color:var(--muted)}.st-id em{font-style:normal;color:var(--danger)}.st-pt{font-style:normal;color:var(--sage-dd,#66826e)}
-.st-ct{display:flex;align-items:center;gap:.25rem}
-.st-next{display:flex;flex-direction:column;gap:.1rem;padding:.6rem .75rem;border-radius:12px;background:color-mix(in srgb,var(--c) 12%,transparent)}
-.st-next span{font-size:.72rem;color:var(--muted);font-weight:600}.st-next b{font-size:.92rem;color:var(--text)}.st-next small{font-size:.76rem;color:var(--muted)}
-.st-next.none{background:rgba(0,0,0,.03)}
-.st-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;text-align:center}
-.st-nums div{padding:.45rem .2rem;border-radius:12px;background:#ece7e0;box-shadow:var(--sunk)}.st-nums b{display:block;font-size:.95rem;color:var(--text)}.st-nums span{font-size:.68rem;color:var(--muted)}
-.st-pts{display:flex;align-items:stretch;gap:.4rem}
-.st-pt-b{flex:1;min-width:0;display:flex;align-items:center;gap:.6rem;text-align:start;border:0;cursor:pointer;font:inherit;padding:.5rem .7rem;border-radius:12px;background:linear-gradient(135deg,#fbf1d9,#f6e7c4);color:#6b4f12}
-.st-pt-b:hover{filter:brightness(.98)}.st-star{font-size:1.35rem}
-.st-pt-b span:last-child{display:flex;flex-direction:column;font-size:.8rem;min-width:0}.st-pt-b b{font-size:1.05rem}.st-pt-b i{font-style:normal;font-weight:700}.st-pt-b small{font-size:.7rem;opacity:.8}
-.st-pt-add{flex:none;border:0;border-radius:12px;padding:0 .8rem;background:#c99a3b;color:#fff;font:inherit;font-weight:700;font-size:.82rem;cursor:pointer}.st-pt-add:hover{background:#b7882c}
-.pt-box{max-width:520px;--c:#999;padding:1rem 1.1rem 1.2rem;overflow:auto;display:block}
+.tm{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);gap:1.1rem;align-items:start;margin-bottom:2rem}
+.tm-list{display:flex;flex-direction:column;gap:.25rem;padding:.45rem;border-radius:18px;background:var(--card-g,#f4f0ea);border:1px solid rgba(255,255,255,.85);box-shadow:var(--lift-sm);position:sticky;top:calc(var(--nav-h,70px) + 12px);max-height:calc(100vh - var(--nav-h,70px) - 24px);overflow:auto}
+.tm-row{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:40px minmax(0,1fr) auto auto;align-items:center;gap:.6rem;padding:.55rem .6rem;border-radius:13px;position:relative;-webkit-tap-highlight-color:transparent}
+.tm-row:hover{background:rgba(0,0,0,.035)}.tm-row:focus-visible{box-shadow:inset var(--focus-ring)}
+.tm-row.on{background:#fff;box-shadow:var(--lift-sm)}.tm-row.on::before{content:'';position:absolute;inset-inline-start:0;top:20%;bottom:20%;width:4px;border-radius:4px;background:var(--c)}
+.tm-row.off{opacity:.55}
+.tm-row .st-av{width:40px;height:40px;font-size:.88rem}
+.tm-id{display:flex;flex-direction:column;min-width:0}.tm-id b{font-size:.93rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm-id small{font-size:.73rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm-k{display:flex;flex-direction:column;align-items:center;line-height:1.1}.tm-k b{font-size:.95rem;color:var(--text)}.tm-k small{font-size:.62rem;color:var(--muted)}
+.tm-p{font-size:.74rem;font-weight:800;padding:.18rem .5rem;border-radius:999px;background:#fbf1d9;color:#6b4f12;white-space:nowrap}.tm-p.neg{background:#f6e1dc;color:#a4493a}
+.tm-gh{font-size:.72rem;font-weight:700;color:var(--muted);padding:.6rem .6rem .2rem;border-top:1px solid var(--border);margin-top:.3rem}
+.tm-det{border-radius:20px;background:var(--card-g,#f4f0ea);border:1px solid rgba(255,255,255,.85);box-shadow:var(--lift-sm);padding:1.2rem 1.3rem;min-width:0;scroll-margin-top:calc(var(--nav-h,70px) + 12px)}
+.tm-top{display:flex;align-items:center;gap:.9rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.tm-back{display:none}
+.tm-av{width:62px!important;height:62px!important;font-size:1.3rem!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 22%,transparent)}
+.tm-nm{flex:1;min-width:0}.tm-nm h3{margin:0;font-size:1.35rem;color:var(--text)}.tm-nm p{margin:.1rem 0 0;font-size:.84rem;color:var(--muted)}.tm-nm em{font-style:normal;color:var(--danger)}.tm-nm i{font-style:normal;color:var(--sage-dd,#66826e)}
+.tm-ct{display:flex;align-items:center;gap:.3rem}
+.tm-acts{display:flex;flex-wrap:wrap;gap:.45rem;padding:1rem 0}.tm-acts .btn-gold{padding:.5rem 1rem;font-size:.86rem;background:linear-gradient(145deg,#d3a94e,#bf9238);border-color:rgba(255,255,255,.4)}
+.tm-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem;margin-bottom:1rem}
+.tm-kpis div{padding:.65rem .75rem;border-radius:14px;background:#ece7e0;box-shadow:var(--sunk);display:flex;flex-direction:column}.tm-kpis span{font-size:.72rem;color:var(--muted);font-weight:600}.tm-kpis b{font-size:1.2rem;color:var(--text);font-variant-numeric:tabular-nums}
+.tm-sec{padding:.95rem 0;border-top:1px solid var(--border)}
+.tm-sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem}.tm-sh h4{margin:0;font-size:.92rem;color:var(--text)}.tm-sh h4 small{font-size:.72rem;color:#fff;background:var(--c,#888);border-radius:999px;padding:.05rem .45rem;margin-inline-start:.2rem}
+.tm-empty{margin:0;font-size:.82rem;color:var(--muted)}
+.tm-pt2{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin-bottom:.6rem}
+.tm-pt2 div{padding:.6rem .8rem;border-radius:14px;background:linear-gradient(135deg,#fbf1d9,#f6e7c4);color:#6b4f12;display:flex;flex-direction:column}.tm-pt2 span{font-size:.72rem}.tm-pt2 b{font-size:1.4rem;line-height:1.2}.tm-pt2 small{font-size:.78rem;font-weight:700}
+.tm-pl,.tm-up,.tm-tk{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.tm-pl li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.6rem;padding:.4rem 0;border-bottom:1px dashed var(--border);font-size:.85rem}.tm-pl li:last-child{border-bottom:0}.tm-pl small{color:var(--muted);font-size:.72rem}
+.tm-up li{display:flex;align-items:center;gap:.7rem;padding:.5rem 0;border-bottom:1px dashed var(--border)}.tm-up li:last-child{border-bottom:0}
+.tm-dt{flex:none;width:48px;text-align:center;border-radius:12px;padding:.25rem 0;background:#ece7e0;box-shadow:var(--sunk);line-height:1.15}.tm-dt b{display:block;font-size:1.1rem;color:var(--text)}.tm-dt small{font-size:.62rem;color:var(--muted)}
+.tm-ux{display:flex;flex-direction:column;min-width:0}.tm-ux b{font-size:.9rem;color:var(--text)}.tm-ux small{font-size:.76rem;color:var(--muted)}
+.tm-tk li{display:flex;align-items:center;gap:.55rem;padding:.35rem 0;font-size:.88rem;color:var(--text)}.tm-tk li span{flex:1;min-width:0}
+.tm-dl{display:grid;grid-template-columns:auto 1fr;gap:.4rem 1rem;margin:0;font-size:.86rem}.tm-dl dt{color:var(--muted)}.tm-dl dd{margin:0;color:var(--text)}
+@media(max-width:900px){.tm{grid-template-columns:1fr}.tm-list{position:static;max-height:none}
+  .tm-det{display:none}.tm.open .tm-det{display:block;position:fixed;inset:0;z-index:250;border-radius:0;overflow:auto;padding:1rem 1rem 2rem;background:var(--off,#efebe6)}
+  .tm-back{display:inline-flex;position:absolute;top:.2rem;inset-inline-start:0;border:0;background:none;font:inherit;font-weight:700;color:var(--sage-dd,#66826e);cursor:pointer;padding:.3rem 0}
+  .tm.open .tm-top{position:relative;padding-top:2.2rem;flex-wrap:wrap}.tm-kpis{grid-template-columns:1fr 1fr}}
+body.tm-lock{overflow:hidden}
+html[data-theme="dark"] .tm-row.on{background:#26211c}html[data-theme="dark"] .tm-kpis div,html[data-theme="dark"] .tm-dt{background:#181513}html[data-theme="dark"] .tm-pt2 div,html[data-theme="dark"] .tm-p{background:#3a3020;color:#f0d79a}
+.sp-box.pt-box{max-width:520px;--c:#999;padding:1rem 1.1rem 1.2rem;overflow:auto;display:block}
 .pt-hd{display:flex;align-items:center;gap:.7rem;margin-bottom:.9rem}.pt-hd>div{flex:1;display:flex;flex-direction:column}.pt-hd b{font-size:1.05rem}.pt-hd small{color:var(--muted);font-size:.78rem}
 .pt-cl{border:0;background:#ece7e0;width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:1rem}
 .pt-tot{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.9rem}
@@ -170,15 +191,10 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,12,10,0.96);backdrop-fi
 .pt-it{display:flex;align-items:center;gap:.6rem;padding:.45rem .2rem;border-bottom:1px dashed var(--border)}
 .pt-n{flex:none;min-width:42px;text-align:center;font-weight:800;padding:.15rem .4rem;border-radius:999px;background:#fbf1d9;color:#6b4f12}.pt-n.neg{background:#f6e1dc;color:#a4493a}
 .pt-r{flex:1;min-width:0;display:flex;flex-direction:column;font-size:.86rem}.pt-r small{font-size:.72rem;color:var(--muted)}
-html[data-theme="dark"] .st-pt-b,html[data-theme="dark"] .pt-tot div,html[data-theme="dark"] .pt-n{background:#3a3020;color:#f0d79a}html[data-theme="dark"] .pt-step button,html[data-theme="dark"] .pt-cl{background:#181513}
-.st-meta{display:flex;flex-wrap:wrap;gap:.3rem .9rem;font-size:.78rem;color:var(--muted)}
-.st-tasks{border-top:1px dashed var(--border);padding-top:.6rem}
-.st-th{display:flex;align-items:center;justify-content:space-between;font-size:.8rem;color:var(--muted);font-weight:600}.st-th b{background:var(--c);color:#fff;border-radius:999px;padding:0 .45rem;font-size:.7rem}
-.st-add{border:0;background:none;color:var(--sage-dd,#66826e);font:inherit;font-weight:700;font-size:.8rem;cursor:pointer;padding:.2rem .3rem}
-.st-tasks ul{list-style:none;margin:.4rem 0 0;padding:0;display:flex;flex-direction:column;gap:.25rem}
-.st-tasks li{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text);padding:.25rem .1rem}
-.st-done{flex:none;width:20px;height:20px;border-radius:50%;border:2px solid var(--c);background:none;cursor:pointer;padding:0}.st-done:hover{background:var(--c)}
-.st-tasks li span{flex:1;min-width:0}.st-x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:1rem;opacity:.5}.st-x:hover{opacity:1;color:var(--danger)}
+html[data-theme="dark"] .pt-tot div,html[data-theme="dark"] .pt-n{background:#3a3020;color:#f0d79a}html[data-theme="dark"] .pt-step button,html[data-theme="dark"] .pt-cl{background:#181513}
+.st-av{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--c,#888);color:#fff;font-weight:800;font-size:1rem}
+.st-done{flex:none;width:20px;height:20px;border-radius:50%;border:2px solid var(--c,#789680);background:none;cursor:pointer;padding:0}.st-done:hover{background:var(--c,#789680)}
+.st-x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:1rem;opacity:.5}.st-x:hover{opacity:1;color:var(--danger)}
 .st-tkin{display:flex;gap:.35rem;margin-top:.45rem}.st-tkin[hidden]{display:none}
 .st-tkin input{flex:1;min-width:0;padding:.45rem .6rem;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font:inherit;font-size:.84rem}
 .st-f{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:auto}.st-f .btn-sm{flex:1 1 auto;white-space:nowrap;padding-inline:.6rem}
@@ -2816,32 +2832,63 @@ function renderStaff(){
     .sort((a,b)=>(stOn(b)?1:0)-(stOn(a)?1:0));
   const box=(ic,l,v,sub,cls,on)=>`<div class="st-box${cls?' '+cls:''}"${on?` role="button" tabindex="0" onclick="${on}"`:''}><span>${ic} ${l}</span><b>${v}</b>${sub?`<small>${sub}</small>`:''}</div>`;
   const head=`<div class="st-sum">${box('👥',A_('الفريق النشط','Active team'),act.length,staffList.length>act.length?(staffList.length-act.length)+' '+A_('غير نشط','inactive'):'')}${box('📸',A_('تصويرات هذا الشهر','Shoots this month'),monthSes.length)}${box('💰',A_('أجور هذا الشهر','Wages this month'),wages.toFixed(3),A_('د.ب','BD'))}${box('⭐',A_('نقاط هذا الشهر','Points this month'),ptFmt(ptM),(ptM*PV).toFixed(3)+' '+A_('د.ب','BD')+(ptTop?' · 🥇 '+escH(ptTop[0].name):''))}${box('📝',A_('مهام مفتوحة','Open tasks'),tasks)}${noPh?box('⚠',A_('جلسات قادمة بلا مصوّر','Upcoming without photographer'),noPh,A_('اضغط لإسنادها','Tap to assign'),'warn',"PR.showNoPh()"):''}</div>`;
-  const card=s=>{
-    const on=stOn(s),Q=tot[s.id]||{all:0,month:0,cnt:0},nx=nextOf(s.id),n0=nx[0],mc=monthSes.filter(x=>x.lines.some(l=>l.p==s.id)).length;
-    const wa=String(s.phone||'').replace(/\D/g,''),wl=wa?'https://wa.me/'+(wa.length===8?'973'+wa:wa):'';
-    const tk=s.tasks||[];
-    return `<article class="st-card${on?'':' off'}" style="--c:${stCol(s.id)}">
-      <header class="st-h">
-        <span class="st-av">${escH(initials(s.name)||'?')}</span>
-        <div class="st-id"><b>${escH(s.name)}</b><span>${escH(stRole(s.role)||'—')}${on?'':` · <em>${A_('غير نشط','Inactive')}</em>`}${s.portal&&s.portal.on?` · <i class="st-pt">● ${A_('صفحته مفعّلة','Page on')}</i>`:''}</span></div>
-        <div class="st-ct">${wl?`<a class="cl-q" href="${wl}" target="_blank" rel="noopener" title="WhatsApp" aria-label="WhatsApp ${escH(s.name)}">💬</a><a class="cl-q" href="tel:${escH(wa)}" title="${A_('اتصال','Call')}" aria-label="${A_('اتصال','Call')} ${escH(s.name)}">📞</a>`:''}
-          <details class="cl-more" onclick="event.stopPropagation()" ontoggle="if(this.open)document.querySelectorAll('.cl-more[open]').forEach(d=>{if(d!==this)d.open=false})"><summary aria-label="${A_('خيارات','Options')}">⋯</summary><div class="cl-menu">
-            <button onclick="editStaff(${s.id})">✎ ${A_('تعديل البيانات','Edit details')}</button>
-            <button onclick="stToggle(${s.id})">${on?'⏸ '+A_('إيقاف (لا يظهر في اختيار المصورين)','Deactivate'):'▶ '+A_('تفعيل','Activate')}</button>
-            <button class="dz" onclick="deleteStaff(${s.id})">✕ ${A_('حذف الموظف','Delete')}</button></div></details></div>
-      </header>
-      <div class="st-next${n0?'':' none'}">${n0?`<span>📅 ${A_('التصوير القادم','Next shoot')}</span><b>${escH(n0.n||'—')}</b><small>${escH(clD(n0.d))}${n0.t?' · '+escH(t12(n0.t)):''}${n0.loc?' · 📍 '+escH(n0.loc):''}${nx.length>1?` · +${nx.length-1} ${A_('أخرى','more')}`:''}</small>`:`<span>📅 ${A_('لا تصويرات قادمة','No upcoming shoots')}</span>`}</div>
-      <div class="st-nums"><div><b>${mc}</b><span>${A_('تصويرات الشهر','Shoots this month')}</span></div><div><b>${Q.month.toFixed(3)}</b><span>${A_('أجر الشهر','Month pay')}</span></div><div><b>${Q.all.toFixed(3)}</b><span>${A_('المجموع الكلي','All time')}</span></div></div>
-      ${(()=>{const pm=ptSum(s,ym),pa=ptSum(s);return `<div class="st-pts"><button type="button" class="st-pt-b" onclick="ptOpen(${s.id})" title="${A_('سجل النقاط','Points history')}"><span class="st-star">⭐</span><span><b>${ptFmt(pm)}</b> ${A_('نقطة هذا الشهر','pts this month')} <i>= ${(pm*PV).toFixed(3)} ${A_('د.ب','BD')}</i><small>${A_('المجموع','Total')} ${ptFmt(pa)} = ${(pa*PV).toFixed(3)} ${A_('د.ب','BD')}${ptTop&&ptTop[0].id===s.id?' · 🥇 '+A_('الأعلى هذا الشهر','Top this month'):''}</small></span></button><button type="button" class="st-pt-add" onclick="ptOpen(${s.id})" aria-label="${A_('إعطاء نقاط','Give points')} ${escH(s.name)}">+ ${A_('نقاط','Points')}</button></div>`})()}
-      ${s.equip||s.phone||+s.rate?`<div class="st-meta">${s.phone?`<span dir="ltr">📞 ${escH(s.phone)}</span>`:''}${s.equip?`<span>🎒 ${escH(s.equip)}</span>`:''}${+s.rate?`<span>💵 ${A_('الأجر','Wage')} ${(+s.rate).toFixed(3)}</span>`:''}</div>`:''}
-      <div class="st-tasks"><div class="st-th"><span>📝 ${A_('المهام','Tasks')}${tk.length?` <b>${tk.length}</b>`:''}</span><button type="button" class="st-add" onclick="stTaskOpen(${s.id})">+ ${A_('مهمة','Task')}</button></div>
-        ${tk.length?`<ul>${tk.map((k,i)=>`<li><button type="button" class="st-done" onclick="stTaskDone(${s.id},${i})" title="${A_('تمت — إزالة','Done — remove')}" aria-label="${A_('تمت','Done')}: ${escH(k)}"></button><span>${escH(k)}</span><button type="button" class="st-x" onclick="delTask(${s.id},${i})" aria-label="${A_('حذف','Remove')}">×</button></li>`).join('')}</ul>`:''}
-        <div class="st-tkin" id="tkw-${s.id}" hidden><input id="tk-${s.id}" placeholder="${A_('مثال: تعديل صور، مونتاج العرس','e.g. photo editing, wedding montage')}" onkeydown="if(event.key==='Enter'){event.preventDefault();addTask(${s.id})}if(event.key==='Escape')this.parentNode.hidden=true"><button class="btn-sm" type="button" onclick="addTask(${s.id})">${A_('إضافة','Add')}</button></div>
+  const roles=(()=>{try{return PR.data().roles}catch(e){return[]}})(),rN=id=>(roles.find(r=>r.id==id)||{}).n||'';
+  if(!list.some(s=>s.id===TM_SEL))TM_SEL=(list[0]||{}).id;
+  const row=s=>{const nx=nextOf(s.id)[0],mc=monthSes.filter(x=>x.lines.some(l=>l.p==s.id)).length,pm=ptSum(s,ym);
+    return `<button type="button" class="tm-row${s.id===TM_SEL?' on':''}${stOn(s)?'':' off'}" data-tm="${s.id}" role="option" aria-selected="${s.id===TM_SEL}" style="--c:${stCol(s.id)}">
+      <span class="st-av">${escH(initials(s.name)||'?')}</span>
+      <span class="tm-id"><b>${escH(s.name)}${ptTop&&ptTop[0].id===s.id?' 🥇':''}</b><small>${escH(stRole(s.role)||'—')}${nx?` · 📅 ${escH(clD(nx.d))}`:''}</small></span>
+      <span class="tm-k" title="${A_('تصويرات هذا الشهر','Shoots this month')}"><b>${mc}</b><small>${A_('تصوير','shoots')}</small></span>
+      <span class="tm-p${pm<0?' neg':''}" title="${A_('نقاط هذا الشهر','Points this month')}">⭐ ${ptFmt(pm)}</span>
+    </button>`};
+  const on=list.filter(stOn),off=list.filter(s=>!stOn(s));
+  const listH=`<div class="tm-list" role="listbox" aria-label="${A_('أعضاء الفريق','Team members')}">${on.map(row).join('')}${off.length?`<div class="tm-gh">${A_('غير نشط','Inactive')} (${off.length})</div>${off.map(row).join('')}`:''}</div>`;
+  const m=staffList.find(x=>x.id===TM_SEL);
+  let det='';
+  if(m){
+    const isOn=stOn(m),Q=tot[m.id]||{all:0,month:0,cnt:0},nx=nextOf(m.id),mc=monthSes.filter(x=>x.lines.some(l=>l.p==m.id)).length,pm=ptSum(m,ym),pa=ptSum(m);
+    const wa=String(m.phone||'').replace(/\D/g,''),wl=wa?'https://wa.me/'+(wa.length===8?'973'+wa:wa):'',tk=m.tasks||[];
+    const PL=(m.points||[]).slice().sort((a,b)=>String(b.d).localeCompare(String(a.d))).slice(0,4);
+    const sec=(ic,t,body,act)=>`<section class="tm-sec"><div class="tm-sh"><h4>${ic} ${t}</h4>${act||''}</div>${body}</section>`;
+    det=`<div class="tm-top">
+        <button type="button" class="tm-back" onclick="tmClose()">${lang==='en'?'←':'→'} ${A_('الفريق','Team')}</button>
+        <span class="st-av tm-av">${escH(initials(m.name)||'?')}</span>
+        <div class="tm-nm"><h3>${escH(m.name)}</h3><p>${escH(stRole(m.role)||'—')}${isOn?'':` · <em>${A_('غير نشط','Inactive')}</em>`}${m.portal&&m.portal.on?` · <i>● ${A_('صفحته مفعّلة','Staff page on')}</i>`:''}</p></div>
+        <div class="tm-ct">${wl?`<a class="cl-q" href="${wl}" target="_blank" rel="noopener" title="WhatsApp" aria-label="WhatsApp ${escH(m.name)}">💬</a><a class="cl-q" href="tel:${escH(wa)}" title="${A_('اتصال','Call')}" aria-label="${A_('اتصال','Call')}">📞</a>`:''}
+          <details class="cl-more" onclick="event.stopPropagation()"><summary aria-label="${A_('خيارات','Options')}">⋯</summary><div class="cl-menu">
+            <button onclick="stToggle(${m.id})">${isOn?'⏸ '+A_('إيقاف (لا يظهر في اختيار المصورين)','Deactivate'):'▶ '+A_('تفعيل','Activate')}</button>
+            <button class="dz" onclick="deleteStaff(${m.id})">✕ ${A_('حذف الموظف','Delete')}</button></div></details></div>
       </div>
-      <footer class="st-f"><button class="btn-sm${s.portal&&s.portal.on?' sp-on':''}" onclick="openStaffPortal(${s.id})">🔗 ${A_('صفحة الموظف','Staff page')}</button><button class="btn-sm" onclick="PR.showStaffReport('${s.id}')">📄 ${A_('تقرير','Report')}</button><button class="btn-sm" onclick="editStaff(${s.id})">✎ ${A_('تعديل','Edit')}</button></footer>
-    </article>`};
-  c.innerHTML=head+(list.length?`<div class="st-grid">${list.map(card).join('')}</div>`:noRes(A_('لا يوجد موظفون بهذا الفلتر.','No staff match this filter.')));
+      <div class="tm-acts"><button class="btn-gold" onclick="ptOpen(${m.id})">⭐ ${A_('إعطاء نقاط','Give points')}</button><button class="btn-sm${m.portal&&m.portal.on?' sp-on':''}" onclick="openStaffPortal(${m.id})">🔗 ${A_('صفحة الموظف','Staff page')}</button><button class="btn-sm" onclick="PR.showStaffReport('${m.id}')">📄 ${A_('التقرير','Report')}</button><button class="btn-sm" onclick="editStaff(${m.id})">✎ ${A_('تعديل','Edit')}</button></div>
+      <div class="tm-kpis">
+        <div><span>${A_('تصويرات الشهر','Shoots this month')}</span><b>${mc}</b></div>
+        <div><span>${A_('أجر الشهر','Month pay')}</span><b>${Q.month.toFixed(3)}</b></div>
+        <div><span>${A_('القادمة','Upcoming')}</span><b>${nx.length}</b></div>
+        <div><span>${A_('المجموع الكلي','All-time pay')}</span><b>${Q.all.toFixed(3)}</b></div>
+      </div>
+      <section class="tm-sec tm-ptc"><div class="tm-sh"><h4>⭐ ${A_('النقاط','Points')}</h4><button type="button" class="cl-lnk" onclick="ptOpen(${m.id})">${A_('السجل الكامل','Full history')}</button></div>
+        <div class="tm-pt2"><div><span>${A_('هذا الشهر','This month')}</span><b>${ptFmt(pm)}</b><small>= ${(pm*PV).toFixed(3)} ${A_('د.ب','BD')}</small></div><div><span>${A_('المجموع','Total')}</span><b>${ptFmt(pa)}</b><small>= ${(pa*PV).toFixed(3)} ${A_('د.ب','BD')}</small></div></div>
+        ${PL.length?`<ul class="tm-pl">${PL.map(x=>`<li><span class="pt-n${x.n<0?' neg':''}">${ptFmt(x.n)}</span><span>${escH(x.r||A_('بدون سبب','No reason'))}</span><small>${escH(clD(x.d))}</small></li>`).join('')}</ul>`:`<p class="tm-empty">${A_('لم تُعطَ نقاط بعد.','No points yet.')}</p>`}
+      </section>
+      ${sec('📅',A_('التصويرات القادمة','Upcoming shoots')+(nx.length?` <small>${nx.length}</small>`:''),nx.length?`<ul class="tm-up">${nx.slice(0,5).map(x=>{const rl=[...new Set(x.lines.filter(l=>l.p==m.id).map(l=>rN(l.r)).filter(Boolean))].join('، ');return `<li><span class="tm-dt"><b>${+x.d.slice(8,10)}</b><small>${escH(clD(x.d).replace(/^\d+\s*/,''))}</small></span><span class="tm-ux"><b>${escH(x.n||'—')}</b><small>${[x.t?t12(x.t)+(x.te?'–'+t12(x.te):''):'',x.loc?'📍 '+x.loc:'',rl].filter(Boolean).map(escH).join(' · ')}</small></span></li>`}).join('')}</ul>${nx.length>5?`<p class="tm-empty">+${nx.length-5} ${A_('أخرى','more')}</p>`:''}`:`<p class="tm-empty">${A_('لا تصويرات قادمة.','No upcoming shoots.')}</p>`)}
+      ${sec('📝',A_('المهام','Tasks')+(tk.length?` <small>${tk.length}</small>`:''),`${tk.length?`<ul class="tm-tk">${tk.map((k,i)=>`<li><button type="button" class="st-done" onclick="stTaskDone(${m.id},${i})" title="${A_('تمت — إزالة','Done — remove')}" aria-label="${A_('تمت','Done')}: ${escH(k)}"></button><span>${escH(k)}</span><button type="button" class="st-x" onclick="delTask(${m.id},${i})" aria-label="${A_('حذف','Remove')}">×</button></li>`).join('')}</ul>`:''}<div class="st-tkin" id="tkw-${m.id}"><input id="tk-${m.id}" placeholder="${A_('أضف مهمة… (افصل بفاصلة لعدة مهام)','Add a task… (comma for several)')}" onkeydown="if(event.key==='Enter'){event.preventDefault();addTask(${m.id})}"><button class="btn-sm" type="button" onclick="addTask(${m.id})">${A_('إضافة','Add')}</button></div>`)}
+      ${sec('🪪',A_('البيانات','Details'),`<dl class="tm-dl"><dt>${A_('الهاتف','Phone')}</dt><dd><bdi dir="ltr">${escH(m.phone||'—')}</bdi></dd><dt>${A_('المعدات','Equipment')}</dt><dd>${escH(m.equip||'—')}</dd><dt>${A_('الأجر','Wage')}</dt><dd>${+m.rate?(+m.rate).toFixed(3)+' '+A_('د.ب','BD'):'—'}</dd><dt>${A_('صفحة الموظف','Staff page')}</dt><dd>${m.portal&&m.portal.on?A_('مفعّلة','On'):A_('غير مفعّلة','Off')}</dd></dl>`,`<button type="button" class="cl-lnk" onclick="editStaff(${m.id})">${A_('تعديل','Edit')}</button>`)}`;
+  }
+  c.innerHTML=head+(list.length?`<div class="tm${TM_OPEN?' open':''}">${listH}<div class="tm-det" id="tm-det" style="--c:${m?stCol(m.id):'#888'}" role="region" aria-label="${A_('تفاصيل الموظف','Member details')}">${det}</div></div>`:noRes(A_('لا يوجد موظفون بهذا الفلتر.','No staff match this filter.')));
+  document.body.classList.toggle('tm-lock',!!TM_OPEN&&matchMedia('(max-width:900px)').matches);
 }
+let TM_SEL=null,TM_OPEN=false;try{TM_SEL=+localStorage.getItem('ss_tm_sel')||null}catch(e){}
+function tmPick(id,keep){TM_SEL=id;try{localStorage.setItem('ss_tm_sel',id)}catch(e){}TM_OPEN=matchMedia('(max-width:900px)').matches;renderStaff();
+  if(keep){const r=document.querySelector('.tm-row[data-tm="'+id+'"]');if(r)r.focus()}
+  if(!TM_OPEN){const d=document.getElementById('tm-det');if(d&&d.getBoundingClientRect().top<0)d.scrollIntoView({block:'start',behavior:'smooth'})}else{const d=document.getElementById('tm-det');if(d)d.scrollTop=0}}
+function tmClose(){TM_OPEN=false;renderStaff();const r=document.querySelector('.tm-row[data-tm="'+TM_SEL+'"]');if(r)r.focus()}
+document.addEventListener('click',e=>{const r=e.target.closest&&e.target.closest('.tm-row');if(r)tmPick(+r.dataset.tm)});
+document.addEventListener('keydown',e=>{
+  const r=e.target.closest&&e.target.closest('.tm-row');
+  if(r&&(e.key==='ArrowDown'||e.key==='ArrowUp')){e.preventDefault();const all=[...document.querySelectorAll('.tm-row')],i=all.indexOf(r),n=all[i+(e.key==='ArrowDown'?1:-1)];if(n)tmPick(+n.dataset.tm,true)}
+  else if(e.key==='Escape'&&TM_OPEN&&PT_ID==null)tmClose();
+});
+
 function addTask(id){
   const m=staffList.find(x=>x.id===id),i=document.getElementById('tk-'+id);if(!m||!i)return;
   const parts=i.value.split(/[،,]/).map(x=>x.trim()).filter(Boolean);if(!parts.length)return;
@@ -2854,7 +2901,7 @@ function delTask(id,i){
 
 // ═════════════ صفحة الموظف (employee.html#t=<رمز>) — مثل بوابة العميل ═════════════
 // m.portal = {on, token, show:{...}}؛ البيانات تُرفع إلى جدول staff_portal (supabase/staff_portal.sql) ويقرؤها الموظف بالرمز فقط.
-const SP_SHOW=[['up','📅','التصويرات القادمة','Upcoming shoots'],['pay','💰','الراتب الشهري (الإجمالي، الخصم، الإدارة، الصافي)','Monthly pay'],['amounts','🧾','مبلغ كل تصوير','Amount per shoot'],['past','🗂','التصويرات السابقة','Past shoots'],['team','👥','زملاء التصوير','Teammates'],['equip','🎒','معدات كل تصوير','Equipment per shoot'],['tasks','📝','المهام المسندة إليه','Assigned tasks'],['learn','📚','صفحة التعليم (قراءة الدروس وإضافة دروس)','Learning page (read & add lessons)']];
+const SP_SHOW=[['up','📅','التصويرات القادمة','Upcoming shoots'],['pay','💰','الراتب الشهري (الإجمالي، الخصم، الإدارة، الصافي)','Monthly pay'],['amounts','🧾','مبلغ كل تصوير','Amount per shoot'],['past','🗂','التصويرات السابقة','Past shoots'],['team','👥','زملاء التصوير','Teammates'],['equip','🎒','معدات كل تصوير','Equipment per shoot'],['tasks','📝','المهام المسندة إليه','Assigned tasks'],['points','⭐','النقاط وقيمتها وأسبابها','Points, value & reasons'],['learn','📚','صفحة التعليم (قراءة الدروس وإضافة دروس)','Learning page (read & add lessons)']];
 const spShow=m=>{const s=(m.portal&&m.portal.show)||{},o={};SP_SHOW.forEach(x=>o[x[0]]=s[x[0]]!==false);return o};
 const staffPortalUrl=t=>{const u=new URL('employee.html',location.href);u.search='';u.hash='t='+t;return u.href};
 const spToken=()=>{const a=new Uint8Array(18);crypto.getRandomValues(a);return btoa(String.fromCharCode(...a)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
@@ -2868,7 +2915,8 @@ function staffPortalData(m){
   }
   return{name:nm,first:nm.split(/\s+/)[0]||nm,role:m.role||'',show:SH,feePct:P.feePct,
     studio:{name:C.company||'',phone:C.phone||'',wa:String(C.wa||'').replace(/\D/g,''),insta:String(C.insta||'').replace(/^@/,'')},
-    up:SH.up?P.up.map(one):[],past:SH.past?P.past.map(one):[],pay:SH.pay?P.pay:[],tasks};
+    up:SH.up?P.up.map(one):[],past:SH.past?P.past.map(one):[],pay:SH.pay?P.pay:[],tasks,
+    points:SH.points?{v:ptVal(),month:ptSum(m,todayISO().slice(0,7)),all:ptSum(m),list:(m.points||[]).slice().sort((a,b)=>String(b.d).localeCompare(String(a.d))).slice(0,60).map(x=>({n:+x.n||0,r:String(x.r||''),d:x.d||''}))}:null};
 }
 let SPSENT={},SPERR='',SPBUSY=false;
 async function pushStaffPortals(force){
